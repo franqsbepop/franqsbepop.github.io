@@ -2,4 +2,3 @@ title: Diogo Franquinho
 description: Personal website of Diogo Franquinho
 baseurl: "" # Leave empty for root
 url: "http://diogofranquinho.com" # Your domain
-theme: jekyll-theme-primer
