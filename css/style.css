@@ -37,7 +37,7 @@ box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 /* Headings */
 h1, h2, h3, h4, h5, h6 {
     font-family: "Georgia", serif;
-    margin: 0.8em 0 0.4em;  /* Reduced from 1.2em 0 0.6em */
+    margin: 0.2em 0 0.1em;  /* Reduced from 1.2em 0 0.6em */
     color: #222;
 }
 
