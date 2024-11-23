@@ -3,34 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Diogo Franquinho - Blog Post 1">
-    <title>Blog Post Title 1</title>
+    <meta name="description" content="Diogo Franquinho - Blog Post 2">
+    <title>Stochastic Processes in Finance: A Brief Overview</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
+        <nav class="top-nav">
+            <h2>
+                <a href="../index.html#biography">Biography</a> | 
+                <a href="../index.html#research">Research</a> | 
+                <a href="../index.html#publications">Publications</a> | 
+                <a href="../index.html#teaching">Teaching</a> | 
+                <a href="../blog.html">Blog</a> | 
+                <a href="../index.html#contact">Contact</a>
+            </h2>
+        </nav>
         <div class="container">
-            <img src="profile.jpg" alt="Diogo Franquinho" class="profile-photo">
-            <h1>Diogo Franquinho</h1>
-            <h2>Blog</h2>
-            <nav>
-                <ul>
-                    <li><a href="index.html#biography">Biography</a></li>
-                    <li><a href="index.html#research">Research</a></li>
-                    <li><a href="index.html#publications">Publications</a></li>
-                    <li><a href="index.html#teaching">Teaching</a></li>
-                    <li><a href="blog.html">Blog</a></li>
-                    <li><a href="index.html#contact">Contact</a></li>
-                </ul>
-            </nav>
+            <h1>Stochastic Processes in Finance: A Brief Overview</h1>
         </div>
     </header>
 
     <main>
         <article>
-            <h2>Post Title 1</h2>
-            <p>Date: October 5, 2024</p>
-            <p>Full content of the blog post...</p>
+            <h2>A Brief History of Mathematical Finance (Don't Discount It!)</h2>
+            <p>Date: November 20, 2024</p>
+
+            <p>The history of mathematical finance dates back further than many realize, with significant contributions from early pioneers. One such pioneer was <a href="https://en.wikipedia.org/wiki/Louis_Bachelier">Louis Bachelier</a>, whose groundbreaking work laid the foundation for modern financial mathematics. Bachelier's doctoral thesis, "Théorie de la spéculation" (The Theory of Speculation), was completed in 1900 under the supervision of the renowned mathematician <a href="https://en.wikipedia.org/wiki/Henri_Poincar%C3%A9">Henri Poincaré</a><sup>[1]</sup>.</p>
+
+            <p>Bachelier's work was revolutionary for its time. He proposed that stock prices follow a random walk, a concept that would later evolve into the theory of Brownian motion in finance. This idea was far ahead of its time, predating <a href="https://en.wikipedia.org/wiki/Albert_Einstein">Albert Einstein's</a> famous paper on Brownian motion by five years. Bachelier's model assumed that price changes were independent and normally distributed, concepts that remain fundamental in many financial models today.</p>
+
+            <p>Building on Bachelier's foundation, later researchers developed more sophisticated models. Brownian motion, also known as the Wiener process (named after <a href="https://en.wikipedia.org/wiki/Norbert_Wiener">Norbert Wiener</a>), became a cornerstone of financial modeling. It represents the continuous-time random movement of particles, which serves as an analogy for the unpredictable movements of stock prices<sup>[2]</sup>.</p>
+
+            <p>The culmination of these ideas came with the Black-Scholes model, developed by <a href="https://en.wikipedia.org/wiki/Fischer_Black">Fischer Black</a>, <a href="https://en.wikipedia.org/wiki/Myron_Scholes">Myron Scholes</a>, and <a href="https://en.wikipedia.org/wiki/Robert_C._Merton">Robert Merton</a> in the 1970s. This model, which assumes that the price of the underlying asset follows a geometric Brownian motion, revolutionized option pricing and risk management<sup>[3]</sup>. However, it's important to note that practitioners like <a href="https://en.wikipedia.org/wiki/Edward_O._Thorp">Edward O. Thorp</a> had been using similar methods under analogous assumptions for some time prior.</p>
+
+            <p>The evolution from Bachelier's initial ideas to the sophisticated models we use today highlights the continuous development in the field of mathematical finance. These stochastic processes and models provide the mathematical foundation for risk management, portfolio optimization, and derivative pricing.</p>
+
+            <p>In future posts, we'll explore more recent developments in financial mathematics, including jump processes, stochastic volatility models, and their applications in modern financial practices such as algorithmic trading. We'll also delve deeper into the contributions of other pioneers who have shaped this dynamic field.</p>
+
+            <section id="references">
+                <h3>References</h3>
+                <ol>
+                    <li id="ref1">
+                        <a href="https://en.wikipedia.org/wiki/Brownian_motion">
+                            @article{bachelier1900theorie,
+                              title={Théorie de la spéculation},
+                              author={Bachelier, Louis},
+                              journal={Annales scientifiques de l'École normale supérieure},
+                              volume={17},
+                              pages={21--86},
+                              year={1900},
+                              publisher={Société mathématique de France}
+                            }
+                        </a>
+                    </li>
+                    <li id="ref2"><a href="https://en.wikipedia.org/wiki/Black%E2%80%93Scholes_model">Black-Scholes Model</a></li>
+                </ol>
+            </section>
+
         </article>
     </main>
 
@@ -39,4 +69,5 @@
     </footer>
 </body>
 </html>
+
 
