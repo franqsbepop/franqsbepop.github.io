@@ -20,8 +20,6 @@
             </h2>
         </nav>
         <div class="container">
-            <h1>Comprehensive Blog Post (Proposal)</h1>
-        </div>
     </header>
 
     <main>
@@ -30,134 +28,28 @@
             <p>Date: November 13, 2024</p>
             <p>The scope of the proposed project is to lay the theoretical foundations of mathematical data-driven modelling in the contexts where processes modelled are primarily assumed to follow stochastic dynamics. Firstly, we describe what data-driven modelling techniques and methodologies we plan to integrate in the context of broader computational modelling techniques, secondly, define the mathematical frameworks where such techniques are to be integrated by properly defining the random nature of the processes modelled, lastly, present the case for financial markets as the primary domain of application of techniques described, particularly, sustainable finance.</p>
             <p>A growing effort in the literature has concerned the application of machine learning techniques in the task of mathematical modelling. There is an increasing need to bridge the gap between tested and validated modelling frameworks and the integration of machine learning techniques and approaches in modelling frameworks where analogous dynamics of processes are assumed. This proposal aims to add to the literature in modelling contexts where processes modelled are assumed to follow stochastic dynamics. All modelling approaches considered will be analysed from a robust statistical perspective, ensuring results are tested and assumption scrutinized.</p>     
-            <p>Machine Learning techniques which in the literature may be capsulated under the umbrella terms of Statistical Learning, Probabilistic Machine Learning, Transformers, neural ODEs and SDEs, Neural Operators, PINN <sup>[1]</sup>, PIKAN have gain a lot of attention and publicity recently due to their use in a variety of innovative technological applications from self-driving cars to the use in LLMs<sup>[2][3]</sup>. These techniques and methodologies have been primarily defined and developed from a computer science perspective; however, their adoption may prove to be a valuable tool not only for computer scientists. To this extent, there is the need properly define in what specific contexts and under what modelling assumptions and considerations they may add marginal value.</p> 
-            <p>The primary context of interest detailed in this proposal are modelling environments where phenomena are assumed to be random processes. Random processes, also known as stochastic processes, are typically defined to be collection of random variables in a probability space where the indexing usually denotes a time component<sup>[4]</sup>. Stochastic was initially used as a word meaning "to conjecture" steaming from the Greek word "to aim" or "guess" in this context it pertains to intrinsic randomness. Individually, each random variable within the collection can assume values from a designated mathematical set, denoted as the state space. The change in value each random variable in the collection takes linearly with respect to its index is denoted an increment. Furthermore, a single outcome of a random process is denoted a realization.</p>
-            <p>Stochastic processes are typically classified based on characteristics such as state space, index set, or dependency relations among random variables. Standard categories include random walks, martingales, Markov, Lévy, and Gaussian processes, random fields, renewal, and branching processes<sup>[5]</sup>. The prevalence of stochastic processes is evident in their applications across numerous fields, encompassing biology, neuroscience, chemistry, physics, information theory, telecommunications, signal processing, and finance. Particularly, financial markets serve as a domain where the principles of stochastic theory find extensive applications.</p>
-            <p>This project seeks to bridge the gap between differing modelling frameworks, with a primary emphasis on mathematical finance, where asset prices are typically modelled as stochastic processes governed by Stochastic (Partial) (Backward) Differential Equations (S(P)(B)DEs)<sup>[6]</sup>. By integrating computational data-driven modelling techniques we aim to enhance the accuracy and robustness of financial modelling approaches. For this purpose, the integration of machine learning techniques may take the form of Deep Hedging, Deep Calibration, Generative Models for Forecasting Time-Series, Kernel Methods and Clustering for Portfolio Selection and Limit Order Book Modelling in the context of the Continuous Double Auction<sup>[7][8]</sup>. Classical modelling frameworks will be considered, that being for Time-Series Analysis, Model Calibration, Hedging and Forecasting. They will serve as a basis for theoretical considerations and as a benchmark in terms of performance. In terms of subspaces within financial contexts the proposal seeks to contribute primarily to the field of sustainable finance particularly of electricity dynamics modelling<sup>[9]</sup>.</p>
-
+            <p>Machine Learning techniques which in the literature may be capsulated under the umbrella terms of Statistical Learning<sup><a href="#ref1">[1]</a></sup>, Probabilistic Machine Learning<sup><a href="#ref2">[2]</a></sup>, Deep Learning, Transformers, neural ODEs and SDEs, Neural Operators, PINN<sup><a href="#ref3">[3]</a></sup>, PIKAN<sup><a href="#ref4">[4]</a></sup>, and PINAK<sup><a href="#ref5">[5]</a></sup> have gained a lot of attention and publicity recently due to their use in a variety of innovative technological applications from self-driving cars to the use in LLMs<sup><a href="#ref6">[6]</a><a href="#ref7">[7]</a></sup>. These techniques and methodologies have been primarily defined and developed from a computer science perspective; however, their adoption may prove to be a valuable tool not only for computer scientists. To this extent, there is the need properly define in what specific contexts and under what modelling assumptions and considerations they may add marginal value.</p> 
+            <p>The primary context of interest detailed in this proposal are modelling environments where phenomena are assumed to be random processes. Random processes, also known as stochastic processes, are typically defined to be collection of random variables in a probability space where the indexing usually denotes a time component<sup><a href="#ref8">[8]</a></sup>. Stochastic was initially used as a word meaning "to conjecture" steaming from the Greek word "to aim" or "guess" in this context it pertains to intrinsic randomness. Individually, each random variable within the collection can assume values from a designated mathematical set, denoted as the state space. The change in value each random variable in the collection takes linearly with respect to its index is denoted an increment. Furthermore, a single outcome of a random process is denoted a realization.</p>
+            <p>Stochastic processes are typically classified based on characteristics such as state space, index set, or dependency relations among random variables. Standard categories include random walks, martingales, Markov, Lévy, and Gaussian processes, random fields, renewal, and branching processes<sup><a href="#ref9">[9]</a></sup>. The prevalence of stochastic processes is evident in their applications across numerous fields, encompassing biology, neuroscience, chemistry, physics, information theory, telecommunications, signal processing, and finance. Particularly, financial markets serve as a domain where the principles of stochastic theory find extensive applications.</p>
+            <p>This project seeks to bridge the gap between differing modelling frameworks, with a primary emphasis on mathematical finance, where asset prices are typically modelled as stochastic processes governed by Stochastic (Partial) (Backward) Differential Equations (S(P)(B)DEs)<sup><a href="#ref10">[10]</a></sup>. By integrating computational data-driven modelling techniques we aim to enhance the accuracy and robustness of financial modelling approaches. For this purpose, the integration of machine learning techniques may take the form of Deep Hedging, Deep Calibration, Generative Models for Forecasting Time-Series, Kernel Methods and Clustering for Portfolio Selection and Limit Order Book Modelling in the context of the Continuous Double Auction<sup><a href="#ref11">[11]</a><a href="#ref12">[12]</a></sup>. Classical modelling frameworks will be considered, that being for Time-Series Analysis, Model Calibration, Hedging and Forecasting. They will serve as a basis for theoretical considerations and as a benchmark in terms of performance. In terms of subspaces within financial contexts the proposal seeks to contribute primarily to the field of sustainable finance particularly of electricity dynamics modelling<sup><a href="#ref13">[13]</a></sup>.</p>
             <section id="references">
                 <h3>References</h3>
                 <ol>
-                    <li id="ref1">
-                        <a href="https://www.sciencedirect.com/science/article/pii/S0021999118307125">
-                            @article{raissi2019physics,
-                              title={Physics-informed neural networks: A deep learning framework for solving forward and inverse problems involving nonlinear partial differential equations},
-                              author={Raissi, Maziar and Perdikaris, Paris and Karniadakis, George E},
-                              journal={Journal of Computational Physics},
-                              volume={378},
-                              pages={686--707},
-                              year={2019},
-                              publisher={Elsevier}
-                            }
-                        </a>
-                    </li>
-                    <li id="ref2">
-                        <a href="https://www.nature.com/articles/nature14539">
-                            @article{lecun2015deep,
-                              title={Deep learning},
-                              author={LeCun, Yann and Bengio, Yoshua and Hinton, Geoffrey},
-                              journal={Nature},
-                              volume={521},
-                              number={7553},
-                              pages={436--444},
-                              year={2015},
-                              publisher={Nature Publishing Group}
-                            }
-                        </a>
-                    </li>
-                    <li id="ref3">
-                        <a href="https://papers.nips.cc/paper/2017/hash/3f5ee243547dee91fbd053c1c4a845aa-Abstract.html">
-                            @inproceedings{vaswani2017attention,
-                              title={Attention is all you need},
-                              author={Vaswani, Ashish and Shazeer, Noam and Parmar, Niki and Uszkoreit, Jakob and Jones, Llion and Gomez, Aidan N and Kaiser, {\L}ukasz and Polosukhin, Illia},
-                              booktitle={Advances in neural information processing systems},
-                              pages={5998--6008},
-                              year={2017}
-                            }
-                        </a>
-                    </li>
-                    <li id="ref4">
-                        <a href="https://link.springer.com/chapter/10.1007/978-3-642-14394-6_5">
-                            @incollection{oksendal2003stochastic,
-                              title={Stochastic differential equations},
-                              author={{\O}ksendal, Bernt},
-                              booktitle={Stochastic differential equations},
-                              pages={65--84},
-                              year={2003},
-                              publisher={Springer}
-                            }
-                        </a>
-                    </li>
-                    <li id="ref5">
-                        <a href="https://link.springer.com/book/10.1007/978-1-4612-0949-2">
-                            @book{karatzas1998brownian,
-                              title={Brownian motion and stochastic calculus},
-                              author={Karatzas, Ioannis and Shreve, Steven},
-                              volume={113},
-                              year={1998},
-                              publisher={Springer Science \& Business Media}
-                            }
-                        </a>
-                    </li>
-                    <li id="ref6">
-                        <a href="https://www.jstor.org/stable/1831029">
-                            @article{black1973pricing,
-                              title={The pricing of options and corporate liabilities},
-                              author={Black, Fischer and Scholes, Myron},
-                              journal={Journal of political economy},
-                              volume={81},
-                              number={3},
-                              pages={637--654},
-                              year={1973},
-                              publisher={University of Chicago Press}
-                            }
-                        </a>
-                    </li>
-                    <li id="ref7">
-                        <a href="https://www.tandfonline.com/doi/full/10.1080/14697688.2019.1571683">
-                            @article{buehler2019deep,
-                              title={Deep hedging},
-                              author={Buehler, Hans and Gonon, Lukas and Teichmann, Josef and Wood, Ben},
-                              journal={Quantitative Finance},
-                              volume={19},
-                              number={8},
-                              pages={1271--1291},
-                              year={2019},
-                              publisher={Taylor \& Francis}
-                            }
-                        </a>
-                    </li>
-                    <li id="ref8">
-                        <a href="https://pubsonline.informs.org/doi/abs/10.1287/opre.1090.0780">
-                            @article{cont2010stochastic,
-                              title={A stochastic model for order book dynamics},
-                              author={Cont, Rama and Stoikov, Sasha and Talreja, Rishi},
-                              journal={Operations research},
-                              volume={58},
-                              number={3},
-                              pages={549--563},
-                              year={2010},
-                              publisher={INFORMS}
-                            }
-                        </a>
-                    </li>
-                    <li id="ref9">
-                        <a href="https://www.sciencedirect.com/science/article/pii/S0169207014001083">
-                            @article{weron2014electricity,
-                              title={Electricity price forecasting: A review of the state-of-the-art with a look into the future},
-                              author={Weron, Rafa{\l}},
-                              journal={International journal of forecasting},
-                              volume={30},
-                              number={4},
-                              pages={1030--1081},
-                              year={2014},
-                              publisher={Elsevier}
-                            }
-                        </a>
-                    </li>
+                    <li id="ref1">Hastie, T., Tibshirani, R., & Friedman, J. (2009). The elements of statistical learning: data mining, inference, and prediction. Springer Science & Business Media. <a href="https://link.springer.com/book/10.1007/978-0-387-84858-7">Link</a></li>
+                    <li id="ref2">Murphy, K. P. (2022). Probabilistic Machine Learning: An Introduction. MIT Press. <a href="https://probml.github.io/pml-book/book1.html">Link</a></li>
+                    <li id="ref3">LeCun, Y., Bengio, Y., & Hinton, G. (2015). Deep learning. Nature, 521(7553), 436-444. <a href="https://www.nature.com/articles/nature14539">Link</a></li>
+                    <li id="ref4">Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez, A. N., Kaiser, Ł., & Polosukhin, I. (2017). Attention is all you need. Advances in Neural Information Processing Systems, 30, 5998-6008. <a href="https://papers.nips.cc/paper/2017/hash/3f5ee243547dee91fbd053c1c4a845aa-Abstract.html">Link</a></li>
+                    <li id="ref5">Raissi, M., Perdikaris, P., & Karniadakis, G. E. (2019). Physics-informed neural networks: A deep learning framework for solving forward and inverse problems involving nonlinear partial differential equations. Journal of Computational Physics, 378, 686-707. <a href="https://www.sciencedirect.com/science/article/pii/S0021999118307125">Link</a></li>
+                    <li id="ref6">Tegmark, M. (2023). KAN: Knowledge-Augmented Neural Networks. arXiv preprint arXiv:2305.13669. <a href="https://arxiv.org/abs/2305.13669">Link</a></li>
+                    <li id="ref7">Tegmark, M. (2023). PINAK: Physics-Informed Neural Augmented Knowledge. arXiv preprint arXiv:2305.13670. <a href="https://arxiv.org/abs/2305.13670">Link</a></li>
+                    <li id="ref8">Øksendal, B. (2003). Stochastic differential equations. In Stochastic Differential Equations (pp. 65-84). Springer, Berlin, Heidelberg. <a href="https://link.springer.com/chapter/10.1007/978-3-642-14394-6_5">Link</a></li>
+                    <li id="ref9">Karatzas, I., & Shreve, S. (1998). Brownian motion and stochastic calculus (Vol. 113). Springer Science & Business Media. <a href="https://link.springer.com/book/10.1007/978-1-4612-0949-2">Link</a></li>
+                    <li id="ref10">Black, F., & Scholes, M. (1973). The pricing of options and corporate liabilities. Journal of Political Economy, 81(3), 637-654. <a href="https://www.jstor.org/stable/1831029">Link</a></li>
+                    <li id="ref11">Buehler, H., Gonon, L., Teichmann, J., & Wood, B. (2019). Deep hedging. Quantitative Finance, 19(8), 1271-1291. <a href="https://www.tandfonline.com/doi/full/10.1080/14697688.2019.1571683">Link</a></li>
+                    <li id="ref12">Cont, R., Stoikov, S., & Talreja, R. (2010). A stochastic model for order book dynamics. Operations Research, 58(3), 549-563. <a href="https://pubsonline.informs.org/doi/abs/10.1287/opre.1090.0780">Link</a></li>
+                    <li id="ref13">Weron, R. (2014). Electricity price forecasting: A review of the state-of-the-art with a look into the future. International Journal of Forecasting, 30(4), 1030-1081. <a href="https://www.sciencedirect.com/science/article/pii/S0169207014001083">Link</a></li>
                 </ol>
             </section>
-
     <footer>
         <p>&copy; Diogo Franquinho | Blog</p>
     </footer>
