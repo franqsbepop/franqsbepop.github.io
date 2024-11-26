@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Diogo Franquinho - Book Reviews">
+    <title>Book Reviews - Diogo Franquinho</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <header>
+        <nav class="top-nav">
+            <h2>
+                <a href="../index.html#biography">Biography</a> | 
+                <a href="../index.html#research">Research</a> | 
+                <a href="../index.html#publications">Publications</a> | 
+                <a href="../index.html#teaching">Teaching</a> | 
+                <a href="../blog.html">Blog</a> | 
+                <a href="../index.html#contact">Contact</a>
+            </h2>
+        </nav>
+    </header>
+
+    <main>
+        <h1>Book Reviews</h1>
+        <section class="book-list">
+            <?php
+            $csv_file = 'goodreads_library_export.csv';
+            $csv = array_map('str_getcsv', file($csv_file));
+            array_shift($csv); // Remove header row
+
+            foreach ($csv as $row) {
+                $title = $row[1];
+                $author = $row[3];
+                $rating = $row[7];
+                $review = $row[19];
+                $shelf = $row[18]; // Exclusive Shelf column
+                $original_publication_year = $row[12]; // Assuming Original Publication Year is in column 13
+
+                echo "<article class='book-review'>";
+                echo "<h2>$title</h2>";
+                echo "<p>Author: $author</p>";
+                echo "<p>Rating: $rating</p>";
+                echo "<p>Shelf: $shelf</p>";
+                echo "<p>Original Publication Year: $original_publication_year</p>";
+                if (!empty($review)) {
+                    echo "<p>Review: $review</p>";
+                }
+                echo "</article>";
+            }
+            ?>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; Diogo Franquinho | Book Reviews</p>
+    </footer>
+</body>
+</html>
