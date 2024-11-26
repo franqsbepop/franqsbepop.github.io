@@ -25,7 +25,7 @@
         <h1>Book Reviews</h1>
         <section class="book-list">
             <?php
-            $csv_file = 'goodreads_library_export.csv';
+            $csv_file = dirname(__FILE__) . '/goodreads_library_export.csv';
             $csv = array_map('str_getcsv', file($csv_file));
             array_shift($csv); // Remove header row
 
