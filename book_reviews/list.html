@@ -26,27 +26,32 @@
         <section class="book-list">
             <?php
             $csv_file = dirname(__FILE__) . '/goodreads_library_export.csv';
-            $csv = array_map('str_getcsv', file($csv_file));
-            array_shift($csv); // Remove header row
 
-            foreach ($csv as $row) {
-                $title = $row[1];
-                $author = $row[3];
-                $rating = $row[7];
-                $review = $row[19];
-                $shelf = $row[18]; // Exclusive Shelf column
-                $original_publication_year = $row[12]; // Assuming Original Publication Year is in column 13
+            if (!file_exists($csv_file) || !is_readable($csv_file)) {
+                echo "<p>Error: CSV file not found or unreadable.</p>";
+            } else {
+                $csv = array_map('str_getcsv', file($csv_file));
+                array_shift($csv); // Remove header row
 
-                echo "<article class='book-review'>";
-                echo "<h2>$title</h2>";
-                echo "<p>Author: $author</p>";
-                echo "<p>Rating: $rating</p>";
-                echo "<p>Shelf: $shelf</p>";
-                echo "<p>Original Publication Year: $original_publication_year</p>";
-                if (!empty($review)) {
-                    echo "<p>Review: $review</p>";
+                foreach ($csv as $row) {
+                    $title = htmlspecialchars($row[1]);
+                    $author = htmlspecialchars($row[3]);
+                    $rating = htmlspecialchars($row[7]);
+                    $review = htmlspecialchars($row[19]);
+                    $shelf = htmlspecialchars($row[18]);
+                    $original_publication_year = htmlspecialchars($row[12]);
+
+                    echo "<article class='book-review'>";
+                    echo "<h2>$title</h2>";
+                    echo "<p>Author: $author</p>";
+                    echo "<p>Rating: $rating</p>";
+                    echo "<p>Shelf: $shelf</p>";
+                    echo "<p>Original Publication Year: $original_publication_year</p>";
+                    if (!empty($review)) {
+                        echo "<p>Review: $review</p>";
+                    }
+                    echo "</article>";
                 }
-                echo "</article>";
             }
             ?>
         </section>
