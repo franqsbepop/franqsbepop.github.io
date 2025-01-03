@@ -6,6 +6,7 @@
     <meta name="description" content="Diogo Franquinho - Book Reviews">
     <title>Book Reviews - Diogo Franquinho</title>
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/book-reviews.css">
 </head>
 <body>
     <header>
@@ -23,43 +24,72 @@
 
     <main>
         <h1>Book Reviews</h1>
-        <section class="book-list">
-            <?php
-            $csv_file = dirname(__FILE__) . '/goodreads_library_export.csv';
-
-            if (!file_exists($csv_file) || !is_readable($csv_file)) {
-                echo "<p>Error: CSV file not found or unreadable.</p>";
-            } else {
-                if (($handle = fopen($csv_file, "r")) !== FALSE) {
-                    $header = fgetcsv($handle); // Read header row
-                    while (($row = fgetcsv($handle)) !== FALSE) {
-                        $title = htmlspecialchars($row[1]);
-                        $author = htmlspecialchars($row[3]);
-                        $rating = htmlspecialchars($row[7]);
-                        $review = htmlspecialchars($row[19]);
-                        $shelf = htmlspecialchars($row[18]);
-                        $original_publication_year = htmlspecialchars($row[12]);
-
-                        echo "<article class='book-review'>";
-                        echo "<h2>$title</h2>";
-                        echo "<p>Author: $author</p>";
-                        echo "<p>Rating: $rating</p>";
-                        echo "<p>Shelf: $shelf</p>";
-                        echo "<p>Original Publication Year: $original_publication_year</p>";
-                        if (!empty($review)) {
-                            echo "<p>Review: $review</p>";
-                        }
-                        echo "</article>";
-                    }
-                    fclose($handle);
-                }
-            }
-            ?>
+        <section id="book-list" class="book-list">
+            <!-- Books will be loaded here -->
         </section>
     </main>
 
     <footer>
         <p>&copy; Diogo Franquinho | Book Reviews</p>
     </footer>
+
+    <script>
+        async function loadBooks() {
+            try {
+                const response = await fetch('goodreads_library_export.csv');
+                const csvText = await response.text();
+                const books = parseCSV(csvText);
+                displayBooks(books);
+            } catch (error) {
+                console.error('Error loading books:', error);
+                document.getElementById('book-list').innerHTML = '<p>Error loading books. Please try again later.</p>';
+            }
+        }
+
+        function parseCSV(csvText) {
+            const lines = csvText.split('\n');
+            const headers = lines[0].split(',');
+            const books = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                if (!lines[i].trim()) continue;
+                
+                const values = lines[i].split(',');
+                const book = {};
+                
+                headers.forEach((header, index) => {
+                    book[header.trim()] = values[index]?.replace(/^="(.*)"$/, '$1').trim() || '';
+                });
+                
+                books.push(book);
+            }
+
+            return books;
+        }
+
+        function displayBooks(books) {
+            const container = document.getElementById('book-list');
+            const readBooks = books.filter(book => book['Exclusive Shelf'] === 'read');
+            
+            readBooks.sort((a, b) => new Date(b['Date Read']) - new Date(a['Date Read']));
+            
+            container.innerHTML = readBooks.map(book => `
+                <article class="book-review">
+                    <h2>${book.Title}</h2>
+                    <p>Author: ${book.Author}</p>
+                    <p class="book-meta">
+                        Published: ${book['Original Publication Year'] || book['Year Published'] || 'N/A'}
+                    </p>
+                    <p class="book-rating">Rating: ${book['My Rating'] || 'Unrated'}/5</p>
+                    ${book['My Review'] ? `
+                        <p class="book-review-text">Review: ${book['My Review']}</p>
+                    ` : ''}
+                </article>
+            `).join('');
+        }
+
+        // Load books when the page loads
+        document.addEventListener('DOMContentLoaded', loadBooks);
+    </script>
 </body>
 </html>

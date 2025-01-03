@@ -1,0 +1,40 @@
+.book-list {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.book-review {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.book-review h2 {
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.book-review p {
+    color: #666;
+    margin: 5px 0;
+}
+
+.book-meta {
+    font-size: 0.9em;
+    color: #888;
+}
+
+.book-rating {
+    color: #f39c12;
+    font-weight: bold;
+}
+
+.book-review-text {
+    margin-top: 15px;
+    font-style: italic;
+} 
