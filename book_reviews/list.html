@@ -36,49 +36,103 @@
     <script>
         async function loadBooks() {
             try {
-                const response = await fetch('goodreads_library_export.csv');
+                // Use the full path to the CSV file
+                const response = await fetch('../book_reviews/goodreads_library_export.csv');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
                 const csvText = await response.text();
+                console.log('CSV loaded successfully:', csvText.substring(0, 200) + '...'); // Debug log
+                
                 const books = parseCSV(csvText);
+                console.log('Parsed books:', books.length); // Debug log
+                
                 displayBooks(books);
             } catch (error) {
                 console.error('Error loading books:', error);
-                document.getElementById('book-list').innerHTML = '<p>Error loading books. Please try again later.</p>';
+                document.getElementById('book-list').innerHTML = 
+                    `<p>Error loading books: ${error.message}. Please try again later.</p>`;
             }
         }
 
         function parseCSV(csvText) {
-            const lines = csvText.split('\n');
-            const headers = lines[0].split(',');
-            const books = [];
+            try {
+                const lines = csvText.split('\n');
+                if (lines.length < 2) {
+                    throw new Error('CSV file appears to be empty or malformed');
+                }
 
-            for (let i = 1; i < lines.length; i++) {
-                if (!lines[i].trim()) continue;
+                const headers = lines[0].split(',').map(header => header.trim());
+                console.log('CSV Headers:', headers); // Debug log
+
+                const books = [];
                 
-                const values = lines[i].split(',');
-                const book = {};
-                
-                headers.forEach((header, index) => {
-                    book[header.trim()] = values[index]?.replace(/^="(.*)"$/, '$1').trim() || '';
-                });
-                
-                books.push(book);
+                for (let i = 1; i < lines.length; i++) {
+                    if (!lines[i].trim()) continue;
+                    
+                    // Handle quoted values containing commas
+                    let values = [];
+                    let currentValue = '';
+                    let insideQuotes = false;
+                    
+                    for (let char of lines[i]) {
+                        if (char === '"') {
+                            insideQuotes = !insideQuotes;
+                        } else if (char === ',' && !insideQuotes) {
+                            values.push(currentValue);
+                            currentValue = '';
+                        } else {
+                            currentValue += char;
+                        }
+                    }
+                    values.push(currentValue); // Push the last value
+                    
+                    const book = {};
+                    headers.forEach((header, index) => {
+                        if (values[index]) {
+                            // Clean up the value
+                            let value = values[index].trim();
+                            // Remove surrounding quotes and clean up escaped quotes
+                            value = value.replace(/^["'](.*)["']$/, '$1').replace(/""/g, '"');
+                            book[header] = value;
+                        } else {
+                            book[header] = '';
+                        }
+                    });
+                    
+                    books.push(book);
+                }
+
+                console.log('First book parsed:', books[0]); // Debug log
+                return books;
+            } catch (error) {
+                console.error('Error parsing CSV:', error);
+                throw new Error('Failed to parse CSV file');
             }
-
-            return books;
         }
 
         function displayBooks(books) {
             const container = document.getElementById('book-list');
-            const readBooks = books.filter(book => book['Exclusive Shelf'] === 'read');
+            const readBooks = books.filter(book => {
+                console.log('Book shelf:', book['Exclusive Shelf']); // Debug log
+                return book['Exclusive Shelf'] === 'read';
+            });
             
-            readBooks.sort((a, b) => new Date(b['Date Read']) - new Date(a['Date Read']));
+            console.log('Read books found:', readBooks.length); // Debug log
+            
+            readBooks.sort((a, b) => {
+                const dateA = new Date(a['Date Read'] || '1900-01-01');
+                const dateB = new Date(b['Date Read'] || '1900-01-01');
+                return dateB - dateA;
+            });
             
             container.innerHTML = readBooks.map(book => `
                 <article class="book-review">
-                    <h2>${book.Title}</h2>
-                    <p>Author: ${book.Author}</p>
+                    <h2>${book.Title || 'Untitled'}</h2>
+                    <p>Author: ${book.Author || 'Unknown'}</p>
                     <p class="book-meta">
                         Published: ${book['Original Publication Year'] || book['Year Published'] || 'N/A'}
+                        ${book['Date Read'] ? `<br>Read on: ${book['Date Read']}` : ''}
                     </p>
                     <p class="book-rating">Rating: ${book['My Rating'] || 'Unrated'}/5</p>
                     ${book['My Review'] ? `
@@ -89,7 +143,10 @@
         }
 
         // Load books when the page loads
-        document.addEventListener('DOMContentLoaded', loadBooks);
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Page loaded, attempting to load books...'); // Debug log
+            loadBooks();
+        });
     </script>
 </body>
 </html>
