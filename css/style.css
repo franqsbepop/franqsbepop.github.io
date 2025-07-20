@@ -94,3 +94,137 @@ font-size: 0.8em;
 margin-top: 20px;
 color: #666;
 }
+
+/* Notes Section */
+.notes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.note-category {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 20px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.note-category:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.note-category h3 {
+    color: #495057;
+    margin-bottom: 15px;
+    font-size: 0.6em;
+    border-bottom: 2px solid #dee2e6;
+    padding-bottom: 8px;
+}
+
+.note-category h3 i {
+    margin-right: 8px;
+    color: #6c757d;
+}
+
+.note-category ul {
+    margin: 0;
+    padding-left: 0;
+    list-style: none;
+}
+
+.note-category li {
+    margin-bottom: 8px;
+}
+
+.note-category a {
+    color: #495057;
+    text-decoration: none;
+    padding: 4px 0;
+    display: block;
+    transition: color 0.2s ease;
+}
+
+.note-category a:hover {
+    color: #0066cc;
+    text-decoration: none;
+}
+
+/* Responsive design for notes */
+@media (max-width: 768px) {
+    .notes-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .note-category {
+        padding: 15px;
+    }
+}
+
+/* Note page specific styles */
+.note-meta {
+    color: #6c757d;
+    font-style: italic;
+    margin-bottom: 20px;
+}
+
+.note-content {
+    line-height: 1.8;
+}
+
+.note-content h2 {
+    color: #495057;
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 5px;
+    margin-top: 30px;
+    margin-bottom: 15px;
+}
+
+.math-block {
+    text-align: center;
+    margin: 20px 0;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    border-left: 4px solid #0066cc;
+}
+
+.note-content pre {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 5px;
+    padding: 15px;
+    overflow-x: auto;
+    margin: 15px 0;
+}
+
+.note-content code {
+    background-color: #f1f3f4;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-size: 0.9em;
+}
+
+/* Disclaimer styling */
+.disclaimer {
+    background-color: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-left: 4px solid #f39c12;
+    border-radius: 5px;
+    padding: 15px;
+    margin: 20px 0;
+    font-size: 0.9em;
+    line-height: 1.6;
+}
+
+.disclaimer p {
+    margin: 0;
+    color: #856404;
+}
+
+.disclaimer strong {
+    color: #856404;
+}

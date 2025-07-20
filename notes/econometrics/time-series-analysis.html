@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Series Analysis - Technical Notes</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/book-reviews.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="../../index.html">← Back to Home</a> | 
+        <a href="../../index.html#notes">Notes</a>
+    </nav>
+
+    <main>
+        <header>
+            <h1>Time Series Analysis</h1>
+            <p class="note-meta">Last updated: December 2024</p>
+        </header>
+
+        <section class="note-content">
+            <div class="disclaimer">
+                <p><strong>Disclaimer:</strong> These are my personal notes compiled for my own reference and learning. They may contain errors, incomplete information, or personal interpretations. While I strive for accuracy, these notes are not peer-reviewed and should not be considered authoritative sources. Please consult official textbooks, research papers, or other reliable sources for academic or professional purposes.</p>
+            </div>
+            
+            <h2>1. Introduction</h2>
+            <p>Time series analysis deals with data points collected over time. The key characteristic is that observations are not independent.</p>
+
+            <h2>2. Stationarity</h2>
+            <p>A time series $\{X_t\}$ is <strong>weakly stationary</strong> if:</p>
+            <ul>
+                <li>$E[X_t] = \mu$ (constant mean)</li>
+                <li>$Var(X_t) = \sigma^2$ (constant variance)</li>
+                <li>$Cov(X_t, X_{t+h}) = \gamma(h)$ (covariance depends only on lag $h$)</li>
+            </ul>
+
+            <h2>3. Autocorrelation Function (ACF)</h2>
+            <p>The autocorrelation function is defined as:</p>
+            <div class="math-block">
+                $$\rho(h) = \frac{\gamma(h)}{\gamma(0)} = \frac{Cov(X_t, X_{t+h})}{Var(X_t)}$$
+            </div>
+
+            <h2>4. ARIMA Models</h2>
+            <p>ARIMA$(p,d,q)$ models combine:</p>
+            <ul>
+                <li><strong>AR(p)</strong>: Autoregressive component of order $p$</li>
+                <li><strong>I(d)</strong>: Integration of order $d$ (differencing)</li>
+                <li><strong>MA(q)</strong>: Moving average component of order $q$</li>
+            </ul>
+
+            <p>The general form is:</p>
+            <div class="math-block">
+                $$\phi(B)(1-B)^d X_t = \theta(B)\epsilon_t$$
+            </div>
+            <p>where $\phi(B)$ and $\theta(B)$ are polynomials in the backshift operator $B$.</p>
+
+            <h2>5. Model Selection</h2>
+            <p>Use AIC (Akaike Information Criterion) for model selection:</p>
+            <div class="math-block">
+                $$AIC = 2k - 2\ln(L)$$
+            </div>
+            <p>where $k$ is the number of parameters and $L$ is the likelihood.</p>
+
+            <h2>6. Forecasting</h2>
+            <p>For ARIMA$(1,1,1)$ model, the forecast equation is:</p>
+            <div class="math-block">
+                $$\hat{X}_{t+1} = X_t + \phi_1(X_t - X_{t-1}) + \theta_1\epsilon_t$$
+            </div>
+
+            <h2>7. Code Example</h2>
+            <pre><code># R code for ARIMA modeling
+library(forecast)
+
+# Fit ARIMA model
+model <- auto.arima(ts_data)
+summary(model)
+
+# Forecast
+forecast(model, h=12)
+</code></pre>
+
+            <h2>8. References</h2>
+            <ul>
+                <li>Box, G. E. P., Jenkins, G. M., Reinsel, G. C., & Ljung, G. M. (2015). <em>Time Series Analysis: Forecasting and Control</em>.</li>
+                <li>Hamilton, J. D. (1994). <em>Time Series Analysis</em>.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; Diogo Franquinho | Technical Notes</p>
+    </footer>
+</body>
+</html> 
