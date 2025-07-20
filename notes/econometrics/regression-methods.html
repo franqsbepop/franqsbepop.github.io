@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regression Methods - Technical Notes</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/book-reviews.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="../../index.html">← Back to Home</a> | 
+        <a href="../../index.html#notes">Notes</a>
+    </nav>
+
+    <main>
+        <header>
+            <h1>Regression Methods</h1>
+            <p class="note-meta">Last updated: December 2024</p>
+        </header>
+
+        <section class="note-content">
+            <div class="disclaimer">
+                <p><strong>Disclaimer:</strong> These are my personal notes compiled for my own reference and learning. They may contain errors, incomplete information, or personal interpretations. While I strive for accuracy, these notes are not peer-reviewed and should not be considered authoritative sources. Please consult official textbooks, research papers, or other reliable sources for academic or professional purposes.</p>
+            </div>
+            
+            <h2>1. Linear Regression</h2>
+            <p>The basic linear regression model is:</p>
+            <div class="math-block">
+                $$Y_i = \beta_0 + \beta_1 X_{i1} + \beta_2 X_{i2} + \cdots + \beta_k X_{ik} + \epsilon_i$$
+            </div>
+            <p>where $\epsilon_i \sim N(0, \sigma^2)$ and $i = 1, 2, \ldots, n$.</p>
+
+            <h2>2. Ordinary Least Squares (OLS)</h2>
+            <p>The OLS estimator minimizes the sum of squared residuals:</p>
+            <div class="math-block">
+                $$\min_{\beta} \sum_{i=1}^n (Y_i - X_i'\beta)^2$$
+            </div>
+            <p>The solution is:</p>
+            <div class="math-block">
+                $$\hat{\beta} = (X'X)^{-1}X'Y$$
+            </div>
+
+            <h2>3. Assumptions (Gauss-Markov)</h2>
+            <ul>
+                <li><strong>Linearity:</strong> $E[Y|X] = X\beta$</li>
+                <li><strong>Random sampling:</strong> $(X_i, Y_i)$ are i.i.d.</li>
+                <li><strong>No perfect multicollinearity:</strong> $X$ has full rank</li>
+                <li><strong>Homoscedasticity:</strong> $Var(\epsilon_i|X_i) = \sigma^2$</li>
+                <li><strong>No autocorrelation:</strong> $Cov(\epsilon_i, \epsilon_j|X) = 0$ for $i \neq j$</li>
+            </ul>
+
+            <h2>4. Properties of OLS</h2>
+            <p>Under the Gauss-Markov assumptions, OLS is:</p>
+            <ul>
+                <li><strong>Unbiased:</strong> $E[\hat{\beta}] = \beta$</li>
+                <li><strong>BLUE:</strong> Best Linear Unbiased Estimator</li>
+                <li><strong>Consistent:</strong> $\hat{\beta} \xrightarrow{p} \beta$</li>
+            </ul>
+
+            <h2>5. Heteroscedasticity</h2>
+            <p>When $Var(\epsilon_i|X_i) \neq \sigma^2$, we have heteroscedasticity. Solutions:</p>
+            <ul>
+                <li><strong>Robust standard errors:</strong> White's estimator</li>
+                <li><strong>Weighted Least Squares (WLS):</strong> When variance structure is known</li>
+                <li><strong>Feasible GLS:</strong> When variance structure is estimated</li>
+            </ul>
+
+            <h2>6. Multicollinearity</h2>
+            <p>When predictors are highly correlated, we can use:</p>
+            <ul>
+                <li><strong>Ridge Regression:</strong> Adds penalty $\lambda \sum_{j=1}^k \beta_j^2$</li>
+                <li><strong>Lasso:</strong> Adds penalty $\lambda \sum_{j=1}^k |\beta_j|$</li>
+                <li><strong>Elastic Net:</strong> Combines both penalties</li>
+            </ul>
+
+            <h2>7. Model Selection</h2>
+            <p>Information criteria for model selection:</p>
+            <div class="math-block">
+                $$AIC = 2k - 2\ln(L)$$
+                $$BIC = k\ln(n) - 2\ln(L)$$
+            </div>
+            <p>where $k$ is the number of parameters, $n$ is sample size, and $L$ is the likelihood.</p>
+
+            <h2>8. Diagnostics</h2>
+            <ul>
+                <li><strong>Residual plots:</strong> Check for patterns</li>
+                <li><strong>Q-Q plots:</strong> Check normality</li>
+                <li><strong>Leverage:</strong> $h_{ii} = X_i'(X'X)^{-1}X_i$</li>
+                <li><strong>Cook's distance:</strong> Measure of influence</li>
+            </ul>
+
+            <h2>9. Code Example</h2>
+            <pre><code># R code for linear regression
+library(car)
+
+# Fit model
+model <- lm(y ~ x1 + x2 + x3, data = mydata)
+summary(model)
+
+# Check assumptions
+plot(model)
+vif(model)  # Check multicollinearity
+
+# Robust standard errors
+library(sandwich)
+library(lmtest)
+coeftest(model, vcov = vcovHC(model, type = "HC1"))
+</code></pre>
+
+            <h2>10. References</h2>
+            <ul>
+                <li>Wooldridge, J. M. (2016). <em>Introductory Econometrics: A Modern Approach</em>.</li>
+                <li>Greene, W. H. (2018). <em>Econometric Analysis</em>.</li>
+                <li>Hayashi, F. (2000). <em>Econometrics</em>.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; Diogo Franquinho | Technical Notes</p>
+    </footer>
+</body>
+</html> 

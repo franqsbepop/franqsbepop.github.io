@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Causal Inference - Technical Notes</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/book-reviews.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="../../index.html">← Back to Home</a> | 
+        <a href="../../index.html#notes">Notes</a>
+    </nav>
+
+    <main>
+        <header>
+            <h1>Causal Inference</h1>
+            <p class="note-meta">Last updated: December 2024</p>
+        </header>
+
+        <section class="note-content">
+            <div class="disclaimer">
+                <p><strong>Disclaimer:</strong> These are my personal notes compiled for my own reference and learning. They may contain errors, incomplete information, or personal interpretations. While I strive for accuracy, these notes are not peer-reviewed and should not be considered authoritative sources. Please consult official textbooks, research papers, or other reliable sources for academic or professional purposes.</p>
+            </div>
+            
+            <h2>1. Potential Outcomes Framework</h2>
+            <p>For each unit $i$, we have potential outcomes:</p>
+            <div class="math-block">
+                $$Y_i(1): \text{outcome if treated}$$
+                $$Y_i(0): \text{outcome if not treated}$$
+            </div>
+            <p>The individual treatment effect is:</p>
+            <div class="math-block">
+                $$\tau_i = Y_i(1) - Y_i(0)$$
+            </div>
+
+            <h2>2. Average Treatment Effect (ATE)</h2>
+            <p>The average treatment effect is:</p>
+            <div class="math-block">
+                $$\tau = E[Y_i(1) - Y_i(0)] = E[Y_i(1)] - E[Y_i(0)]$$
+            </div>
+            <p>We can only observe one potential outcome per unit (fundamental problem of causal inference).</p>
+
+            <h2>3. Assumptions for Causal Inference</h2>
+            <ul>
+                <li><strong>Stable Unit Treatment Value Assumption (SUTVA):</strong> No interference between units</li>
+                <li><strong>Ignorability:</strong> $(Y_i(1), Y_i(0)) \perp\!\!\!\perp D_i | X_i$</li>
+                <li><strong>Overlap:</strong> $0 < P(D_i = 1|X_i) < 1$ for all $X_i$</li>
+            </ul>
+
+            <h2>4. Randomized Experiments</h2>
+            <p>In randomized experiments, treatment assignment is independent of potential outcomes:</p>
+            <div class="math-block">
+                $$(Y_i(1), Y_i(0)) \perp\!\!\!\perp D_i$$
+            </div>
+            <p>The simple difference-in-means estimator is unbiased:</p>
+            <div class="math-block">
+                $$\hat{\tau} = \frac{1}{n_1}\sum_{i:D_i=1} Y_i - \frac{1}{n_0}\sum_{i:D_i=0} Y_i$$
+            </div>
+
+            <h2>5. Instrumental Variables (IV)</h2>
+            <p>When treatment is endogenous, we need an instrument $Z_i$ that satisfies:</p>
+            <ul>
+                <li><strong>Relevance:</strong> $Cov(Z_i, D_i) \neq 0$</li>
+                <li><strong>Exclusion:</strong> $Z_i$ affects $Y_i$ only through $D_i$</li>
+                <li><strong>Exogeneity:</strong> $Z_i \perp\!\!\!\perp \epsilon_i$</li>
+            </ul>
+            <p>The IV estimator is:</p>
+            <div class="math-block">
+                $$\hat{\tau}_{IV} = \frac{Cov(Z_i, Y_i)}{Cov(Z_i, D_i)}$$
+            </div>
+
+            <h2>6. Regression Discontinuity Design (RDD)</h2>
+            <p>When treatment assignment depends on a running variable $X_i$ with a cutoff $c$:</p>
+            <div class="math-block">
+                $$D_i = \mathbf{1}\{X_i \geq c\}$$
+            </div>
+            <p>The treatment effect at the cutoff is:</p>
+            <div class="math-block">
+                $$\tau = \lim_{x \downarrow c} E[Y_i|X_i = x] - \lim_{x \uparrow c} E[Y_i|X_i = x]$$
+            </div>
+
+            <h2>7. Difference-in-Differences (DiD)</h2>
+            <p>For panel data with treatment and control groups over time:</p>
+            <div class="math-block">
+                $$\tau = (E[Y_{i1}|D_i=1] - E[Y_{i0}|D_i=1]) - (E[Y_{i1}|D_i=0] - E[Y_{i0}|D_i=0])$$
+            </div>
+            <p>Key assumption: Parallel trends in the absence of treatment.</p>
+
+            <h2>8. Matching Methods</h2>
+            <p>Match treated units with similar control units based on covariates $X_i$:</p>
+            <ul>
+                <li><strong>Exact matching:</strong> Match on exact values of $X_i$</li>
+                <li><strong>Propensity score matching:</strong> Match on $P(D_i=1|X_i)$</li>
+                <li><strong>Nearest neighbor matching:</strong> Match on distance in $X_i$ space</li>
+            </ul>
+
+            <h2>9. Propensity Score</h2>
+            <p>The propensity score is $p(X_i) = P(D_i = 1|X_i)$. Under ignorability:</p>
+            <div class="math-block">
+                $$(Y_i(1), Y_i(0)) \perp\!\!\!\perp D_i | p(X_i)$$
+            </div>
+            <p>This allows us to control for high-dimensional $X_i$ by controlling for the scalar $p(X_i)$.</p>
+
+            <h2>10. Code Example</h2>
+            <pre><code># R code for causal inference
+library(AER)
+library(rdd)
+
+# Instrumental Variables
+iv_model <- ivreg(y ~ x | z, data = mydata)
+summary(iv_model)
+
+# Regression Discontinuity
+rd_model <- RDestimate(y ~ x, data = mydata, cutpoint = 0)
+summary(rd_model)
+
+# Difference-in-Differences
+library(plm)
+did_model <- plm(y ~ treated + post + treated:post, 
+                 data = panel_data, model = "within")
+summary(did_model)
+</code></pre>
+
+            <h2>11. References</h2>
+            <ul>
+                <li>Imbens, G. W., & Rubin, D. B. (2015). <em>Causal Inference in Statistics, Social, and Biomedical Sciences</em>.</li>
+                <li>Angrist, J. D., & Pischke, J. S. (2008). <em>Mostly Harmless Econometrics</em>.</li>
+                <li>Morgan, S. L., & Winship, C. (2015). <em>Counterfactuals and Causal Inference</em>.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; Diogo Franquinho | Technical Notes</p>
+    </footer>
+</body>
+</html> 
