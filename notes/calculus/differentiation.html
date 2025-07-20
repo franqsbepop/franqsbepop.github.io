@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Differentiation - Technical Notes</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/book-reviews.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="../../index.html">← Back to Home</a> | 
+        <a href="../../index.html#notes">Notes</a>
+    </nav>
+
+    <main>
+        <header>
+            <h1>Differentiation</h1>
+            <p class="note-meta">Last updated: December 2024</p>
+        </header>
+
+        <section class="note-content">
+            <div class="disclaimer">
+                <p><strong>Disclaimer:</strong> These are my personal notes compiled for my own reference and learning. They may contain errors, incomplete information, or personal interpretations. While I strive for accuracy, these notes are not peer-reviewed and should not be considered authoritative sources. Please consult official textbooks, research papers, or other reliable sources for academic or professional purposes.</p>
+            </div>
+            
+            <h2>1. Definition of Derivative</h2>
+            <p>The derivative of a function $f(x)$ at a point $x = a$ is:</p>
+            <div class="math-block">
+                $$f'(a) = \lim_{h \to 0} \frac{f(a + h) - f(a)}{h}$$
+            </div>
+            <p>This represents the instantaneous rate of change of $f$ at $x = a$.</p>
+
+            <h2>2. Basic Differentiation Rules</h2>
+            <ul>
+                <li><strong>Power Rule:</strong> $\frac{d}{dx}[x^n] = nx^{n-1}$</li>
+                <li><strong>Constant Rule:</strong> $\frac{d}{dx}[c] = 0$</li>
+                <li><strong>Constant Multiple:</strong> $\frac{d}{dx}[cf(x)] = cf'(x)$</li>
+                <li><strong>Sum Rule:</strong> $\frac{d}{dx}[f(x) + g(x)] = f'(x) + g'(x)$</li>
+                <li><strong>Product Rule:</strong> $\frac{d}{dx}[f(x)g(x)] = f'(x)g(x) + f(x)g'(x)$</li>
+                <li><strong>Quotient Rule:</strong> $\frac{d}{dx}\left[\frac{f(x)}{g(x)}\right] = \frac{f'(x)g(x) - f(x)g'(x)}{[g(x)]^2}$</li>
+            </ul>
+
+            <h2>3. Chain Rule</h2>
+            <p>For composite functions $f(g(x))$:</p>
+            <div class="math-block">
+                $$\frac{d}{dx}[f(g(x))] = f'(g(x)) \cdot g'(x)$$
+            </div>
+            <p>This is one of the most important rules in calculus.</p>
+
+            <h2>4. Derivatives of Common Functions</h2>
+            <ul>
+                <li><strong>Exponential:</strong> $\frac{d}{dx}[e^x] = e^x$</li>
+                <li><strong>Natural Log:</strong> $\frac{d}{dx}[\ln(x)] = \frac{1}{x}$</li>
+                <li><strong>Trigonometric:</strong>
+                    <ul>
+                        <li>$\frac{d}{dx}[\sin(x)] = \cos(x)$</li>
+                        <li>$\frac{d}{dx}[\cos(x)] = -\sin(x)$</li>
+                        <li>$\frac{d}{dx}[\tan(x)] = \sec^2(x)$</li>
+                    </ul>
+                </li>
+                <li><strong>Inverse Trig:</strong>
+                    <ul>
+                        <li>$\frac{d}{dx}[\arcsin(x)] = \frac{1}{\sqrt{1-x^2}}$</li>
+                        <li>$\frac{d}{dx}[\arccos(x)] = -\frac{1}{\sqrt{1-x^2}}$</li>
+                        <li>$\frac{d}{dx}[\arctan(x)] = \frac{1}{1+x^2}$</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h2>5. Implicit Differentiation</h2>
+            <p>When $y$ is defined implicitly by an equation $F(x,y) = 0$:</p>
+            <div class="math-block">
+                $$\frac{dy}{dx} = -\frac{\frac{\partial F}{\partial x}}{\frac{\partial F}{\partial y}}$$
+            </div>
+            <p>Example: For $x^2 + y^2 = 1$, we get $\frac{dy}{dx} = -\frac{x}{y}$.</p>
+
+            <h2>6. Higher Order Derivatives</h2>
+            <p>The $n$-th derivative is denoted $f^{(n)}(x)$ or $\frac{d^n f}{dx^n}$:</p>
+            <div class="math-block">
+                $$f''(x) = \frac{d^2 f}{dx^2}, \quad f'''(x) = \frac{d^3 f}{dx^3}, \quad \ldots$$
+            </div>
+
+            <h2>7. Applications</h2>
+            <h3>7.1 Optimization</h3>
+            <p>Critical points occur where $f'(x) = 0$ or $f'(x)$ is undefined.</p>
+            <ul>
+                <li><strong>First Derivative Test:</strong> Check sign changes of $f'(x)$</li>
+                <li><strong>Second Derivative Test:</strong> Use $f''(x)$ at critical points</li>
+            </ul>
+
+            <h3>7.2 Related Rates</h3>
+            <p>When two variables are related, their rates of change are also related:</p>
+            <div class="math-block">
+                $$\frac{dA}{dt} = \frac{dA}{dr} \cdot \frac{dr}{dt}$$
+            </div>
+
+            <h2>8. L'Hôpital's Rule</h2>
+            <p>For indeterminate forms $\frac{0}{0}$ or $\frac{\infty}{\infty}$:</p>
+            <div class="math-block">
+                $$\lim_{x \to a} \frac{f(x)}{g(x)} = \lim_{x \to a} \frac{f'(x)}{g'(x)}$$
+            </div>
+
+            <h2>9. Taylor Series</h2>
+            <p>The Taylor series expansion of $f(x)$ around $x = a$ is:</p>
+            <div class="math-block">
+                $$f(x) = f(a) + f'(a)(x-a) + \frac{f''(a)}{2!}(x-a)^2 + \frac{f'''(a)}{3!}(x-a)^3 + \cdots$$
+            </div>
+
+            <h2>10. Code Example</h2>
+            <pre><code># Python code for symbolic differentiation
+import sympy as sp
+
+# Define variable and function
+x = sp.Symbol('x')
+f = x**3 + 2*x**2 - 5*x + 1
+
+# First derivative
+f_prime = sp.diff(f, x)
+print(f"f'(x) = {f_prime}")
+
+# Second derivative
+f_double_prime = sp.diff(f, x, 2)
+print(f"f''(x) = {f_double_prime}")
+
+# Evaluate at specific point
+f_prime_at_2 = f_prime.subs(x, 2)
+print(f"f'(2) = {f_prime_at_2}")
+</code></pre>
+
+            <h2>11. References</h2>
+            <ul>
+                <li>Stewart, J. (2015). <em>Calculus: Early Transcendentals</em>.</li>
+                <li>Apostol, T. M. (1967). <em>Calculus, Volume 1</em>.</li>
+                <li>Spivak, M. (2008). <em>Calculus</em>.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; Diogo Franquinho | Technical Notes</p>
+    </footer>
+</body>
+</html> 

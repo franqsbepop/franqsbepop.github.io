@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrices and Operations - Technical Notes</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/book-reviews.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="../../index.html">← Back to Home</a> | 
+        <a href="../../index.html#notes">Notes</a>
+    </nav>
+
+    <main>
+        <header>
+            <h1>Matrices and Operations</h1>
+            <p class="note-meta">Last updated: December 2024</p>
+        </header>
+
+        <section class="note-content">
+            <div class="disclaimer">
+                <p><strong>Disclaimer:</strong> These are my personal notes compiled for my own reference and learning. They may contain errors, incomplete information, or personal interpretations. While I strive for accuracy, these notes are not peer-reviewed and should not be considered authoritative sources. Please consult official textbooks, research papers, or other reliable sources for academic or professional purposes.</p>
+            </div>
+            
+            <h2>1. Matrix Definition</h2>
+            <p>A matrix $A$ of size $m \times n$ is an array of numbers:</p>
+            <div class="math-block">
+                $$A = \begin{bmatrix}
+                a_{11} & a_{12} & \cdots & a_{1n} \\
+                a_{21} & a_{22} & \cdots & a_{2n} \\
+                \vdots & \vdots & \ddots & \vdots \\
+                a_{m1} & a_{m2} & \cdots & a_{mn}
+                \end{bmatrix}$$
+            </div>
+
+            <h2>2. Basic Operations</h2>
+            <h3>2.1 Matrix Addition</h3>
+            <p>For matrices $A$ and $B$ of the same size:</p>
+            <div class="math-block">
+                $$(A + B)_{ij} = A_{ij} + B_{ij}$$
+            </div>
+
+            <h3>2.2 Scalar Multiplication</h3>
+            <p>For scalar $c$ and matrix $A$:</p>
+            <div class="math-block">
+                $$(cA)_{ij} = c \cdot A_{ij}$$
+            </div>
+
+            <h3>2.3 Matrix Multiplication</h3>
+            <p>For $A$ of size $m \times n$ and $B$ of size $n \times p$:</p>
+            <div class="math-block">
+                $$(AB)_{ij} = \sum_{k=1}^n A_{ik} B_{kj}$$
+            </div>
+            <p><strong>Note:</strong> Matrix multiplication is not commutative: $AB \neq BA$ in general.</p>
+
+            <h2>3. Special Matrices</h2>
+            <ul>
+                <li><strong>Identity Matrix:</strong> $I_n = \text{diag}(1, 1, \ldots, 1)$</li>
+                <li><strong>Zero Matrix:</strong> $0_{m \times n}$ with all entries zero</li>
+                <li><strong>Diagonal Matrix:</strong> $D = \text{diag}(d_1, d_2, \ldots, d_n)$</li>
+                <li><strong>Symmetric Matrix:</strong> $A^T = A$</li>
+                <li><strong>Skew-Symmetric:</strong> $A^T = -A$</li>
+            </ul>
+
+            <h2>4. Transpose</h2>
+            <p>The transpose of matrix $A$ is:</p>
+            <div class="math-block">
+                $$(A^T)_{ij} = A_{ji}$$
+            </div>
+            <p>Properties:</p>
+            <ul>
+                <li>$(A^T)^T = A$</li>
+                <li>$(A + B)^T = A^T + B^T$</li>
+                <li>$(AB)^T = B^T A^T$</li>
+                <li>$(cA)^T = cA^T$</li>
+            </ul>
+
+            <h2>5. Determinant</h2>
+            <p>For a $2 \times 2$ matrix:</p>
+            <div class="math-block">
+                $$\det(A) = \begin{vmatrix} a & b \\ c & d \end{vmatrix} = ad - bc$$
+            </div>
+            <p>For larger matrices, use cofactor expansion or row operations.</p>
+
+            <h2>6. Inverse</h2>
+            <p>A matrix $A$ is invertible if $\det(A) \neq 0$. The inverse satisfies:</p>
+            <div class="math-block">
+                $$AA^{-1} = A^{-1}A = I$$
+            </div>
+            <p>For $2 \times 2$ matrix:</p>
+            <div class="math-block">
+                $$A^{-1} = \frac{1}{\det(A)} \begin{bmatrix} d & -b \\ -c & a \end{bmatrix}$$
+            </div>
+
+            <h2>7. Rank</h2>
+            <p>The rank of a matrix is the maximum number of linearly independent rows (or columns).</p>
+            <ul>
+                <li>$\text{rank}(A) \leq \min(m, n)$</li>
+                <li>$\text{rank}(A) = \text{rank}(A^T)$</li>
+                <li>$\text{rank}(AB) \leq \min(\text{rank}(A), \text{rank}(B))$</li>
+            </ul>
+
+            <h2>8. Row Operations</h2>
+            <p>Elementary row operations:</p>
+            <ul>
+                <li><strong>Row Swap:</strong> Exchange two rows</li>
+                <li><strong>Row Scaling:</strong> Multiply a row by a non-zero scalar</li>
+                <li><strong>Row Addition:</strong> Add a multiple of one row to another</li>
+            </ul>
+
+            <h2>9. Row Echelon Form (REF)</h2>
+            <p>A matrix is in REF if:</p>
+            <ul>
+                <li>All zero rows are at the bottom</li>
+                <li>Leading coefficient (pivot) is 1</li>
+                <li>Pivots are to the right of pivots in rows above</li>
+            </ul>
+
+            <h2>10. Reduced Row Echelon Form (RREF)</h2>
+            <p>In addition to REF properties:</p>
+            <ul>
+                <li>All entries above and below pivots are zero</li>
+            </ul>
+
+            <h2>11. Systems of Linear Equations</h2>
+            <p>A system $Ax = b$ can be solved using:</p>
+            <ul>
+                <li><strong>Gaussian Elimination:</strong> Convert to REF</li>
+                <li><strong>Gauss-Jordan:</strong> Convert to RREF</li>
+                <li><strong>Matrix Inversion:</strong> $x = A^{-1}b$ (if $A$ is invertible)</li>
+            </ul>
+
+            <h2>12. Code Example</h2>
+            <pre><code># Python code for matrix operations
+import numpy as np
+
+# Create matrices
+A = np.array([[1, 2], [3, 4]])
+B = np.array([[5, 6], [7, 8]])
+
+# Basic operations
+C = A + B  # Addition
+D = A @ B  # Matrix multiplication
+E = A.T    # Transpose
+
+# Determinant and inverse
+det_A = np.linalg.det(A)
+inv_A = np.linalg.inv(A)
+
+# Solve system Ax = b
+b = np.array([1, 2])
+x = np.linalg.solve(A, b)
+
+print(f"Determinant: {det_A}")
+print(f"Inverse:\n{inv_A}")
+print(f"Solution: {x}")
+</code></pre>
+
+            <h2>13. References</h2>
+            <ul>
+                <li>Strang, G. (2016). <em>Introduction to Linear Algebra</em>.</li>
+                <li>Lay, D. C. (2015). <em>Linear Algebra and Its Applications</em>.</li>
+                <li>Hoffman, K., & Kunze, R. (1971). <em>Linear Algebra</em>.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; Diogo Franquinho | Technical Notes</p>
+    </footer>
+</body>
+</html> 
