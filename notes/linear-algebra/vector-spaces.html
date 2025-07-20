@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vector Spaces - Technical Notes</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/book-reviews.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="../../index.html">← Back to Home</a> | 
+        <a href="../../index.html#notes">Notes</a>
+    </nav>
+
+    <main>
+        <header>
+            <h1>Vector Spaces</h1>
+            <p class="note-meta">Last updated: December 2024</p>
+        </header>
+
+        <section class="note-content">
+            <div class="disclaimer">
+                <p><strong>Disclaimer:</strong> These are my personal notes compiled for my own reference and learning. They may contain errors, incomplete information, or personal interpretations. While I strive for accuracy, these notes are not peer-reviewed and should not be considered authoritative sources. Please consult official textbooks, research papers, or other reliable sources for academic or professional purposes.</p>
+            </div>
+            
+            <h2>1. Definition of Vector Space</h2>
+            <p>A vector space $V$ over a field $\mathbb{F}$ is a set with two operations:</p>
+            <ul>
+                <li><strong>Vector Addition:</strong> $+ : V \times V \to V$</li>
+                <li><strong>Scalar Multiplication:</strong> $\cdot : \mathbb{F} \times V \to V$</li>
+            </ul>
+            <p>These operations must satisfy 10 axioms (associativity, commutativity, identity, etc.).</p>
+
+            <h2>2. Examples of Vector Spaces</h2>
+            <ul>
+                <li><strong>$\mathbb{R}^n$:</strong> $n$-tuples of real numbers</li>
+                <li><strong>$\mathbb{C}^n$:</strong> $n$-tuples of complex numbers</li>
+                <li><strong>$M_{m \times n}(\mathbb{R})$:</strong> $m \times n$ real matrices</li>
+                <li><strong>$\mathcal{P}_n$:</strong> Polynomials of degree $\leq n$</li>
+                <li><strong>$C[a,b]$:</strong> Continuous functions on $[a,b]$</li>
+            </ul>
+
+            <h2>3. Subspaces</h2>
+            <p>A subset $W$ of vector space $V$ is a subspace if:</p>
+            <ul>
+                <li>$W$ is non-empty</li>
+                <li>For all $\mathbf{u}, \mathbf{v} \in W$, $\mathbf{u} + \mathbf{v} \in W$</li>
+                <li>For all $\mathbf{u} \in W$ and $c \in \mathbb{F}$, $c\mathbf{u} \in W$</li>
+            </ul>
+
+            <h2>4. Linear Independence</h2>
+            <p>Vectors $\mathbf{v}_1, \mathbf{v}_2, \ldots, \mathbf{v}_n$ are linearly independent if:</p>
+            <div class="math-block">
+                $$c_1\mathbf{v}_1 + c_2\mathbf{v}_2 + \cdots + c_n\mathbf{v}_n = \mathbf{0} \implies c_1 = c_2 = \cdots = c_n = 0$$
+            </div>
+            <p>Otherwise, they are linearly dependent.</p>
+
+            <h2>5. Spanning Sets</h2>
+            <p>The span of vectors $\mathbf{v}_1, \mathbf{v}_2, \ldots, \mathbf{v}_n$ is:</p>
+            <div class="math-block">
+                $$\text{span}\{\mathbf{v}_1, \mathbf{v}_2, \ldots, \mathbf{v}_n\} = \{c_1\mathbf{v}_1 + c_2\mathbf{v}_2 + \cdots + c_n\mathbf{v}_n : c_i \in \mathbb{F}\}$$
+            </div>
+
+            <h2>6. Basis</h2>
+            <p>A basis for vector space $V$ is a linearly independent spanning set.</p>
+            <p><strong>Properties:</strong></p>
+            <ul>
+                <li>Every vector in $V$ can be written uniquely as a linear combination of basis vectors</li>
+                <li>All bases have the same number of vectors (dimension)</li>
+                <li>Any linearly independent set can be extended to a basis</li>
+            </ul>
+
+            <h2>7. Dimension</h2>
+            <p>The dimension of a vector space $V$, denoted $\dim(V)$, is the number of vectors in any basis.</p>
+            <ul>
+                <li>$\dim(\mathbb{R}^n) = n$</li>
+                <li>$\dim(M_{m \times n}(\mathbb{R})) = mn$</li>
+                <li>$\dim(\mathcal{P}_n) = n + 1$</li>
+                <li>$\dim(C[a,b]) = \infty$</li>
+            </ul>
+
+            <h2>8. Coordinates</h2>
+            <p>For basis $B = \{\mathbf{v}_1, \mathbf{v}_2, \ldots, \mathbf{v}_n\}$, the coordinate vector of $\mathbf{v}$ is:</p>
+            <div class="math-block">
+                $$[\mathbf{v}]_B = \begin{bmatrix} c_1 \\ c_2 \\ \vdots \\ c_n \end{bmatrix}$$
+            </div>
+            <p>where $\mathbf{v} = c_1\mathbf{v}_1 + c_2\mathbf{v}_2 + \cdots + c_n\mathbf{v}_n$.</p>
+
+            <h2>9. Linear Transformations</h2>
+            <p>A function $T: V \to W$ is linear if:</p>
+            <ul>
+                <li>$T(\mathbf{u} + \mathbf{v}) = T(\mathbf{u}) + T(\mathbf{v})$</li>
+                <li>$T(c\mathbf{u}) = cT(\mathbf{u})$</li>
+            </ul>
+            <p>For finite-dimensional spaces, $T$ can be represented by a matrix.</p>
+
+            <h2>10. Kernel and Image</h2>
+            <p>For linear transformation $T: V \to W$:</p>
+            <ul>
+                <li><strong>Kernel:</strong> $\ker(T) = \{\mathbf{v} \in V : T(\mathbf{v}) = \mathbf{0}\}$</li>
+                <li><strong>Image:</strong> $\text{im}(T) = \{T(\mathbf{v}) : \mathbf{v} \in V\}$</li>
+            </ul>
+            <p><strong>Rank-Nullity Theorem:</strong></p>
+            <div class="math-block">
+                $$\dim(\ker(T)) + \dim(\text{im}(T)) = \dim(V)$$
+            </div>
+
+            <h2>11. Inner Product Spaces</h2>
+            <p>An inner product on $V$ is a function $\langle \cdot, \cdot \rangle : V \times V \to \mathbb{F}$ satisfying:</p>
+            <ul>
+                <li>$\langle \mathbf{u}, \mathbf{v} \rangle = \overline{\langle \mathbf{v}, \mathbf{u} \rangle}$</li>
+                <li>$\langle \mathbf{u} + \mathbf{v}, \mathbf{w} \rangle = \langle \mathbf{u}, \mathbf{w} \rangle + \langle \mathbf{v}, \mathbf{w} \rangle$</li>
+                <li>$\langle c\mathbf{u}, \mathbf{v} \rangle = c\langle \mathbf{u}, \mathbf{v} \rangle$</li>
+                <li>$\langle \mathbf{u}, \mathbf{u} \rangle \geq 0$ with equality iff $\mathbf{u} = \mathbf{0}$</li>
+            </ul>
+
+            <h2>12. Orthogonality</h2>
+            <p>Vectors $\mathbf{u}$ and $\mathbf{v}$ are orthogonal if $\langle \mathbf{u}, \mathbf{v} \rangle = 0$.</p>
+            <p><strong>Orthogonal Projection:</strong></p>
+            <div class="math-block">
+                $$\text{proj}_{\mathbf{v}}(\mathbf{u}) = \frac{\langle \mathbf{u}, \mathbf{v} \rangle}{\langle \mathbf{v}, \mathbf{v} \rangle}\mathbf{v}$$
+            </div>
+
+            <h2>13. Gram-Schmidt Process</h2>
+            <p>To orthogonalize vectors $\mathbf{v}_1, \mathbf{v}_2, \ldots, \mathbf{v}_n$:</p>
+            <div class="math-block">
+                $$\mathbf{u}_1 = \mathbf{v}_1$$
+                $$\mathbf{u}_2 = \mathbf{v}_2 - \text{proj}_{\mathbf{u}_1}(\mathbf{v}_2)$$
+                $$\mathbf{u}_3 = \mathbf{v}_3 - \text{proj}_{\mathbf{u}_1}(\mathbf{v}_3) - \text{proj}_{\mathbf{u}_2}(\mathbf{v}_3)$$
+                $$\vdots$$
+            </div>
+
+            <h2>14. Code Example</h2>
+            <pre><code># Python code for vector spaces
+import numpy as np
+from scipy import linalg
+
+# Check linear independence
+def is_linearly_independent(vectors):
+    matrix = np.array(vectors).T
+    rank = np.linalg.matrix_rank(matrix)
+    return rank == len(vectors)
+
+# Find basis
+def find_basis(vectors):
+    matrix = np.array(vectors).T
+    rank = np.linalg.matrix_rank(matrix)
+    return matrix[:, :rank]
+
+# Gram-Schmidt orthogonalization
+def gram_schmidt(vectors):
+    basis = []
+    for v in vectors:
+        w = v.copy()
+        for u in basis:
+            w -= np.dot(v, u) / np.dot(u, u) * u
+        if np.linalg.norm(w) > 1e-10:
+            w = w / np.linalg.norm(w)
+            basis.append(w)
+    return basis
+
+# Example
+v1 = np.array([1, 1, 0])
+v2 = np.array([1, 0, 1])
+v3 = np.array([0, 1, 1])
+
+vectors = [v1, v2, v3]
+print(f"Linearly independent: {is_linearly_independent(vectors)}")
+
+orthogonal_basis = gram_schmidt(vectors)
+print("Orthogonal basis:")
+for i, v in enumerate(orthogonal_basis):
+    print(f"u{i+1} = {v}")
+</code></pre>
+
+            <h2>15. References</h2>
+            <ul>
+                <li>Strang, G. (2016). <em>Introduction to Linear Algebra</em>.</li>
+                <li>Lay, D. C. (2015). <em>Linear Algebra and Its Applications</em>.</li>
+                <li>Hoffman, K., & Kunze, R. (1971). <em>Linear Algebra</em>.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; Diogo Franquinho | Technical Notes</p>
+    </footer>
+</body>
+</html> 

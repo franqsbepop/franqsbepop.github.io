@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eigenvalues and Eigenvectors - Technical Notes</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/book-reviews.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="../../index.html">← Back to Home</a> | 
+        <a href="../../index.html#notes">Notes</a>
+    </nav>
+
+    <main>
+        <header>
+            <h1>Eigenvalues and Eigenvectors</h1>
+            <p class="note-meta">Last updated: December 2024</p>
+        </header>
+
+        <section class="note-content">
+            <div class="disclaimer">
+                <p><strong>Disclaimer:</strong> These are my personal notes compiled for my own reference and learning. They may contain errors, incomplete information, or personal interpretations. While I strive for accuracy, these notes are not peer-reviewed and should not be considered authoritative sources. Please consult official textbooks, research papers, or other reliable sources for academic or professional purposes.</p>
+            </div>
+            
+            <h2>1. Definition</h2>
+            <p>For a square matrix $A$, a non-zero vector $v$ is an eigenvector if:</p>
+            <div class="math-block">
+                $$Av = \lambda v$$
+            </div>
+            <p>where $\lambda$ is the corresponding eigenvalue.</p>
+
+            <h2>2. Characteristic Equation</h2>
+            <p>The eigenvalues are solutions to the characteristic equation:</p>
+            <div class="math-block">
+                $$\det(A - \lambda I) = 0$$
+            </div>
+            <p>This is a polynomial equation in $\lambda$ of degree $n$ (where $A$ is $n \times n$).</p>
+
+            <h2>3. Finding Eigenvalues</h2>
+            <h3>3.1 For $2 \times 2$ Matrix</h3>
+            <p>For $A = \begin{bmatrix} a & b \\ c & d \end{bmatrix}$:</p>
+            <div class="math-block">
+                $$\det(A - \lambda I) = \begin{vmatrix} a-\lambda & b \\ c & d-\lambda \end{vmatrix} = (a-\lambda)(d-\lambda) - bc = 0$$
+            </div>
+            <p>This gives the quadratic equation:</p>
+            <div class="math-block">
+                $$\lambda^2 - (a+d)\lambda + (ad-bc) = 0$$
+            </div>
+
+            <h3>3.2 For Larger Matrices</h3>
+            <p>Use row operations or software to find roots of the characteristic polynomial.</p>
+
+            <h2>4. Finding Eigenvectors</h2>
+            <p>For each eigenvalue $\lambda$, solve the system:</p>
+            <div class="math-block">
+                $$(A - \lambda I)v = 0$$
+            </div>
+            <p>The solution space is the eigenspace corresponding to $\lambda$.</p>
+
+            <h2>5. Properties</h2>
+            <ul>
+                <li><strong>Trace:</strong> $\text{tr}(A) = \sum_{i=1}^n \lambda_i$</li>
+                <li><strong>Determinant:</strong> $\det(A) = \prod_{i=1}^n \lambda_i$</li>
+                <li><strong>Power:</strong> If $Av = \lambda v$, then $A^k v = \lambda^k v$</li>
+                <li><strong>Inverse:</strong> If $A$ is invertible, $A^{-1}v = \frac{1}{\lambda}v$</li>
+            </ul>
+
+            <h2>6. Diagonalization</h2>
+            <p>A matrix $A$ is diagonalizable if there exists an invertible matrix $P$ such that:</p>
+            <div class="math-block">
+                $$P^{-1}AP = D = \text{diag}(\lambda_1, \lambda_2, \ldots, \lambda_n)$$
+            </div>
+            <p>where the columns of $P$ are eigenvectors of $A$.</p>
+
+            <h2>7. Conditions for Diagonalization</h2>
+            <ul>
+                <li><strong>Sufficient:</strong> $A$ has $n$ linearly independent eigenvectors</li>
+                <li><strong>Necessary:</strong> All eigenvalues are real (for real matrices)</li>
+                <li><strong>Special Case:</strong> Symmetric matrices are always diagonalizable</li>
+            </ul>
+
+            <h2>8. Spectral Decomposition</h2>
+            <p>For a symmetric matrix $A$:</p>
+            <div class="math-block">
+                $$A = Q\Lambda Q^T$$
+            </div>
+            <p>where $Q$ is orthogonal (eigenvectors) and $\Lambda$ is diagonal (eigenvalues).</p>
+
+            <h2>9. Jordan Canonical Form</h2>
+            <p>When a matrix is not diagonalizable, it can be written as:</p>
+            <div class="math-block">
+                $$A = PJP^{-1}$$
+            </div>
+            <p>where $J$ is a block diagonal matrix with Jordan blocks.</p>
+
+            <h2>10. Applications</h2>
+            <h3>10.1 Principal Component Analysis (PCA)</h3>
+            <p>Eigenvalues of the covariance matrix give the variance explained by each principal component.</p>
+
+            <h3>10.2 Dynamical Systems</h3>
+            <p>For the system $x_{n+1} = Ax_n$, the long-term behavior depends on the eigenvalues of $A$.</p>
+
+            <h3>10.3 Quantum Mechanics</h3>
+            <p>Observables are represented by Hermitian matrices, and eigenvalues correspond to possible measurement outcomes.</p>
+
+            <h2>11. Power Method</h2>
+            <p>To find the dominant eigenvalue and eigenvector:</p>
+            <div class="math-block">
+                $$v_{k+1} = \frac{Av_k}{\|Av_k\|}$$
+            </div>
+            <p>The eigenvalue is approximated by:</p>
+            <div class="math-block">
+                $$\lambda \approx \frac{v_k^T A v_k}{v_k^T v_k}$$
+            </div>
+
+            <h2>12. Code Example</h2>
+            <pre><code># Python code for eigenvalues and eigenvectors
+import numpy as np
+from scipy import linalg
+
+# Create a matrix
+A = np.array([[4, -2], [-2, 4]])
+
+# Find eigenvalues and eigenvectors
+eigenvals, eigenvecs = np.linalg.eig(A)
+
+print("Eigenvalues:", eigenvals)
+print("Eigenvectors:")
+print(eigenvecs)
+
+# Verify: Av = λv
+for i in range(len(eigenvals)):
+    lambda_i = eigenvals[i]
+    v_i = eigenvecs[:, i]
+    Av = A @ v_i
+    lambda_v = lambda_i * v_i
+    print(f"Av = {Av}")
+    print(f"λv = {lambda_v}")
+    print(f"Difference: {np.linalg.norm(Av - lambda_v)}")
+
+# Diagonalization
+D = np.diag(eigenvals)
+P = eigenvecs
+P_inv = np.linalg.inv(P)
+
+# Verify: A = PDP^(-1)
+reconstructed = P @ D @ P_inv
+print(f"Original A:\n{A}")
+print(f"Reconstructed A:\n{reconstructed}")
+</code></pre>
+
+            <h2>13. References</h2>
+            <ul>
+                <li>Strang, G. (2016). <em>Introduction to Linear Algebra</em>.</li>
+                <li>Lay, D. C. (2015). <em>Linear Algebra and Its Applications</em>.</li>
+                <li>Hoffman, K., & Kunze, R. (1971). <em>Linear Algebra</em>.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; Diogo Franquinho | Technical Notes</p>
+    </footer>
+</body>
+</html> 

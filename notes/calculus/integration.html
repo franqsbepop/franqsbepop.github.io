@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integration - Technical Notes</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/book-reviews.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="../../index.html">← Back to Home</a> | 
+        <a href="../../index.html#notes">Notes</a>
+    </nav>
+
+    <main>
+        <header>
+            <h1>Integration</h1>
+            <p class="note-meta">Last updated: December 2024</p>
+        </header>
+
+        <section class="note-content">
+            <div class="disclaimer">
+                <p><strong>Disclaimer:</strong> These are my personal notes compiled for my own reference and learning. They may contain errors, incomplete information, or personal interpretations. While I strive for accuracy, these notes are not peer-reviewed and should not be considered authoritative sources. Please consult official textbooks, research papers, or other reliable sources for academic or professional purposes.</p>
+            </div>
+            
+            <h2>1. Definition of Integral</h2>
+            <p>The definite integral of $f(x)$ from $a$ to $b$ is:</p>
+            <div class="math-block">
+                $$\int_a^b f(x) \, dx = \lim_{n \to \infty} \sum_{i=1}^n f(x_i) \Delta x$$
+            </div>
+            <p>where $\Delta x = \frac{b-a}{n}$ and $x_i = a + i\Delta x$.</p>
+
+            <h2>2. Fundamental Theorem of Calculus</h2>
+            <p><strong>Part 1:</strong> If $F(x) = \int_a^x f(t) \, dt$, then $F'(x) = f(x)$.</p>
+            <p><strong>Part 2:</strong> If $F'(x) = f(x)$, then:</p>
+            <div class="math-block">
+                $$\int_a^b f(x) \, dx = F(b) - F(a)$$
+            </div>
+
+            <h2>3. Basic Integration Rules</h2>
+            <ul>
+                <li><strong>Power Rule:</strong> $\int x^n \, dx = \frac{x^{n+1}}{n+1} + C$ (for $n \neq -1$)</li>
+                <li><strong>Constant Rule:</strong> $\int c \, dx = cx + C$</li>
+                <li><strong>Constant Multiple:</strong> $\int cf(x) \, dx = c\int f(x) \, dx$</li>
+                <li><strong>Sum Rule:</strong> $\int [f(x) + g(x)] \, dx = \int f(x) \, dx + \int g(x) \, dx$</li>
+            </ul>
+
+            <h2>4. Common Integrals</h2>
+            <ul>
+                <li><strong>Exponential:</strong> $\int e^x \, dx = e^x + C$</li>
+                <li><strong>Natural Log:</strong> $\int \frac{1}{x} \, dx = \ln|x| + C$</li>
+                <li><strong>Trigonometric:</strong>
+                    <ul>
+                        <li>$\int \sin(x) \, dx = -\cos(x) + C$</li>
+                        <li>$\int \cos(x) \, dx = \sin(x) + C$</li>
+                        <li>$\int \sec^2(x) \, dx = \tan(x) + C$</li>
+                    </ul>
+                </li>
+                <li><strong>Inverse Trig:</strong>
+                    <ul>
+                        <li>$\int \frac{1}{\sqrt{1-x^2}} \, dx = \arcsin(x) + C$</li>
+                        <li>$\int \frac{1}{1+x^2} \, dx = \arctan(x) + C$</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h2>5. Integration Techniques</h2>
+            <h3>5.1 Substitution</h3>
+            <p>Let $u = g(x)$, then $du = g'(x) \, dx$:</p>
+            <div class="math-block">
+                $$\int f(g(x))g'(x) \, dx = \int f(u) \, du$$
+            </div>
+
+            <h3>5.2 Integration by Parts</h3>
+            <p>For functions $u(x)$ and $v(x)$:</p>
+            <div class="math-block">
+                $$\int u(x)v'(x) \, dx = u(x)v(x) - \int v(x)u'(x) \, dx$$
+            </div>
+
+            <h3>5.3 Partial Fractions</h3>
+            <p>For rational functions, decompose into simpler fractions:</p>
+            <div class="math-block">
+                $$\frac{P(x)}{Q(x)} = \frac{A}{x-a} + \frac{B}{x-b} + \cdots$$
+            </div>
+
+            <h3>5.4 Trigonometric Substitution</h3>
+            <p>For integrals involving $\sqrt{a^2 - x^2}$, $\sqrt{a^2 + x^2}$, or $\sqrt{x^2 - a^2}$:</p>
+            <ul>
+                <li>$\sqrt{a^2 - x^2}$: Let $x = a\sin(\theta)$</li>
+                <li>$\sqrt{a^2 + x^2}$: Let $x = a\tan(\theta)$</li>
+                <li>$\sqrt{x^2 - a^2}$: Let $x = a\sec(\theta)$</li>
+            </ul>
+
+            <h2>6. Applications</h2>
+            <h3>6.1 Area Between Curves</h3>
+            <p>The area between $f(x)$ and $g(x)$ from $a$ to $b$ is:</p>
+            <div class="math-block">
+                $$A = \int_a^b |f(x) - g(x)| \, dx$$
+            </div>
+
+            <h3>6.2 Volume of Revolution</h3>
+            <p>For rotation around the $x$-axis:</p>
+            <div class="math-block">
+                $$V = \pi \int_a^b [f(x)]^2 \, dx$$
+            </div>
+
+            <h3>6.3 Arc Length</h3>
+            <p>The length of the curve $y = f(x)$ from $a$ to $b$ is:</p>
+            <div class="math-block">
+                $$L = \int_a^b \sqrt{1 + [f'(x)]^2} \, dx$$
+            </div>
+
+            <h2>7. Improper Integrals</h2>
+            <p>For integrals with infinite limits or unbounded functions:</p>
+            <div class="math-block">
+                $$\int_a^\infty f(x) \, dx = \lim_{b \to \infty} \int_a^b f(x) \, dx$$
+            </div>
+            <p>The integral converges if the limit exists, diverges otherwise.</p>
+
+            <h2>8. Numerical Integration</h2>
+            <h3>8.1 Trapezoidal Rule</h3>
+            <div class="math-block">
+                $$\int_a^b f(x) \, dx \approx \frac{h}{2}[f(x_0) + 2f(x_1) + 2f(x_2) + \cdots + 2f(x_{n-1}) + f(x_n)]$$
+            </div>
+
+            <h3>8.2 Simpson's Rule</h3>
+            <div class="math-block">
+                $$\int_a^b f(x) \, dx \approx \frac{h}{3}[f(x_0) + 4f(x_1) + 2f(x_2) + 4f(x_3) + \cdots + 4f(x_{n-1}) + f(x_n)]$$
+            </div>
+
+            <h2>9. Code Example</h2>
+            <pre><code># Python code for integration
+import sympy as sp
+import numpy as np
+from scipy import integrate
+
+# Symbolic integration
+x = sp.Symbol('x')
+f = x**2 + 2*x + 1
+integral = sp.integrate(f, x)
+print(f"∫({f}) dx = {integral}")
+
+# Definite integral
+definite_integral = sp.integrate(f, (x, 0, 1))
+print(f"∫₀¹({f}) dx = {definite_integral}")
+
+# Numerical integration
+def func(x):
+    return x**2 + 2*x + 1
+
+result, error = integrate.quad(func, 0, 1)
+print(f"Numerical result: {result}")
+</code></pre>
+
+            <h2>10. References</h2>
+            <ul>
+                <li>Stewart, J. (2015). <em>Calculus: Early Transcendentals</em>.</li>
+                <li>Apostol, T. M. (1967). <em>Calculus, Volume 1</em>.</li>
+                <li>Spivak, M. (2008). <em>Calculus</em>.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; Diogo Franquinho | Technical Notes</p>
+    </footer>
+</body>
+</html> 
