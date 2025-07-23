@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cryptography - Technical Notes</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/book-reviews.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="../../index.html">← Back to Home</a> | 
+        <a href="../../index.html#notes">Notes</a>
+    </nav>
+
+    <main>
+        <header>
+            <h1>Cryptography</h1>
+            <p class="note-meta">Last updated: December 2024</p>
+        </header>
+
+        <section class="note-content">
+            <div class="disclaimer">
+                <p><strong>Disclaimer:</strong> These are my personal notes compiled for my own reference and learning. They may contain errors, incomplete information, or personal interpretations. While I strive for accuracy, these notes are not peer-reviewed and should not be considered authoritative sources. Please consult official textbooks, research papers, or other reliable sources for academic or professional purposes.</p>
+            </div>
+            
+            <h2>1. Introduction to Cryptography</h2>
+            <p>Cryptography is the science of secure communication in the presence of adversaries.</p>
+            <p><strong>Key concepts:</strong></p>
+            <ul>
+                <li><strong>Plaintext:</strong> Original message</li>
+                <li><strong>Ciphertext:</strong> Encrypted message</li>
+                <li><strong>Encryption:</strong> $E_k(m) = c$</li>
+                <li><strong>Decryption:</strong> $D_k(c) = m$</li>
+                <li><strong>Key:</strong> Secret information used in encryption/decryption</li>
+            </ul>
+
+            <h2>2. Classical Cryptography</h2>
+            <h3>2.1 Caesar Cipher</h3>
+            <p>Shift each letter by a fixed amount $k$:</p>
+            <div class="math-block">
+                $$E_k(x) = (x + k) \bmod 26$$
+                $$D_k(c) = (c - k) \bmod 26$$
+            </div>
+
+            <h3>2.2 Affine Cipher</h3>
+            <p>Use linear transformation:</p>
+            <div class="math-block">
+                $$E_{a,b}(x) = (ax + b) \bmod 26$$
+                $$D_{a,b}(c) = a^{-1}(c - b) \bmod 26$$
+            </div>
+            <p>where $\gcd(a, 26) = 1$ and $a^{-1}$ is the modular inverse of $a$.</p>
+
+            <h3>2.3 Vigenère Cipher</h3>
+            <p>Use a keyword to determine shifts for each position.</p>
+
+            <h2>3. Symmetric Cryptography</h2>
+            <p>Same key used for encryption and decryption.</p>
+            <h3>3.1 Block Ciphers</h3>
+            <ul>
+                <li><strong>DES:</strong> 56-bit key, 64-bit blocks</li>
+                <li><strong>AES:</strong> 128/192/256-bit keys, 128-bit blocks</li>
+            </ul>
+
+            <h3>3.2 Stream Ciphers</h3>
+            <p>Encrypt one bit/byte at a time using a keystream.</p>
+
+            <h2>4. Public Key Cryptography</h2>
+            <p>Different keys for encryption and decryption.</p>
+
+            <h2>5. RSA Cryptosystem</h2>
+            <h3>5.1 Key Generation</h3>
+            <ol>
+                <li>Choose two large primes $p$ and $q$</li>
+                <li>Compute $n = pq$ and $\phi(n) = (p-1)(q-1)$</li>
+                <li>Choose $e$ such that $\gcd(e, \phi(n)) = 1$</li>
+                <li>Compute $d \equiv e^{-1} \pmod{\phi(n)}$</li>
+                <li>Public key: $(n, e)$, Private key: $(n, d)$</li>
+            </ol>
+
+            <h3>5.2 Encryption and Decryption</h3>
+            <div class="math-block">
+                $$\text{Encryption: } c \equiv m^e \pmod{n}$$
+                $$\text{Decryption: } m \equiv c^d \pmod{n}$$
+            </div>
+
+            <h3>5.3 Security</h3>
+            <p>Security relies on the difficulty of factoring large integers.</p>
+
+            <h2>6. Discrete Logarithm Problem</h2>
+            <p>Given $g$, $p$, and $y = g^x \bmod p$, find $x$.</p>
+            <p>This is believed to be computationally hard for large primes $p$.</p>
+
+            <h2>7. Diffie-Hellman Key Exchange</h2>
+            <ol>
+                <li>Alice and Bob agree on prime $p$ and generator $g$</li>
+                <li>Alice chooses secret $a$, sends $A = g^a \bmod p$</li>
+                <li>Bob chooses secret $b$, sends $B = g^b \bmod p$</li>
+                <li>Shared secret: $K = g^{ab} \bmod p$</li>
+            </ol>
+
+            <h2>8. ElGamal Cryptosystem</h2>
+            <h3>8.1 Key Generation</h3>
+            <ol>
+                <li>Choose prime $p$ and generator $g$</li>
+                <li>Choose private key $x$</li>
+                <li>Compute public key $y = g^x \bmod p$</li>
+            </ol>
+
+            <h3>8.2 Encryption</h3>
+            <p>To encrypt message $m$:</p>
+            <ol>
+                <li>Choose random $k$</li>
+                <li>Compute $c_1 = g^k \bmod p$</li>
+                <li>Compute $c_2 = my^k \bmod p$</li>
+                <li>Ciphertext: $(c_1, c_2)$</li>
+            </ol>
+
+            <h3>8.3 Decryption</h3>
+            <div class="math-block">
+                $$m = c_2 \cdot (c_1^x)^{-1} \bmod p$$
+            </div>
+
+            <h2>9. Elliptic Curve Cryptography</h2>
+            <p>Uses elliptic curves over finite fields. Curve equation:</p>
+            <div class="math-block">
+                $$y^2 = x^3 + ax + b \pmod{p}$$
+            </div>
+            <p>Provides same security as RSA with smaller key sizes.</p>
+
+            <h2>10. Digital Signatures</h2>
+            <h3>10.1 RSA Signatures</h3>
+            <div class="math-block">
+                $$\text{Sign: } s \equiv m^d \pmod{n}$$
+                $$\text{Verify: } m \stackrel{?}{=} s^e \pmod{n}$$
+            </div>
+
+            <h3>10.2 DSA (Digital Signature Algorithm)</h3>
+            <p>Based on discrete logarithm problem in subgroups.</p>
+
+            <h2>11. Hash Functions</h2>
+            <p>One-way functions that compress arbitrary input to fixed-size output.</p>
+            <p><strong>Properties:</strong></p>
+            <ul>
+                <li>Deterministic</li>
+                <li>Fast computation</li>
+                <li>Avalanche effect</li>
+                <li>Preimage resistance</li>
+                <li>Collision resistance</li>
+            </ul>
+
+            <h2>12. Security Considerations</h2>
+            <h3>12.1 Key Management</h3>
+            <p>Secure generation, distribution, and storage of keys.</p>
+
+            <h3>12.2 Side-Channel Attacks</h3>
+            <p>Attacks based on timing, power consumption, or electromagnetic emissions.</p>
+
+            <h3>12.3 Quantum Cryptography</h3>
+            <p>Quantum computers threaten current public key systems. Post-quantum cryptography develops quantum-resistant algorithms.</p>
+
+            <h2>13. Code Example</h2>
+            <pre><code># Python code for basic cryptographic operations
+import random
+import math
+
+def gcd(a, b):
+    while b:
+        a, b = b, a % b
+    return a
+
+def mod_inverse(a, m):
+    """Extended Euclidean algorithm for modular inverse"""
+    if gcd(a, m) != 1:
+        return None
+    
+    def extended_gcd(a, b):
+        if a == 0:
+            return b, 0, 1
+        gcd, x1, y1 = extended_gcd(b % a, a)
+        x = y1 - (b // a) * x1
+        y = x1
+        return gcd, x, y
+    
+    _, x, _ = extended_gcd(a, m)
+    return (x % m + m) % m
+
+def mod_exp(base, exp, mod):
+    """Fast modular exponentiation"""
+    result = 1
+    base = base % mod
+    while exp > 0:
+        if exp % 2 == 1:
+            result = (result * base) % mod
+        exp = exp >> 1
+        base = (base * base) % mod
+    return result
+
+def is_prime(n):
+    """Simple primality test"""
+    if n < 2:
+        return False
+    for i in range(2, int(math.sqrt(n)) + 1):
+        if n % i == 0:
+            return False
+    return True
+
+def generate_keypair(keysize):
+    """Generate RSA key pair"""
+    # Generate two random primes
+    def get_prime(bits):
+        while True:
+            p = random.getrandbits(bits)
+            if is_prime(p):
+                return p
+    
+    p = get_prime(keysize // 2)
+    q = get_prime(keysize // 2)
+    
+    n = p * q
+    phi = (p - 1) * (q - 1)
+    
+    # Choose e
+    e = 65537  # Common choice
+    
+    # Compute d
+    d = mod_inverse(e, phi)
+    
+    return (n, e), (n, d)  # public, private
+
+def rsa_encrypt(message, public_key):
+    """RSA encryption"""
+    n, e = public_key
+    return mod_exp(message, e, n)
+
+def rsa_decrypt(ciphertext, private_key):
+    """RSA decryption"""
+    n, d = private_key
+    return mod_exp(ciphertext, d, n)
+
+def caesar_cipher(text, shift):
+    """Caesar cipher implementation"""
+    result = ""
+    for char in text:
+        if char.isalpha():
+            ascii_offset = 65 if char.isupper() else 97
+            shifted = (ord(char) - ascii_offset + shift) % 26
+            result += chr(shifted + ascii_offset)
+        else:
+            result += char
+    return result
+
+# Example usage
+print("Caesar Cipher:")
+plaintext = "HELLO WORLD"
+shift = 3
+encrypted = caesar_cipher(plaintext, shift)
+decrypted = caesar_cipher(encrypted, -shift)
+print(f"Original: {plaintext}")
+print(f"Encrypted: {encrypted}")
+print(f"Decrypted: {decrypted}")
+
+print("\nRSA Example:")
+# Generate small keys for demonstration
+public_key, private_key = generate_keypair(16)
+message = 42
+ciphertext = rsa_encrypt(message, public_key)
+decrypted_message = rsa_decrypt(ciphertext, private_key)
+print(f"Original message: {message}")
+print(f"Encrypted: {ciphertext}")
+print(f"Decrypted: {decrypted_message}")
+</code></pre>
+
+            <h2>14. References</h2>
+            <ul>
+                <li>Katz, J., & Lindell, Y. (2020). <em>Introduction to Modern Cryptography</em>.</li>
+                <li>Stinson, D. R., & Paterson, M. (2018). <em>Cryptography: Theory and Practice</em>.</li>
+                <li>Menezes, A., Van Oorschot, P., & Vanstone, S. (1996). <em>Handbook of Applied Cryptography</em>.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; Diogo Franquinho | Technical Notes</p>
+    </footer>
+</body>
+</html> 

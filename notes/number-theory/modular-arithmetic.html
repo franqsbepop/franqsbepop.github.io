@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modular Arithmetic - Technical Notes</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/book-reviews.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="../../index.html">← Back to Home</a> | 
+        <a href="../../index.html#notes">Notes</a>
+    </nav>
+
+    <main>
+        <header>
+            <h1>Modular Arithmetic</h1>
+            <p class="note-meta">Last updated: December 2024</p>
+        </header>
+
+        <section class="note-content">
+            <div class="disclaimer">
+                <p><strong>Disclaimer:</strong> These are my personal notes compiled for my own reference and learning. They may contain errors, incomplete information, or personal interpretations. While I strive for accuracy, these notes are not peer-reviewed and should not be considered authoritative sources. Please consult official textbooks, research papers, or other reliable sources for academic or professional purposes.</p>
+            </div>
+            
+            <h2>1. Definition of Congruence</h2>
+            <p>Two integers $a$ and $b$ are congruent modulo $m$ if $m$ divides $(a - b)$:</p>
+            <div class="math-block">
+                $$a \equiv b \pmod{m} \iff m \mid (a - b)$$
+            </div>
+            <p>Equivalently: $a = b + km$ for some integer $k$.</p>
+
+            <h2>2. Properties of Congruences</h2>
+            <p>For integers $a, b, c, d$ and positive integer $m$:</p>
+            <ul>
+                <li><strong>Reflexive:</strong> $a \equiv a \pmod{m}$</li>
+                <li><strong>Symmetric:</strong> If $a \equiv b \pmod{m}$, then $b \equiv a \pmod{m}$</li>
+                <li><strong>Transitive:</strong> If $a \equiv b \pmod{m}$ and $b \equiv c \pmod{m}$, then $a \equiv c \pmod{m}$</li>
+                <li><strong>Addition:</strong> If $a \equiv b \pmod{m}$ and $c \equiv d \pmod{m}$, then $a + c \equiv b + d \pmod{m}$</li>
+                <li><strong>Multiplication:</strong> If $a \equiv b \pmod{m}$ and $c \equiv d \pmod{m}$, then $ac \equiv bd \pmod{m}$</li>
+            </ul>
+
+            <h2>3. Modular Arithmetic Operations</h2>
+            <h3>3.1 Addition and Subtraction</h3>
+            <div class="math-block">
+                $$(a + b) \bmod m = ((a \bmod m) + (b \bmod m)) \bmod m$$
+                $$(a - b) \bmod m = ((a \bmod m) - (b \bmod m)) \bmod m$$
+            </div>
+
+            <h3>3.2 Multiplication</h3>
+            <div class="math-block">
+                $$(ab) \bmod m = ((a \bmod m)(b \bmod m)) \bmod m$$
+            </div>
+
+            <h3>3.3 Exponentiation</h3>
+            <p>For computing $a^n \bmod m$ efficiently, use repeated squaring.</p>
+
+            <h2>4. Modular Inverses</h2>
+            <p>The modular inverse of $a$ modulo $m$ is an integer $x$ such that:</p>
+            <div class="math-block">
+                $$ax \equiv 1 \pmod{m}$$
+            </div>
+            <p>The inverse exists if and only if $\gcd(a, m) = 1$.</p>
+
+            <h2>5. Extended Euclidean Algorithm</h2>
+            <p>For integers $a$ and $b$, finds integers $x$ and $y$ such that:</p>
+            <div class="math-block">
+                $$ax + by = \gcd(a, b)$$
+            </div>
+            <p>When $\gcd(a, m) = 1$, this gives us $ax \equiv 1 \pmod{m}$.</p>
+
+            <h2>6. Euler's Totient Function</h2>
+            <p>$\phi(n)$ counts the positive integers up to $n$ that are coprime to $n$:</p>
+            <div class="math-block">
+                $$\phi(n) = n \prod_{p \mid n} \left(1 - \frac{1}{p}\right)$$
+            </div>
+            <p>where the product is over all prime divisors of $n$.</p>
+
+            <h2>7. Euler's Theorem</h2>
+            <p>If $\gcd(a, n) = 1$, then:</p>
+            <div class="math-block">
+                $$a^{\phi(n)} \equiv 1 \pmod{n}$$
+            </div>
+            <p><strong>Fermat's Little Theorem</strong> (special case when $n = p$ is prime):</p>
+            <div class="math-block">
+                $$a^{p-1} \equiv 1 \pmod{p}$$
+            </div>
+
+            <h2>8. Chinese Remainder Theorem</h2>
+            <p>For pairwise coprime moduli $m_1, m_2, \ldots, m_k$, the system:</p>
+            <div class="math-block">
+                $$x \equiv a_1 \pmod{m_1}$$
+                $$x \equiv a_2 \pmod{m_2}$$
+                $$\vdots$$
+                $$x \equiv a_k \pmod{m_k}$$
+            </div>
+            <p>has a unique solution modulo $M = m_1 m_2 \cdots m_k$.</p>
+
+            <h2>9. Quadratic Residues</h2>
+            <p>An integer $a$ is a quadratic residue modulo $p$ if there exists $x$ such that:</p>
+            <div class="math-block">
+                $$x^2 \equiv a \pmod{p}$$
+            </div>
+            <p><strong>Legendre Symbol:</strong> For odd prime $p$ and $a$ not divisible by $p$:</p>
+            <div class="math-block">
+                $$\left(\frac{a}{p}\right) = \begin{cases}
+                1 & \text{if } a \text{ is a quadratic residue modulo } p \\
+                -1 & \text{if } a \text{ is not a quadratic residue modulo } p
+                \end{cases}$$
+            </div>
+
+            <h2>10. Wilson's Theorem</h2>
+            <p>A positive integer $p > 1$ is prime if and only if:</p>
+            <div class="math-block">
+                $$(p-1)! \equiv -1 \pmod{p}$$
+            </div>
+
+            <h2>11. Applications</h2>
+            <h3>11.1 Cryptography</h3>
+            <p>RSA encryption uses modular exponentiation and the difficulty of computing discrete logarithms.</p>
+
+            <h3>11.2 Computer Science</h3>
+            <p>Hash functions, pseudorandom number generators, and error-correcting codes.</p>
+
+            <h3>11.3 Calendar Calculations</h3>
+            <p>Day of the week calculations use modular arithmetic.</p>
+
+            <h2>12. Code Example</h2>
+            <pre><code># Python code for modular arithmetic
+def gcd(a, b):
+    """Euclidean algorithm for GCD"""
+    while b:
+        a, b = b, a % b
+    return a
+
+def extended_gcd(a, b):
+    """Extended Euclidean algorithm"""
+    if a == 0:
+        return b, 0, 1
+    gcd, x1, y1 = extended_gcd(b % a, a)
+    x = y1 - (b // a) * x1
+    y = x1
+    return gcd, x, y
+
+def mod_inverse(a, m):
+    """Modular inverse of a modulo m"""
+    gcd, x, y = extended_gcd(a, m)
+    if gcd != 1:
+        return None  # Inverse doesn't exist
+    return (x % m + m) % m
+
+def mod_exp(base, exp, mod):
+    """Fast modular exponentiation"""
+    result = 1
+    base = base % mod
+    while exp > 0:
+        if exp % 2 == 1:
+            result = (result * base) % mod
+        exp = exp >> 1
+        base = (base * base) % mod
+    return result
+
+def chinese_remainder_theorem(remainders, moduli):
+    """Solve system of congruences"""
+    if len(remainders) != len(moduli):
+        return None
+    
+    # Check if moduli are pairwise coprime
+    for i in range(len(moduli)):
+        for j in range(i + 1, len(moduli)):
+            if gcd(moduli[i], moduli[j]) != 1:
+                return None
+    
+    total = 0
+    prod = 1
+    for m in moduli:
+        prod *= m
+    
+    for r, m in zip(remainders, moduli):
+        p = prod // m
+        total += r * mod_inverse(p, m) * p
+    
+    return total % prod
+
+def euler_totient(n):
+    """Euler's totient function"""
+    result = n
+    p = 2
+    while p * p <= n:
+        if n % p == 0:
+            while n % p == 0:
+                n //= p
+            result -= result // p
+        p += 1
+    if n > 1:
+        result -= result // n
+    return result
+
+# Examples
+print(f"gcd(48, 18) = {gcd(48, 18)}")
+print(f"Inverse of 3 mod 7: {mod_inverse(3, 7)}")
+print(f"3^10 mod 7 = {mod_exp(3, 10, 7)}")
+print(f"φ(12) = {euler_totient(12)}")
+
+# Chinese Remainder Theorem example
+remainders = [2, 3, 2]
+moduli = [3, 5, 7]
+solution = chinese_remainder_theorem(remainders, moduli)
+print(f"CRT solution: {solution}")
+</code></pre>
+
+            <h2>13. References</h2>
+            <ul>
+                <li>Hardy, G. H., & Wright, E. M. (2008). <em>An Introduction to the Theory of Numbers</em>.</li>
+                <li>Rosen, K. H. (2011). <em>Elementary Number Theory</em>.</li>
+                <li>Burton, D. M. (2010). <em>Elementary Number Theory</em>.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; Diogo Franquinho | Technical Notes</p>
+    </footer>
+</body>
+</html> 

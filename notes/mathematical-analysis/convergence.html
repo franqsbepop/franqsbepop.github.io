@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convergence Theory - Technical Notes</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/book-reviews.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="../../index.html">← Back to Home</a> | 
+        <a href="../../index.html#notes">Notes</a>
+    </nav>
+
+    <main>
+        <header>
+            <h1>Convergence Theory</h1>
+            <p class="note-meta">Last updated: December 2024</p>
+        </header>
+
+        <section class="note-content">
+            <div class="disclaimer">
+                <p><strong>Disclaimer:</strong> These are my personal notes compiled for my own reference and learning. They may contain errors, incomplete information, or personal interpretations. While I strive for accuracy, these notes are not peer-reviewed and should not be considered authoritative sources. Please consult official textbooks, research papers, or other reliable sources for academic or professional purposes.</p>
+            </div>
+            
+            <h2>1. Pointwise Convergence</h2>
+            <h3>1.1 Definition</h3>
+            <p>A sequence of functions $\{f_n\}$ converges pointwise to $f$ on a set $E$ if:</p>
+            <div class="math-block">
+                $$\forall x \in E, \forall \epsilon > 0, \exists N(x, \epsilon) \text{ such that } n \geq N \Rightarrow |f_n(x) - f(x)| < \epsilon$$
+            </div>
+            <p>Note that $N$ may depend on both $x$ and $\epsilon$.</p>
+
+            <h3>1.2 Properties</h3>
+            <ul>
+                <li><strong>Limit function:</strong> $f(x) = \lim_{n \to \infty} f_n(x)$ for each $x \in E$</li>
+                <li><strong>Preservation of continuity:</strong> Not guaranteed (pointwise limit of continuous functions may be discontinuous)</li>
+                <li><strong>Integration:</strong> $\lim_{n \to \infty} \int f_n$ may not equal $\int \lim_{n \to \infty} f_n$</li>
+            </ul>
+
+            <h3>1.3 Example</h3>
+            <p>Consider $f_n(x) = x^n$ on $[0,1]$:</p>
+            <div class="math-block">
+                $$f(x) = \lim_{n \to \infty} x^n = \begin{cases}
+                0 & \text{if } 0 \leq x < 1 \\
+                1 & \text{if } x = 1
+                \end{cases}$$
+            </div>
+            <p>Each $f_n$ is continuous, but $f$ is discontinuous at $x = 1$.</p>
+
+            <h2>2. Uniform Convergence</h2>
+            <h3>2.1 Definition</h3>
+            <p>A sequence of functions $\{f_n\}$ converges uniformly to $f$ on $E$ if:</p>
+            <div class="math-block">
+                $$\forall \epsilon > 0, \exists N(\epsilon) \text{ such that } n \geq N \Rightarrow \sup_{x \in E} |f_n(x) - f(x)| < \epsilon$$
+            </div>
+            <p>Note that $N$ depends only on $\epsilon$, not on $x$.</p>
+
+            <h3>2.2 Equivalent Characterization</h3>
+            <p>$f_n \to f$ uniformly on $E$ if and only if:</p>
+            <div class="math-block">
+                $$\lim_{n \to \infty} \sup_{x \in E} |f_n(x) - f(x)| = 0$$
+            </div>
+
+            <h3>2.3 Weierstrass M-Test</h3>
+            <p>If $\sum M_n$ converges and $|f_n(x)| \leq M_n$ for all $x \in E$, then $\sum f_n$ converges uniformly on $E$.</p>
+
+            <h2>3. Properties of Uniform Convergence</h2>
+            <h3>3.1 Continuity Preservation</h3>
+            <p><strong>Theorem:</strong> If $f_n \to f$ uniformly on $E$ and each $f_n$ is continuous at $x_0 \in E$, then $f$ is continuous at $x_0$.</p>
+
+            <h3>3.2 Integration</h3>
+            <p><strong>Theorem:</strong> If $f_n \to f$ uniformly on $[a,b]$ and each $f_n$ is integrable, then:</p>
+            <div class="math-block">
+                $$\lim_{n \to \infty} \int_a^b f_n(x) dx = \int_a^b f(x) dx$$
+            </div>
+
+            <h3>3.3 Differentiation</h3>
+            <p><strong>Theorem:</strong> If $f_n \to f$ pointwise on $[a,b]$, each $f_n$ is differentiable, and $f_n' \to g$ uniformly on $[a,b]$, then $f$ is differentiable and $f' = g$.</p>
+
+            <h2>4. Types of Convergence for Function Series</h2>
+            <h3>4.1 Pointwise Convergence of Series</h3>
+            <p>$\sum_{n=1}^{\infty} f_n(x)$ converges pointwise to $S(x)$ if the sequence of partial sums $S_N(x) = \sum_{n=1}^N f_n(x)$ converges pointwise to $S(x)$.</p>
+
+            <h3>4.2 Uniform Convergence of Series</h3>
+            <p>$\sum_{n=1}^{\infty} f_n(x)$ converges uniformly if the partial sums converge uniformly.</p>
+
+            <h3>4.3 Absolute Convergence</h3>
+            <p>$\sum f_n(x)$ converges absolutely at $x$ if $\sum |f_n(x)|$ converges.</p>
+
+            <h2>5. Modes of Convergence for Sequences</h2>
+            <h3>5.1 Almost Everywhere Convergence</h3>
+            <p>$f_n \to f$ almost everywhere (a.e.) if there exists a set $E$ of measure zero such that $f_n(x) \to f(x)$ for all $x \notin E$.</p>
+
+            <h3>5.2 Convergence in Measure</h3>
+            <p>$f_n \to f$ in measure if:</p>
+            <div class="math-block">
+                $$\forall \epsilon > 0: \lim_{n \to \infty} \mu(\{x : |f_n(x) - f(x)| \geq \epsilon\}) = 0$$
+            </div>
+
+            <h3>5.3 $L^p$ Convergence</h3>
+            <p>$f_n \to f$ in $L^p$ if:</p>
+            <div class="math-block">
+                $$\lim_{n \to \infty} \int |f_n - f|^p d\mu = 0$$
+            </div>
+
+            <h2>6. Relationships Between Convergence Types</h2>
+            <h3>6.1 Hierarchy of Convergence</h3>
+            <ul>
+                <li>Uniform convergence $\Rightarrow$ Pointwise convergence</li>
+                <li>Uniform convergence $\Rightarrow$ Convergence in measure</li>
+                <li>$L^p$ convergence $\Rightarrow$ Convergence in measure</li>
+                <li>Convergence in measure $\Rightarrow$ Almost everywhere convergence (subsequence)</li>
+            </ul>
+
+            <h3>6.2 Counterexamples</h3>
+            <ul>
+                <li><strong>Pointwise but not uniform:</strong> $f_n(x) = x^n$ on $[0,1]$</li>
+                <li><strong>$L^1$ but not pointwise:</strong> Moving bump functions</li>
+                <li><strong>Almost everywhere but not in measure:</strong> Functions with increasing support</li>
+            </ul>
+
+            <h2>7. Uniform Convergence Tests</h2>
+            <h3>7.1 Cauchy Criterion</h3>
+            <p>$\{f_n\}$ converges uniformly on $E$ if and only if:</p>
+            <div class="math-block">
+                $$\forall \epsilon > 0, \exists N \text{ such that } m,n \geq N \Rightarrow \sup_{x \in E} |f_m(x) - f_n(x)| < \epsilon$$
+            </div>
+
+            <h3>7.2 Dini's Theorem</h3>
+            <p>If $f_n \to f$ pointwise on a compact set $K$, each $f_n$ is continuous, $f$ is continuous, and the convergence is monotonic, then the convergence is uniform.</p>
+
+            <h3>7.3 Arzela-Ascoli Theorem</h3>
+            <p>A family of functions on a compact set is compact if and only if it is equicontinuous and uniformly bounded.</p>
+
+            <h2>8. Stone-Weierstrass Theorem</h2>
+            <h3>8.1 Statement</h3>
+            <p>Let $X$ be a compact metric space and $\mathcal{A}$ be an algebra of continuous real-valued functions on $X$ that:</p>
+            <ul>
+                <li>Separates points of $X$</li>
+                <li>Contains the constant functions</li>
+            </ul>
+            <p>Then $\mathcal{A}$ is dense in $C(X)$ with respect to the uniform norm.</p>
+
+            <h3>8.2 Applications</h3>
+            <ul>
+                <li><strong>Polynomial approximation:</strong> Polynomials are dense in $C[a,b]$</li>
+                <li><strong>Trigonometric approximation:</strong> Trigonometric polynomials are dense in continuous $2\pi$-periodic functions</li>
+            </ul>
+
+            <h2>9. Convergence in Normed Spaces</h2>
+            <h3>9.1 Strong Convergence</h3>
+            <p>In a normed space $(X, \|\cdot\|)$, $x_n \to x$ strongly if $\|x_n - x\| \to 0$.</p>
+
+            <h3>9.2 Weak Convergence</h3>
+            <p>$x_n \to x$ weakly if $f(x_n) \to f(x)$ for all $f \in X^*$ (the dual space).</p>
+
+            <h3>9.3 Weak* Convergence</h3>
+            <p>In the dual space $X^*$, $f_n \to f$ weak* if $f_n(x) \to f(x)$ for all $x \in X$.</p>
+
+            <h2>10. Banach-Steinhaus Theorem</h2>
+            <p><strong>Uniform Boundedness Principle:</strong> Let $\{T_n\}$ be a sequence of bounded linear operators from a Banach space $X$ to a normed space $Y$. If $\sup_n \|T_n x\| < \infty$ for each $x \in X$, then $\sup_n \|T_n\| < \infty$.</p>
+
+            <h2>11. Dominated Convergence Theorem</h2>
+            <p>If $f_n \to f$ almost everywhere, $|f_n| \leq g$ where $g$ is integrable, then:</p>
+            <div class="math-block">
+                $$\lim_{n \to \infty} \int f_n d\mu = \int f d\mu$$
+            </div>
+
+            <h2>12. Code Examples</h2>
+            <pre><code># Python implementations for convergence analysis
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy import integrate
+import warnings
+warnings.filterwarnings('ignore')
+
+class ConvergenceAnalyzer:
+    def __init__(self, function_sequence, domain=None, true_limit=None):
+        """
+        Analyze convergence of function sequences
+        function_sequence: list of functions or callable that takes n and returns function
+        domain: array of x values to test
+        true_limit: known limit function for comparison
+        """
+        self.function_sequence = function_sequence
+        self.domain = domain if domain is not None else np.linspace(0, 1, 100)
+        self.true_limit = true_limit
+    
+    def get_function(self, n):
+        """Get the nth function in the sequence"""
+        if callable(self.function_sequence):
+            return self.function_sequence(n)
+        else:
+            return self.function_sequence[n]
+    
+    def pointwise_convergence_test(self, n_terms=50, test_points=None):
+        """Test pointwise convergence at specific points"""
+        if test_points is None:
+            test_points = [0.25, 0.5, 0.75]
+        
+        results = {}
+        
+        for x in test_points:
+            values = []
+            for n in range(1, n_terms + 1):
+                fn = self.get_function(n)
+                try:
+                    value = fn(x)
+                    values.append(value)
+                except:
+                    values.append(np.nan)
+            
+            results[x] = values
+            
+            # Check for convergence
+            if len(values) > 10:
+                tail = values[-10:]
+                if not any(np.isnan(tail)):
+                    variance = np.var(tail)
+                    if variance < 1e-10:
+                        limit_value = np.mean(tail)
+                        print(f"Point x = {x}: Appears to converge to {limit_value:.6f}")
+                    else:
+                        print(f"Point x = {x}: No clear convergence (variance = {variance:.2e})")
+        
+        return results
+    
+    def uniform_convergence_test(self, n_terms=50):
+        """Test uniform convergence using supremum norm"""
+        if self.true_limit is None:
+            print("True limit function needed for uniform convergence test")
+            return None
+        
+        supremum_errors = []
+        
+        for n in range(1, n_terms + 1):
+            fn = self.get_function(n)
+            
+            # Compute |f_n(x) - f(x)| for all x in domain
+            errors = []
+            for x in self.domain:
+                try:
+                    error = abs(fn(x) - self.true_limit(x))
+                    errors.append(error)
+                except:
+                    errors.append(np.inf)
+            
+            sup_error = max(errors) if errors else np.inf
+            supremum_errors.append(sup_error)
+        
+        # Check if supremum errors approach 0
+        if len(supremum_errors) > 10:
+            tail = supremum_errors[-10:]
+            if all(e < 1e-6 for e in tail):
+                print("Uniform convergence detected")
+            else:
+                print(f"No uniform convergence (final sup error: {tail[-1]:.2e})")
+        
+        return supremum_errors
+    
+    def plot_convergence(self, n_values=[1, 5, 10, 20, 50], show_limit=True):
+        """Plot function sequence and limit"""
+        plt.figure(figsize=(12, 8))
+        
+        colors = plt.cm.viridis(np.linspace(0, 0.8, len(n_values)))
+        
+        for i, n in enumerate(n_values):
+            fn = self.get_function(n)
+            y_values = [fn(x) for x in self.domain]
+            plt.plot(self.domain, y_values, color=colors[i], 
+                    linewidth=2, label=f'f_{n}(x)', alpha=0.7)
+        
+        if show_limit and self.true_limit is not None:
+            limit_values = [self.true_limit(x) for x in self.domain]
+            plt.plot(self.domain, limit_values, 'r-', 
+                    linewidth=3, label='Limit function', alpha=0.9)
+        
+        plt.xlabel('x')
+        plt.ylabel('f_n(x)')
+        plt.title('Function Sequence Convergence')
+        plt.legend()
+        plt.grid(True, alpha=0.3)
+        plt.show()
+    
+    def plot_supremum_errors(self, n_terms=50):
+        """Plot supremum errors to visualize uniform convergence"""
+        sup_errors = self.uniform_convergence_test(n_terms)
+        
+        if sup_errors is not None:
+            plt.figure(figsize=(10, 6))
+            plt.semilogy(range(1, len(sup_errors) + 1), sup_errors, 'bo-', linewidth=2)
+            plt.xlabel('n')
+            plt.ylabel('sup |f_n(x) - f(x)|')
+            plt.title('Supremum Error (Log Scale)')
+            plt.grid(True, alpha=0.3)
+            plt.show()
+
+class SeriesConvergenceAnalyzer:
+    def __init__(self, term_functions, domain=None):
+        """
+        Analyze convergence of function series
+        term_functions: list of functions or callable returning nth term function
+        """
+        self.term_functions = term_functions
+        self.domain = domain if domain is not None else np.linspace(-1, 1, 100)
+    
+    def get_term(self, n):
+        """Get nth term function"""
+        if callable(self.term_functions):
+            return self.term_functions(n)
+        else:
+            return self.term_functions[n]
+    
+    def weierstrass_m_test(self, n_terms=50):
+        """Apply Weierstrass M-test for uniform convergence"""
+        M_values = []
+        
+        for n in range(n_terms):
+            fn = self.get_term(n)
+            
+            # Find supremum of |f_n(x)| over domain
+            max_val = 0
+            for x in self.domain:
+                try:
+                    val = abs(fn(x))
+                    max_val = max(max_val, val)
+                except:
+                    max_val = np.inf
+                    break
+            
+            M_values.append(max_val)
+        
+        # Check if sum of M_n converges
+        partial_sums = np.cumsum(M_values)
+        
+        print("Weierstrass M-Test:")
+        print(f"M_values (first 10): {M_values[:10]}")
+        print(f"Partial sum of M_n: {partial_sums[-1]:.6f}")
+        
+        if partial_sums[-1] < np.inf and len(M_values) > 10:
+            tail_growth = partial_sums[-1] - partial_sums[-11]
+            if tail_growth < 1e-6:
+                print("M-test suggests uniform convergence")
+            else:
+                print("M-test inconclusive")
+        
+        return M_values, partial_sums
+    
+    def plot_partial_sums(self, n_terms=[5, 10, 20, 50]):
+        """Plot partial sums of the series"""
+        plt.figure(figsize=(12, 8))
+        
+        colors = plt.cm.plasma(np.linspace(0, 0.8, len(n_terms)))
+        
+        for i, N in enumerate(n_terms):
+            # Compute partial sum S_N(x)
+            partial_sum = np.zeros_like(self.domain)
+            
+            for n in range(N):
+                fn = self.get_term(n)
+                for j, x in enumerate(self.domain):
+                    try:
+                        partial_sum[j] += fn(x)
+                    except:
+                        partial_sum[j] = np.nan
+            
+            plt.plot(self.domain, partial_sum, color=colors[i], 
+                    linewidth=2, label=f'S_{N}(x)', alpha=0.8)
+        
+        plt.xlabel('x')
+        plt.ylabel('S_N(x)')
+        plt.title('Partial Sums of Function Series')
+        plt.legend()
+        plt.grid(True, alpha=0.3)
+        plt.show()
+
+def demonstrate_convergence_types():
+    """Demonstrate different types of convergence with examples"""
+    
+    print("=== Convergence Types Demonstration ===\n")
+    
+    # Example 1: f_n(x) = x^n on [0,1] - pointwise but not uniform
+    print("1. f_n(x) = x^n on [0,1]")
+    print("   Pointwise convergent but not uniformly convergent")
+    
+    def power_sequence(n):
+        return lambda x: x**n
+    
+    def power_limit(x):
+        return 0 if x < 1 else 1
+    
+    analyzer1 = ConvergenceAnalyzer(power_sequence, 
+                                   domain=np.linspace(0, 1, 100),
+                                   true_limit=power_limit)
+    
+    print("Pointwise convergence test:")
+    analyzer1.pointwise_convergence_test(n_terms=20, test_points=[0.5, 0.9, 1.0])
+    
+    print("\nUniform convergence test:")
+    analyzer1.uniform_convergence_test(n_terms=20)
+    
+    # Example 2: f_n(x) = x/n - uniformly convergent
+    print("\n2. f_n(x) = x/n")
+    print("   Uniformly convergent to f(x) = 0")
+    
+    def linear_sequence(n):
+        return lambda x: x/n
+    
+    analyzer2 = ConvergenceAnalyzer(linear_sequence,
+                                   domain=np.linspace(-1, 1, 100),
+                                   true_limit=lambda x: 0)
+    
+    analyzer2.uniform_convergence_test(n_terms=50)
+    
+    # Example 3: Fourier series convergence
+    print("\n3. Fourier Series: f(x) = x on [-π, π]")
+    print("   Pointwise convergent (except at discontinuities)")
+    
+    def fourier_partial_sum(N):
+        def partial_sum(x):
+            result = 0
+            for n in range(1, N+1):
+                result += (2 * (-1)**(n+1) / n) * np.sin(n * x)
+            return result
+        return partial_sum
+    
+    domain_fourier = np.linspace(-np.pi, np.pi, 200)
+    analyzer3 = ConvergenceAnalyzer(fourier_partial_sum,
+                                   domain=domain_fourier,
+                                   true_limit=lambda x: x)
+    
+    analyzer3.pointwise_convergence_test(n_terms=20, test_points=[0, np.pi/2, np.pi])
+
+def power_series_convergence():
+    """Analyze convergence of power series"""
+    print("\n=== Power Series Convergence ===")
+    
+    # Geometric series: sum(x^n) for |x| < 1
+    def geometric_term(n):
+        return lambda x: x**n
+    
+    domain = np.linspace(-0.9, 0.9, 100)  # Inside radius of convergence
+    series_analyzer = SeriesConvergenceAnalyzer(geometric_term, domain)
+    
+    print("Geometric series: Σ x^n")
+    M_vals, partial_sums = series_analyzer.weierstrass_m_test(20)
+    
+    # Plot convergence
+    series_analyzer.plot_partial_sums([5, 10, 15, 20])
+
+def demonstrate_dinis_theorem():
+    """Demonstrate Dini's theorem"""
+    print("\n=== Dini's Theorem Demonstration ===")
+    
+    # Monotone sequence of continuous functions on compact set
+    def dini_sequence(n):
+        return lambda x: x**(1 + 1/n)
+    
+    domain = np.linspace(0, 1, 100)
+    analyzer = ConvergenceAnalyzer(dini_sequence, domain, lambda x: x)
+    
+    print("f_n(x) = x^(1 + 1/n) on [0,1]")
+    print("Monotone decreasing sequence of continuous functions")
+    print("Dini's theorem guarantees uniform convergence")
+    
+    sup_errors = analyzer.uniform_convergence_test(50)
+    if sup_errors:
+        print(f"Final supremum error: {sup_errors[-1]:.2e}")
+
+# Example usage
+if __name__ == "__main__":
+    demonstrate_convergence_types()
+    power_series_convergence()
+    demonstrate_dinis_theorem()
+    
+    # Additional visualization examples
+    print("\n=== Visualization Examples ===")
+    
+    # Create some interesting convergence examples
+    
+    # Example: sin(nx)/n
+    def sinusoidal_sequence(n):
+        return lambda x: np.sin(n*x)/n
+    
+    domain = np.linspace(0, 2*np.pi, 300)
+    analyzer = ConvergenceAnalyzer(sinusoidal_sequence, domain, lambda x: 0)
+    
+    print("\nf_n(x) = sin(nx)/n - uniformly convergent to 0")
+    analyzer.plot_convergence([1, 2, 5, 10, 20])
+    analyzer.plot_supremum_errors(30)
+</code></pre>
+
+            <h2>13. Applications</h2>
+            <h3>13.1 Functional Analysis</h3>
+            <ul>
+                <li>Banach and Hilbert space theory</li>
+                <li>Operator theory and spectral analysis</li>
+                <li>Fixed point theorems</li>
+            </ul>
+
+            <h3>13.2 Partial Differential Equations</h3>
+            <ul>
+                <li>Method of separation of variables</li>
+                <li>Fourier analysis and transforms</li>
+                <li>Weak solutions and distribution theory</li>
+            </ul>
+
+            <h3>13.3 Numerical Analysis</h3>
+            <ul>
+                <li>Approximation theory</li>
+                <li>Finite element methods</li>
+                <li>Iterative algorithms convergence</li>
+            </ul>
+
+            <h3>13.4 Probability Theory</h3>
+            <ul>
+                <li>Law of large numbers</li>
+                <li>Central limit theorem</li>
+                <li>Martingale convergence theorems</li>
+            </ul>
+
+            <h2>14. References</h2>
+            <ul>
+                <li>Rudin, W. (1976). <em>Principles of Mathematical Analysis</em>.</li>
+                <li>Royden, H. L., & Fitzpatrick, P. M. (2010). <em>Real Analysis</em>.</li>
+                <li>Folland, G. B. (1999). <em>Real Analysis: Modern Techniques and Their Applications</em>.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; Diogo Franquinho | Technical Notes</p>
+    </footer>
+</body>
+</html> 

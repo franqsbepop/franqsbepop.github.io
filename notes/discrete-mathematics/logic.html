@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mathematical Logic - Technical Notes</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/book-reviews.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="../../index.html">← Back to Home</a> | 
+        <a href="../../index.html#notes">Notes</a>
+    </nav>
+
+    <main>
+        <header>
+            <h1>Mathematical Logic</h1>
+            <p class="note-meta">Last updated: December 2024</p>
+        </header>
+
+        <section class="note-content">
+            <div class="disclaimer">
+                <p><strong>Disclaimer:</strong> These are my personal notes compiled for my own reference and learning. They may contain errors, incomplete information, or personal interpretations. While I strive for accuracy, these notes are not peer-reviewed and should not be considered authoritative sources. Please consult official textbooks, research papers, or other reliable sources for academic or professional purposes.</p>
+            </div>
+            
+            <h2>1. Propositional Logic</h2>
+            <h3>1.1 Basic Propositions</h3>
+            <p>A proposition is a declarative statement that is either true or false, but not both.</p>
+            <ul>
+                <li><strong>Atomic propositions:</strong> $p, q, r, \ldots$</li>
+                <li><strong>Truth values:</strong> $T$ (true) or $F$ (false)</li>
+            </ul>
+
+            <h3>1.2 Logical Connectives</h3>
+            <ul>
+                <li><strong>Negation:</strong> $\neg p$ (not $p$)</li>
+                <li><strong>Conjunction:</strong> $p \land q$ ($p$ and $q$)</li>
+                <li><strong>Disjunction:</strong> $p \lor q$ ($p$ or $q$)</li>
+                <li><strong>Implication:</strong> $p \rightarrow q$ (if $p$ then $q$)</li>
+                <li><strong>Biconditional:</strong> $p \leftrightarrow q$ ($p$ if and only if $q$)</li>
+                <li><strong>Exclusive or:</strong> $p \oplus q$ ($p$ xor $q$)</li>
+            </ul>
+
+            <h3>1.3 Truth Tables</h3>
+            <table border="1" style="border-collapse: collapse; margin: 20px 0;">
+                <tr>
+                    <th>$p$</th>
+                    <th>$q$</th>
+                    <th>$\neg p$</th>
+                    <th>$p \land q$</th>
+                    <th>$p \lor q$</th>
+                    <th>$p \rightarrow q$</th>
+                    <th>$p \leftrightarrow q$</th>
+                    <th>$p \oplus q$</th>
+                </tr>
+                <tr>
+                    <td>T</td>
+                    <td>T</td>
+                    <td>F</td>
+                    <td>T</td>
+                    <td>T</td>
+                    <td>T</td>
+                    <td>T</td>
+                    <td>F</td>
+                </tr>
+                <tr>
+                    <td>T</td>
+                    <td>F</td>
+                    <td>F</td>
+                    <td>F</td>
+                    <td>T</td>
+                    <td>F</td>
+                    <td>F</td>
+                    <td>T</td>
+                </tr>
+                <tr>
+                    <td>F</td>
+                    <td>T</td>
+                    <td>T</td>
+                    <td>F</td>
+                    <td>T</td>
+                    <td>T</td>
+                    <td>F</td>
+                    <td>T</td>
+                </tr>
+                <tr>
+                    <td>F</td>
+                    <td>F</td>
+                    <td>T</td>
+                    <td>F</td>
+                    <td>F</td>
+                    <td>T</td>
+                    <td>T</td>
+                    <td>F</td>
+                </tr>
+            </table>
+
+            <h3>1.4 Logical Equivalences</h3>
+            <ul>
+                <li><strong>Identity Laws:</strong> $p \land T \equiv p$, $p \lor F \equiv p$</li>
+                <li><strong>Domination Laws:</strong> $p \lor T \equiv T$, $p \land F \equiv F$</li>
+                <li><strong>Idempotent Laws:</strong> $p \lor p \equiv p$, $p \land p \equiv p$</li>
+                <li><strong>Double Negation:</strong> $\neg(\neg p) \equiv p$</li>
+                <li><strong>Commutative Laws:</strong> $p \lor q \equiv q \lor p$, $p \land q \equiv q \land p$</li>
+                <li><strong>Associative Laws:</strong> $(p \lor q) \lor r \equiv p \lor (q \lor r)$</li>
+                <li><strong>Distributive Laws:</strong> $p \land (q \lor r) \equiv (p \land q) \lor (p \land r)$</li>
+                <li><strong>De Morgan's Laws:</strong> $\neg(p \land q) \equiv \neg p \lor \neg q$, $\neg(p \lor q) \equiv \neg p \land \neg q$</li>
+            </ul>
+
+            <h3>1.5 Tautologies and Contradictions</h3>
+            <ul>
+                <li><strong>Tautology:</strong> Always true (e.g., $p \lor \neg p$)</li>
+                <li><strong>Contradiction:</strong> Always false (e.g., $p \land \neg p$)</li>
+                <li><strong>Contingency:</strong> Sometimes true, sometimes false</li>
+            </ul>
+
+            <h2>2. Predicate Logic</h2>
+            <h3>2.1 Predicates and Quantifiers</h3>
+            <ul>
+                <li><strong>Predicate:</strong> $P(x)$ - a statement involving variable $x$</li>
+                <li><strong>Universal Quantifier:</strong> $\forall x P(x)$ (for all $x$, $P(x)$)</li>
+                <li><strong>Existential Quantifier:</strong> $\exists x P(x)$ (there exists $x$ such that $P(x)$)</li>
+                <li><strong>Unique Existence:</strong> $\exists! x P(x)$ (there exists unique $x$ such that $P(x)$)</li>
+            </ul>
+
+            <h3>2.2 Quantifier Rules</h3>
+            <ul>
+                <li><strong>Negation of Quantifiers:</strong>
+                    <ul>
+                        <li>$\neg \forall x P(x) \equiv \exists x \neg P(x)$</li>
+                        <li>$\neg \exists x P(x) \equiv \forall x \neg P(x)$</li>
+                    </ul>
+                </li>
+                <li><strong>Distribution Laws:</strong>
+                    <ul>
+                        <li>$\forall x (P(x) \land Q(x)) \equiv \forall x P(x) \land \forall x Q(x)$</li>
+                        <li>$\exists x (P(x) \lor Q(x)) \equiv \exists x P(x) \lor \exists x Q(x)$</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3>2.3 Multiple Quantifiers</h3>
+            <p>Order matters: $\forall x \exists y P(x,y)$ is different from $\exists y \forall x P(x,y)$</p>
+
+            <h2>3. Proof Techniques</h2>
+            <h3>3.1 Direct Proof</h3>
+            <p>To prove $p \rightarrow q$, assume $p$ is true and show that $q$ must be true.</p>
+
+            <h3>3.2 Proof by Contraposition</h3>
+            <p>To prove $p \rightarrow q$, prove $\neg q \rightarrow \neg p$ (the contrapositive).</p>
+
+            <h3>3.3 Proof by Contradiction</h3>
+            <p>To prove $p$, assume $\neg p$ and derive a contradiction.</p>
+
+            <h3>3.4 Proof by Cases</h3>
+            <p>To prove $p$, consider all possible cases and show $p$ holds in each case.</p>
+
+            <h3>3.5 Mathematical Induction</h3>
+            <p>To prove $\forall n \geq n_0, P(n)$:</p>
+            <ol>
+                <li><strong>Base case:</strong> Prove $P(n_0)$</li>
+                <li><strong>Inductive step:</strong> Prove $P(k) \rightarrow P(k+1)$ for arbitrary $k \geq n_0$</li>
+            </ol>
+
+            <h3>3.6 Strong Induction</h3>
+            <p>To prove $\forall n \geq n_0, P(n)$:</p>
+            <ol>
+                <li><strong>Base case:</strong> Prove $P(n_0)$</li>
+                <li><strong>Inductive step:</strong> Assume $P(n_0) \land P(n_0+1) \land \ldots \land P(k)$ and prove $P(k+1)$</li>
+            </ol>
+
+            <h2>4. Set Theory</h2>
+            <h3>4.1 Basic Definitions</h3>
+            <ul>
+                <li><strong>Set:</strong> Collection of distinct objects</li>
+                <li><strong>Element:</strong> $x \in A$ means $x$ is in set $A$</li>
+                <li><strong>Empty set:</strong> $\emptyset = \{\}$</li>
+                <li><strong>Subset:</strong> $A \subseteq B$ means every element of $A$ is in $B$</li>
+                <li><strong>Proper subset:</strong> $A \subset B$ means $A \subseteq B$ and $A \neq B$</li>
+            </ul>
+
+            <h3>4.2 Set Operations</h3>
+            <ul>
+                <li><strong>Union:</strong> $A \cup B = \{x : x \in A \lor x \in B\}$</li>
+                <li><strong>Intersection:</strong> $A \cap B = \{x : x \in A \land x \in B\}$</li>
+                <li><strong>Difference:</strong> $A - B = \{x : x \in A \land x \notin B\}$</li>
+                <li><strong>Complement:</strong> $\overline{A} = \{x : x \notin A\}$ (relative to universal set $U$)</li>
+                <li><strong>Symmetric difference:</strong> $A \triangle B = (A - B) \cup (B - A)$</li>
+            </ul>
+
+            <h3>4.3 Set Identities</h3>
+            <ul>
+                <li><strong>Commutative:</strong> $A \cup B = B \cup A$, $A \cap B = B \cap A$</li>
+                <li><strong>Associative:</strong> $(A \cup B) \cup C = A \cup (B \cup C)$</li>
+                <li><strong>Distributive:</strong> $A \cap (B \cup C) = (A \cap B) \cup (A \cap C)$</li>
+                <li><strong>De Morgan's:</strong> $\overline{A \cup B} = \overline{A} \cap \overline{B}$, $\overline{A \cap B} = \overline{A} \cup \overline{B}$</li>
+                <li><strong>Identity:</strong> $A \cup \emptyset = A$, $A \cap U = A$</li>
+                <li><strong>Complement:</strong> $A \cup \overline{A} = U$, $A \cap \overline{A} = \emptyset$</li>
+            </ul>
+
+            <h3>4.4 Cartesian Product</h3>
+            <p>$A \times B = \{(a,b) : a \in A \land b \in B\}$</p>
+            <p>If $|A| = m$ and $|B| = n$, then $|A \times B| = mn$</p>
+
+            <h3>4.5 Power Set</h3>
+            <p>$\mathcal{P}(A) = \{S : S \subseteq A\}$ (set of all subsets of $A$)</p>
+            <p>If $|A| = n$, then $|\mathcal{P}(A)| = 2^n$</p>
+
+            <h2>5. Relations and Functions</h2>
+            <h3>5.1 Relations</h3>
+            <p>A relation $R$ from set $A$ to set $B$ is a subset of $A \times B$.</p>
+            <p>We write $aRb$ or $(a,b) \in R$ to mean $a$ is related to $b$.</p>
+
+            <h3>5.2 Properties of Relations (on set $A$)</h3>
+            <ul>
+                <li><strong>Reflexive:</strong> $\forall a \in A, aRa$</li>
+                <li><strong>Symmetric:</strong> $\forall a,b \in A, aRb \rightarrow bRa$</li>
+                <li><strong>Antisymmetric:</strong> $\forall a,b \in A, aRb \land bRa \rightarrow a = b$</li>
+                <li><strong>Transitive:</strong> $\forall a,b,c \in A, aRb \land bRc \rightarrow aRc$</li>
+            </ul>
+
+            <h3>5.3 Special Types of Relations</h3>
+            <ul>
+                <li><strong>Equivalence relation:</strong> Reflexive, symmetric, and transitive</li>
+                <li><strong>Partial order:</strong> Reflexive, antisymmetric, and transitive</li>
+                <li><strong>Total order:</strong> Partial order where any two elements are comparable</li>
+            </ul>
+
+            <h3>5.4 Functions</h3>
+            <p>A function $f: A \rightarrow B$ is a relation where each element in $A$ is related to exactly one element in $B$.</p>
+            <ul>
+                <li><strong>Domain:</strong> $A$</li>
+                <li><strong>Codomain:</strong> $B$</li>
+                <li><strong>Range:</strong> $\{f(a) : a \in A\} \subseteq B$</li>
+            </ul>
+
+            <h3>5.5 Types of Functions</h3>
+            <ul>
+                <li><strong>Injective (one-to-one):</strong> $f(a_1) = f(a_2) \rightarrow a_1 = a_2$</li>
+                <li><strong>Surjective (onto):</strong> $\forall b \in B, \exists a \in A$ such that $f(a) = b$</li>
+                <li><strong>Bijective:</strong> Both injective and surjective</li>
+            </ul>
+
+            <h2>6. Boolean Algebra</h2>
+            <h3>6.1 Boolean Variables and Operations</h3>
+            <p>Boolean algebra deals with variables that can take values 0 (false) or 1 (true).</p>
+            <ul>
+                <li><strong>AND:</strong> $x \cdot y$ or $xy$</li>
+                <li><strong>OR:</strong> $x + y$</li>
+                <li><strong>NOT:</strong> $\overline{x}$ or $x'$</li>
+            </ul>
+
+            <h3>6.2 Boolean Laws</h3>
+            <ul>
+                <li><strong>Identity:</strong> $x + 0 = x$, $x \cdot 1 = x$</li>
+                <li><strong>Null:</strong> $x + 1 = 1$, $x \cdot 0 = 0$</li>
+                <li><strong>Idempotent:</strong> $x + x = x$, $x \cdot x = x$</li>
+                <li><strong>Involution:</strong> $\overline{\overline{x}} = x$</li>
+                <li><strong>Complement:</strong> $x + \overline{x} = 1$, $x \cdot \overline{x} = 0$</li>
+                <li><strong>De Morgan's:</strong> $\overline{x + y} = \overline{x} \cdot \overline{y}$, $\overline{x \cdot y} = \overline{x} + \overline{y}$</li>
+            </ul>
+
+            <h2>7. Code Examples</h2>
+            <pre><code># Python implementations for logical operations and proofs
+from itertools import product
+
+def truth_table(formula, variables):
+    """Generate truth table for a logical formula"""
+    print(f"Truth table for: {formula.__name__}")
+    
+    # Print header
+    header = list(variables) + [formula.__name__]
+    print(" | ".join(f"{var:^8}" for var in header))
+    print("-" * (len(header) * 11 - 1))
+    
+    # Generate all possible truth value assignments
+    for values in product([True, False], repeat=len(variables)):
+        assignment = dict(zip(variables, values))
+        result = formula(**assignment)
+        
+        row = list(values) + [result]
+        print(" | ".join(f"{str(val):^8}" for val in row))
+
+# Define logical operations
+def NOT(p):
+    return not p
+
+def AND(p, q):
+    return p and q
+
+def OR(p, q):
+    return p or q
+
+def IMPLIES(p, q):
+    return (not p) or q
+
+def BICONDITIONAL(p, q):
+    return p == q
+
+def XOR(p, q):
+    return p != q
+
+# Example formulas
+def de_morgan_1(p, q):
+    """De Morgan's Law: ¬(p ∧ q) ≡ ¬p ∨ ¬q"""
+    left = NOT(AND(p, q))
+    right = OR(NOT(p), NOT(q))
+    return left == right
+
+def de_morgan_2(p, q):
+    """De Morgan's Law: ¬(p ∨ q) ≡ ¬p ∧ ¬q"""
+    left = NOT(OR(p, q))
+    right = AND(NOT(p), NOT(q))
+    return left == right
+
+def modus_ponens(p, q):
+    """Modus Ponens: ((p → q) ∧ p) → q"""
+    premise = AND(IMPLIES(p, q), p)
+    return IMPLIES(premise, q)
+
+def hypothetical_syllogism(p, q, r):
+    """Hypothetical Syllogism: ((p → q) ∧ (q → r)) → (p → r)"""
+    premise = AND(IMPLIES(p, q), IMPLIES(q, r))
+    conclusion = IMPLIES(p, r)
+    return IMPLIES(premise, conclusion)
+
+# Set operations
+class Set:
+    def __init__(self, elements=None):
+        self.elements = set(elements) if elements else set()
+    
+    def __str__(self):
+        return "{" + ", ".join(str(x) for x in sorted(self.elements)) + "}"
+    
+    def __contains__(self, element):
+        return element in self.elements
+    
+    def union(self, other):
+        return Set(self.elements | other.elements)
+    
+    def intersection(self, other):
+        return Set(self.elements & other.elements)
+    
+    def difference(self, other):
+        return Set(self.elements - other.elements)
+    
+    def symmetric_difference(self, other):
+        return Set(self.elements ^ other.elements)
+    
+    def is_subset(self, other):
+        return self.elements <= other.elements
+    
+    def is_proper_subset(self, other):
+        return self.elements < other.elements
+    
+    def complement(self, universal_set):
+        return Set(universal_set.elements - self.elements)
+    
+    def power_set(self):
+        """Return the power set"""
+        from itertools import combinations
+        power_set_elements = []
+        for r in range(len(self.elements) + 1):
+            for combo in combinations(self.elements, r):
+                power_set_elements.append(Set(combo))
+        return power_set_elements
+    
+    def cartesian_product(self, other):
+        """Return Cartesian product with another set"""
+        return Set((a, b) for a in self.elements for b in other.elements)
+
+# Mathematical induction proof checker
+def prove_by_induction(predicate, base_case, inductive_step, n_max=10):
+    """
+    Verify a proof by induction for small values
+    predicate: function that takes n and returns True/False
+    base_case: starting value of n
+    inductive_step: function that proves P(k) -> P(k+1)
+    """
+    print(f"Proving by induction up to n = {n_max}")
+    
+    # Check base case
+    if not predicate(base_case):
+        print(f"Base case fails: P({base_case}) is False")
+        return False
+    print(f"Base case: P({base_case}) is True ✓")
+    
+    # Check inductive step for small values
+    for k in range(base_case, n_max):
+        if predicate(k) and not predicate(k + 1):
+            print(f"Inductive step fails: P({k}) is True but P({k+1}) is False")
+            return False
+        elif predicate(k):
+            print(f"Inductive step: P({k}) → P({k+1}) ✓")
+    
+    print("Induction proof verified for the tested range ✓")
+    return True
+
+# Example: Prove sum of first n positive integers is n(n+1)/2
+def sum_formula(n):
+    """Check if sum of first n positive integers equals n(n+1)/2"""
+    actual_sum = sum(range(1, n + 1))
+    formula_result = n * (n + 1) // 2
+    return actual_sum == formula_result
+
+# Example usage
+if __name__ == "__main__":
+    print("=== Truth Tables ===")
+    truth_table(de_morgan_1, ['p', 'q'])
+    print()
+    
+    truth_table(modus_ponens, ['p', 'q'])
+    print()
+    
+    print("=== Set Operations ===")
+    A = Set([1, 2, 3, 4])
+    B = Set([3, 4, 5, 6])
+    U = Set(range(1, 11))
+    
+    print(f"A = {A}")
+    print(f"B = {B}")
+    print(f"A ∪ B = {A.union(B)}")
+    print(f"A ∩ B = {A.intersection(B)}")
+    print(f"A - B = {A.difference(B)}")
+    print(f"A △ B = {A.symmetric_difference(B)}")
+    print(f"A ⊆ U: {A.is_subset(U)}")
+    
+    print(f"\nPower set of {{1, 2}}:")
+    small_set = Set([1, 2])
+    for subset in small_set.power_set():
+        print(f"  {subset}")
+    
+    print("\n=== Mathematical Induction ===")
+    prove_by_induction(sum_formula, 1, None, 10)
+</code></pre>
+
+            <h2>8. Applications</h2>
+            <h3>8.1 Computer Science</h3>
+            <ul>
+                <li>Digital circuit design</li>
+                <li>Programming language semantics</li>
+                <li>Database query optimization</li>
+                <li>Formal verification</li>
+            </ul>
+
+            <h3>8.2 Mathematics</h3>
+            <ul>
+                <li>Foundation of mathematical reasoning</li>
+                <li>Set theory and topology</li>
+                <li>Abstract algebra</li>
+            </ul>
+
+            <h3>8.3 Philosophy</h3>
+            <ul>
+                <li>Analysis of arguments</li>
+                <li>Logical fallacies</li>
+                <li>Foundations of knowledge</li>
+            </ul>
+
+            <h2>9. References</h2>
+            <ul>
+                <li>Shoenfield, J. R. (2001). <em>Mathematical Logic</em>.</li>
+                <li>Mendelson, E. (2015). <em>Introduction to Mathematical Logic</em>.</li>
+                <li>Rosen, K. H. (2019). <em>Discrete Mathematics and Its Applications</em>.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; Diogo Franquinho | Technical Notes</p>
+    </footer>
+</body>
+</html> 

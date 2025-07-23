@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neural Networks - Technical Notes</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/book-reviews.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="../../index.html">← Back to Home</a> | 
+        <a href="../../index.html#notes">Notes</a>
+    </nav>
+
+    <main>
+        <header>
+            <h1>Neural Networks</h1>
+            <p class="note-meta">Last updated: December 2024</p>
+        </header>
+
+        <section class="note-content">
+            <div class="disclaimer">
+                <p><strong>Disclaimer:</strong> These are my personal notes compiled for my own reference and learning. They may contain errors, incomplete information, or personal interpretations. While I strive for accuracy, these notes are not peer-reviewed and should not be considered authoritative sources. Please consult official textbooks, research papers, or other reliable sources for academic or professional purposes.</p>
+            </div>
+            
+            <h2>1. Introduction to Neural Networks</h2>
+            <p>Neural networks are computational models inspired by biological neural networks. They consist of interconnected nodes (neurons) that process information.</p>
+
+            <h2>2. Perceptron</h2>
+            <p>The simplest neural network with a single neuron:</p>
+            <div class="math-block">
+                $$y = f\left(\sum_{i=1}^n w_i x_i + b\right) = f(\mathbf{w}^T\mathbf{x} + b)$$
+            </div>
+            <p>where $f$ is the activation function, $\mathbf{w}$ are weights, $\mathbf{x}$ are inputs, and $b$ is the bias.</p>
+
+            <h2>3. Activation Functions</h2>
+            <h3>3.1 Sigmoid</h3>
+            <div class="math-block">
+                $$\sigma(z) = \frac{1}{1 + e^{-z}}$$
+            </div>
+            <p>Output range: $(0, 1)$. Smooth but suffers from vanishing gradient problem.</p>
+
+            <h3>3.2 Hyperbolic Tangent (tanh)</h3>
+            <div class="math-block">
+                $$\tanh(z) = \frac{e^z - e^{-z}}{e^z + e^{-z}}$$
+            </div>
+            <p>Output range: $(-1, 1)$. Zero-centered but still has vanishing gradient issues.</p>
+
+            <h3>3.3 ReLU (Rectified Linear Unit)</h3>
+            <div class="math-block">
+                $$\text{ReLU}(z) = \max(0, z)$$
+            </div>
+            <p>Most popular activation. Simple, efficient, but can suffer from "dying ReLU" problem.</p>
+
+            <h3>3.4 Leaky ReLU</h3>
+            <div class="math-block">
+                $$\text{LeakyReLU}(z) = \max(\alpha z, z)$$
+            </div>
+            <p>where $\alpha$ is a small positive constant (e.g., 0.01).</p>
+
+            <h2>4. Multi-Layer Perceptron (MLP)</h2>
+            <p>Neural network with multiple layers:</p>
+            <ul>
+                <li><strong>Input layer:</strong> Receives input data</li>
+                <li><strong>Hidden layers:</strong> Process information</li>
+                <li><strong>Output layer:</strong> Produces final output</li>
+            </ul>
+
+            <h2>5. Forward Propagation</h2>
+            <p>For a network with $L$ layers:</p>
+            <div class="math-block">
+                $$\mathbf{a}^{[0]} = \mathbf{x}$$
+                $$\mathbf{z}^{[l]} = \mathbf{W}^{[l]}\mathbf{a}^{[l-1]} + \mathbf{b}^{[l]}$$
+                $$\mathbf{a}^{[l]} = f^{[l]}(\mathbf{z}^{[l]})$$
+            </div>
+            <p>for $l = 1, 2, \ldots, L$.</p>
+
+            <h2>6. Loss Functions</h2>
+            <h3>6.1 Mean Squared Error (Regression)</h3>
+            <div class="math-block">
+                $$L(\mathbf{y}, \hat{\mathbf{y}}) = \frac{1}{2m}\sum_{i=1}^m (y_i - \hat{y}_i)^2$$
+            </div>
+
+            <h3>6.2 Cross-Entropy (Classification)</h3>
+            <div class="math-block">
+                $$L(\mathbf{y}, \hat{\mathbf{y}}) = -\frac{1}{m}\sum_{i=1}^m \sum_{j=1}^c y_{ij} \log(\hat{y}_{ij})$$
+            </div>
+
+            <h2>7. Backpropagation</h2>
+            <p>Algorithm to compute gradients using chain rule:</p>
+            <div class="math-block">
+                $$\frac{\partial L}{\partial \mathbf{W}^{[l]}} = \frac{\partial L}{\partial \mathbf{z}^{[l]}} \cdot \frac{\partial \mathbf{z}^{[l]}}{\partial \mathbf{W}^{[l]}} = \delta^{[l]} (\mathbf{a}^{[l-1]})^T$$
+            </div>
+            <div class="math-block">
+                $$\frac{\partial L}{\partial \mathbf{b}^{[l]}} = \delta^{[l]}$$
+            </div>
+            <p>where $\delta^{[l]} = \frac{\partial L}{\partial \mathbf{z}^{[l]}}$ is the error at layer $l$.</p>
+
+            <h2>8. Gradient Descent</h2>
+            <h3>8.1 Batch Gradient Descent</h3>
+            <div class="math-block">
+                $$\mathbf{W} := \mathbf{W} - \alpha \frac{\partial L}{\partial \mathbf{W}}$$
+            </div>
+
+            <h3>8.2 Stochastic Gradient Descent (SGD)</h3>
+            <p>Update parameters using one sample at a time.</p>
+
+            <h3>8.3 Mini-batch Gradient Descent</h3>
+            <p>Update parameters using small batches of samples.</p>
+
+            <h2>9. Regularization Techniques</h2>
+            <h3>9.1 L2 Regularization (Weight Decay)</h3>
+            <div class="math-block">
+                $$L_{\text{reg}} = L + \frac{\lambda}{2}\sum_{l=1}^L \|\mathbf{W}^{[l]}\|_F^2$$
+            </div>
+
+            <h3>9.2 Dropout</h3>
+            <p>Randomly set some neurons to zero during training with probability $p$.</p>
+
+            <h3>9.3 Batch Normalization</h3>
+            <p>Normalize inputs to each layer:</p>
+            <div class="math-block">
+                $$\hat{x}_i = \frac{x_i - \mu}{\sqrt{\sigma^2 + \epsilon}}$$
+            </div>
+
+            <h2>10. Convolutional Neural Networks (CNNs)</h2>
+            <p>Specialized for processing grid-like data (images).</p>
+            <h3>10.1 Convolution Operation</h3>
+            <div class="math-block">
+                $$(f * g)(t) = \sum_{m=-\infty}^{\infty} f(m)g(t-m)$$
+            </div>
+
+            <h3>10.2 Pooling</h3>
+            <p>Reduce spatial dimensions:</p>
+            <ul>
+                <li><strong>Max pooling:</strong> Take maximum value in region</li>
+                <li><strong>Average pooling:</strong> Take average value in region</li>
+            </ul>
+
+            <h2>11. Recurrent Neural Networks (RNNs)</h2>
+            <p>Networks with memory for sequential data:</p>
+            <div class="math-block">
+                $$\mathbf{h}_t = f(\mathbf{W}_{hh}\mathbf{h}_{t-1} + \mathbf{W}_{xh}\mathbf{x}_t + \mathbf{b}_h)$$
+                $$\mathbf{y}_t = \mathbf{W}_{hy}\mathbf{h}_t + \mathbf{b}_y$$
+            </div>
+
+            <h3>11.1 LSTM (Long Short-Term Memory)</h3>
+            <p>Addresses vanishing gradient problem in RNNs with gating mechanisms.</p>
+
+            <h3>11.2 GRU (Gated Recurrent Unit)</h3>
+            <p>Simplified version of LSTM with fewer parameters.</p>
+
+            <h2>12. Deep Learning Architectures</h2>
+            <h3>12.1 Autoencoders</h3>
+            <p>Learn compressed representations of data.</p>
+
+            <h3>12.2 Generative Adversarial Networks (GANs)</h3>
+            <p>Two networks competing: generator and discriminator.</p>
+
+            <h3>12.3 Transformers</h3>
+            <p>Attention-based models for sequence processing.</p>
+
+            <h2>13. Training Tips</h2>
+            <ul>
+                <li><strong>Weight initialization:</strong> Xavier/He initialization</li>
+                <li><strong>Learning rate scheduling:</strong> Decay over time</li>
+                <li><strong>Early stopping:</strong> Stop when validation loss increases</li>
+                <li><strong>Data augmentation:</strong> Increase training data diversity</li>
+            </ul>
+
+            <h2>14. Code Example</h2>
+            <pre><code># Python implementation of a simple neural network
+import numpy as np
+
+class NeuralNetwork:
+    def __init__(self, layers):
+        """
+        layers: list of layer sizes [input_size, hidden1, hidden2, ..., output_size]
+        """
+        self.layers = layers
+        self.num_layers = len(layers)
+        
+        # Initialize weights and biases
+        self.weights = []
+        self.biases = []
+        
+        for i in range(1, self.num_layers):
+            # Xavier initialization
+            w = np.random.randn(layers[i], layers[i-1]) * np.sqrt(2.0 / layers[i-1])
+            b = np.zeros((layers[i], 1))
+            self.weights.append(w)
+            self.biases.append(b)
+    
+    def sigmoid(self, z):
+        """Sigmoid activation function"""
+        return 1 / (1 + np.exp(-np.clip(z, -500, 500)))
+    
+    def sigmoid_derivative(self, z):
+        """Derivative of sigmoid function"""
+        s = self.sigmoid(z)
+        return s * (1 - s)
+    
+    def relu(self, z):
+        """ReLU activation function"""
+        return np.maximum(0, z)
+    
+    def relu_derivative(self, z):
+        """Derivative of ReLU function"""
+        return (z > 0).astype(float)
+    
+    def forward_propagation(self, X):
+        """Forward pass through the network"""
+        activations = [X]
+        zs = []
+        
+        for i in range(self.num_layers - 1):
+            z = np.dot(self.weights[i], activations[-1]) + self.biases[i]
+            zs.append(z)
+            
+            if i < self.num_layers - 2:  # Hidden layers
+                a = self.relu(z)
+            else:  # Output layer
+                a = self.sigmoid(z)
+            
+            activations.append(a)
+        
+        return activations, zs
+    
+    def backward_propagation(self, X, y, activations, zs):
+        """Backward pass to compute gradients"""
+        m = X.shape[1]  # Number of examples
+        
+        # Initialize gradients
+        dW = [np.zeros(w.shape) for w in self.weights]
+        db = [np.zeros(b.shape) for b in self.biases]
+        
+        # Output layer error
+        delta = activations[-1] - y
+        
+        # Backpropagate the error
+        for i in range(self.num_layers - 2, -1, -1):
+            dW[i] = (1/m) * np.dot(delta, activations[i].T)
+            db[i] = (1/m) * np.sum(delta, axis=1, keepdims=True)
+            
+            if i > 0:  # Not the first layer
+                delta = np.dot(self.weights[i].T, delta) * self.relu_derivative(zs[i-1])
+        
+        return dW, db
+    
+    def update_parameters(self, dW, db, learning_rate):
+        """Update weights and biases"""
+        for i in range(len(self.weights)):
+            self.weights[i] -= learning_rate * dW[i]
+            self.biases[i] -= learning_rate * db[i]
+    
+    def compute_cost(self, y_pred, y_true):
+        """Compute binary cross-entropy cost"""
+        m = y_true.shape[1]
+        cost = -(1/m) * np.sum(y_true * np.log(y_pred) + (1 - y_true) * np.log(1 - y_pred))
+        return cost
+    
+    def train(self, X, y, epochs, learning_rate):
+        """Train the neural network"""
+        costs = []
+        
+        for epoch in range(epochs):
+            # Forward propagation
+            activations, zs = self.forward_propagation(X)
+            
+            # Compute cost
+            cost = self.compute_cost(activations[-1], y)
+            costs.append(cost)
+            
+            # Backward propagation
+            dW, db = self.backward_propagation(X, y, activations, zs)
+            
+            # Update parameters
+            self.update_parameters(dW, db, learning_rate)
+            
+            if epoch % 100 == 0:
+                print(f"Cost after epoch {epoch}: {cost}")
+        
+        return costs
+    
+    def predict(self, X):
+        """Make predictions"""
+        activations, _ = self.forward_propagation(X)
+        return activations[-1] > 0.5
+
+# Example usage
+if __name__ == "__main__":
+    # Generate sample data (XOR problem)
+    X = np.array([[0, 0, 1, 1], [0, 1, 0, 1]])
+    y = np.array([[0, 1, 1, 0]])
+    
+    # Create and train network
+    nn = NeuralNetwork([2, 4, 1])
+    costs = nn.train(X, y, epochs=1000, learning_rate=1.0)
+    
+    # Make predictions
+    predictions = nn.predict(X)
+    print("Predictions:", predictions.astype(int))
+    print("Actual:", y.astype(int))
+</code></pre>
+
+            <h2>15. References</h2>
+            <ul>
+                <li>Goodfellow, I., Bengio, Y., & Courville, A. (2016). <em>Deep Learning</em>.</li>
+                <li>Nielsen, M. A. (2015). <em>Neural Networks and Deep Learning</em>.</li>
+                <li>Bishop, C. M. (2006). <em>Pattern Recognition and Machine Learning</em>.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; Diogo Franquinho | Technical Notes</p>
+    </footer>
+</body>
+</html> 

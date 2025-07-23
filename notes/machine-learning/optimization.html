@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimization Methods - Technical Notes</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/book-reviews.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="../../index.html">← Back to Home</a> | 
+        <a href="../../index.html#notes">Notes</a>
+    </nav>
+
+    <main>
+        <header>
+            <h1>Optimization Methods</h1>
+            <p class="note-meta">Last updated: December 2024</p>
+        </header>
+
+        <section class="note-content">
+            <div class="disclaimer">
+                <p><strong>Disclaimer:</strong> These are my personal notes compiled for my own reference and learning. They may contain errors, incomplete information, or personal interpretations. While I strive for accuracy, these notes are not peer-reviewed and should not be considered authoritative sources. Please consult official textbooks, research papers, or other reliable sources for academic or professional purposes.</p>
+            </div>
+            
+            <h2>1. Introduction to Optimization</h2>
+            <p>Optimization is the process of finding the best solution from a set of available alternatives. In machine learning, we typically minimize a loss function:</p>
+            <div class="math-block">
+                $$\min_{\theta} L(\theta) = \frac{1}{m}\sum_{i=1}^m \ell(f(x_i; \theta), y_i)$$
+            </div>
+
+            <h2>2. Gradient Descent</h2>
+            <p>The fundamental optimization algorithm for machine learning:</p>
+            <div class="math-block">
+                $$\theta_{t+1} = \theta_t - \alpha \nabla L(\theta_t)$$
+            </div>
+            <p>where $\alpha$ is the learning rate and $\nabla L(\theta_t)$ is the gradient.</p>
+
+            <h3>2.1 Batch Gradient Descent</h3>
+            <p>Uses the entire dataset to compute gradients:</p>
+            <div class="math-block">
+                $$\nabla L(\theta) = \frac{1}{m}\sum_{i=1}^m \nabla \ell(f(x_i; \theta), y_i)$$
+            </div>
+            <p><strong>Pros:</strong> Stable convergence, guaranteed to find global minimum for convex functions.</p>
+            <p><strong>Cons:</strong> Slow for large datasets, requires full dataset in memory.</p>
+
+            <h3>2.2 Stochastic Gradient Descent (SGD)</h3>
+            <p>Uses one sample at a time:</p>
+            <div class="math-block">
+                $$\theta_{t+1} = \theta_t - \alpha \nabla \ell(f(x_i; \theta_t), y_i)$$
+            </div>
+            <p><strong>Pros:</strong> Fast updates, can escape local minima due to noise.</p>
+            <p><strong>Cons:</strong> Noisy convergence, may not converge to exact minimum.</p>
+
+            <h3>2.3 Mini-batch Gradient Descent</h3>
+            <p>Uses small batches of samples:</p>
+            <div class="math-block">
+                $$\nabla L(\theta) = \frac{1}{|B|}\sum_{i \in B} \nabla \ell(f(x_i; \theta), y_i)$$
+            </div>
+            <p>where $B$ is a mini-batch. Balances efficiency and stability.</p>
+
+            <h2>3. Momentum Methods</h2>
+            <h3>3.1 Classical Momentum</h3>
+            <p>Accelerates SGD by accumulating velocity:</p>
+            <div class="math-block">
+                $$v_{t+1} = \beta v_t + \alpha \nabla L(\theta_t)$$
+                $$\theta_{t+1} = \theta_t - v_{t+1}$$
+            </div>
+            <p>where $\beta \in [0, 1)$ is the momentum coefficient (typically 0.9).</p>
+
+            <h3>3.2 Nesterov Accelerated Gradient (NAG)</h3>
+            <p>Looks ahead before computing gradient:</p>
+            <div class="math-block">
+                $$v_{t+1} = \beta v_t + \alpha \nabla L(\theta_t - \beta v_t)$$
+                $$\theta_{t+1} = \theta_t - v_{t+1}$$
+            </div>
+
+            <h2>4. Adaptive Learning Rate Methods</h2>
+            <h3>4.1 AdaGrad</h3>
+            <p>Adapts learning rate based on historical gradients:</p>
+            <div class="math-block">
+                $$G_t = G_{t-1} + \nabla L(\theta_t) \odot \nabla L(\theta_t)$$
+                $$\theta_{t+1} = \theta_t - \frac{\alpha}{\sqrt{G_t + \epsilon}} \odot \nabla L(\theta_t)$$
+            </div>
+            <p>where $\odot$ denotes element-wise multiplication and $\epsilon$ prevents division by zero.</p>
+
+            <h3>4.2 RMSprop</h3>
+            <p>Uses exponential moving average to prevent aggressive decrease of learning rates:</p>
+            <div class="math-block">
+                $$v_t = \beta v_{t-1} + (1-\beta) \nabla L(\theta_t) \odot \nabla L(\theta_t)$$
+                $$\theta_{t+1} = \theta_t - \frac{\alpha}{\sqrt{v_t + \epsilon}} \odot \nabla L(\theta_t)$$
+            </div>
+
+            <h3>4.3 Adam (Adaptive Moment Estimation)</h3>
+            <p>Combines momentum and adaptive learning rates:</p>
+            <div class="math-block">
+                $$m_t = \beta_1 m_{t-1} + (1-\beta_1) \nabla L(\theta_t)$$
+                $$v_t = \beta_2 v_{t-1} + (1-\beta_2) \nabla L(\theta_t) \odot \nabla L(\theta_t)$$
+                $$\hat{m}_t = \frac{m_t}{1-\beta_1^t}, \quad \hat{v}_t = \frac{v_t}{1-\beta_2^t}$$
+                $$\theta_{t+1} = \theta_t - \frac{\alpha}{\sqrt{\hat{v}_t} + \epsilon} \hat{m}_t$$
+            </div>
+            <p>where $\beta_1 = 0.9$, $\beta_2 = 0.999$, and $\epsilon = 10^{-8}$ are typical values.</p>
+
+            <h2>5. Second-Order Methods</h2>
+            <h3>5.1 Newton's Method</h3>
+            <p>Uses second-order information (Hessian matrix):</p>
+            <div class="math-block">
+                $$\theta_{t+1} = \theta_t - H^{-1}(\theta_t) \nabla L(\theta_t)$$
+            </div>
+            <p>where $H(\theta) = \nabla^2 L(\theta)$ is the Hessian matrix.</p>
+
+            <h3>5.2 Quasi-Newton Methods</h3>
+            <p><strong>BFGS:</strong> Approximates the Hessian using gradient information.</p>
+            <p><strong>L-BFGS:</strong> Limited-memory version of BFGS, more practical for large problems.</p>
+
+            <h2>6. Learning Rate Scheduling</h2>
+            <h3>6.1 Step Decay</h3>
+            <div class="math-block">
+                $$\alpha_t = \alpha_0 \cdot \gamma^{\lfloor t/s \rfloor}$$
+            </div>
+            <p>where $\gamma < 1$ and $s$ is the step size.</p>
+
+            <h3>6.2 Exponential Decay</h3>
+            <div class="math-block">
+                $$\alpha_t = \alpha_0 e^{-\lambda t}$$
+            </div>
+
+            <h3>6.3 Cosine Annealing</h3>
+            <div class="math-block">
+                $$\alpha_t = \alpha_{min} + \frac{1}{2}(\alpha_{max} - \alpha_{min})\left(1 + \cos\left(\frac{t}{T}\pi\right)\right)$$
+            </div>
+
+            <h2>7. Regularization in Optimization</h2>
+            <h3>7.1 L1 Regularization (Lasso)</h3>
+            <div class="math-block">
+                $$L_{reg}(\theta) = L(\theta) + \lambda \|\theta\|_1$$
+            </div>
+            <p>Promotes sparsity in parameters.</p>
+
+            <h3>7.2 L2 Regularization (Ridge)</h3>
+            <div class="math-block">
+                $$L_{reg}(\theta) = L(\theta) + \lambda \|\theta\|_2^2$$
+            </div>
+            <p>Penalizes large weights, equivalent to weight decay in SGD.</p>
+
+            <h3>7.3 Elastic Net</h3>
+            <div class="math-block">
+                $$L_{reg}(\theta) = L(\theta) + \lambda_1 \|\theta\|_1 + \lambda_2 \|\theta\|_2^2$$
+            </div>
+
+            <h2>8. Constrained Optimization</h2>
+            <h3>8.1 Lagrange Multipliers</h3>
+            <p>For equality constraints $g(x) = 0$:</p>
+            <div class="math-block">
+                $$\mathcal{L}(x, \lambda) = f(x) + \lambda g(x)$$
+            </div>
+
+            <h3>8.2 KKT Conditions</h3>
+            <p>For inequality constraints $g(x) \leq 0$:</p>
+            <ul>
+                <li>Stationarity: $\nabla f(x^*) + \sum_i \lambda_i \nabla g_i(x^*) = 0$</li>
+                <li>Primal feasibility: $g_i(x^*) \leq 0$</li>
+                <li>Dual feasibility: $\lambda_i \geq 0$</li>
+                <li>Complementary slackness: $\lambda_i g_i(x^*) = 0$</li>
+            </ul>
+
+            <h2>9. Optimization for Deep Learning</h2>
+            <h3>9.1 Gradient Clipping</h3>
+            <p>Prevents exploding gradients:</p>
+            <div class="math-block">
+                $$\hat{g} = \begin{cases}
+                g & \text{if } \|g\| \leq \tau \\
+                \frac{\tau}{\|g\|} g & \text{if } \|g\| > \tau
+                \end{cases}$$
+            </div>
+
+            <h3>9.2 Batch Normalization Impact</h3>
+            <p>Smooths the loss landscape, allowing higher learning rates.</p>
+
+            <h3>9.3 Learning Rate Warmup</h3>
+            <p>Gradually increase learning rate at the beginning of training.</p>
+
+            <h2>10. Non-convex Optimization</h2>
+            <p>Most deep learning problems are non-convex. Key challenges:</p>
+            <ul>
+                <li><strong>Local minima:</strong> May not be global optima</li>
+                <li><strong>Saddle points:</strong> Points where gradient is zero but not optimal</li>
+                <li><strong>Plateau regions:</strong> Flat areas with small gradients</li>
+            </ul>
+
+            <h2>11. Hyperparameter Optimization</h2>
+            <h3>11.1 Grid Search</h3>
+            <p>Exhaustive search over parameter grid.</p>
+
+            <h3>11.2 Random Search</h3>
+            <p>Random sampling from parameter distributions.</p>
+
+            <h3>11.3 Bayesian Optimization</h3>
+            <p>Uses probabilistic model to guide search.</p>
+
+            <h2>12. Code Example</h2>
+            <pre><code># Python implementation of optimization algorithms
+import numpy as np
+import matplotlib.pyplot as plt
+
+class Optimizer:
+    def __init__(self, learning_rate=0.01):
+        self.learning_rate = learning_rate
+    
+    def update(self, params, gradients):
+        raise NotImplementedError
+
+class SGD(Optimizer):
+    def __init__(self, learning_rate=0.01, momentum=0.0):
+        super().__init__(learning_rate)
+        self.momentum = momentum
+        self.velocity = None
+    
+    def update(self, params, gradients):
+        if self.velocity is None:
+            self.velocity = np.zeros_like(params)
+        
+        self.velocity = self.momentum * self.velocity - self.learning_rate * gradients
+        params += self.velocity
+        return params
+
+class Adam(Optimizer):
+    def __init__(self, learning_rate=0.001, beta1=0.9, beta2=0.999, epsilon=1e-8):
+        super().__init__(learning_rate)
+        self.beta1 = beta1
+        self.beta2 = beta2
+        self.epsilon = epsilon
+        self.m = None
+        self.v = None
+        self.t = 0
+    
+    def update(self, params, gradients):
+        if self.m is None:
+            self.m = np.zeros_like(params)
+            self.v = np.zeros_like(params)
+        
+        self.t += 1
+        
+        # Update biased first and second moment estimates
+        self.m = self.beta1 * self.m + (1 - self.beta1) * gradients
+        self.v = self.beta2 * self.v + (1 - self.beta2) * (gradients ** 2)
+        
+        # Bias correction
+        m_hat = self.m / (1 - self.beta1 ** self.t)
+        v_hat = self.v / (1 - self.beta2 ** self.t)
+        
+        # Update parameters
+        params -= self.learning_rate * m_hat / (np.sqrt(v_hat) + self.epsilon)
+        return params
+
+class RMSprop(Optimizer):
+    def __init__(self, learning_rate=0.001, decay_rate=0.9, epsilon=1e-8):
+        super().__init__(learning_rate)
+        self.decay_rate = decay_rate
+        self.epsilon = epsilon
+        self.cache = None
+    
+    def update(self, params, gradients):
+        if self.cache is None:
+            self.cache = np.zeros_like(params)
+        
+        self.cache = self.decay_rate * self.cache + (1 - self.decay_rate) * (gradients ** 2)
+        params -= self.learning_rate * gradients / (np.sqrt(self.cache) + self.epsilon)
+        return params
+
+def rosenbrock(x, y):
+    """Rosenbrock function - classic optimization test function"""
+    return (1 - x)**2 + 100 * (y - x**2)**2
+
+def rosenbrock_gradient(x, y):
+    """Gradient of Rosenbrock function"""
+    dx = -2 * (1 - x) - 400 * x * (y - x**2)
+    dy = 200 * (y - x**2)
+    return np.array([dx, dy])
+
+def optimize_function(optimizer, start_point, num_iterations=1000):
+    """Optimize Rosenbrock function using given optimizer"""
+    point = np.array(start_point, dtype=float)
+    history = [point.copy()]
+    
+    for i in range(num_iterations):
+        grad = rosenbrock_gradient(point[0], point[1])
+        point = optimizer.update(point, grad)
+        history.append(point.copy())
+    
+    return np.array(history)
+
+# Example usage
+if __name__ == "__main__":
+    start_point = [-1.5, 2.0]
+    num_iterations = 1000
+    
+    # Test different optimizers
+    optimizers = {
+        'SGD': SGD(learning_rate=0.001),
+        'SGD with Momentum': SGD(learning_rate=0.001, momentum=0.9),
+        'Adam': Adam(learning_rate=0.01),
+        'RMSprop': RMSprop(learning_rate=0.01)
+    }
+    
+    results = {}
+    for name, optimizer in optimizers.items():
+        # Reset optimizer state
+        optimizer.__init__(**optimizer.__dict__)
+        history = optimize_function(optimizer, start_point, num_iterations)
+        results[name] = history
+        
+        final_point = history[-1]
+        final_value = rosenbrock(final_point[0], final_point[1])
+        print(f"{name}: Final point = ({final_point[0]:.4f}, {final_point[1]:.4f}), "
+              f"Final value = {final_value:.6f}")
+    
+    # Plot optimization paths
+    plt.figure(figsize=(12, 8))
+    
+    # Create contour plot
+    x = np.linspace(-2, 2, 100)
+    y = np.linspace(-1, 3, 100)
+    X, Y = np.meshgrid(x, y)
+    Z = rosenbrock(X, Y)
+    
+    plt.contour(X, Y, Z, levels=np.logspace(-1, 3, 20), cmap='viridis', alpha=0.6)
+    plt.colorbar(label='Function value')
+    
+    # Plot optimization paths
+    colors = ['red', 'blue', 'green', 'orange']
+    for i, (name, history) in enumerate(results.items()):
+        plt.plot(history[:, 0], history[:, 1], colors[i], 
+                label=name, linewidth=2, alpha=0.7)
+        plt.plot(history[0, 0], history[0, 1], 'ko', markersize=8)  # Start
+        plt.plot(history[-1, 0], history[-1, 1], colors[i]+'o', markersize=8)  # End
+    
+    plt.plot(1, 1, 'r*', markersize=15, label='Global minimum')
+    plt.xlabel('x')
+    plt.ylabel('y')
+    plt.title('Optimization Paths on Rosenbrock Function')
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    plt.show()
+</code></pre>
+
+            <h2>13. References</h2>
+            <ul>
+                <li>Nocedal, J., & Wright, S. J. (2006). <em>Numerical Optimization</em>.</li>
+                <li>Boyd, S., & Vandenberghe, L. (2004). <em>Convex Optimization</em>.</li>
+                <li>Ruder, S. (2016). <em>An overview of gradient descent optimization algorithms</em>. arXiv preprint arXiv:1609.04747.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; Diogo Franquinho | Technical Notes</p>
+    </footer>
+</body>
+</html> 

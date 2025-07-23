@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sequences and Series - Technical Notes</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/book-reviews.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="../../index.html">← Back to Home</a> | 
+        <a href="../../index.html#notes">Notes</a>
+    </nav>
+
+    <main>
+        <header>
+            <h1>Sequences and Series</h1>
+            <p class="note-meta">Last updated: December 2024</p>
+        </header>
+
+        <section class="note-content">
+            <div class="disclaimer">
+                <p><strong>Disclaimer:</strong> These are my personal notes compiled for my own reference and learning. They may contain errors, incomplete information, or personal interpretations. While I strive for accuracy, these notes are not peer-reviewed and should not be considered authoritative sources. Please consult official textbooks, research papers, or other reliable sources for academic or professional purposes.</p>
+            </div>
+            
+            <h2>1. Sequences</h2>
+            <h3>1.1 Definition</h3>
+            <p>A sequence is a function $f: \mathbb{N} \rightarrow \mathbb{R}$, usually denoted as $\{a_n\}_{n=1}^{\infty}$ or simply $\{a_n\}$.</p>
+            <p>The $n$-th term is $a_n = f(n)$.</p>
+
+            <h3>1.2 Convergence of Sequences</h3>
+            <p><strong>Definition:</strong> A sequence $\{a_n\}$ converges to $L$ if:</p>
+            <div class="math-block">
+                $$\forall \epsilon > 0, \exists N \in \mathbb{N} \text{ such that } \forall n \geq N: |a_n - L| < \epsilon$$
+            </div>
+            <p>We write $\lim_{n \to \infty} a_n = L$ or $a_n \to L$.</p>
+
+            <h3>1.3 Properties of Convergent Sequences</h3>
+            <ul>
+                <li><strong>Uniqueness:</strong> If $a_n \to L$ and $a_n \to M$, then $L = M$</li>
+                <li><strong>Boundedness:</strong> Every convergent sequence is bounded</li>
+                <li><strong>Algebra of Limits:</strong> If $a_n \to L$ and $b_n \to M$, then:
+                    <ul>
+                        <li>$a_n + b_n \to L + M$</li>
+                        <li>$a_n \cdot b_n \to L \cdot M$</li>
+                        <li>$\frac{a_n}{b_n} \to \frac{L}{M}$ (if $M \neq 0$)</li>
+                    </ul>
+                </li>
+                <li><strong>Squeeze Theorem:</strong> If $a_n \leq b_n \leq c_n$ and $a_n \to L$, $c_n \to L$, then $b_n \to L$</li>
+            </ul>
+
+            <h3>1.4 Monotone Sequences</h3>
+            <p><strong>Monotone Convergence Theorem:</strong> Every bounded monotone sequence converges.</p>
+            <ul>
+                <li><strong>Increasing:</strong> $a_n \leq a_{n+1}$ for all $n$</li>
+                <li><strong>Decreasing:</strong> $a_n \geq a_{n+1}$ for all $n$</li>
+            </ul>
+
+            <h3>1.5 Subsequences</h3>
+            <p>A subsequence $\{a_{n_k}\}$ is obtained by selecting terms at indices $n_1 < n_2 < n_3 < \ldots$</p>
+            <p><strong>Bolzano-Weierstrass Theorem:</strong> Every bounded sequence has a convergent subsequence.</p>
+
+            <h3>1.6 Cauchy Sequences</h3>
+            <p><strong>Definition:</strong> A sequence $\{a_n\}$ is Cauchy if:</p>
+            <div class="math-block">
+                $$\forall \epsilon > 0, \exists N \in \mathbb{N} \text{ such that } \forall m,n \geq N: |a_m - a_n| < \epsilon$$
+            </div>
+            <p><strong>Cauchy Criterion:</strong> A sequence converges if and only if it is Cauchy.</p>
+
+            <h2>2. Series</h2>
+            <h3>2.1 Definition</h3>
+            <p>Given a sequence $\{a_n\}$, the series $\sum_{n=1}^{\infty} a_n$ is defined as the limit of partial sums:</p>
+            <div class="math-block">
+                $$S_N = \sum_{n=1}^{N} a_n$$
+            </div>
+            <p>The series converges if $\lim_{N \to \infty} S_N$ exists and is finite.</p>
+
+            <h3>2.2 Convergence Tests</h3>
+            <h4>2.2.1 Divergence Test</h4>
+            <p>If $\lim_{n \to \infty} a_n \neq 0$, then $\sum a_n$ diverges.</p>
+            <p><strong>Note:</strong> If $\lim_{n \to \infty} a_n = 0$, the series may converge or diverge.</p>
+
+            <h4>2.2.2 Integral Test</h4>
+            <p>If $f(x)$ is positive, continuous, and decreasing for $x \geq 1$, then:</p>
+            <div class="math-block">
+                $$\sum_{n=1}^{\infty} f(n) \text{ and } \int_1^{\infty} f(x) dx$$
+            </div>
+            <p>either both converge or both diverge.</p>
+
+            <h4>2.2.3 Comparison Tests</h4>
+            <p><strong>Direct Comparison:</strong> If $0 \leq a_n \leq b_n$ for all $n$:</p>
+            <ul>
+                <li>If $\sum b_n$ converges, then $\sum a_n$ converges</li>
+                <li>If $\sum a_n$ diverges, then $\sum b_n$ diverges</li>
+            </ul>
+            
+            <p><strong>Limit Comparison:</strong> If $a_n, b_n > 0$ and $\lim_{n \to \infty} \frac{a_n}{b_n} = c > 0$, then $\sum a_n$ and $\sum b_n$ have the same convergence behavior.</p>
+
+            <h4>2.2.4 Ratio Test</h4>
+            <p>For $\sum a_n$ with $a_n > 0$, let $L = \lim_{n \to \infty} \frac{a_{n+1}}{a_n}$:</p>
+            <ul>
+                <li>If $L < 1$, the series converges</li>
+                <li>If $L > 1$, the series diverges</li>
+                <li>If $L = 1$, the test is inconclusive</li>
+            </ul>
+
+            <h4>2.2.5 Root Test</h4>
+            <p>For $\sum a_n$ with $a_n \geq 0$, let $L = \lim_{n \to \infty} \sqrt[n]{a_n}$:</p>
+            <ul>
+                <li>If $L < 1$, the series converges</li>
+                <li>If $L > 1$, the series diverges</li>
+                <li>If $L = 1$, the test is inconclusive</li>
+            </ul>
+
+            <h3>2.3 Alternating Series</h3>
+            <p><strong>Alternating Series Test (Leibniz):</strong> If $\{a_n\}$ is decreasing and $a_n \to 0$, then $\sum (-1)^n a_n$ converges.</p>
+            
+            <p><strong>Error Estimation:</strong> For alternating series, the error in using $S_N$ as an approximation is at most $|a_{N+1}|$.</p>
+
+            <h3>2.4 Absolute and Conditional Convergence</h3>
+            <ul>
+                <li><strong>Absolutely Convergent:</strong> $\sum |a_n|$ converges</li>
+                <li><strong>Conditionally Convergent:</strong> $\sum a_n$ converges but $\sum |a_n|$ diverges</li>
+            </ul>
+            <p><strong>Theorem:</strong> If $\sum |a_n|$ converges, then $\sum a_n$ converges.</p>
+
+            <h2>3. Power Series</h2>
+            <h3>3.1 Definition</h3>
+            <p>A power series centered at $a$ is:</p>
+            <div class="math-block">
+                $$\sum_{n=0}^{\infty} c_n (x-a)^n$$
+            </div>
+            <p>where $c_n$ are coefficients and $a$ is the center.</p>
+
+            <h3>3.2 Radius of Convergence</h3>
+            <p>For every power series, there exists $R \geq 0$ (possibly $\infty$) such that:</p>
+            <ul>
+                <li>The series converges for $|x-a| < R$</li>
+                <li>The series diverges for $|x-a| > R$</li>
+                <li>Convergence at $|x-a| = R$ must be checked separately</li>
+            </ul>
+
+            <p><strong>Formula for Radius of Convergence:</strong></p>
+            <div class="math-block">
+                $$R = \frac{1}{\lim_{n \to \infty} \left|\frac{c_{n+1}}{c_n}\right|} \quad \text{or} \quad R = \frac{1}{\lim_{n \to \infty} \sqrt[n]{|c_n|}}$$
+            </div>
+
+            <h3>3.3 Properties of Power Series</h3>
+            <ul>
+                <li><strong>Term-by-term differentiation:</strong> Inside the radius of convergence</li>
+                <li><strong>Term-by-term integration:</strong> Inside the radius of convergence</li>
+                <li><strong>Uniform convergence:</strong> On compact subsets of the interval of convergence</li>
+            </ul>
+
+            <h2>4. Taylor and Maclaurin Series</h2>
+            <h3>4.1 Taylor Series</h3>
+            <p>If $f$ is infinitely differentiable at $a$, the Taylor series is:</p>
+            <div class="math-block">
+                $$f(x) = \sum_{n=0}^{\infty} \frac{f^{(n)}(a)}{n!}(x-a)^n$$
+            </div>
+
+            <h3>4.2 Maclaurin Series</h3>
+            <p>Taylor series centered at $a = 0$:</p>
+            <div class="math-block">
+                $$f(x) = \sum_{n=0}^{\infty} \frac{f^{(n)}(0)}{n!}x^n$$
+            </div>
+
+            <h3>4.3 Common Maclaurin Series</h3>
+            <ul>
+                <li>$e^x = \sum_{n=0}^{\infty} \frac{x^n}{n!} = 1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \ldots$</li>
+                <li>$\sin x = \sum_{n=0}^{\infty} \frac{(-1)^n x^{2n+1}}{(2n+1)!} = x - \frac{x^3}{3!} + \frac{x^5}{5!} - \ldots$</li>
+                <li>$\cos x = \sum_{n=0}^{\infty} \frac{(-1)^n x^{2n}}{(2n)!} = 1 - \frac{x^2}{2!} + \frac{x^4}{4!} - \ldots$</li>
+                <li>$\frac{1}{1-x} = \sum_{n=0}^{\infty} x^n = 1 + x + x^2 + x^3 + \ldots$ for $|x| < 1$</li>
+                <li>$(1+x)^r = \sum_{n=0}^{\infty} \binom{r}{n} x^n$ for $|x| < 1$</li>
+                <li>$\ln(1+x) = \sum_{n=1}^{\infty} \frac{(-1)^{n+1} x^n}{n} = x - \frac{x^2}{2} + \frac{x^3}{3} - \ldots$ for $|x| < 1$</li>
+            </ul>
+
+            <h3>4.4 Taylor's Theorem with Remainder</h3>
+            <p><strong>Lagrange Form:</strong></p>
+            <div class="math-block">
+                $$f(x) = \sum_{n=0}^{N} \frac{f^{(n)}(a)}{n!}(x-a)^n + \frac{f^{(N+1)}(c)}{(N+1)!}(x-a)^{N+1}$$
+            </div>
+            <p>where $c$ is between $a$ and $x$.</p>
+
+            <h2>5. Special Series</h2>
+            <h3>5.1 Geometric Series</h3>
+            <div class="math-block">
+                $$\sum_{n=0}^{\infty} ar^n = \frac{a}{1-r} \quad \text{for } |r| < 1$$
+            </div>
+
+            <h3>5.2 Harmonic Series</h3>
+            <div class="math-block">
+                $$\sum_{n=1}^{\infty} \frac{1}{n} = 1 + \frac{1}{2} + \frac{1}{3} + \ldots \quad \text{(diverges)}$$
+            </div>
+
+            <h3>5.3 p-Series</h3>
+            <div class="math-block">
+                $$\sum_{n=1}^{\infty} \frac{1}{n^p} \begin{cases}
+                \text{converges} & \text{if } p > 1 \\
+                \text{diverges} & \text{if } p \leq 1
+                \end{cases}$$
+            </div>
+
+            <h3>5.4 Telescoping Series</h3>
+            <p>Series where consecutive terms cancel:</p>
+            <div class="math-block">
+                $$\sum_{n=1}^{\infty} (a_n - a_{n+1}) = a_1 - \lim_{n \to \infty} a_n$$
+            </div>
+
+            <h2>6. Fourier Series</h2>
+            <h3>6.1 Definition</h3>
+            <p>For a periodic function $f(x)$ with period $2\pi$:</p>
+            <div class="math-block">
+                $$f(x) = \frac{a_0}{2} + \sum_{n=1}^{\infty} \left(a_n \cos(nx) + b_n \sin(nx)\right)$$
+            </div>
+            <p>where:</p>
+            <div class="math-block">
+                $$a_n = \frac{1}{\pi} \int_{-\pi}^{\pi} f(x) \cos(nx) dx$$
+                $$b_n = \frac{1}{\pi} \int_{-\pi}^{\pi} f(x) \sin(nx) dx$$
+            </div>
+
+            <h3>6.2 Convergence of Fourier Series</h3>
+            <p><strong>Dirichlet Conditions:</strong> If $f$ is periodic, piecewise continuous, and has finitely many maxima and minima in one period, then the Fourier series converges to:</p>
+            <ul>
+                <li>$f(x)$ at points of continuity</li>
+                <li>$\frac{f(x^+) + f(x^-)}{2}$ at points of discontinuity</li>
+            </ul>
+
+            <h2>7. Code Examples</h2>
+            <pre><code># Python implementations for sequences and series analysis
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy import integrate
+import sympy as sp
+
+class SequenceAnalyzer:
+    def __init__(self, formula, symbolic_var='n'):
+        """
+        Initialize with a formula for the sequence
+        formula: symbolic expression or lambda function
+        """
+        if isinstance(formula, str):
+            self.symbolic_var = sp.Symbol(symbolic_var)
+            self.formula = sp.sympify(formula)
+            self.func = sp.lambdify(self.symbolic_var, self.formula, 'numpy')
+        else:
+            self.func = formula
+            self.formula = None
+    
+    def generate_terms(self, n_terms=50, start=1):
+        """Generate first n_terms of the sequence"""
+        indices = np.arange(start, start + n_terms)
+        return indices, self.func(indices)
+    
+    def plot_sequence(self, n_terms=50, start=1):
+        """Plot the sequence"""
+        indices, terms = self.generate_terms(n_terms, start)
+        
+        plt.figure(figsize=(10, 6))
+        plt.plot(indices, terms, 'bo-', markersize=4, linewidth=1)
+        plt.xlabel('n')
+        plt.ylabel('a_n')
+        plt.title('Sequence Terms')
+        plt.grid(True, alpha=0.3)
+        plt.show()
+    
+    def check_convergence(self, n_terms=1000, tolerance=1e-10):
+        """Heuristic check for convergence"""
+        indices, terms = self.generate_terms(n_terms)
+        
+        # Check if terms approach zero (necessary condition)
+        if abs(terms[-1]) > tolerance:
+            return False, f"Last term |a_{n_terms}| = {abs(terms[-1]):.2e} > {tolerance}"
+        
+        # Check if sequence is Cauchy
+        tail_length = min(100, n_terms // 4)
+        tail = terms[-tail_length:]
+        max_diff = np.max(np.abs(np.diff(tail)))
+        
+        if max_diff < tolerance:
+            return True, f"Sequence appears to converge (max difference in tail: {max_diff:.2e})"
+        else:
+            return False, f"Sequence may not converge (max difference in tail: {max_diff:.2e})"
+
+class SeriesAnalyzer:
+    def __init__(self, term_formula, symbolic_var='n'):
+        """
+        Initialize with a formula for series terms
+        """
+        if isinstance(term_formula, str):
+            self.symbolic_var = sp.Symbol(symbolic_var)
+            self.formula = sp.sympify(term_formula)
+            self.func = sp.lambdify(self.symbolic_var, self.formula, 'numpy')
+        else:
+            self.func = term_formula
+            self.formula = None
+    
+    def partial_sums(self, n_terms=100, start=1):
+        """Calculate partial sums"""
+        indices = np.arange(start, start + n_terms)
+        terms = self.func(indices)
+        partial_sums = np.cumsum(terms)
+        return indices, terms, partial_sums
+    
+    def ratio_test(self, n_terms=100, start=1):
+        """Apply ratio test"""
+        indices = np.arange(start, start + n_terms)
+        terms = np.abs(self.func(indices))
+        
+        # Calculate ratios a_{n+1}/a_n
+        ratios = terms[1:] / terms[:-1]
+        
+        # Remove any infinite or NaN values
+        valid_ratios = ratios[np.isfinite(ratios)]
+        
+        if len(valid_ratios) == 0:
+            return None, "No valid ratios found"
+        
+        # Check if ratios approach a limit
+        tail_ratios = valid_ratios[-20:]  # Last 20 ratios
+        limit = np.mean(tail_ratios)
+        
+        if limit < 1:
+            return "Convergent", f"Ratio test: limit ≈ {limit:.4f} < 1"
+        elif limit > 1:
+            return "Divergent", f"Ratio test: limit ≈ {limit:.4f} > 1"
+        else:
+            return "Inconclusive", f"Ratio test: limit ≈ {limit:.4f} = 1"
+    
+    def plot_convergence(self, n_terms=100, start=1):
+        """Plot partial sums to visualize convergence"""
+        indices, terms, partial_sums = self.partial_sums(n_terms, start)
+        
+        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 8))
+        
+        # Plot terms
+        ax1.plot(indices, terms, 'bo-', markersize=3, linewidth=1)
+        ax1.set_xlabel('n')
+        ax1.set_ylabel('a_n')
+        ax1.set_title('Series Terms')
+        ax1.grid(True, alpha=0.3)
+        
+        # Plot partial sums
+        ax2.plot(indices, partial_sums, 'ro-', markersize=3, linewidth=1)
+        ax2.set_xlabel('n')
+        ax2.set_ylabel('S_n')
+        ax2.set_title('Partial Sums')
+        ax2.grid(True, alpha=0.3)
+        
+        plt.tight_layout()
+        plt.show()
+        
+        return partial_sums[-1]
+
+class PowerSeries:
+    def __init__(self, coefficients, center=0):
+        """
+        Initialize power series with coefficients
+        coefficients: list or function that gives c_n
+        center: center of the series
+        """
+        self.coefficients = coefficients
+        self.center = center
+    
+    def radius_of_convergence(self, n_terms=100):
+        """Estimate radius of convergence using ratio test"""
+        if callable(self.coefficients):
+            coeffs = [self.coefficients(n) for n in range(n_terms)]
+        else:
+            coeffs = self.coefficients[:n_terms]
+        
+        # Remove zeros to avoid division issues
+        nonzero_coeffs = [c for c in coeffs if c != 0]
+        
+        if len(nonzero_coeffs) < 2:
+            return float('inf')
+        
+        # Calculate ratios |c_n|/|c_{n+1}|
+        ratios = []
+        for i in range(len(nonzero_coeffs) - 1):
+            if nonzero_coeffs[i+1] != 0:
+                ratios.append(abs(nonzero_coeffs[i]) / abs(nonzero_coeffs[i+1]))
+        
+        if ratios:
+            return np.mean(ratios[-10:])  # Average of last 10 ratios
+        else:
+            return float('inf')
+    
+    def evaluate(self, x, n_terms=50):
+        """Evaluate power series at point x"""
+        if callable(self.coefficients):
+            coeffs = [self.coefficients(n) for n in range(n_terms)]
+        else:
+            coeffs = self.coefficients[:n_terms]
+        
+        result = 0
+        power = 1
+        for n, c in enumerate(coeffs):
+            result += c * power
+            power *= (x - self.center)
+        
+        return result
+    
+    def plot_function(self, x_range=(-2, 2), n_terms=50, num_points=1000):
+        """Plot the function represented by the power series"""
+        x = np.linspace(x_range[0], x_range[1], num_points)
+        y = [self.evaluate(xi, n_terms) for xi in x]
+        
+        plt.figure(figsize=(10, 6))
+        plt.plot(x, y, 'b-', linewidth=2)
+        plt.xlabel('x')
+        plt.ylabel('f(x)')
+        plt.title(f'Power Series (first {n_terms} terms)')
+        plt.grid(True, alpha=0.3)
+        plt.show()
+
+def taylor_series_demo():
+    """Demonstrate Taylor series for common functions"""
+    x = sp.Symbol('x')
+    
+    # Define functions and their Taylor series
+    functions = {
+        'exp(x)': sp.exp(x),
+        'sin(x)': sp.sin(x),
+        'cos(x)': sp.cos(x),
+        '1/(1-x)': 1/(1-x),
+        'ln(1+x)': sp.log(1+x)
+    }
+    
+    for name, func in functions.items():
+        print(f"\n{name}:")
+        # Calculate Taylor series at x=0
+        series = func.series(x, 0, 6).removeO()
+        print(f"Taylor series: {series}")
+        
+        # Convert to power series coefficients
+        poly = sp.Poly(series, x)
+        coeffs = poly.all_coeffs()
+        coeffs.reverse()  # Reverse to get [c_0, c_1, c_2, ...]
+        print(f"Coefficients: {coeffs}")
+
+# Convergence tests implementation
+def convergence_tests(series_analyzer, n_terms=100):
+    """Apply various convergence tests"""
+    print("=== Convergence Analysis ===")
+    
+    # Ratio test
+    result, explanation = series_analyzer.ratio_test(n_terms)
+    print(f"Ratio Test: {result}")
+    print(f"  {explanation}")
+    
+    # Check if terms approach zero (necessary condition)
+    _, terms, _ = series_analyzer.partial_sums(n_terms)
+    last_term = terms[-1]
+    print(f"\nDivergence Test:")
+    if abs(last_term) < 1e-10:
+        print(f"  Terms approach zero (a_{n_terms} ≈ {last_term:.2e})")
+    else:
+        print(f"  Terms do not approach zero (a_{n_terms} = {last_term:.4f})")
+        print("  Series diverges by divergence test!")
+
+# Example usage
+if __name__ == "__main__":
+    print("=== Sequence Analysis ===")
+    
+    # Example 1: Sequence 1/n
+    seq1 = SequenceAnalyzer(lambda n: 1/n)
+    converges, msg = seq1.check_convergence()
+    print(f"Sequence 1/n: {msg}")
+    
+    # Example 2: Sequence (-1)^n/n
+    seq2 = SequenceAnalyzer(lambda n: (-1)**n / n)
+    converges, msg = seq2.check_convergence()
+    print(f"Sequence (-1)^n/n: {msg}")
+    
+    print("\n=== Series Analysis ===")
+    
+    # Example 1: Harmonic series
+    harmonic = SeriesAnalyzer(lambda n: 1/n)
+    print("Harmonic series 1/n:")
+    convergence_tests(harmonic)
+    
+    # Example 2: Geometric series with r = 1/2
+    geometric = SeriesAnalyzer(lambda n: (0.5)**n)
+    print("\nGeometric series (1/2)^n:")
+    convergence_tests(geometric)
+    
+    # Example 3: Alternating harmonic series
+    alt_harmonic = SeriesAnalyzer(lambda n: (-1)**(n+1) / n)
+    print("\nAlternating harmonic series (-1)^(n+1)/n:")
+    convergence_tests(alt_harmonic)
+    
+    print("\n=== Power Series ===")
+    
+    # Geometric series 1/(1-x) = sum(x^n)
+    geom_coeffs = [1] * 50  # All coefficients are 1
+    ps = PowerSeries(geom_coeffs)
+    R = ps.radius_of_convergence()
+    print(f"Geometric series radius of convergence: {R:.4f}")
+    
+    # Evaluate at x = 0.5
+    value = ps.evaluate(0.5)
+    analytical = 1 / (1 - 0.5)
+    print(f"Series at x=0.5: {value:.6f}")
+    print(f"Analytical 1/(1-0.5): {analytical:.6f}")
+    
+    print("\n=== Taylor Series Demo ===")
+    taylor_series_demo()
+</code></pre>
+
+            <h2>8. Applications</h2>
+            <h3>8.1 Mathematical Analysis</h3>
+            <ul>
+                <li>Foundation for calculus and real analysis</li>
+                <li>Function approximation and numerical methods</li>
+                <li>Fourier analysis and signal processing</li>
+            </ul>
+
+            <h3>8.2 Physics and Engineering</h3>
+            <ul>
+                <li>Quantum mechanics (wave functions)</li>
+                <li>Heat transfer and diffusion equations</li>
+                <li>Circuit analysis and control systems</li>
+            </ul>
+
+            <h3>8.3 Computer Science</h3>
+            <ul>
+                <li>Algorithm analysis and complexity</li>
+                <li>Numerical computation and approximation</li>
+                <li>Machine learning (optimization convergence)</li>
+            </ul>
+
+            <h2>9. References</h2>
+            <ul>
+                <li>Rudin, W. (1976). <em>Principles of Mathematical Analysis</em>.</li>
+                <li>Apostol, T. M. (1974). <em>Mathematical Analysis</em>.</li>
+                <li>Bartle, R. G., & Sherbert, D. R. (2011). <em>Introduction to Real Analysis</em>.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; Diogo Franquinho | Technical Notes</p>
+    </footer>
+</body>
+</html> 

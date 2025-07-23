@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graph Theory - Technical Notes</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/book-reviews.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="../../index.html">← Back to Home</a> | 
+        <a href="../../index.html#notes">Notes</a>
+    </nav>
+
+    <main>
+        <header>
+            <h1>Graph Theory</h1>
+            <p class="note-meta">Last updated: December 2024</p>
+        </header>
+
+        <section class="note-content">
+            <div class="disclaimer">
+                <p><strong>Disclaimer:</strong> These are my personal notes compiled for my own reference and learning. They may contain errors, incomplete information, or personal interpretations. While I strive for accuracy, these notes are not peer-reviewed and should not be considered authoritative sources. Please consult official textbooks, research papers, or other reliable sources for academic or professional purposes.</p>
+            </div>
+            
+            <h2>1. Basic Definitions</h2>
+            <p>A graph $G = (V, E)$ consists of a set of vertices $V$ and a set of edges $E$, where each edge connects two vertices.</p>
+
+            <h3>1.1 Types of Graphs</h3>
+            <ul>
+                <li><strong>Simple Graph:</strong> No self-loops or multiple edges</li>
+                <li><strong>Multigraph:</strong> Multiple edges allowed between vertices</li>
+                <li><strong>Directed Graph (Digraph):</strong> Edges have direction</li>
+                <li><strong>Weighted Graph:</strong> Edges have associated weights</li>
+                <li><strong>Complete Graph:</strong> Every pair of vertices is connected</li>
+                <li><strong>Bipartite Graph:</strong> Vertices can be divided into two disjoint sets</li>
+            </ul>
+
+            <h3>1.2 Basic Parameters</h3>
+            <ul>
+                <li><strong>Order:</strong> Number of vertices $|V| = n$</li>
+                <li><strong>Size:</strong> Number of edges $|E| = m$</li>
+                <li><strong>Degree:</strong> $\deg(v)$ = number of edges incident to vertex $v$</li>
+                <li><strong>Maximum Degree:</strong> $\Delta(G) = \max_{v \in V} \deg(v)$</li>
+                <li><strong>Minimum Degree:</strong> $\delta(G) = \min_{v \in V} \deg(v)$</li>
+            </ul>
+
+            <h2>2. Fundamental Theorems</h2>
+            <h3>2.1 Handshaking Lemma</h3>
+            <div class="math-block">
+                $$\sum_{v \in V} \deg(v) = 2|E|$$
+            </div>
+            <p><strong>Corollary:</strong> The number of vertices with odd degree is even.</p>
+
+            <h3>2.2 Bounds on Edges</h3>
+            <p>For a simple graph with $n$ vertices:</p>
+            <div class="math-block">
+                $$|E| \leq \binom{n}{2} = \frac{n(n-1)}{2}$$
+            </div>
+
+            <h2>3. Graph Connectivity</h2>
+            <h3>3.1 Connectivity Definitions</h3>
+            <ul>
+                <li><strong>Connected:</strong> Path exists between every pair of vertices</li>
+                <li><strong>Component:</strong> Maximal connected subgraph</li>
+                <li><strong>Cut Vertex:</strong> Vertex whose removal increases components</li>
+                <li><strong>Bridge:</strong> Edge whose removal increases components</li>
+                <li><strong>$k$-connected:</strong> Remains connected after removing any $k-1$ vertices</li>
+            </ul>
+
+            <h3>3.2 Connectivity Numbers</h3>
+            <ul>
+                <li><strong>Vertex Connectivity:</strong> $\kappa(G)$ = minimum vertices to disconnect</li>
+                <li><strong>Edge Connectivity:</strong> $\lambda(G)$ = minimum edges to disconnect</li>
+                <li><strong>Whitney's Inequality:</strong> $\kappa(G) \leq \lambda(G) \leq \delta(G)$</li>
+            </ul>
+
+            <h2>4. Trees and Forests</h2>
+            <h3>4.1 Tree Properties</h3>
+            <p>A tree is a connected acyclic graph. Equivalent characterizations:</p>
+            <ul>
+                <li>Connected with $n-1$ edges</li>
+                <li>Acyclic with $n-1$ edges</li>
+                <li>Unique path between every pair of vertices</li>
+                <li>Minimal connected graph</li>
+                <li>Maximal acyclic graph</li>
+            </ul>
+
+            <h3>4.2 Spanning Trees</h3>
+            <p>A spanning tree of $G$ is a subgraph that is a tree and includes all vertices.</p>
+            <p><strong>Cayley's Formula:</strong> The number of labeled spanning trees of $K_n$ is $n^{n-2}$.</p>
+
+            <h3>4.3 Minimum Spanning Tree Algorithms</h3>
+            <h4>Kruskal's Algorithm</h4>
+            <ol>
+                <li>Sort edges by weight</li>
+                <li>Add edges if they don't create a cycle</li>
+                <li>Use Union-Find for cycle detection</li>
+            </ol>
+            <p>Time complexity: $O(m \log m)$</p>
+
+            <h4>Prim's Algorithm</h4>
+            <ol>
+                <li>Start with arbitrary vertex</li>
+                <li>Repeatedly add minimum weight edge to tree</li>
+                <li>Use priority queue for efficiency</li>
+            </ol>
+            <p>Time complexity: $O(m \log n)$ with binary heap</p>
+
+            <h2>5. Shortest Path Algorithms</h2>
+            <h3>5.1 Single-Source Shortest Paths</h3>
+            <h4>Dijkstra's Algorithm</h4>
+            <p>For non-negative weights:</p>
+            <div class="math-block">
+                $$d[v] = \min(d[v], d[u] + w(u,v))$$
+            </div>
+            <p>Time complexity: $O((n + m) \log n)$ with Fibonacci heap</p>
+
+            <h4>Bellman-Ford Algorithm</h4>
+            <p>Handles negative weights, detects negative cycles:</p>
+            <p>Time complexity: $O(nm)$</p>
+
+            <h3>5.2 All-Pairs Shortest Paths</h3>
+            <h4>Floyd-Warshall Algorithm</h4>
+            <div class="math-block">
+                $$d[i][j] = \min(d[i][j], d[i][k] + d[k][j])$$
+            </div>
+            <p>Time complexity: $O(n^3)$</p>
+
+            <h2>6. Graph Coloring</h2>
+            <h3>6.1 Vertex Coloring</h3>
+            <p>A proper coloring assigns colors to vertices such that adjacent vertices have different colors.</p>
+            <ul>
+                <li><strong>Chromatic Number:</strong> $\chi(G)$ = minimum colors needed</li>
+                <li><strong>Clique Number:</strong> $\omega(G)$ = size of largest clique</li>
+                <li><strong>Independence Number:</strong> $\alpha(G)$ = size of largest independent set</li>
+            </ul>
+
+            <h3>6.2 Important Results</h3>
+            <ul>
+                <li>$\chi(G) \geq \omega(G)$</li>
+                <li>$\chi(G) \leq \Delta(G) + 1$ (Greedy bound)</li>
+                <li>$\chi(G) \leq \Delta(G)$ if $G$ is not complete or odd cycle (Brooks' theorem)</li>
+                <li>$\alpha(G) \cdot \chi(G) \geq n$</li>
+            </ul>
+
+            <h3>6.3 Four Color Theorem</h3>
+            <p>Every planar graph is 4-colorable. This was the first major theorem proved using computer assistance.</p>
+
+            <h2>7. Planar Graphs</h2>
+            <h3>7.1 Euler's Formula</h3>
+            <p>For a connected planar graph:</p>
+            <div class="math-block">
+                $$n - m + f = 2$$
+            </div>
+            <p>where $f$ is the number of faces (including the outer face).</p>
+
+            <h3>7.2 Consequences of Euler's Formula</h3>
+            <ul>
+                <li>For $n \geq 3$: $m \leq 3n - 6$</li>
+                <li>For triangle-free graphs with $n \geq 3$: $m \leq 2n - 4$</li>
+                <li>Every planar graph has a vertex of degree $\leq 5$</li>
+            </ul>
+
+            <h3>7.3 Kuratowski's Theorem</h3>
+            <p>A graph is planar if and only if it contains no subdivision of $K_5$ or $K_{3,3}$.</p>
+
+            <h2>8. Matching Theory</h2>
+            <h3>8.1 Basic Definitions</h3>
+            <ul>
+                <li><strong>Matching:</strong> Set of edges with no common vertices</li>
+                <li><strong>Maximum Matching:</strong> Matching with maximum number of edges</li>
+                <li><strong>Perfect Matching:</strong> Matching covering all vertices</li>
+                <li><strong>Vertex Cover:</strong> Set of vertices covering all edges</li>
+            </ul>
+
+            <h3>8.2 König's Theorem</h3>
+            <p>In a bipartite graph:</p>
+            <div class="math-block">
+                $$\text{size of maximum matching} = \text{size of minimum vertex cover}$$
+            </div>
+
+            <h3>8.3 Hall's Marriage Theorem</h3>
+            <p>A bipartite graph $G = (A \cup B, E)$ has a matching saturating $A$ if and only if:</p>
+            <div class="math-block">
+                $$|N(S)| \geq |S| \text{ for all } S \subseteq A$$
+            </div>
+            <p>where $N(S)$ is the neighborhood of $S$.</p>
+
+            <h2>9. Network Flows</h2>
+            <h3>9.1 Maximum Flow Problem</h3>
+            <p>Given a flow network with source $s$ and sink $t$, find maximum flow from $s$ to $t$.</p>
+
+            <h3>9.2 Max-Flow Min-Cut Theorem</h3>
+            <p>The maximum flow equals the minimum cut capacity.</p>
+
+            <h3>9.3 Ford-Fulkerson Algorithm</h3>
+            <ol>
+                <li>Find augmenting path from source to sink</li>
+                <li>Augment flow along this path</li>
+                <li>Repeat until no augmenting path exists</li>
+            </ol>
+
+            <h2>10. Eulerian and Hamiltonian Graphs</h2>
+            <h3>10.1 Eulerian Paths and Cycles</h3>
+            <ul>
+                <li><strong>Eulerian Path:</strong> Path using every edge exactly once</li>
+                <li><strong>Eulerian Cycle:</strong> Cycle using every edge exactly once</li>
+            </ul>
+            <p><strong>Theorem:</strong> A connected graph has an Eulerian cycle if and only if every vertex has even degree.</p>
+
+            <h3>10.2 Hamiltonian Paths and Cycles</h3>
+            <ul>
+                <li><strong>Hamiltonian Path:</strong> Path visiting every vertex exactly once</li>
+                <li><strong>Hamiltonian Cycle:</strong> Cycle visiting every vertex exactly once</li>
+            </ul>
+            <p><strong>Dirac's Theorem:</strong> If $\delta(G) \geq n/2$ in a graph with $n \geq 3$, then $G$ is Hamiltonian.</p>
+
+            <h2>11. Graph Algorithms Implementation</h2>
+            <pre><code># Python implementation of key graph algorithms
+from collections import defaultdict, deque
+import heapq
+
+class Graph:
+    def __init__(self, directed=False):
+        self.directed = directed
+        self.adj_list = defaultdict(list)
+        self.vertices = set()
+    
+    def add_edge(self, u, v, weight=1):
+        self.adj_list[u].append((v, weight))
+        self.vertices.update([u, v])
+        if not self.directed:
+            self.adj_list[v].append((u, weight))
+    
+    def dfs(self, start, visited=None):
+        if visited is None:
+            visited = set()
+        
+        visited.add(start)
+        result = [start]
+        
+        for neighbor, _ in self.adj_list[start]:
+            if neighbor not in visited:
+                result.extend(self.dfs(neighbor, visited))
+        
+        return result
+    
+    def bfs(self, start):
+        visited = set([start])
+        queue = deque([start])
+        result = []
+        
+        while queue:
+            vertex = queue.popleft()
+            result.append(vertex)
+            
+            for neighbor, _ in self.adj_list[vertex]:
+                if neighbor not in visited:
+                    visited.add(neighbor)
+                    queue.append(neighbor)
+        
+        return result
+    
+    def dijkstra(self, start):
+        distances = {v: float('inf') for v in self.vertices}
+        distances[start] = 0
+        previous = {}
+        pq = [(0, start)]
+        
+        while pq:
+            current_dist, current = heapq.heappop(pq)
+            
+            if current_dist > distances[current]:
+                continue
+            
+            for neighbor, weight in self.adj_list[current]:
+                distance = current_dist + weight
+                
+                if distance < distances[neighbor]:
+                    distances[neighbor] = distance
+                    previous[neighbor] = current
+                    heapq.heappush(pq, (distance, neighbor))
+        
+        return distances, previous
+    
+    def kruskal_mst(self):
+        # Union-Find for cycle detection
+        parent = {}
+        rank = {}
+        
+        def find(x):
+            if parent[x] != x:
+                parent[x] = find(parent[x])
+            return parent[x]
+        
+        def union(x, y):
+            px, py = find(x), find(y)
+            if px == py:
+                return False
+            if rank[px] < rank[py]:
+                px, py = py, px
+            parent[py] = px
+            if rank[px] == rank[py]:
+                rank[px] += 1
+            return True
+        
+        # Initialize Union-Find
+        for v in self.vertices:
+            parent[v] = v
+            rank[v] = 0
+        
+        # Get all edges and sort by weight
+        edges = []
+        for u in self.adj_list:
+            for v, weight in self.adj_list[u]:
+                if not self.directed and u <= v:  # Avoid duplicates
+                    edges.append((weight, u, v))
+                elif self.directed:
+                    edges.append((weight, u, v))
+        
+        edges.sort()
+        mst_edges = []
+        total_weight = 0
+        
+        for weight, u, v in edges:
+            if union(u, v):
+                mst_edges.append((u, v, weight))
+                total_weight += weight
+        
+        return mst_edges, total_weight
+    
+    def is_bipartite(self):
+        color = {}
+        
+        for start in self.vertices:
+            if start in color:
+                continue
+            
+            queue = deque([start])
+            color[start] = 0
+            
+            while queue:
+                u = queue.popleft()
+                for v, _ in self.adj_list[u]:
+                    if v not in color:
+                        color[v] = 1 - color[u]
+                        queue.append(v)
+                    elif color[v] == color[u]:
+                        return False
+        
+        return True
+    
+    def topological_sort(self):
+        if not self.directed:
+            raise ValueError("Topological sort only applies to directed graphs")
+        
+        in_degree = {v: 0 for v in self.vertices}
+        for u in self.adj_list:
+            for v, _ in self.adj_list[u]:
+                in_degree[v] += 1
+        
+        queue = deque([v for v in self.vertices if in_degree[v] == 0])
+        result = []
+        
+        while queue:
+            u = queue.popleft()
+            result.append(u)
+            
+            for v, _ in self.adj_list[u]:
+                in_degree[v] -= 1
+                if in_degree[v] == 0:
+                    queue.append(v)
+        
+        if len(result) != len(self.vertices):
+            raise ValueError("Graph contains a cycle")
+        
+        return result
+    
+    def floyd_warshall(self):
+        vertices = list(self.vertices)
+        n = len(vertices)
+        vertex_to_index = {v: i for i, v in enumerate(vertices)}
+        
+        # Initialize distance matrix
+        dist = [[float('inf')] * n for _ in range(n)]
+        
+        # Distance from vertex to itself is 0
+        for i in range(n):
+            dist[i][i] = 0
+        
+        # Fill in edge weights
+        for u in self.adj_list:
+            for v, weight in self.adj_list[u]:
+                i, j = vertex_to_index[u], vertex_to_index[v]
+                dist[i][j] = weight
+        
+        # Floyd-Warshall algorithm
+        for k in range(n):
+            for i in range(n):
+                for j in range(n):
+                    if dist[i][k] + dist[k][j] < dist[i][j]:
+                        dist[i][j] = dist[i][k] + dist[k][j]
+        
+        return dist, vertices
+
+def graph_coloring_greedy(graph):
+    """Greedy graph coloring algorithm"""
+    colors = {}
+    vertices = list(graph.vertices)
+    
+    for vertex in vertices:
+        # Find colors used by neighbors
+        used_colors = set()
+        for neighbor, _ in graph.adj_list[vertex]:
+            if neighbor in colors:
+                used_colors.add(colors[neighbor])
+        
+        # Assign smallest available color
+        color = 0
+        while color in used_colors:
+            color += 1
+        colors[vertex] = color
+    
+    return colors
+
+def detect_cycle(graph):
+    """Detect cycle in undirected graph using DFS"""
+    visited = set()
+    
+    def dfs(vertex, parent):
+        visited.add(vertex)
+        
+        for neighbor, _ in graph.adj_list[vertex]:
+            if neighbor not in visited:
+                if dfs(neighbor, vertex):
+                    return True
+            elif parent != neighbor:
+                return True
+        
+        return False
+    
+    for vertex in graph.vertices:
+        if vertex not in visited:
+            if dfs(vertex, None):
+                return True
+    
+    return False
+
+# Example usage
+if __name__ == "__main__":
+    # Create a sample graph
+    g = Graph()
+    g.add_edge('A', 'B', 4)
+    g.add_edge('A', 'C', 2)
+    g.add_edge('B', 'C', 1)
+    g.add_edge('B', 'D', 5)
+    g.add_edge('C', 'D', 8)
+    g.add_edge('C', 'E', 10)
+    g.add_edge('D', 'E', 2)
+    
+    print("DFS from A:", g.dfs('A'))
+    print("BFS from A:", g.bfs('A'))
+    
+    distances, _ = g.dijkstra('A')
+    print("Shortest distances from A:", distances)
+    
+    mst_edges, total_weight = g.kruskal_mst()
+    print("MST edges:", mst_edges)
+    print("MST total weight:", total_weight)
+    
+    print("Is bipartite:", g.is_bipartite())
+    print("Has cycle:", detect_cycle(g))
+    
+    colors = graph_coloring_greedy(g)
+    print("Graph coloring:", colors)
+</code></pre>
+
+            <h2>12. Applications</h2>
+            <h3>12.1 Computer Networks</h3>
+            <ul>
+                <li>Routing algorithms</li>
+                <li>Network reliability</li>
+                <li>Bandwidth optimization</li>
+            </ul>
+
+            <h3>12.2 Social Networks</h3>
+            <ul>
+                <li>Community detection</li>
+                <li>Influence maximization</li>
+                <li>Recommendation systems</li>
+            </ul>
+
+            <h3>12.3 Transportation</h3>
+            <ul>
+                <li>Route planning</li>
+                <li>Traffic flow optimization</li>
+                <li>Public transit networks</li>
+            </ul>
+
+            <h2>13. References</h2>
+            <ul>
+                <li>West, D. B. (2001). <em>Introduction to Graph Theory</em>.</li>
+                <li>Diestel, R. (2017). <em>Graph Theory</em>.</li>
+                <li>Cormen, T. H., et al. (2009). <em>Introduction to Algorithms</em>.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; Diogo Franquinho | Technical Notes</p>
+    </footer>
+</body>
+</html> 

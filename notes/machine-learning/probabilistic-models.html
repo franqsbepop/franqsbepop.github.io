@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Probabilistic Models - Technical Notes</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/book-reviews.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="../../index.html">← Back to Home</a> | 
+        <a href="../../index.html#notes">Notes</a>
+    </nav>
+
+    <main>
+        <header>
+            <h1>Probabilistic Models</h1>
+            <p class="note-meta">Last updated: December 2024</p>
+        </header>
+
+        <section class="note-content">
+            <div class="disclaimer">
+                <p><strong>Disclaimer:</strong> These are my personal notes compiled for my own reference and learning. They may contain errors, incomplete information, or personal interpretations. While I strive for accuracy, these notes are not peer-reviewed and should not be considered authoritative sources. Please consult official textbooks, research papers, or other reliable sources for academic or professional purposes.</p>
+            </div>
+            
+            <h2>1. Introduction to Probabilistic Models</h2>
+            <p>Probabilistic models use probability theory to represent uncertainty in data and model parameters. They provide a principled framework for reasoning under uncertainty.</p>
+
+            <h2>2. Bayes' Theorem</h2>
+            <p>The foundation of Bayesian inference:</p>
+            <div class="math-block">
+                $$P(\theta|D) = \frac{P(D|\theta)P(\theta)}{P(D)}$$
+            </div>
+            <p>where:</p>
+            <ul>
+                <li>$P(\theta|D)$ is the posterior distribution</li>
+                <li>$P(D|\theta)$ is the likelihood</li>
+                <li>$P(\theta)$ is the prior distribution</li>
+                <li>$P(D)$ is the marginal likelihood (evidence)</li>
+            </ul>
+
+            <h2>3. Maximum Likelihood Estimation (MLE)</h2>
+            <p>Find parameters that maximize the likelihood:</p>
+            <div class="math-block">
+                $$\hat{\theta}_{MLE} = \arg\max_\theta P(D|\theta) = \arg\max_\theta \prod_{i=1}^n P(x_i|\theta)$$
+            </div>
+            <p>Often optimized using log-likelihood:</p>
+            <div class="math-block">
+                $$\hat{\theta}_{MLE} = \arg\max_\theta \sum_{i=1}^n \log P(x_i|\theta)$$
+            </div>
+
+            <h2>4. Maximum A Posteriori (MAP) Estimation</h2>
+            <p>Find parameters that maximize the posterior:</p>
+            <div class="math-block">
+                $$\hat{\theta}_{MAP} = \arg\max_\theta P(\theta|D) = \arg\max_\theta P(D|\theta)P(\theta)$$
+            </div>
+            <p>Reduces to MLE when prior is uniform.</p>
+
+            <h2>5. Bayesian Inference</h2>
+            <p>Instead of point estimates, maintain full posterior distribution:</p>
+            <div class="math-block">
+                $$P(\theta|D) \propto P(D|\theta)P(\theta)$$
+            </div>
+            <p>Predictions integrate over all possible parameters:</p>
+            <div class="math-block">
+                $$P(y^*|x^*, D) = \int P(y^*|x^*, \theta)P(\theta|D)d\theta$$
+            </div>
+
+            <h2>6. Conjugate Priors</h2>
+            <p>Priors that, when combined with the likelihood, yield a posterior in the same family.</p>
+
+            <h3>6.1 Beta-Binomial</h3>
+            <p>For binomial likelihood with beta prior:</p>
+            <div class="math-block">
+                $$P(\theta) = \text{Beta}(\alpha, \beta)$$
+                $$P(D|\theta) = \text{Binomial}(n, \theta)$$
+                $$P(\theta|D) = \text{Beta}(\alpha + k, \beta + n - k)$$
+            </div>
+
+            <h3>6.2 Gaussian-Gaussian</h3>
+            <p>For Gaussian likelihood with Gaussian prior on mean:</p>
+            <div class="math-block">
+                $$P(\mu) = \mathcal{N}(\mu_0, \sigma_0^2)$$
+                $$P(D|\mu) = \prod_{i=1}^n \mathcal{N}(x_i|\mu, \sigma^2)$$
+                $$P(\mu|D) = \mathcal{N}\left(\frac{\sigma^2\mu_0 + n\sigma_0^2\bar{x}}{\sigma^2 + n\sigma_0^2}, \frac{\sigma^2\sigma_0^2}{\sigma^2 + n\sigma_0^2}\right)$$
+            </div>
+
+            <h2>7. Graphical Models</h2>
+            <p>Visual representations of probabilistic relationships between variables.</p>
+
+            <h3>7.1 Bayesian Networks (Directed)</h3>
+            <p>Directed acyclic graphs representing conditional dependencies:</p>
+            <div class="math-block">
+                $$P(x_1, x_2, \ldots, x_n) = \prod_{i=1}^n P(x_i|\text{parents}(x_i))$$
+            </div>
+
+            <h3>7.2 Markov Random Fields (Undirected)</h3>
+            <p>Undirected graphs with potential functions:</p>
+            <div class="math-block">
+                $$P(x_1, x_2, \ldots, x_n) = \frac{1}{Z}\prod_{c \in C} \psi_c(x_c)$$
+            </div>
+            <p>where $Z$ is the partition function and $\psi_c$ are clique potentials.</p>
+
+            <h2>8. Hidden Markov Models (HMMs)</h2>
+            <p>Model for sequential data with hidden states:</p>
+            <div class="math-block">
+                $$P(z_1, \ldots, z_T, x_1, \ldots, x_T) = P(z_1)\prod_{t=2}^T P(z_t|z_{t-1})\prod_{t=1}^T P(x_t|z_t)$$
+            </div>
+
+            <h3>8.1 Forward Algorithm</h3>
+            <p>Compute marginal likelihood:</p>
+            <div class="math-block">
+                $$\alpha_t(i) = P(x_1, \ldots, x_t, z_t = i)$$
+                $$\alpha_t(j) = \left(\sum_{i=1}^K \alpha_{t-1}(i)A_{ij}\right)B_j(x_t)$$
+            </div>
+
+            <h3>8.2 Viterbi Algorithm</h3>
+            <p>Find most likely state sequence:</p>
+            <div class="math-block">
+                $$\delta_t(i) = \max_{z_1, \ldots, z_{t-1}} P(z_1, \ldots, z_{t-1}, z_t = i, x_1, \ldots, x_t)$$
+            </div>
+
+            <h2>9. Gaussian Mixture Models (GMM)</h2>
+            <p>Mixture of Gaussian distributions:</p>
+            <div class="math-block">
+                $$P(x) = \sum_{k=1}^K \pi_k \mathcal{N}(x|\mu_k, \Sigma_k)$$
+            </div>
+            <p>where $\pi_k$ are mixing coefficients with $\sum_k \pi_k = 1$.</p>
+
+            <h2>10. Expectation-Maximization (EM) Algorithm</h2>
+            <p>Iterative algorithm for maximum likelihood in latent variable models:</p>
+
+            <h3>10.1 E-step</h3>
+            <p>Compute posterior over latent variables:</p>
+            <div class="math-block">
+                $$Q(\theta|\theta^{(t)}) = \mathbb{E}_{Z|X,\theta^{(t)}}[\log P(X,Z|\theta)]$$
+            </div>
+
+            <h3>10.2 M-step</h3>
+            <p>Maximize expected log-likelihood:</p>
+            <div class="math-block">
+                $$\theta^{(t+1)} = \arg\max_\theta Q(\theta|\theta^{(t)})$$
+            </div>
+
+            <h2>11. Variational Inference</h2>
+            <p>Approximate intractable posteriors with simpler distributions:</p>
+            <div class="math-block">
+                $$q^*(\theta) = \arg\min_{q \in \mathcal{Q}} KL(q(\theta)||p(\theta|D))$$
+            </div>
+
+            <h3>11.1 Mean Field Variational Inference</h3>
+            <p>Assume factorized posterior:</p>
+            <div class="math-block">
+                $$q(\theta) = \prod_{i=1}^m q_i(\theta_i)$$
+            </div>
+
+            <h3>11.2 Evidence Lower Bound (ELBO)</h3>
+            <div class="math-block">
+                $$\log P(D) \geq \mathbb{E}_q[\log P(D,\theta)] - \mathbb{E}_q[\log q(\theta)] = \mathcal{L}(q)$$
+            </div>
+
+            <h2>12. Markov Chain Monte Carlo (MCMC)</h2>
+            <p>Sample from complex distributions using Markov chains.</p>
+
+            <h3>12.1 Metropolis-Hastings Algorithm</h3>
+            <ol>
+                <li>Propose new state: $\theta' \sim q(\theta'|\theta^{(t)})$</li>
+                <li>Compute acceptance ratio: $\alpha = \min\left(1, \frac{P(\theta')q(\theta^{(t)}|\theta')}{P(\theta^{(t)})q(\theta'|\theta^{(t)})}\right)$</li>
+                <li>Accept with probability $\alpha$</li>
+            </ol>
+
+            <h3>12.2 Gibbs Sampling</h3>
+            <p>Sample each variable conditioned on others:</p>
+            <div class="math-block">
+                $$\theta_i^{(t+1)} \sim P(\theta_i|\theta_{-i}^{(t)}, D)$$
+            </div>
+
+            <h2>13. Naive Bayes Classifier</h2>
+            <p>Assumes conditional independence of features:</p>
+            <div class="math-block">
+                $$P(y|x_1, \ldots, x_d) \propto P(y)\prod_{i=1}^d P(x_i|y)$$
+            </div>
+
+            <h2>14. Gaussian Processes</h2>
+            <p>Non-parametric Bayesian method for regression and classification:</p>
+            <div class="math-block">
+                $$f(x) \sim \mathcal{GP}(m(x), k(x, x'))$$
+            </div>
+            <p>where $m(x)$ is the mean function and $k(x, x')$ is the covariance function.</p>
+
+            <h2>15. Bayesian Neural Networks</h2>
+            <p>Place priors over neural network weights:</p>
+            <div class="math-block">
+                $$P(w|D) \propto P(D|w)P(w)$$
+            </div>
+            <p>Predictions average over weight posterior.</p>
+
+            <h2>16. Code Example</h2>
+            <pre><code># Python implementation of probabilistic models
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy import stats
+from scipy.special import logsumexp
+
+class GaussianMixtureModel:
+    def __init__(self, n_components=2, random_state=None):
+        self.n_components = n_components
+        self.random_state = random_state
+        
+    def fit(self, X, max_iter=100, tol=1e-6):
+        """Fit GMM using EM algorithm"""
+        np.random.seed(self.random_state)
+        n_samples, n_features = X.shape
+        
+        # Initialize parameters
+        self.weights_ = np.ones(self.n_components) / self.n_components
+        self.means_ = X[np.random.choice(n_samples, self.n_components, replace=False)]
+        self.covariances_ = np.array([np.cov(X.T) for _ in range(self.n_components)])
+        
+        log_likelihood_old = -np.inf
+        
+        for iteration in range(max_iter):
+            # E-step: compute responsibilities
+            responsibilities = self._e_step(X)
+            
+            # M-step: update parameters
+            self._m_step(X, responsibilities)
+            
+            # Check convergence
+            log_likelihood = self._compute_log_likelihood(X)
+            if abs(log_likelihood - log_likelihood_old) < tol:
+                print(f"Converged after {iteration + 1} iterations")
+                break
+            log_likelihood_old = log_likelihood
+        
+        return self
+    
+    def _e_step(self, X):
+        """Expectation step"""
+        n_samples = X.shape[0]
+        responsibilities = np.zeros((n_samples, self.n_components))
+        
+        for k in range(self.n_components):
+            responsibilities[:, k] = self.weights_[k] * stats.multivariate_normal.pdf(
+                X, self.means_[k], self.covariances_[k]
+            )
+        
+        # Normalize
+        responsibilities /= responsibilities.sum(axis=1, keepdims=True)
+        return responsibilities
+    
+    def _m_step(self, X, responsibilities):
+        """Maximization step"""
+        n_samples = X.shape[0]
+        
+        for k in range(self.n_components):
+            resp_k = responsibilities[:, k]
+            
+            # Update weights
+            self.weights_[k] = resp_k.sum() / n_samples
+            
+            # Update means
+            self.means_[k] = (resp_k[:, np.newaxis] * X).sum(axis=0) / resp_k.sum()
+            
+            # Update covariances
+            diff = X - self.means_[k]
+            self.covariances_[k] = np.dot(resp_k * diff.T, diff) / resp_k.sum()
+    
+    def _compute_log_likelihood(self, X):
+        """Compute log-likelihood"""
+        n_samples = X.shape[0]
+        log_likelihood = 0
+        
+        for i in range(n_samples):
+            sample_likelihood = 0
+            for k in range(self.n_components):
+                sample_likelihood += self.weights_[k] * stats.multivariate_normal.pdf(
+                    X[i], self.means_[k], self.covariances_[k]
+                )
+            log_likelihood += np.log(sample_likelihood)
+        
+        return log_likelihood
+    
+    def predict_proba(self, X):
+        """Predict component probabilities"""
+        return self._e_step(X)
+    
+    def predict(self, X):
+        """Predict component assignments"""
+        return self.predict_proba(X).argmax(axis=1)
+
+class BayesianLinearRegression:
+    def __init__(self, alpha=1.0, beta=1.0):
+        """
+        alpha: precision of prior over weights
+        beta: precision of noise
+        """
+        self.alpha = alpha
+        self.beta = beta
+        
+    def fit(self, X, y):
+        """Fit Bayesian linear regression"""
+        # Add bias term
+        X_with_bias = np.column_stack([np.ones(X.shape[0]), X])
+        
+        # Prior precision matrix
+        S0_inv = self.alpha * np.eye(X_with_bias.shape[1])
+        
+        # Posterior precision matrix
+        self.SN_inv = S0_inv + self.beta * X_with_bias.T @ X_with_bias
+        self.SN = np.linalg.inv(self.SN_inv)
+        
+        # Posterior mean
+        self.mN = self.beta * self.SN @ X_with_bias.T @ y
+        
+        return self
+    
+    def predict(self, X, return_std=False):
+        """Make predictions with uncertainty"""
+        X_with_bias = np.column_stack([np.ones(X.shape[0]), X])
+        
+        # Predictive mean
+        y_mean = X_with_bias @ self.mN
+        
+        if return_std:
+            # Predictive variance
+            y_var = 1/self.beta + np.diag(X_with_bias @ self.SN @ X_with_bias.T)
+            y_std = np.sqrt(y_var)
+            return y_mean, y_std
+        
+        return y_mean
+
+def naive_bayes_gaussian(X_train, y_train, X_test):
+    """Gaussian Naive Bayes classifier"""
+    classes = np.unique(y_train)
+    n_classes = len(classes)
+    n_features = X_train.shape[1]
+    
+    # Compute class priors
+    class_priors = np.array([np.mean(y_train == c) for c in classes])
+    
+    # Compute class-conditional means and variances
+    means = np.zeros((n_classes, n_features))
+    variances = np.zeros((n_classes, n_features))
+    
+    for i, c in enumerate(classes):
+        X_c = X_train[y_train == c]
+        means[i] = np.mean(X_c, axis=0)
+        variances[i] = np.var(X_c, axis=0)
+    
+    # Make predictions
+    n_test = X_test.shape[0]
+    log_probs = np.zeros((n_test, n_classes))
+    
+    for i, c in enumerate(classes):
+        # Log prior
+        log_probs[:, i] = np.log(class_priors[i])
+        
+        # Log likelihood (assuming independence)
+        for j in range(n_features):
+            log_probs[:, i] += stats.norm.logpdf(X_test[:, j], means[i, j], np.sqrt(variances[i, j]))
+    
+    # Normalize to get probabilities
+    log_probs -= logsumexp(log_probs, axis=1, keepdims=True)
+    probs = np.exp(log_probs)
+    
+    predictions = classes[np.argmax(probs, axis=1)]
+    
+    return predictions, probs
+
+# Example usage
+if __name__ == "__main__":
+    # Generate synthetic data for GMM
+    np.random.seed(42)
+    
+    # Create mixture of two Gaussians
+    n_samples = 300
+    X1 = np.random.multivariate_normal([2, 2], [[1, 0.5], [0.5, 1]], n_samples//2)
+    X2 = np.random.multivariate_normal([-1, -1], [[1, -0.3], [-0.3, 1]], n_samples//2)
+    X_gmm = np.vstack([X1, X2])
+    
+    # Fit GMM
+    gmm = GaussianMixtureModel(n_components=2, random_state=42)
+    gmm.fit(X_gmm)
+    
+    # Plot results
+    plt.figure(figsize=(12, 4))
+    
+    plt.subplot(1, 3, 1)
+    plt.scatter(X_gmm[:, 0], X_gmm[:, 1], alpha=0.6)
+    plt.title('Original Data')
+    plt.xlabel('Feature 1')
+    plt.ylabel('Feature 2')
+    
+    plt.subplot(1, 3, 2)
+    predictions = gmm.predict(X_gmm)
+    plt.scatter(X_gmm[:, 0], X_gmm[:, 1], c=predictions, alpha=0.6, cmap='viridis')
+    plt.scatter(gmm.means_[:, 0], gmm.means_[:, 1], c='red', marker='x', s=200, linewidths=3)
+    plt.title('GMM Clustering')
+    plt.xlabel('Feature 1')
+    plt.ylabel('Feature 2')
+    
+    # Bayesian Linear Regression example
+    plt.subplot(1, 3, 3)
+    
+    # Generate synthetic regression data
+    x_true = np.linspace(0, 1, 20)
+    y_true = 0.5 * x_true + 0.3 * np.sin(2 * np.pi * x_true) + 0.1 * np.random.randn(20)
+    
+    # Fit Bayesian linear regression
+    X_poly = np.column_stack([x_true**i for i in range(1, 4)])  # Polynomial features
+    blr = BayesianLinearRegression(alpha=2.0, beta=25.0)
+    blr.fit(X_poly, y_true)
+    
+    # Make predictions
+    x_test = np.linspace(0, 1, 100)
+    X_test_poly = np.column_stack([x_test**i for i in range(1, 4)])
+    y_pred, y_std = blr.predict(X_test_poly, return_std=True)
+    
+    plt.scatter(x_true, y_true, alpha=0.7, label='Data')
+    plt.plot(x_test, y_pred, 'r-', label='Mean prediction')
+    plt.fill_between(x_test, y_pred - 2*y_std, y_pred + 2*y_std, alpha=0.3, color='red', label='±2σ')
+    plt.xlabel('x')
+    plt.ylabel('y')
+    plt.title('Bayesian Linear Regression')
+    plt.legend()
+    
+    plt.tight_layout()
+    plt.show()
+    
+    print(f"GMM component weights: {gmm.weights_}")
+    print(f"GMM component means:\n{gmm.means_}")
+</code></pre>
+
+            <h2>17. References</h2>
+            <ul>
+                <li>Bishop, C. M. (2006). <em>Pattern Recognition and Machine Learning</em>.</li>
+                <li>Murphy, K. P. (2012). <em>Machine Learning: A Probabilistic Perspective</em>.</li>
+                <li>Barber, D. (2012). <em>Bayesian Reasoning and Machine Learning</em>.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; Diogo Franquinho | Technical Notes</p>
+    </footer>
+</body>
+</html> 

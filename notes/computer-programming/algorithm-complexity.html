@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algorithm Complexity Analysis - Technical Notes</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/book-reviews.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="../../index.html">← Back to Home</a> | 
+        <a href="../../index.html#notes">Notes</a>
+    </nav>
+
+    <main>
+        <header>
+            <h1>Algorithm Complexity Analysis</h1>
+            <p class="note-meta">Last updated: December 2024</p>
+        </header>
+
+        <section class="note-content">
+            <div class="disclaimer">
+                <p><strong>Disclaimer:</strong> These are my personal notes compiled for my own reference and learning. They may contain errors, incomplete information, or personal interpretations. While I strive for accuracy, these notes are not peer-reviewed and should not be considered authoritative sources. Please consult official textbooks, research papers, or other reliable sources for academic or professional purposes.</p>
+            </div>
+            
+            <h2>1. Introduction to Algorithm Complexity</h2>
+            <p>Algorithm complexity analysis helps us understand how an algorithm's resource requirements (time and space) scale with input size. This is crucial for designing efficient algorithms and choosing appropriate solutions for different problem sizes.</p>
+
+            <h2>2. Big O Notation</h2>
+            <p>Big O notation describes the upper bound of an algorithm's growth rate.</p>
+
+            <h3>2.1 Formal Definition</h3>
+            <p>A function $f(n)$ is $O(g(n))$ if there exist positive constants $c$ and $n_0$ such that:</p>
+            <div class="math-block">
+                $$f(n) \leq c \cdot g(n) \text{ for all } n \geq n_0$$
+            </div>
+
+            <h3>2.2 Common Complexity Classes</h3>
+            <ul>
+                <li><strong>$O(1)$ - Constant:</strong> Array access, hash table lookup (average case)</li>
+                <li><strong>$O(\log n)$ - Logarithmic:</strong> Binary search, balanced tree operations</li>
+                <li><strong>$O(n)$ - Linear:</strong> Linear search, single array traversal</li>
+                <li><strong>$O(n \log n)$ - Linearithmic:</strong> Efficient sorting (merge sort, heap sort)</li>
+                <li><strong>$O(n^2)$ - Quadratic:</strong> Bubble sort, selection sort, nested loops</li>
+                <li><strong>$O(n^3)$ - Cubic:</strong> Matrix multiplication (naive algorithm)</li>
+                <li><strong>$O(2^n)$ - Exponential:</strong> Recursive Fibonacci, subset enumeration</li>
+                <li><strong>$O(n!)$ - Factorial:</strong> Traveling salesman (brute force)</li>
+            </ul>
+
+            <h2>3. Other Asymptotic Notations</h2>
+            <h3>3.1 Big Omega (Ω) - Lower Bound</h3>
+            <p>$f(n)$ is $\Omega(g(n))$ if there exist positive constants $c$ and $n_0$ such that:</p>
+            <div class="math-block">
+                $$f(n) \geq c \cdot g(n) \text{ for all } n \geq n_0$$
+            </div>
+
+            <h3>3.2 Big Theta (Θ) - Tight Bound</h3>
+            <p>$f(n)$ is $\Theta(g(n))$ if $f(n)$ is both $O(g(n))$ and $\Omega(g(n))$:</p>
+            <div class="math-block">
+                $$c_1 \cdot g(n) \leq f(n) \leq c_2 \cdot g(n) \text{ for all } n \geq n_0$$
+            </div>
+
+            <h3>3.3 Little o and Little ω</h3>
+            <p><strong>Little o:</strong> $f(n) = o(g(n))$ means $\lim_{n \to \infty} \frac{f(n)}{g(n)} = 0$</p>
+            <p><strong>Little ω:</strong> $f(n) = \omega(g(n))$ means $\lim_{n \to \infty} \frac{f(n)}{g(n)} = \infty$</p>
+
+            <h2>4. Time Complexity Analysis</h2>
+            <h3>4.1 Basic Rules</h3>
+            <ul>
+                <li><strong>Sequential statements:</strong> Add complexities</li>
+                <li><strong>Nested loops:</strong> Multiply complexities</li>
+                <li><strong>Conditional statements:</strong> Take the maximum</li>
+                <li><strong>Recursive calls:</strong> Use recurrence relations</li>
+            </ul>
+
+            <h3>4.2 Loop Analysis</h3>
+            <pre><code># O(n) - Single loop
+def linear_search(arr, target):
+    for i in range(len(arr)):  # n iterations
+        if arr[i] == target:
+            return i
+    return -1
+
+# O(n²) - Nested loops
+def bubble_sort(arr):
+    n = len(arr)
+    for i in range(n):        # n iterations
+        for j in range(n-1):  # n-1 iterations each
+            if arr[j] > arr[j+1]:
+                arr[j], arr[j+1] = arr[j+1], arr[j]
+
+# O(log n) - Halving the search space
+def binary_search(arr, target):
+    left, right = 0, len(arr) - 1
+    while left <= right:      # log n iterations
+        mid = (left + right) // 2
+        if arr[mid] == target:
+            return mid
+        elif arr[mid] < target:
+            left = mid + 1
+        else:
+            right = mid - 1
+    return -1
+
+# O(n log n) - Divide and conquer
+def merge_sort(arr):
+    if len(arr) <= 1:
+        return arr
+    
+    mid = len(arr) // 2
+    left = merge_sort(arr[:mid])    # T(n/2)
+    right = merge_sort(arr[mid:])   # T(n/2)
+    
+    return merge(left, right)       # O(n)
+</code></pre>
+
+            <h2>5. Recurrence Relations</h2>
+            <h3>5.1 Master Theorem</h3>
+            <p>For recurrences of the form $T(n) = aT(n/b) + f(n)$ where $a \geq 1$ and $b > 1$:</p>
+            <ul>
+                <li><strong>Case 1:</strong> If $f(n) = O(n^{\log_b a - \epsilon})$ for some $\epsilon > 0$, then $T(n) = \Theta(n^{\log_b a})$</li>
+                <li><strong>Case 2:</strong> If $f(n) = \Theta(n^{\log_b a})$, then $T(n) = \Theta(n^{\log_b a} \log n)$</li>
+                <li><strong>Case 3:</strong> If $f(n) = \Omega(n^{\log_b a + \epsilon})$ for some $\epsilon > 0$ and regularity condition, then $T(n) = \Theta(f(n))$</li>
+            </ul>
+
+            <h3>5.2 Common Recurrence Examples</h3>
+            <div class="math-block">
+                $$T(n) = 2T(n/2) + O(n) \quad \Rightarrow \quad T(n) = O(n \log n)$$
+                $$T(n) = 2T(n/2) + O(1) \quad \Rightarrow \quad T(n) = O(n)$$
+                $$T(n) = T(n-1) + O(1) \quad \Rightarrow \quad T(n) = O(n)$$
+                $$T(n) = T(n-1) + O(n) \quad \Rightarrow \quad T(n) = O(n^2)$$
+            </div>
+
+            <h2>6. Space Complexity</h2>
+            <h3>6.1 Types of Space Complexity</h3>
+            <ul>
+                <li><strong>Auxiliary Space:</strong> Extra space used by algorithm (not including input)</li>
+                <li><strong>Total Space:</strong> Auxiliary space + input space</li>
+            </ul>
+
+            <h3>6.2 Space Complexity Examples</h3>
+            <pre><code># O(1) auxiliary space - iterative approach
+def factorial_iterative(n):
+    result = 1
+    for i in range(1, n + 1):
+        result *= i
+    return result
+
+# O(n) auxiliary space - recursive approach
+def factorial_recursive(n):
+    if n <= 1:
+        return 1
+    return n * factorial_recursive(n - 1)  # n recursive calls on stack
+
+# O(n) auxiliary space - explicit array
+def fibonacci_dp(n):
+    if n <= 1:
+        return n
+    
+    dp = [0] * (n + 1)  # O(n) space
+    dp[1] = 1
+    
+    for i in range(2, n + 1):
+        dp[i] = dp[i-1] + dp[i-2]
+    
+    return dp[n]
+
+# O(1) auxiliary space - optimized DP
+def fibonacci_optimized(n):
+    if n <= 1:
+        return n
+    
+    a, b = 0, 1
+    for _ in range(2, n + 1):
+        a, b = b, a + b
+    
+    return b
+</code></pre>
+
+            <h2>7. Amortized Analysis</h2>
+            <h3>7.1 Aggregate Method</h3>
+            <p>Analyze total cost of n operations and divide by n.</p>
+
+            <h3>7.2 Accounting Method</h3>
+            <p>Assign credits to operations; expensive operations use credits from cheaper ones.</p>
+
+            <h3>7.3 Potential Method</h3>
+            <p>Define a potential function and analyze amortized cost using potential differences.</p>
+
+            <h3>7.4 Dynamic Array Example</h3>
+            <pre><code>class DynamicArray:
+    def __init__(self):
+        self.capacity = 1
+        self.size = 0
+        self.data = [None] * self.capacity
+    
+    def append(self, item):
+        if self.size == self.capacity:
+            self._resize()  # O(n) occasionally
+        
+        self.data[self.size] = item
+        self.size += 1
+    
+    def _resize(self):
+        old_capacity = self.capacity
+        self.capacity *= 2
+        new_data = [None] * self.capacity
+        
+        for i in range(self.size):  # Copy O(n) elements
+            new_data[i] = self.data[i]
+        
+        self.data = new_data
+
+# Amortized analysis:
+# - Most appends: O(1)
+# - Resize operations: O(n) but infrequent
+# - Total cost for n operations: O(n)
+# - Amortized cost per operation: O(1)
+</code></pre>
+
+            <h2>8. Best, Average, and Worst Case Analysis</h2>
+            <h3>8.1 Quick Sort Analysis</h3>
+            <pre><code>def quicksort(arr, low=0, high=None):
+    if high is None:
+        high = len(arr) - 1
+    
+    if low < high:
+        pivot_index = partition(arr, low, high)
+        quicksort(arr, low, pivot_index - 1)
+        quicksort(arr, pivot_index + 1, high)
+
+def partition(arr, low, high):
+    pivot = arr[high]
+    i = low - 1
+    
+    for j in range(low, high):
+        if arr[j] <= pivot:
+            i += 1
+            arr[i], arr[j] = arr[j], arr[i]
+    
+    arr[i + 1], arr[high] = arr[high], arr[i + 1]
+    return i + 1
+
+# Time Complexity Analysis:
+# Best Case: O(n log n) - pivot always divides array in half
+# Average Case: O(n log n) - random pivot selection
+# Worst Case: O(n²) - pivot is always smallest/largest element
+</code></pre>
+
+            <h2>9. Algorithm Design Paradigms</h2>
+            <h3>9.1 Divide and Conquer</h3>
+            <ul>
+                <li><strong>Recurrence:</strong> $T(n) = aT(n/b) + f(n)$</li>
+                <li><strong>Examples:</strong> Merge sort, binary search, Strassen's matrix multiplication</li>
+            </ul>
+
+            <h3>9.2 Dynamic Programming</h3>
+            <ul>
+                <li><strong>Time-Space Tradeoff:</strong> Store solutions to subproblems</li>
+                <li><strong>Examples:</strong> Fibonacci, longest common subsequence, knapsack</li>
+            </ul>
+
+            <h3>9.3 Greedy Algorithms</h3>
+            <ul>
+                <li><strong>Strategy:</strong> Make locally optimal choices</li>
+                <li><strong>Examples:</strong> Dijkstra's algorithm, Huffman coding</li>
+            </ul>
+
+            <h2>10. Advanced Complexity Topics</h2>
+            <h3>10.1 Complexity Classes</h3>
+            <ul>
+                <li><strong>P:</strong> Problems solvable in polynomial time</li>
+                <li><strong>NP:</strong> Problems verifiable in polynomial time</li>
+                <li><strong>NP-Complete:</strong> Hardest problems in NP</li>
+                <li><strong>NP-Hard:</strong> At least as hard as NP-Complete problems</li>
+            </ul>
+
+            <h3>10.2 Reduction and Approximation</h3>
+            <pre><code># Example: Traveling Salesman Problem (TSP)
+# Exact solution: O(n!) - factorial time
+# Approximation algorithms can provide solutions within a factor of optimal
+
+def tsp_nearest_neighbor(distances):
+    """
+    Nearest neighbor heuristic for TSP
+    Time: O(n²), Approximation ratio: no bound
+    """
+    n = len(distances)
+    if n == 0:
+        return 0, []
+    
+    visited = [False] * n
+    path = [0]  # Start from city 0
+    visited[0] = True
+    total_distance = 0
+    current = 0
+    
+    for _ in range(n - 1):
+        nearest_city = -1
+        nearest_distance = float('inf')
+        
+        for city in range(n):
+            if not visited[city] and distances[current][city] < nearest_distance:
+                nearest_distance = distances[current][city]
+                nearest_city = city
+        
+        visited[nearest_city] = True
+        path.append(nearest_city)
+        total_distance += nearest_distance
+        current = nearest_city
+    
+    # Return to starting city
+    total_distance += distances[current][0]
+    path.append(0)
+    
+    return total_distance, path
+
+# Dynamic Programming solution for TSP
+def tsp_dp(distances):
+    """
+    Exact TSP solution using dynamic programming
+    Time: O(n² * 2^n), Space: O(n * 2^n)
+    """
+    n = len(distances)
+    if n == 0:
+        return 0, []
+    
+    # dp[mask][i] = minimum cost to visit all cities in mask, ending at city i
+    dp = {}
+    parent = {}
+    
+    # Base case: start from city 0
+    for i in range(1, n):
+        dp[(1 << i) | 1, i] = distances[0][i]
+    
+    # Fill DP table
+    for mask in range(1, 1 << n):
+        if not (mask & 1):  # Must include starting city
+            continue
+            
+        for u in range(n):
+            if not (mask & (1 << u)):
+                continue
+                
+            prev_mask = mask ^ (1 << u)
+            if prev_mask == 0:
+                continue
+                
+            min_cost = float('inf')
+            best_prev = -1
+            
+            for v in range(n):
+                if (prev_mask & (1 << v)) and (prev_mask, v) in dp:
+                    cost = dp[prev_mask, v] + distances[v][u]
+                    if cost < min_cost:
+                        min_cost = cost
+                        best_prev = v
+            
+            if min_cost != float('inf'):
+                dp[mask, u] = min_cost
+                parent[mask, u] = best_prev
+    
+    # Find minimum cost to visit all cities and return to start
+    full_mask = (1 << n) - 1
+    min_cost = float('inf')
+    best_end = -1
+    
+    for i in range(1, n):
+        if (full_mask, i) in dp:
+            cost = dp[full_mask, i] + distances[i][0]
+            if cost < min_cost:
+                min_cost = cost
+                best_end = i
+    
+    # Reconstruct path
+    path = []
+    mask = full_mask
+    current = best_end
+    
+    while current != -1:
+        path.append(current)
+        if (mask, current) in parent:
+            prev = parent[mask, current]
+            mask ^= (1 << current)
+            current = prev
+        else:
+            break
+    
+    path.reverse()
+    path.append(0)  # Return to start
+    
+    return min_cost, path
+</code></pre>
+
+            <h2>11. Practical Complexity Analysis</h2>
+            <h3>11.1 Profiling and Benchmarking</h3>
+            <pre><code>import time
+import random
+import matplotlib.pyplot as plt
+
+def benchmark_sorting_algorithms():
+    """Compare different sorting algorithms empirically"""
+    algorithms = {
+        'Bubble Sort': bubble_sort,
+        'Selection Sort': selection_sort,
+        'Insertion Sort': insertion_sort,
+        'Merge Sort': merge_sort,
+        'Quick Sort': quicksort,
+        'Python Built-in': sorted
+    }
+    
+    sizes = [100, 500, 1000, 2000, 5000]
+    results = {name: [] for name in algorithms}
+    
+    for size in sizes:
+        print(f"Testing size {size}...")
+        data = [random.randint(1, 1000) for _ in range(size)]
+        
+        for name, algorithm in algorithms.items():
+            test_data = data.copy()
+            
+            start_time = time.time()
+            if name == 'Python Built-in':
+                sorted(test_data)
+            else:
+                algorithm(test_data)
+            end_time = time.time()
+            
+            results[name].append(end_time - start_time)
+    
+    # Plot results
+    plt.figure(figsize=(12, 8))
+    for name, times in results.items():
+        plt.plot(sizes, times, marker='o', label=name)
+    
+    plt.xlabel('Input Size')
+    plt.ylabel('Time (seconds)')
+    plt.title('Sorting Algorithm Performance Comparison')
+    plt.legend()
+    plt.yscale('log')
+    plt.grid(True)
+    plt.show()
+    
+    return results
+
+# Memory profiling
+import tracemalloc
+
+def profile_memory(func, *args, **kwargs):
+    """Profile memory usage of a function"""
+    tracemalloc.start()
+    
+    result = func(*args, **kwargs)
+    
+    current, peak = tracemalloc.get_traced_memory()
+    tracemalloc.stop()
+    
+    print(f"Current memory usage: {current / 1024 / 1024:.2f} MB")
+    print(f"Peak memory usage: {peak / 1024 / 1024:.2f} MB")
+    
+    return result
+</code></pre>
+
+            <h2>12. Common Algorithmic Patterns</h2>
+            <h3>12.1 Two Pointers Technique</h3>
+            <pre><code># O(n) solution for two sum in sorted array
+def two_sum_sorted(nums, target):
+    left, right = 0, len(nums) - 1
+    
+    while left < right:
+        current_sum = nums[left] + nums[right]
+        if current_sum == target:
+            return [left, right]
+        elif current_sum < target:
+            left += 1
+        else:
+            right -= 1
+    
+    return None
+</code></pre>
+
+            <h3>12.2 Sliding Window</h3>
+            <pre><code># O(n) solution for maximum sum subarray of size k
+def max_sum_subarray(nums, k):
+    if len(nums) < k:
+        return None
+    
+    # Calculate sum of first window
+    window_sum = sum(nums[:k])
+    max_sum = window_sum
+    
+    # Slide the window
+    for i in range(k, len(nums)):
+        window_sum = window_sum - nums[i - k] + nums[i]
+        max_sum = max(max_sum, window_sum)
+    
+    return max_sum
+</code></pre>
+
+            <h2>13. References</h2>
+            <ul>
+                <li>Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C. (2009). <em>Introduction to Algorithms</em>.</li>
+                <li>Sedgewick, R., & Wayne, K. (2011). <em>Algorithms</em>.</li>
+                <li>Kleinberg, J., & Tardos, E. (2005). <em>Algorithm Design</em>.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; Diogo Franquinho | Technical Notes</p>
+    </footer>
+</body>
+</html> 

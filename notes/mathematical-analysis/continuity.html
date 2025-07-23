@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Continuity and Limits - Technical Notes</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/book-reviews.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="../../index.html">← Back to Home</a> | 
+        <a href="../../index.html#notes">Notes</a>
+    </nav>
+
+    <main>
+        <header>
+            <h1>Continuity and Limits</h1>
+            <p class="note-meta">Last updated: December 2024</p>
+        </header>
+
+        <section class="note-content">
+            <div class="disclaimer">
+                <p><strong>Disclaimer:</strong> These are my personal notes compiled for my own reference and learning. They may contain errors, incomplete information, or personal interpretations. While I strive for accuracy, these notes are not peer-reviewed and should not be considered authoritative sources. Please consult official textbooks, research papers, or other reliable sources for academic or professional purposes.</p>
+            </div>
+            
+            <h2>1. Limits of Functions</h2>
+            <h3>1.1 Intuitive Definition</h3>
+            <p>The limit of $f(x)$ as $x$ approaches $a$ is $L$ if $f(x)$ gets arbitrarily close to $L$ as $x$ gets arbitrarily close to $a$.</p>
+
+            <h3>1.2 Precise ($\epsilon$-$\delta$) Definition</h3>
+            <p><strong>Definition:</strong> $\lim_{x \to a} f(x) = L$ if:</p>
+            <div class="math-block">
+                $$\forall \epsilon > 0, \exists \delta > 0 \text{ such that } 0 < |x - a| < \delta \Rightarrow |f(x) - L| < \epsilon$$
+            </div>
+            <p>This definition excludes the point $x = a$ itself.</p>
+
+            <h3>1.3 One-sided Limits</h3>
+            <p><strong>Right-hand limit:</strong> $\lim_{x \to a^+} f(x) = L$ if:</p>
+            <div class="math-block">
+                $$\forall \epsilon > 0, \exists \delta > 0 \text{ such that } 0 < x - a < \delta \Rightarrow |f(x) - L| < \epsilon$$
+            </div>
+            
+            <p><strong>Left-hand limit:</strong> $\lim_{x \to a^-} f(x) = L$ if:</p>
+            <div class="math-block">
+                $$\forall \epsilon > 0, \exists \delta > 0 \text{ such that } 0 < a - x < \delta \Rightarrow |f(x) - L| < \epsilon$$
+            </div>
+
+            <p><strong>Theorem:</strong> $\lim_{x \to a} f(x) = L$ if and only if $\lim_{x \to a^+} f(x) = \lim_{x \to a^-} f(x) = L$.</p>
+
+            <h3>1.4 Infinite Limits</h3>
+            <p>$\lim_{x \to a} f(x) = +\infty$ if:</p>
+            <div class="math-block">
+                $$\forall M > 0, \exists \delta > 0 \text{ such that } 0 < |x - a| < \delta \Rightarrow f(x) > M$$
+            </div>
+
+            <h3>1.5 Limits at Infinity</h3>
+            <p>$\lim_{x \to \infty} f(x) = L$ if:</p>
+            <div class="math-block">
+                $$\forall \epsilon > 0, \exists N > 0 \text{ such that } x > N \Rightarrow |f(x) - L| < \epsilon$$
+            </div>
+
+            <h2>2. Properties of Limits</h2>
+            <h3>2.1 Limit Laws</h3>
+            <p>If $\lim_{x \to a} f(x) = L$ and $\lim_{x \to a} g(x) = M$, then:</p>
+            <ul>
+                <li><strong>Sum:</strong> $\lim_{x \to a} [f(x) + g(x)] = L + M$</li>
+                <li><strong>Difference:</strong> $\lim_{x \to a} [f(x) - g(x)] = L - M$</li>
+                <li><strong>Product:</strong> $\lim_{x \to a} [f(x) \cdot g(x)] = L \cdot M$</li>
+                <li><strong>Quotient:</strong> $\lim_{x \to a} \frac{f(x)}{g(x)} = \frac{L}{M}$ (if $M \neq 0$)</li>
+                <li><strong>Power:</strong> $\lim_{x \to a} [f(x)]^n = L^n$</li>
+                <li><strong>Root:</strong> $\lim_{x \to a} \sqrt[n]{f(x)} = \sqrt[n]{L}$ (if $L > 0$ for even $n$)</li>
+            </ul>
+
+            <h3>2.2 Squeeze Theorem</h3>
+            <p>If $g(x) \leq f(x) \leq h(x)$ near $a$ and $\lim_{x \to a} g(x) = \lim_{x \to a} h(x) = L$, then $\lim_{x \to a} f(x) = L$.</p>
+
+            <h3>2.3 Composition of Functions</h3>
+            <p>If $\lim_{x \to a} g(x) = b$ and $f$ is continuous at $b$, then:</p>
+            <div class="math-block">
+                $$\lim_{x \to a} f(g(x)) = f(b) = f\left(\lim_{x \to a} g(x)\right)$$
+            </div>
+
+            <h2>3. Continuity</h2>
+            <h3>3.1 Definition of Continuity</h3>
+            <p>A function $f$ is continuous at $a$ if:</p>
+            <div class="math-block">
+                $$\lim_{x \to a} f(x) = f(a)$$
+            </div>
+            
+            <p>This requires three conditions:</p>
+            <ol>
+                <li>$f(a)$ is defined</li>
+                <li>$\lim_{x \to a} f(x)$ exists</li>
+                <li>$\lim_{x \to a} f(x) = f(a)$</li>
+            </ol>
+
+            <h3>3.2 $\epsilon$-$\delta$ Definition of Continuity</h3>
+            <p>$f$ is continuous at $a$ if:</p>
+            <div class="math-block">
+                $$\forall \epsilon > 0, \exists \delta > 0 \text{ such that } |x - a| < \delta \Rightarrow |f(x) - f(a)| < \epsilon$$
+            </div>
+
+            <h3>3.3 Types of Discontinuities</h3>
+            <ul>
+                <li><strong>Removable discontinuity:</strong> $\lim_{x \to a} f(x)$ exists but $f(a)$ is undefined or $f(a) \neq \lim_{x \to a} f(x)$</li>
+                <li><strong>Jump discontinuity:</strong> Left and right limits exist but are different</li>
+                <li><strong>Essential discontinuity:</strong> At least one one-sided limit doesn't exist</li>
+            </ul>
+
+            <h3>3.4 Continuity on Intervals</h3>
+            <ul>
+                <li><strong>Continuous on $(a,b)$:</strong> Continuous at every point in the interval</li>
+                <li><strong>Continuous on $[a,b]$:</strong> Continuous on $(a,b)$, right-continuous at $a$, left-continuous at $b$</li>
+            </ul>
+
+            <h2>4. Properties of Continuous Functions</h2>
+            <h3>4.1 Algebra of Continuous Functions</h3>
+            <p>If $f$ and $g$ are continuous at $a$, then so are:</p>
+            <ul>
+                <li>$f + g$, $f - g$, $f \cdot g$</li>
+                <li>$\frac{f}{g}$ (if $g(a) \neq 0$)</li>
+                <li>$|f|$, $f^n$ (for positive integer $n$)</li>
+            </ul>
+
+            <h3>4.2 Composition of Continuous Functions</h3>
+            <p>If $g$ is continuous at $a$ and $f$ is continuous at $g(a)$, then $f \circ g$ is continuous at $a$.</p>
+
+            <h3>4.3 Continuity of Elementary Functions</h3>
+            <ul>
+                <li><strong>Polynomials:</strong> Continuous everywhere</li>
+                <li><strong>Rational functions:</strong> Continuous except where denominator is zero</li>
+                <li><strong>Trigonometric functions:</strong> $\sin x$, $\cos x$ continuous everywhere; $\tan x$ continuous except at odd multiples of $\frac{\pi}{2}$</li>
+                <li><strong>Exponential and logarithmic:</strong> $e^x$ continuous everywhere; $\ln x$ continuous for $x > 0$</li>
+                <li><strong>Inverse trigonometric:</strong> Continuous on their domains</li>
+            </ul>
+
+            <h2>5. Important Theorems</h2>
+            <h3>5.1 Intermediate Value Theorem</h3>
+            <p>If $f$ is continuous on $[a,b]$ and $k$ is between $f(a)$ and $f(b)$, then there exists $c \in (a,b)$ such that $f(c) = k$.</p>
+            
+            <p><strong>Corollary:</strong> If $f$ is continuous on $[a,b]$ and $f(a)$ and $f(b)$ have opposite signs, then there exists $c \in (a,b)$ such that $f(c) = 0$.</p>
+
+            <h3>5.2 Extreme Value Theorem</h3>
+            <p>If $f$ is continuous on a closed and bounded interval $[a,b]$, then $f$ attains its maximum and minimum values on $[a,b]$.</p>
+
+            <h3>5.3 Uniform Continuity</h3>
+            <p><strong>Definition:</strong> $f$ is uniformly continuous on $D$ if:</p>
+            <div class="math-block">
+                $$\forall \epsilon > 0, \exists \delta > 0 \text{ such that } \forall x,y \in D: |x-y| < \delta \Rightarrow |f(x)-f(y)| < \epsilon$$
+            </div>
+            
+            <p><strong>Theorem:</strong> If $f$ is continuous on $[a,b]$, then $f$ is uniformly continuous on $[a,b]$.</p>
+
+            <h2>6. L'Hôpital's Rule</h2>
+            <p>If $\lim_{x \to a} f(x) = \lim_{x \to a} g(x) = 0$ or $\pm\infty$, and $\lim_{x \to a} \frac{f'(x)}{g'(x)}$ exists, then:</p>
+            <div class="math-block">
+                $$\lim_{x \to a} \frac{f(x)}{g(x)} = \lim_{x \to a} \frac{f'(x)}{g'(x)}$$
+            </div>
+            
+            <h3>6.1 Indeterminate Forms</h3>
+            <ul>
+                <li>$\frac{0}{0}$, $\frac{\infty}{\infty}$</li>
+                <li>$0 \cdot \infty$ (rewrite as $\frac{0}{1/\infty}$ or $\frac{\infty}{1/0}$)</li>
+                <li>$\infty - \infty$ (factor or rationalize)</li>
+                <li>$0^0$, $1^\infty$, $\infty^0$ (use logarithms)</li>
+            </ul>
+
+            <h2>7. Limits and Continuity in Metric Spaces</h2>
+            <h3>7.1 Metric Space Definition</h3>
+            <p>A metric space $(X,d)$ consists of a set $X$ and a distance function $d: X \times X \to \mathbb{R}$ satisfying:</p>
+            <ul>
+                <li>$d(x,y) \geq 0$ with equality iff $x = y$</li>
+                <li>$d(x,y) = d(y,x)$ (symmetry)</li>
+                <li>$d(x,z) \leq d(x,y) + d(y,z)$ (triangle inequality)</li>
+            </ul>
+
+            <h3>7.2 Convergence in Metric Spaces</h3>
+            <p>A sequence $(x_n)$ converges to $x$ if:</p>
+            <div class="math-block">
+                $$\lim_{n \to \infty} d(x_n, x) = 0$$
+            </div>
+
+            <h3>7.3 Continuity in Metric Spaces</h3>
+            <p>$f: (X,d_X) \to (Y,d_Y)$ is continuous at $a$ if:</p>
+            <div class="math-block">
+                $$\forall \epsilon > 0, \exists \delta > 0: d_X(x,a) < \delta \Rightarrow d_Y(f(x),f(a)) < \epsilon$$
+            </div>
+
+            <h2>8. Code Examples</h2>
+            <pre><code># Python implementations for limits and continuity analysis
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.optimize import fsolve
+import sympy as sp
+
+class LimitAnalyzer:
+    def __init__(self, func, symbolic_func=None):
+        """
+        Initialize with a function
+        func: numerical function (lambda or def)
+        symbolic_func: symbolic expression for exact computation
+        """
+        self.func = func
+        self.symbolic_func = symbolic_func
+    
+    def numerical_limit(self, a, side='both', h_values=None):
+        """
+        Compute limit numerically by approaching from sides
+        side: 'left', 'right', or 'both'
+        """
+        if h_values is None:
+            h_values = [10**(-i) for i in range(1, 16)]
+        
+        results = {'left': [], 'right': [], 'h_values': h_values}
+        
+        for h in h_values:
+            if side in ['left', 'both']:
+                try:
+                    val = self.func(a - h)
+                    results['left'].append(val)
+                except:
+                    results['left'].append(np.nan)
+            
+            if side in ['right', 'both']:
+                try:
+                    val = self.func(a + h)
+                    results['right'].append(val)
+                except:
+                    results['right'].append(np.nan)
+        
+        return results
+    
+    def plot_limit_behavior(self, a, interval=0.1, num_points=1000):
+        """Plot function behavior near point a"""
+        x_left = np.linspace(a - interval, a, num_points//2, endpoint=False)
+        x_right = np.linspace(a, a + interval, num_points//2, endpoint=False)[1:]
+        
+        try:
+            y_left = [self.func(x) for x in x_left]
+            y_right = [self.func(x) for x in x_right]
+        except:
+            # Handle functions that might have domain restrictions
+            y_left, y_right = [], []
+            for x in x_left:
+                try:
+                    y_left.append(self.func(x))
+                except:
+                    y_left.append(np.nan)
+            
+            for x in x_right:
+                try:
+                    y_right.append(self.func(x))
+                except:
+                    y_right.append(np.nan)
+        
+        plt.figure(figsize=(10, 6))
+        plt.plot(x_left, y_left, 'b-', label='Left approach', linewidth=2)
+        plt.plot(x_right, y_right, 'r-', label='Right approach', linewidth=2)
+        plt.axvline(x=a, color='k', linestyle='--', alpha=0.7, label=f'x = {a}')
+        
+        # Try to plot the function value at a
+        try:
+            fa = self.func(a)
+            plt.plot(a, fa, 'go', markersize=8, label=f'f({a}) = {fa:.3f}')
+        except:
+            plt.plot(a, 0, 'ro', markersize=8, label=f'f({a}) undefined')
+        
+        plt.xlabel('x')
+        plt.ylabel('f(x)')
+        plt.title(f'Function behavior near x = {a}')
+        plt.legend()
+        plt.grid(True, alpha=0.3)
+        plt.show()
+    
+    def symbolic_limit(self, a, side='both'):
+        """Compute limit symbolically using SymPy"""
+        if self.symbolic_func is None:
+            return "Symbolic function not provided"
+        
+        x = sp.Symbol('x')
+        
+        if side == 'both':
+            return sp.limit(self.symbolic_func, x, a)
+        elif side == 'left':
+            return sp.limit(self.symbolic_func, x, a, '-')
+        elif side == 'right':
+            return sp.limit(self.symbolic_func, x, a, '+')
+
+class ContinuityAnalyzer:
+    def __init__(self, func, symbolic_func=None):
+        self.func = func
+        self.symbolic_func = symbolic_func
+        self.limit_analyzer = LimitAnalyzer(func, symbolic_func)
+    
+    def check_continuity(self, a, tolerance=1e-10):
+        """
+        Check if function is continuous at point a
+        Returns: (is_continuous, discontinuity_type, details)
+        """
+        # Check if f(a) is defined
+        try:
+            fa = self.func(a)
+            fa_defined = True
+        except:
+            fa_defined = False
+            fa = None
+        
+        # Compute one-sided limits
+        limit_results = self.limit_analyzer.numerical_limit(a)
+        
+        # Extract final values (most accurate approximations)
+        if limit_results['left'] and not np.isnan(limit_results['left'][-1]):
+            left_limit = limit_results['left'][-1]
+            left_exists = True
+        else:
+            left_limit = None
+            left_exists = False
+        
+        if limit_results['right'] and not np.isnan(limit_results['right'][-1]):
+            right_limit = limit_results['right'][-1]
+            right_exists = True
+        else:
+            right_limit = None
+            right_exists = False
+        
+        # Determine continuity
+        if not fa_defined:
+            if left_exists and right_exists and abs(left_limit - right_limit) < tolerance:
+                return False, "removable", f"f({a}) undefined, but limits exist and agree"
+            else:
+                return False, "essential", f"f({a}) undefined"
+        
+        if not (left_exists and right_exists):
+            return False, "essential", "One or both one-sided limits don't exist"
+        
+        if abs(left_limit - right_limit) > tolerance:
+            return False, "jump", f"Left limit: {left_limit:.6f}, Right limit: {right_limit:.6f}"
+        
+        limit_value = (left_limit + right_limit) / 2
+        if abs(fa - limit_value) > tolerance:
+            return False, "removable", f"f({a}) = {fa:.6f}, but limit = {limit_value:.6f}"
+        
+        return True, "continuous", f"f({a}) = {fa:.6f} = limit"
+    
+    def find_discontinuities(self, interval, num_test_points=100):
+        """Find potential discontinuities in an interval"""
+        a, b = interval
+        test_points = np.linspace(a, b, num_test_points)
+        discontinuities = []
+        
+        for point in test_points:
+            is_cont, disc_type, details = self.check_continuity(point)
+            if not is_cont:
+                discontinuities.append((point, disc_type, details))
+        
+        return discontinuities
+    
+    def plot_with_discontinuities(self, interval, num_points=1000):
+        """Plot function highlighting discontinuities"""
+        a, b = interval
+        x = np.linspace(a, b, num_points)
+        y = []
+        
+        for xi in x:
+            try:
+                y.append(self.func(xi))
+            except:
+                y.append(np.nan)
+        
+        plt.figure(figsize=(12, 8))
+        plt.plot(x, y, 'b-', linewidth=2, label='f(x)')
+        
+        # Find and mark discontinuities
+        discontinuities = self.find_discontinuities(interval, 50)
+        
+        for point, disc_type, details in discontinuities:
+            color = {'removable': 'orange', 'jump': 'red', 'essential': 'purple'}.get(disc_type, 'black')
+            plt.axvline(x=point, color=color, linestyle='--', alpha=0.7)
+            plt.plot(point, 0, 'o', color=color, markersize=8, 
+                    label=f'{disc_type.title()} at x={point:.3f}')
+        
+        plt.xlabel('x')
+        plt.ylabel('f(x)')
+        plt.title('Function with Discontinuities Marked')
+        plt.legend()
+        plt.grid(True, alpha=0.3)
+        plt.show()
+        
+        return discontinuities
+
+def lhopital_demo():
+    """Demonstrate L'Hôpital's rule for indeterminate forms"""
+    x = sp.Symbol('x')
+    
+    examples = [
+        (sp.sin(x)/x, 0, "sin(x)/x as x→0"),
+        ((sp.exp(x) - 1)/x, 0, "(e^x - 1)/x as x→0"),
+        (sp.log(x)/x, sp.oo, "ln(x)/x as x→∞"),
+        ((1 - sp.cos(x))/x**2, 0, "(1 - cos(x))/x² as x→0"),
+        ((x**2 - 1)/(x - 1), 1, "(x² - 1)/(x - 1) as x→1")
+    ]
+    
+    print("=== L'Hôpital's Rule Examples ===")
+    
+    for expr, limit_point, description in examples:
+        print(f"\n{description}:")
+        
+        # Direct limit
+        direct_limit = sp.limit(expr, x, limit_point)
+        print(f"Direct limit: {direct_limit}")
+        
+        # Apply L'Hôpital's rule manually
+        numerator = sp.numer(expr)
+        denominator = sp.denom(expr)
+        
+        # Check if it's an indeterminate form
+        num_limit = sp.limit(numerator, x, limit_point)
+        den_limit = sp.limit(denominator, x, limit_point)
+        
+        if (num_limit == 0 and den_limit == 0) or (num_limit == sp.oo and den_limit == sp.oo):
+            # Apply L'Hôpital's rule
+            num_deriv = sp.diff(numerator, x)
+            den_deriv = sp.diff(denominator, x)
+            lhopital_expr = num_deriv / den_deriv
+            lhopital_limit = sp.limit(lhopital_expr, x, limit_point)
+            
+            print(f"Numerator limit: {num_limit}")
+            print(f"Denominator limit: {den_limit}")
+            print(f"Indeterminate form: {num_limit}/{den_limit}")
+            print(f"After L'Hôpital's rule: {lhopital_limit}")
+        else:
+            print(f"Not an indeterminate form: {num_limit}/{den_limit} = {direct_limit}")
+
+def epsilon_delta_demo(func, a, L, epsilon=0.1):
+    """Demonstrate epsilon-delta definition of limits"""
+    print(f"=== ε-δ Demonstration ===")
+    print(f"Showing that lim(x→{a}) f(x) = {L}")
+    print(f"For ε = {epsilon}")
+    
+    # Find δ such that |x - a| < δ ⟹ |f(x) - L| < ε
+    # This is a simplified approach for demonstration
+    
+    delta_candidates = [0.1, 0.01, 0.001, 0.0001]
+    
+    for delta in delta_candidates:
+        test_points = np.linspace(a - delta, a + delta, 21)
+        test_points = test_points[test_points != a]  # Remove a itself
+        
+        valid = True
+        for x in test_points:
+            try:
+                if abs(func(x) - L) >= epsilon:
+                    valid = False
+                    break
+            except:
+                valid = False
+                break
+        
+        if valid:
+            print(f"δ = {delta} works: |x - {a}| < {delta} ⟹ |f(x) - {L}| < {epsilon}")
+            
+            # Visualize
+            x_plot = np.linspace(a - 2*delta, a + 2*delta, 1000)
+            y_plot = [func(x) for x in x_plot]
+            
+            plt.figure(figsize=(10, 6))
+            plt.plot(x_plot, y_plot, 'b-', linewidth=2, label='f(x)')
+            plt.axhline(y=L, color='r', linestyle='-', alpha=0.7, label=f'L = {L}')
+            plt.axhline(y=L+epsilon, color='r', linestyle='--', alpha=0.5, label=f'L ± ε')
+            plt.axhline(y=L-epsilon, color='r', linestyle='--', alpha=0.5)
+            plt.axvline(x=a, color='k', linestyle='-', alpha=0.7, label=f'x = {a}')
+            plt.axvline(x=a+delta, color='g', linestyle='--', alpha=0.7, label=f'x = a ± δ')
+            plt.axvline(x=a-delta, color='g', linestyle='--', alpha=0.7)
+            
+            plt.fill_between([a-delta, a+delta], L-epsilon, L+epsilon, alpha=0.2, color='yellow')
+            plt.xlabel('x')
+            plt.ylabel('f(x)')
+            plt.title(f'ε-δ Definition: ε = {epsilon}, δ = {delta}')
+            plt.legend()
+            plt.grid(True, alpha=0.3)
+            plt.show()
+            break
+        else:
+            print(f"δ = {delta} doesn't work")
+
+# Example usage
+if __name__ == "__main__":
+    print("=== Limit Analysis ===")
+    
+    # Example 1: sin(x)/x at x = 0
+    def sinc(x):
+        return np.sin(x) / x if x != 0 else 1
+    
+    sinc_symbolic = sp.sin(sp.Symbol('x')) / sp.Symbol('x')
+    analyzer1 = LimitAnalyzer(sinc, sinc_symbolic)
+    
+    print("Function: sin(x)/x at x = 0")
+    symbolic_limit = analyzer1.symbolic_limit(0)
+    print(f"Symbolic limit: {symbolic_limit}")
+    
+    numerical_result = analyzer1.numerical_limit(0)
+    print(f"Numerical left limit: {numerical_result['left'][-1]:.10f}")
+    print(f"Numerical right limit: {numerical_result['right'][-1]:.10f}")
+    
+    print("\n=== Continuity Analysis ===")
+    
+    # Example 2: Function with jump discontinuity
+    def step_func(x):
+        return 1 if x >= 0 else -1
+    
+    continuity_analyzer = ContinuityAnalyzer(step_func)
+    is_cont, disc_type, details = continuity_analyzer.check_continuity(0)
+    print(f"Step function at x=0: {disc_type} - {details}")
+    
+    # Example 3: Function with removable discontinuity
+    def removable_disc(x):
+        return (x**2 - 1) / (x - 1) if x != 1 else 0
+    
+    continuity_analyzer2 = ContinuityAnalyzer(removable_disc)
+    is_cont, disc_type, details = continuity_analyzer2.check_continuity(1)
+    print(f"(x²-1)/(x-1) at x=1: {disc_type} - {details}")
+    
+    print("\n=== L'Hôpital's Rule ===")
+    lhopital_demo()
+    
+    print("\n=== ε-δ Demonstration ===")
+    epsilon_delta_demo(lambda x: 2*x + 1, 1, 3, 0.2)
+</code></pre>
+
+            <h2>9. Applications</h2>
+            <h3>9.1 Calculus</h3>
+            <ul>
+                <li>Foundation for derivatives and integrals</li>
+                <li>Optimization and related rates</li>
+                <li>Fundamental Theorem of Calculus</li>
+            </ul>
+
+            <h3>9.2 Real Analysis</h3>
+            <ul>
+                <li>Riemann integration theory</li>
+                <li>Uniform convergence of function sequences</li>
+                <li>Compactness and connectedness</li>
+            </ul>
+
+            <h3>9.3 Numerical Analysis</h3>
+            <ul>
+                <li>Root finding algorithms</li>
+                <li>Interpolation and approximation</li>
+                <li>Error analysis</li>
+            </ul>
+
+            <h2>10. References</h2>
+            <ul>
+                <li>Spivak, M. (2008). <em>Calculus</em>.</li>
+                <li>Abbott, S. (2015). <em>Understanding Analysis</em>.</li>
+                <li>Rudin, W. (1976). <em>Principles of Mathematical Analysis</em>.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; Diogo Franquinho | Technical Notes</p>
+    </footer>
+</body>
+</html> 

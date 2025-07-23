@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Tricks - Technical Notes</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/book-reviews.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="../../index.html">← Back to Home</a> | 
+        <a href="../../index.html#notes">Notes</a>
+    </nav>
+
+    <main>
+        <header>
+            <h1>Python Tricks and Best Practices</h1>
+            <p class="note-meta">Last updated: December 2024</p>
+        </header>
+
+        <section class="note-content">
+            <div class="disclaimer">
+                <p><strong>Disclaimer:</strong> These are my personal notes compiled for my own reference and learning. They may contain errors, incomplete information, or personal interpretations. While I strive for accuracy, these notes are not peer-reviewed and should not be considered authoritative sources. Please consult official textbooks, research papers, or other reliable sources for academic or professional purposes.</p>
+            </div>
+            
+            <h2>1. List Comprehensions and Generator Expressions</h2>
+            <h3>1.1 Basic List Comprehensions</h3>
+            <pre><code># Basic syntax: [expression for item in iterable if condition]
+squares = [x**2 for x in range(10)]
+even_squares = [x**2 for x in range(10) if x % 2 == 0]
+
+# Nested comprehensions
+matrix = [[i*j for j in range(3)] for i in range(3)]
+flattened = [item for sublist in matrix for item in sublist]
+
+# Dictionary comprehensions
+word_lengths = {word: len(word) for word in ['hello', 'world', 'python']}
+squared_dict = {x: x**2 for x in range(5)}
+
+# Set comprehensions
+unique_lengths = {len(word) for word in ['hello', 'world', 'python', 'hello']}
+</code></pre>
+
+            <h3>1.2 Generator Expressions</h3>
+            <pre><code># Memory-efficient alternative to list comprehensions
+squares_gen = (x**2 for x in range(1000000))  # Uses minimal memory
+total = sum(x**2 for x in range(1000))  # Direct use in functions
+
+# Generator functions
+def fibonacci():
+    a, b = 0, 1
+    while True:
+        yield a
+        a, b = b, a + b
+
+# Using itertools with generators
+import itertools
+fib = fibonacci()
+first_10_fibs = list(itertools.islice(fib, 10))
+</code></pre>
+
+            <h2>2. Advanced Function Features</h2>
+            <h3>2.1 Decorators</h3>
+            <pre><code># Basic decorator
+def timer(func):
+    import time
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        end = time.time()
+        print(f"{func.__name__} took {end - start:.4f} seconds")
+        return result
+    return wrapper
+
+# Decorator with parameters
+def retry(times=3):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            for attempt in range(times):
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    if attempt == times - 1:
+                        raise e
+                    print(f"Attempt {attempt + 1} failed: {e}")
+        return wrapper
+    return decorator
+
+# Class-based decorators
+class Memoize:
+    def __init__(self, func):
+        self.func = func
+        self.cache = {}
+    
+    def __call__(self, *args):
+        if args not in self.cache:
+            self.cache[args] = self.func(*args)
+        return self.cache[args]
+
+@Memoize
+def fibonacci(n):
+    if n < 2:
+        return n
+    return fibonacci(n-1) + fibonacci(n-2)
+
+# Built-in decorators
+from functools import lru_cache, wraps
+
+@lru_cache(maxsize=128)
+def expensive_function(n):
+    return sum(i**2 for i in range(n))
+</code></pre>
+
+            <h3>2.2 Lambda Functions and Functional Programming</h3>
+            <pre><code># Lambda functions
+numbers = [1, 2, 3, 4, 5]
+squared = list(map(lambda x: x**2, numbers))
+even = list(filter(lambda x: x % 2 == 0, numbers))
+
+# Functional programming with higher-order functions
+from functools import reduce
+factorial = lambda n: reduce(lambda x, y: x * y, range(1, n + 1))
+sum_of_squares = reduce(lambda acc, x: acc + x**2, numbers, 0)
+
+# Partial functions
+from functools import partial
+multiply = lambda x, y: x * y
+double = partial(multiply, 2)
+triple = partial(multiply, 3)
+
+# Function composition
+def compose(*functions):
+    return lambda x: reduce(lambda acc, f: f(acc), reversed(functions), x)
+
+add_one = lambda x: x + 1
+square = lambda x: x**2
+add_one_then_square = compose(square, add_one)
+</code></pre>
+
+            <h2>3. Advanced Data Structures</h2>
+            <h3>3.1 Collections Module</h3>
+            <pre><code>from collections import (
+    defaultdict, Counter, namedtuple, deque, OrderedDict, ChainMap
+)
+
+# defaultdict - never raises KeyError
+dd = defaultdict(list)
+dd['key'].append('value')  # No need to check if key exists
+
+# Counter - for counting hashable objects
+text = "hello world"
+char_count = Counter(text)
+most_common = char_count.most_common(3)
+
+# namedtuple - lightweight object types
+Point = namedtuple('Point', ['x', 'y'])
+p = Point(1, 2)
+print(p.x, p.y)  # Access by name instead of index
+
+# deque - double-ended queue
+d = deque([1, 2, 3])
+d.appendleft(0)  # O(1) operation
+d.append(4)      # O(1) operation
+
+# ChainMap - combine multiple dictionaries
+dict1 = {'a': 1, 'b': 2}
+dict2 = {'b': 3, 'c': 4}
+combined = ChainMap(dict1, dict2)  # dict1 takes precedence
+</code></pre>
+
+            <h3>3.2 Advanced Dictionary Techniques</h3>
+            <pre><code># Dictionary merging (Python 3.9+)
+dict1 = {'a': 1, 'b': 2}
+dict2 = {'c': 3, 'd': 4}
+merged = dict1 | dict2
+
+# Dictionary unpacking
+def process_data(a, b, c):
+    return a + b + c
+
+data = {'a': 1, 'b': 2, 'c': 3}
+result = process_data(**data)
+
+# Dictionary get with default factory
+from collections import defaultdict
+def get_or_create_list(d, key):
+    return d.setdefault(key, [])
+
+# Dictionary comprehension with filtering
+data = {'a': 1, 'b': 2, 'c': 3, 'd': 4}
+filtered = {k: v for k, v in data.items() if v % 2 == 0}
+
+# Nested dictionary access
+def safe_get(dictionary, *keys):
+    for key in keys:
+        try:
+            dictionary = dictionary[key]
+        except (KeyError, TypeError):
+            return None
+    return dictionary
+
+nested = {'a': {'b': {'c': 42}}}
+value = safe_get(nested, 'a', 'b', 'c')  # Returns 42
+</code></pre>
+
+            <h2>4. Context Managers and Resource Management</h2>
+            <h3>4.1 Custom Context Managers</h3>
+            <pre><code>from contextlib import contextmanager
+import time
+
+# Function-based context manager
+@contextmanager
+def timer_context():
+    start = time.time()
+    try:
+        yield start
+    finally:
+        end = time.time()
+        print(f"Elapsed time: {end - start:.4f} seconds")
+
+# Class-based context manager
+class DatabaseConnection:
+    def __init__(self, connection_string):
+        self.connection_string = connection_string
+        self.connection = None
+    
+    def __enter__(self):
+        # Simulate database connection
+        print(f"Connecting to {self.connection_string}")
+        self.connection = f"Connected to {self.connection_string}"
+        return self.connection
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        print("Closing database connection")
+        self.connection = None
+        # Return False to propagate exceptions
+
+# Using context managers
+with timer_context():
+    time.sleep(0.1)  # Some operation
+
+with DatabaseConnection("postgresql://localhost") as conn:
+    print(f"Using {conn}")
+
+# Multiple context managers
+from contextlib import ExitStack
+
+def process_files(filenames):
+    with ExitStack() as stack:
+        files = [stack.enter_context(open(fname)) for fname in filenames]
+        # Process all files
+        return [f.read() for f in files]
+</code></pre>
+
+            <h2>5. Advanced Object-Oriented Programming</h2>
+            <h3>5.1 Properties and Descriptors</h3>
+            <pre><code># Properties
+class Circle:
+    def __init__(self, radius):
+        self._radius = radius
+    
+    @property
+    def radius(self):
+        return self._radius
+    
+    @radius.setter
+    def radius(self, value):
+        if value < 0:
+            raise ValueError("Radius cannot be negative")
+        self._radius = value
+    
+    @property
+    def area(self):
+        return 3.14159 * self._radius ** 2
+
+# Descriptors
+class Validated:
+    def __init__(self, validator):
+        self.validator = validator
+    
+    def __set_name__(self, owner, name):
+        self.name = name
+    
+    def __get__(self, obj, objtype=None):
+        if obj is None:
+            return self
+        return obj.__dict__.get(self.name)
+    
+    def __set__(self, obj, value):
+        if not self.validator(value):
+            raise ValueError(f"Invalid value for {self.name}: {value}")
+        obj.__dict__[self.name] = value
+
+class Person:
+    age = Validated(lambda x: isinstance(x, int) and x >= 0)
+    name = Validated(lambda x: isinstance(x, str) and len(x) > 0)
+    
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+</code></pre>
+
+            <h3>5.2 Metaclasses and Class Decorators</h3>
+            <pre><code># Simple metaclass
+class SingletonMeta(type):
+    _instances = {}
+    
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super().__call__(*args, **kwargs)
+        return cls._instances[cls]
+
+class Singleton(metaclass=SingletonMeta):
+    def __init__(self, value):
+        self.value = value
+
+# Class decorator alternative
+def singleton(cls):
+    instances = {}
+    def get_instance(*args, **kwargs):
+        if cls not in instances:
+            instances[cls] = cls(*args, **kwargs)
+        return instances[cls]
+    return get_instance
+
+@singleton
+class DatabaseManager:
+    def __init__(self):
+        self.connected = False
+
+# Automatic property creation
+class AutoProperties(type):
+    def __new__(mcs, name, bases, attrs):
+        # Automatically create properties for _private attributes
+        for key, value in list(attrs.items()):
+            if key.startswith('_') and not key.startswith('__'):
+                prop_name = key[1:]  # Remove leading underscore
+                attrs[prop_name] = property(
+                    lambda self, k=key: getattr(self, k),
+                    lambda self, val, k=key: setattr(self, k, val)
+                )
+        return super().__new__(mcs, name, bases, attrs)
+</code></pre>
+
+            <h2>6. Error Handling and Debugging</h2>
+            <h3>6.1 Advanced Exception Handling</h3>
+            <pre><code># Custom exceptions
+class ValidationError(Exception):
+    def __init__(self, field, value, message=None):
+        self.field = field
+        self.value = value
+        self.message = message or f"Invalid value for {field}: {value}"
+        super().__init__(self.message)
+
+# Exception chaining
+def process_data(data):
+    try:
+        return complex_operation(data)
+    except ValueError as e:
+        raise ValidationError("data", data) from e
+
+# Exception groups (Python 3.11+)
+try:
+    # Some operation that might raise multiple exceptions
+    pass
+except* ValueError as eg:
+    for error in eg.exceptions:
+        print(f"ValueError: {error}")
+except* TypeError as eg:
+    for error in eg.exceptions:
+        print(f"TypeError: {error}")
+
+# Context manager for exception handling
+@contextmanager
+def ignore_errors(*exceptions):
+    try:
+        yield
+    except exceptions:
+        pass
+
+with ignore_errors(FileNotFoundError, PermissionError):
+    os.remove("nonexistent_file.txt")
+</code></pre>
+
+            <h3>6.2 Debugging and Profiling</h3>
+            <pre><code># Debugging with pdb
+import pdb
+
+def debug_function(x, y):
+    pdb.set_trace()  # Debugger will stop here
+    result = x + y
+    return result
+
+# Profiling
+import cProfile
+import pstats
+from functools import wraps
+
+def profile(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        pr = cProfile.Profile()
+        pr.enable()
+        result = func(*args, **kwargs)
+        pr.disable()
+        
+        stats = pstats.Stats(pr)
+        stats.sort_stats('cumulative')
+        stats.print_stats(10)  # Top 10 functions
+        return result
+    return wrapper
+
+# Memory profiling
+import tracemalloc
+
+def memory_profile(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        tracemalloc.start()
+        result = func(*args, **kwargs)
+        current, peak = tracemalloc.get_traced_memory()
+        print(f"Current memory usage: {current / 1024 / 1024:.1f} MB")
+        print(f"Peak memory usage: {peak / 1024 / 1024:.1f} MB")
+        tracemalloc.stop()
+        return result
+    return wrapper
+</code></pre>
+
+            <h2>7. Performance Optimization</h2>
+            <h3>7.1 Efficient Data Processing</h3>
+            <pre><code>import numpy as np
+from numba import jit
+import concurrent.futures
+import multiprocessing
+
+# Vectorization with NumPy
+def slow_python_sum(arr):
+    total = 0
+    for x in arr:
+        total += x * x
+    return total
+
+def fast_numpy_sum(arr):
+    return np.sum(arr ** 2)
+
+# JIT compilation with Numba
+@jit(nopython=True)
+def fast_fibonacci(n):
+    if n < 2:
+        return n
+    a, b = 0, 1
+    for _ in range(2, n + 1):
+        a, b = b, a + b
+    return b
+
+# Parallel processing
+def cpu_bound_task(n):
+    return sum(i * i for i in range(n))
+
+def parallel_processing(tasks):
+    with concurrent.futures.ProcessPoolExecutor() as executor:
+        results = list(executor.map(cpu_bound_task, tasks))
+    return results
+
+# Asyncio for I/O bound tasks
+import asyncio
+import aiohttp
+
+async def fetch_url(session, url):
+    async with session.get(url) as response:
+        return await response.text()
+
+async def fetch_multiple_urls(urls):
+    async with aiohttp.ClientSession() as session:
+        tasks = [fetch_url(session, url) for url in urls]
+        results = await asyncio.gather(*tasks)
+    return results
+</code></pre>
+
+            <h3>7.2 Memory Optimization</h3>
+            <pre><code># __slots__ for memory efficiency
+class Point:
+    __slots__ = ['x', 'y']
+    
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+# Weak references to avoid circular references
+import weakref
+
+class Parent:
+    def __init__(self, name):
+        self.name = name
+        self.children = []
+    
+    def add_child(self, child):
+        self.children.append(child)
+        child.parent = weakref.ref(self)
+
+class Child:
+    def __init__(self, name):
+        self.name = name
+        self.parent = None
+
+# Generator chains for memory efficiency
+def read_large_file(filename):
+    with open(filename) as f:
+        for line in f:
+            yield line.strip()
+
+def process_lines(lines):
+    for line in lines:
+        if line.startswith('ERROR'):
+            yield line.upper()
+
+def save_errors(filename, output_filename):
+    lines = read_large_file(filename)
+    errors = process_lines(lines)
+    with open(output_filename, 'w') as f:
+        for error in errors:
+            f.write(error + '\n')
+</code></pre>
+
+            <h2>8. Advanced String and Text Processing</h2>
+            <h3>8.1 String Formatting and Templates</h3>
+            <pre><code># f-strings (Python 3.6+)
+name = "Python"
+version = 3.9
+print(f"Welcome to {name} {version}")
+print(f"Pi is approximately {3.14159:.2f}")
+
+# Format expressions in f-strings
+numbers = [1, 2, 3, 4, 5]
+print(f"Sum: {sum(numbers)}, Average: {sum(numbers)/len(numbers):.2f}")
+
+# String Template for safe formatting
+from string import Template
+
+template = Template("Hello $name, welcome to $place!")
+result = template.safe_substitute(name="Alice", place="Python")
+
+# Advanced formatting
+from datetime import datetime
+now = datetime.now()
+print(f"Current time: {now:%Y-%m-%d %H:%M:%S}")
+
+# Multiline strings and raw strings
+query = """
+SELECT name, age
+FROM users
+WHERE age > 18
+ORDER BY name
+"""
+
+regex_pattern = r"(\d{3})-(\d{3})-(\d{4})"  # Raw string for regex
+</code></pre>
+
+            <h3>8.2 Regular Expressions</h3>
+            <pre><code>import re
+
+# Compiled patterns for performance
+email_pattern = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
+phone_pattern = re.compile(r'(\d{3})-(\d{3})-(\d{4})')
+
+def validate_email(email):
+    return email_pattern.match(email) is not None
+
+def extract_phone_numbers(text):
+    return phone_pattern.findall(text)
+
+# Named groups
+log_pattern = re.compile(
+    r'(?P<timestamp>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}) '
+    r'(?P<level>\w+) '
+    r'(?P<message>.*)'
+)
+
+def parse_log_line(line):
+    match = log_pattern.match(line)
+    if match:
+        return match.groupdict()
+    return None
+
+# Substitution with functions
+def title_case(match):
+    return match.group(0).title()
+
+text = "hello world python programming"
+result = re.sub(r'\b\w+\b', title_case, text)
+</code></pre>
+
+            <h2>9. Testing and Documentation</h2>
+            <h3>9.1 Unit Testing</h3>
+            <pre><code>import unittest
+from unittest.mock import Mock, patch, MagicMock
+import pytest
+
+# Unittest example
+class TestMathOperations(unittest.TestCase):
+    def setUp(self):
+        self.calculator = Calculator()
+    
+    def test_addition(self):
+        result = self.calculator.add(2, 3)
+        self.assertEqual(result, 5)
+    
+    def test_division_by_zero(self):
+        with self.assertRaises(ZeroDivisionError):
+            self.calculator.divide(5, 0)
+    
+    @patch('requests.get')
+    def test_api_call(self, mock_get):
+        mock_response = Mock()
+        mock_response.json.return_value = {'status': 'success'}
+        mock_get.return_value = mock_response
+        
+        result = self.calculator.fetch_data('http://api.example.com')
+        self.assertEqual(result['status'], 'success')
+
+# Pytest examples
+def test_simple_addition():
+    assert add(2, 3) == 5
+
+@pytest.fixture
+def sample_data():
+    return [1, 2, 3, 4, 5]
+
+def test_sum_with_fixture(sample_data):
+    assert sum(sample_data) == 15
+
+@pytest.mark.parametrize("a,b,expected", [
+    (2, 3, 5),
+    (0, 0, 0),
+    (-1, 1, 0),
+])
+def test_parametrized_addition(a, b, expected):
+    assert add(a, b) == expected
+</code></pre>
+
+            <h3>9.2 Documentation</h3>
+            <pre><code># Docstring conventions
+def calculate_statistics(data: list[float]) -> dict[str, float]:
+    """
+    Calculate basic statistics for a list of numbers.
+    
+    Args:
+        data: A list of numeric values
+        
+    Returns:
+        A dictionary containing mean, median, and standard deviation
+        
+    Raises:
+        ValueError: If the data list is empty
+        TypeError: If data contains non-numeric values
+        
+    Examples:
+        >>> calculate_statistics([1, 2, 3, 4, 5])
+        {'mean': 3.0, 'median': 3.0, 'std': 1.58}
+    """
+    if not data:
+        raise ValueError("Data list cannot be empty")
+    
+    # Implementation here
+    pass
+
+# Type hints for better documentation
+from typing import Union, Optional, Callable, TypeVar, Generic
+
+T = TypeVar('T')
+
+class Stack(Generic[T]):
+    def __init__(self) -> None:
+        self._items: list[T] = []
+    
+    def push(self, item: T) -> None:
+        self._items.append(item)
+    
+    def pop(self) -> T:
+        if not self._items:
+            raise IndexError("Stack is empty")
+        return self._items.pop()
+    
+    def peek(self) -> Optional[T]:
+        return self._items[-1] if self._items else None
+
+# Dataclasses for structured data
+from dataclasses import dataclass, field
+from typing import List
+
+@dataclass
+class Person:
+    name: str
+    age: int
+    email: Optional[str] = None
+    hobbies: List[str] = field(default_factory=list)
+    
+    def __post_init__(self):
+        if self.age < 0:
+            raise ValueError("Age cannot be negative")
+</code></pre>
+
+            <h2>10. Modern Python Features</h2>
+            <h3>10.1 Pattern Matching (Python 3.10+)</h3>
+            <pre><code># Structural pattern matching
+def process_data(data):
+    match data:
+        case {"type": "user", "id": user_id, "name": name}:
+            return f"User {name} with ID {user_id}"
+        case {"type": "product", "id": product_id, "price": price} if price > 100:
+            return f"Expensive product {product_id}: ${price}"
+        case {"type": "product", "id": product_id, "price": price}:
+            return f"Product {product_id}: ${price}"
+        case list() if len(data) > 0:
+            return f"List with {len(data)} items"
+        case []:
+            return "Empty list"
+        case _:
+            return "Unknown data format"
+
+# Pattern matching with classes
+@dataclass
+class Point:
+    x: float
+    y: float
+
+def describe_point(point):
+    match point:
+        case Point(x=0, y=0):
+            return "Origin"
+        case Point(x=0, y=y):
+            return f"On Y-axis at {y}"
+        case Point(x=x, y=0):
+            return f"On X-axis at {x}"
+        case Point(x=x, y=y) if x == y:
+            return f"On diagonal at ({x}, {y})"
+        case Point(x=x, y=y):
+            return f"Point at ({x}, {y})"
+</code></pre>
+
+            <h3>10.2 Walrus Operator and Other Modern Features</h3>
+            <pre><code># Walrus operator (Python 3.8+)
+# Useful in list comprehensions
+data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+squared_gt_25 = [y for x in data if (y := x**2) > 25]
+
+# In while loops
+import random
+while (value := random.randint(1, 10)) != 7:
+    print(f"Got {value}, trying again...")
+print("Finally got 7!")
+
+# Positional-only and keyword-only parameters
+def function(pos_only, /, pos_or_kwd, *, kwd_only):
+    """
+    pos_only: positional-only parameter
+    pos_or_kwd: can be positional or keyword
+    kwd_only: keyword-only parameter
+    """
+    return pos_only + pos_or_kwd + kwd_only
+
+# Union types (Python 3.10+)
+def process_id(user_id: int | str) -> str:
+    if isinstance(user_id, int):
+        return f"ID: {user_id:06d}"
+    return f"ID: {user_id.upper()}"
+
+# Generics with built-in collections (Python 3.9+)
+def process_items(items: list[dict[str, int]]) -> dict[str, int]:
+    result = {}
+    for item in items:
+        for key, value in item.items():
+            result[key] = result.get(key, 0) + value
+    return result
+</code></pre>
+
+            <h2>11. References</h2>
+            <ul>
+                <li>Van Rossum, G., & Drake, F. L. (2009). <em>Python 3 Reference Manual</em>.</li>
+                <li>Beazley, D. (2013). <em>Python Cookbook</em>.</li>
+                <li>Ramalho, L. (2015). <em>Fluent Python</em>.</li>
+                <li>Hillard, D. (2020). <em>Effective Python</em>.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; Diogo Franquinho | Technical Notes</p>
+    </footer>
+</body>
+</html> 
