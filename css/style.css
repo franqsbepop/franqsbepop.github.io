@@ -323,6 +323,110 @@ footer {
     color: #8d6e63;
 }
 
+/* Tag System Styles */
+.tag-container {
+    margin: 20px 0;
+    padding: 20px;
+    background-color: #f0ede6;
+    border-radius: 6px;
+    border: 1px solid #e0d8c8;
+}
+
+.tag-filter {
+    margin-bottom: 20px;
+}
+
+.tag-filter h3 {
+    margin-bottom: 15px;
+    color: #2c2c2c;
+    font-size: 18px;
+    font-weight: normal;
+}
+
+.tag-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.tag-button {
+    background-color: #e8e2d8;
+    color: #2c2c2c;
+    border: 1px solid #d0c4b0;
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.tag-button:hover {
+    background-color: #d0c4b0;
+    color: #2c2c2c;
+}
+
+.tag-button.active {
+    background-color: #0066cc;
+    color: white;
+    border-color: #0066cc;
+}
+
+.tag-button.active:hover {
+    background-color: #0052a3;
+    border-color: #0052a3;
+}
+
+.clear-filters {
+    background-color: #f8f9fa;
+    color: #666;
+    border: 1px solid #e9ecef;
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.clear-filters:hover {
+    background-color: #e9ecef;
+    color: #333;
+}
+
+.post-tags {
+    margin-top: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.post-tag {
+    background-color: #f0f0f0;
+    color: #666;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    border: 1px solid #e0e0e0;
+}
+
+.post-tag:hover {
+    background-color: #e0e0e0;
+    color: #333;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.filter-info {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #666;
+    font-style: italic;
+}
+
 /* Responsive design */
 @media (max-width: 600px) {
     body {
@@ -348,5 +452,14 @@ footer {
     
     .social-links i {
         font-size: 18px;
+    }
+    
+    .tag-buttons {
+        gap: 6px;
+    }
+    
+    .tag-button {
+        padding: 5px 10px;
+        font-size: 12px;
     }
 }

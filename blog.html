@@ -22,93 +22,173 @@
         <h1>Diogo Franquinho - Blog</h1>
     </header>
     <main>
+        <!-- Tag Filter System -->
+        <div class="tag-container">
+            <div class="tag-filter">
+                <h3>Filter by Topic</h3>
+                <div class="tag-buttons">
+                    <button class="tag-button" data-tag="all">All Posts</button>
+                    <button class="tag-button" data-tag="mathematics">Mathematics</button>
+                    <button class="tag-button" data-tag="finance">Financial Mathematics</button>
+                    <button class="tag-button" data-tag="education">Education</button>
+                    <button class="tag-button" data-tag="philosophy">Philosophy</button>
+                    <button class="tag-button" data-tag="machine-learning">Machine Learning</button>
+                    <button class="tag-button" data-tag="economics">Economics</button>
+                    <button class="tag-button" data-tag="history">History</button>
+                    <button class="tag-button" data-tag="research">Research</button>
+                    <button class="tag-button" data-tag="technology">Technology</button>
+                    <button class="tag-button" data-tag="society">Society</button>
+                </div>
+                <button class="clear-filters" onclick="clearAllFilters()">Clear Filters</button>
+                <div class="filter-info" id="filter-info">Showing all posts</div>
+            </div>
+        </div>
+
         <section id="blog-posts">
             <h2>Latest Blog Posts</h2>
-            <article>
+            <article data-tags="research,mathematics,machine-learning">
                 <h1>Learning via writing</h1>
                 <p>Date: November 13, 2024</p>
                 <p>Recently I had to write this proposal. I find curious the concept of a proposal. I am (theoretically) proposing myself to do something. Carefully simulating planned experiences in my head prior to their (possible) unfloding in reality. Proposal writing seems analagous to goal setting, to define a loss (objective) function. What will be minimized (maximized) during the period of the proposal?</p> 
                 <p>Setting goal is a strenuous task. Firstly, you do not know where to start, so many possible targets, so many possible paths. The idea of a proposal should be to make both clear. Hopefully, by writing one, you will be able to understand (quantify) your goals. Firstly, there is the need to properly define your goals, secondly, there is the need to carefully deliniate a possible path to achieve them. At this moment, it does not need to be the shortest-most-optimal path. Such optimization processes surely will be underwent at some point. Currently, we are drawing a simple map. Once our loss (objetive) function is defined, we can start the optimization task, usually via parameter updating. There is a set goal and a path to get there, how can you reach it in the most efficient manner?<p> 
                 <p>At this stage, we start exploring our map in a virtual environment, in this case, our imagination. Concepts such as gradient descent and local minima are certainly useful to have in mind. Additionally, contrafactual thinking is a great tool we have at our disposal. What would happened if I perturbed my current path, i.e. shifted slighly my parameters. One can see the paths of alternative branches of the multiverse unfolding before ones' eyes. Nothing new, old techniques adapted to modern times. This is all I have for now, hope this helps, and hope you enjoy reading my proposal.</p>
                 <a href="posts/post1.html">Theoretical Foundations of Data-Driven Stochastic Modelling with Financial Market Applications</a>
+                <div class="post-tags">
+                    <span class="post-tag">Research</span>
+                    <span class="post-tag">Mathematics</span>
+                    <span class="post-tag">Machine Learning</span>
+                </div>
             </article>
             
-            <article>
+            <article data-tags="finance,history,mathematics">
                 <h1>The weak law of poorly abriviated large history</h1>
                 <p>Date: November 29, 2024</p>
                 <p>In this post I do my best to synthesize the history of financial methematics. The title references Stephan Hawkins' icnonic a brief history of time. The (rather short) history takes us back to the end of the XIX Centuery and the beggining of the XX century. For attention grabbing puposes notable names mentioned include Albert Einstein, Henry Poincaré, Louis Bachelier, Norbert Wiener, Vito Volterra, Paul Levy, Benoit Mandelbrot, Fisher Black, Myron Scholes, Robert Merton, Emmanuel Derman, Paul Willmott, Edward. O. Thorp. I hope you enjoy reading this short account of the history of this field. The field presents it self as the product of the efforts of X characters that contributed in its development and dissemination. </p>
                 <a href="posts/post2.html">A Brief History of Mathematical Finance</a>
+                <div class="post-tags">
+                    <span class="post-tag">Financial Mathematics</span>
+                    <span class="post-tag">History</span>
+                    <span class="post-tag">Mathematics</span>
+                </div>
             </article>
 
-            <article>
+            <article data-tags="education,economics,research">
                 <h2>Reducing Bias in Education Evaluation</h2>
                 <p>Date: December 7, 2024</p>
                 <p>In this post, I explore how improved assessment methodologies can help reduce inequality and provide more accurate measures of student performance. The post discusses the merits of continuous assessment versus standardized testing, drawing on research from prominent economists and education researchers. Key topics include formative assessment practices, the challenges of different evaluation methods, and proposals for balanced approaches that combine multiple assessment types. The discussion aims to contribute to developing more equitable and effective evaluation systems in higher education.</p>
                 <a href="posts/post3.html">Read more</a>
+                <div class="post-tags">
+                    <span class="post-tag">Education</span>
+                    <span class="post-tag">Economics</span>
+                    <span class="post-tag">Research</span>
+                </div>
             </article>
 
-            <article>
+            <article data-tags="education,technology">
                 <h2>Reducing Bias in Education Evaluation</h2>
                 <p>Date: December 7, 2024</p>
                 <p>In this post, I explore the integration of computational tools and methods in the classroom.</p>
                 <a href="posts/post4.html">Read more</a>
+                <div class="post-tags">
+                    <span class="post-tag">Education</span>
+                    <span class="post-tag">Technology</span>
+                </div>
             </article>
 
-            <article>
+            <article data-tags="finance,history,mathematics">
                 <h2>A Brief History of Mathematical Finance</h2>
                 <p>Date: November 23, 2024</p>
                 <p>The history of mathematical finance dates back to the end of the XIX century, building on prior work and significant contributions from mathematical figures such as Vito Volterra, Paul Levy, and Norbert Wiener. This post explores the evolution of financial mathematics, highlighting key developments and influential figures in the field.</p>
                 <a href="posts/post2.html">Read more</a>
+                <div class="post-tags">
+                    <span class="post-tag">Financial Mathematics</span>
+                    <span class="post-tag">History</span>
+                    <span class="post-tag">Mathematics</span>
+                </div>
             </article>
 
-            <article>
+            <article data-tags="economics,finance,mathematics">
                 <h2>Econophysics: Bridging Economics and Physics</h2>
                 <p>Date: December 15, 2024</p>
                 <p>Econophysics is an interdisciplinary research field that applies theories and methods originally developed by physicists to solve problems in economics. This post delves into the history, key concepts, and significant contributions of econophysics, exploring how it bridges the gap between economics and physics.</p>
                 <a href="posts/Post15.html">Read more</a>
+                <div class="post-tags">
+                    <span class="post-tag">Economics</span>
+                    <span class="post-tag">Financial Mathematics</span>
+                    <span class="post-tag">Mathematics</span>
+                </div>
             </article>
 
-            <article>
+            <article data-tags="philosophy,mathematics,machine-learning">
                 <h2>The Unreasonable Effectiveness of Mathematics: Karpathy vs Wigner</h2>
                 <p>Date: December 4, 2024</p>
                 <p>This post compares the perspectives of Eugene Wigner and Andrej Karpathy on the effectiveness of mathematics. Wigner's philosophical insights on the relationship between mathematics and physical reality are contrasted with Karpathy's observations on the capabilities of neural networks in capturing complex patterns.</p>
                 <a href="posts/Post14.html">Read more</a>
+                <div class="post-tags">
+                    <span class="post-tag">Philosophy</span>
+                    <span class="post-tag">Mathematics</span>
+                    <span class="post-tag">Machine Learning</span>
+                </div>
             </article>
 
-            <article>
+            <article data-tags="mathematics,history">
                 <h2>Leonard Euler Infinite-Dimensional Influence</h2>
                 <p>Date: December 1, 2024</p>
                 <p>Leonhard Euler was one of the most prolific mathematicians in history, whose contributions span virtually every area of mathematics known in his time. This post highlights Euler's groundbreaking work and lasting impact on mathematics, physics, and engineering.</p>
                 <a href="posts/Post12.html">Read more</a>
+                <div class="post-tags">
+                    <span class="post-tag">Mathematics</span>
+                    <span class="post-tag">History</span>
+                </div>
             </article>
 
-            <article>
+            <article data-tags="philosophy,machine-learning,mathematics">
                 <h2>Mathematical Philosophy and Large Language Models: New Frontiers in Mathematical Reasoning</h2>
                 <p>Date: December 2, 2024</p>
                 <p>The emergence of Large Language Models (LLMs) has opened new avenues for exploring mathematical reasoning and philosophical questions about the nature of mathematical understanding. This post examines the implications of LLMs for mathematical philosophy and the future of mathematical reasoning.</p>
                 <a href="posts/Post13.html">Read more</a>
+                <div class="post-tags">
+                    <span class="post-tag">Philosophy</span>
+                    <span class="post-tag">Machine Learning</span>
+                    <span class="post-tag">Mathematics</span>
+                </div>
             </article>
 
-            <article>
+            <article data-tags="philosophy,machine-learning,mathematics">
                 <h2>Mathematical Philosophy and Large Language Models: New Frontiers in Mathematical Reasoning</h2>
                 <p>Date: December 2, 2024</p>
                 <p>The emergence of Large Language Models (LLMs) has opened new avenues for exploring mathematical reasoning and philosophical questions about the nature of mathematical understanding. This post examines the implications of LLMs for mathematical philosophy and the future of mathematical reasoning.</p>
                 <a href="posts/Post13.html">Read more</a>
+                <div class="post-tags">
+                    <span class="post-tag">Philosophy</span>
+                    <span class="post-tag">Machine Learning</span>
+                    <span class="post-tag">Mathematics</span>
+                </div>
             </article>
 
-            <article>
+            <article data-tags="society,economics,history">
                 <h2>Sticky Path Dependency</h2>
                 <h3>On progress, stagnation and hope for the future</h3>
                 <p>Date: January 22, 2025</p>
-                <p>Progress is often imagined as a linear ascent—an arrow from ignorance to enlightenment, from poverty to prosperity. Yet, as any careful observer of history or mathematics knows, the true trajectory is far more intricate, shaped by the recursive influence of prior choices. The concept of <strong>path dependence</strong> encapsulates this: past decisions, technologies, and institutions do not merely precede the present—they delimit its possibilities. When these inherited paths become “sticky,” they resist even the most rational attempts at reform, and progress stalls.</p>
+                <p>Progress is often imagined as a linear ascent—an arrow from ignorance to enlightenment, from poverty to prosperity. Yet, as any careful observer of history or mathematics knows, the true trajectory is far more intricate, shaped by the recursive influence of prior choices. The concept of <strong>path dependence</strong> encapsulates this: past decisions, technologies, and institutions do not merely precede the present—they delimit its possibilities. When these inherited paths become "sticky," they resist even the most rational attempts at reform, and progress stalls.</p>
                 <a href="posts/post18.html">Read more</a>
+                <div class="post-tags">
+                    <span class="post-tag">Society</span>
+                    <span class="post-tag">Economics</span>
+                    <span class="post-tag">History</span>
+                </div>
             </article>
 
-            <article>
+            <article data-tags="society,economics,history">
                 <h2>Never vote for a lawyer: An economic argument based on the historical evolution of society</h2>
                 <p>Date: November 13, 2024</p>
                 <p>Historical context with an emphasis in Portugal and Spain and their inefficiency caused by the Court System. Innovation as a driver of successful societies. GDP per capita as a measure of success. Darwinism of Institutions.</p>
                 <a href="posts/post21.html">Read more</a>
+                <div class="post-tags">
+                    <span class="post-tag">Society</span>
+                    <span class="post-tag">Economics</span>
+                    <span class="post-tag">History</span>
+                </div>
             </article>
 
         </section>
@@ -122,6 +202,93 @@
     <footer>
         <p>&copy; Diogo Franquinho | Blog</p>
     </footer>
+
+    <script>
+        // Tag filtering functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const tagButtons = document.querySelectorAll('.tag-button');
+            const articles = document.querySelectorAll('article[data-tags]');
+            const filterInfo = document.getElementById('filter-info');
+            let activeFilters = new Set();
+
+            // Add click event listeners to tag buttons
+            tagButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const tag = this.getAttribute('data-tag');
+                    
+                    if (tag === 'all') {
+                        // Show all articles
+                        clearAllFilters();
+                        return;
+                    }
+                    
+                    // Toggle filter
+                    if (activeFilters.has(tag)) {
+                        activeFilters.delete(tag);
+                        this.classList.remove('active');
+                    } else {
+                        activeFilters.add(tag);
+                        this.classList.add('active');
+                    }
+                    
+                    // Remove 'all' active state
+                    document.querySelector('[data-tag="all"]').classList.remove('active');
+                    
+                    filterArticles();
+                });
+            });
+
+            function filterArticles() {
+                let visibleCount = 0;
+                
+                articles.forEach(article => {
+                    const articleTags = article.getAttribute('data-tags').split(',');
+                    const hasMatchingTag = activeFilters.size === 0 || 
+                        Array.from(activeFilters).some(filter => articleTags.includes(filter));
+                    
+                    if (hasMatchingTag) {
+                        article.classList.remove('hidden');
+                        visibleCount++;
+                    } else {
+                        article.classList.add('hidden');
+                    }
+                });
+                
+                // Update filter info
+                if (activeFilters.size === 0) {
+                    filterInfo.textContent = 'Showing all posts';
+                } else {
+                    const filterNames = Array.from(activeFilters).map(tag => {
+                        return tag.charAt(0).toUpperCase() + tag.slice(1).replace('-', ' ');
+                    });
+                    filterInfo.textContent = `Showing posts tagged with: ${filterNames.join(', ')} (${visibleCount} posts)`;
+                }
+            }
+
+            function clearAllFilters() {
+                activeFilters.clear();
+                tagButtons.forEach(button => button.classList.remove('active'));
+                document.querySelector('[data-tag="all"]').classList.add('active');
+                articles.forEach(article => article.classList.remove('hidden'));
+                filterInfo.textContent = 'Showing all posts';
+            }
+
+            // Initialize with 'all' selected
+            document.querySelector('[data-tag="all"]').classList.add('active');
+        });
+
+        // Global function for clear filters button
+        function clearAllFilters() {
+            const tagButtons = document.querySelectorAll('.tag-button');
+            const articles = document.querySelectorAll('article[data-tags]');
+            const filterInfo = document.getElementById('filter-info');
+            
+            tagButtons.forEach(button => button.classList.remove('active'));
+            document.querySelector('[data-tag="all"]').classList.add('active');
+            articles.forEach(article => article.classList.remove('hidden'));
+            filterInfo.textContent = 'Showing all posts';
+        }
+    </script>
 </body>
 </html>
 
