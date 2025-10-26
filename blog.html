@@ -9,7 +9,7 @@
 </head>
 <body>
     <header>
-        <nav class="top-nav">
+        <nav class="top-nav sticky-nav">
             <h2>
                 <a href="index.html#biography">Biography</a> | 
                 <a href="index.html#research">Research</a> | 
@@ -34,6 +34,10 @@
             <p>
                 I write about topics at the intersection of mathematics, science, philosophy, finance, and society. Posts are informal, exploratory, sometimes technical, sometimes speculative—my way of thinking out loud about ideas that excite, perplex, or motivate me. All views expressed here are my own, and should not be taken as representative of any organization or affiliation.
             </p>
+        </div>
+
+        <div class="search-container">
+            <input type="text" id="search-box" class="search-box" placeholder="Search posts...">
         </div>
 
         <div class="tag-container">
@@ -283,7 +287,45 @@
         <p>&copy; Diogo Franquinho | <span style="font-weight:bold;">Beyond Equilibrium</span> Blog</p>
     </footer>
 
+    <button class="back-to-top" id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</button>
+
     <script>
+        // Search functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchBox = document.getElementById('search-box');
+            const articles = document.querySelectorAll('article[data-tags]');
+
+            searchBox.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                let visibleCount = 0;
+
+                articles.forEach(article => {
+                    const title = article.querySelector('h2 a').textContent.toLowerCase();
+                    const description = article.textContent.toLowerCase();
+                    
+                    if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                        article.classList.remove('hidden');
+                        visibleCount++;
+                    } else {
+                        article.classList.add('hidden');
+                    }
+                });
+            });
+        });
+
+        // Back to top button
+        document.addEventListener('DOMContentLoaded', function() {
+            const backToTopButton = document.getElementById('backToTop');
+
+            window.addEventListener('scroll', function() {
+                if (window.pageYOffset > 300) {
+                    backToTopButton.classList.add('visible');
+                } else {
+                    backToTopButton.classList.remove('visible');
+                }
+            });
+        });
+
         // Tag filtering functionality
         document.addEventListener('DOMContentLoaded', function() {
             const tagButtons = document.querySelectorAll('.tag-button');

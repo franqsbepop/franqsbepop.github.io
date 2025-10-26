@@ -6,10 +6,11 @@
     <meta name="description" content="Diogo Franquinho - Blog Post 7">
     <title>Brain-Computer Interfaces: The Future of Human-Machine Interaction</title>
     <link rel="stylesheet" href="../css/style.css">
+    <script src="../js/post-utilities.js"></script>
 </head>
 <body>
     <header>
-        <nav class="top-nav">
+        <nav class="top-nav sticky-nav">
             <h2>
                 <a href="../index.html#biography">Biography</a> | 
                 <a href="../index.html#research">Research</a> | 
@@ -24,19 +25,34 @@
 
     <main>
         <article>
+            <div class="breadcrumbs">
+                <a href="../index.html">Home</a><span class="separator">›</span>
+                <a href="../blog.html">Blog</a><span class="separator">›</span>
+                <span>Brain-Computer Interfaces</span>
+            </div>
+            
             <h2>Brain-Computer Interfaces</h2>
             <h3>The Future of Human-Machine Interaction</h3>
-            <p>Date: December 10, 2024</p>
+            
+            <div class="article-meta">
+                <span class="post-date">Date: December 10, 2024</span>
+                <span class="reading-time" id="reading-time">Calculating reading time...</span>
+            </div>
+            
+            <div id="table-of-contents-container"></div>
 
             <p>
                 <a href="https://en.wikipedia.org/wiki/Brain-computer_interface">Brain-Computer Interfaces (BCIs)</a> are a rapidly evolving technology that bridges the gap between the human brain and external devices, enabling novel and direct communication pathways. This field is creating unprecedented opportunities for revolutionizing medicine, human capabilities, and the ways we interact with the world.
             </p>
 
-            <figure style="text-align: center;">
-                <img src="references/post7/Evolution of BCIs.png" alt="A visualization illustrating the evolution of Brain-Computer Interfaces (BCIs), from the first EEG in 1924 to modern BCIs defined as direct systems linking the brain and external devices (2021+)." style="max-width: 90%; height: auto; border: 1px solid #ccc; box-shadow: 2px 2px 8px #eee;">
-                <figcaption style="margin-top: 0.5em; font-style: italic; color: #555;">
-                    Figure: Visualization of the evolution of Brain-Computer Interfaces (BCIs), from the first electroencephalogram (EEG) recording in 1924 to the broad definition of BCIs in 2021 as any direct interaction between brain activity and external devices.
-                </figcaption>
+            <div class="featured-image-container">
+                <img src="references/post7/Evolution of BCIs.png" alt="Evolution of Brain-Computer Interfaces" class="featured-image">
+                <div class="featured-image-caption">Evolution of Brain-Computer Interfaces (BCIs), from the first EEG in 1924 to modern BCIs</div>
+            </div>
+
+            <figure style="text-align: center; display: none;">
+                <img src="" alt="">
+                <figcaption></figcaption>
             </figure>
 
             <p>
@@ -67,6 +83,13 @@
                 In summary, Brain-Computer Interfaces represent a profound technological frontier with the capacity to reshape human life. Continued research—grounded in the foundational contributions of visionaries such as Vidal—will be essential to unlocking the full promise of BCIs and responsibly addressing the challenges that accompany their progress.
             </p>
 
+            <div class="post-navigation">
+                <a href="post6.html" class="nav-button" id="prev-post">← Previous Post</a>
+                <a href="post8.html" class="nav-button" id="next-post">Next Post →</a>
+            </div>
+
+            <div id="related-posts-container"></div>
+
             <section id="references">
                 <h3>References & Notes</h3>
                 <ol>
@@ -84,9 +107,26 @@
         </article>
     </main>
 
+    <button class="back-to-top" id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</button>
+
 
     <footer>
         <p>&copy; Diogo Franquinho | Blog</p>
     </footer>
+
+    <script>
+        // Back to top button
+        document.addEventListener('DOMContentLoaded', function() {
+            const backToTopButton = document.getElementById('backToTop');
+
+            window.addEventListener('scroll', function() {
+                if (window.pageYOffset > 300) {
+                    backToTopButton.classList.add('visible');
+                } else {
+                    backToTopButton.classList.remove('visible');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
