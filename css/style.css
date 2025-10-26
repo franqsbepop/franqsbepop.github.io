@@ -42,17 +42,6 @@ header {
     margin-bottom: 60px;
 }
 
-.profile-container {
-    margin-bottom: 20px;
-}
-
-.profile-photo {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid #e1e1e1;
-}
 
 header h2 {
     font-size: 32px;
@@ -169,6 +158,45 @@ img {
     height: auto;
     border-radius: 4px;
     margin: 20px 0;
+}
+
+/* Blog post images */
+.blog-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 25px 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+}
+
+.blog-image:hover {
+    transform: scale(1.02);
+}
+
+.blog-image-caption {
+    font-size: 14px;
+    color: #666;
+    text-align: center;
+    font-style: italic;
+    margin-top: 8px;
+    margin-bottom: 20px;
+}
+
+.blog-image-container {
+    text-align: center;
+    margin: 30px 0;
+}
+
+/* Responsive images */
+@media (max-width: 768px) {
+    .blog-image {
+        margin: 20px 0;
+    }
+    
+    .blog-image-caption {
+        font-size: 13px;
+    }
 }
 
 /* Footer */
