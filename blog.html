@@ -19,25 +19,23 @@
                 <a href="index.html#contact">Contact</a>
             </h2>
         </nav>
+        <hr>
     </header>
-    <main></main>
-        <div style="display:flex; align-items:center; flex-wrap:wrap;">
-            <div style="flex:1;">
-                <h1 style="margin-bottom: 0.1em;">
-                    <span style="font-size:1.3em; font-weight:normal; letter-spacing:0.01em;">Beyond Equilibrium</span>
-                </h1>
-                <div style="font-size:1.04em; color:#555; margin-bottom:0.1em;">
-                    by Diogo Franquinho
-                </div>
+    <main>
+        <div>
+            <h1>
+                <span>Beyond Equilibrium</span>
+            </h1>
+            <div style="font-size: 1em; color: #6c6c58; margin-bottom: 0.1em;">
+                by Diogo Franquinho
             </div>
         </div>
-        <div class="blog-intro" style="margin-bottom: 18px;">
-            <p style="margin: 0 0 6px 0; font-size: 1.07em;">
+        <div class="blog-intro">
+            <p>
                 Here I write about topics at the intersection of mathematics, science, philosophy, finance, and society. Posts are informal, exploratory, sometimes technical, sometimes speculative—my way of thinking out loud about ideas that excite, perplex, or motivate me. All views expressed here are my own, and should not be taken as representative of any organization or affiliation.
             </p>
         </div>
-    
-        <!-- Tag Filter System -->
+
         <div class="tag-container">
             <div class="tag-filter">
                 <h3>Filter by Topic</h3>
@@ -237,19 +235,18 @@
         </section>
 
         <br>
-        <div class="boxed-section" style="border:1px solid #ccc; border-radius:8px; padding:18px; margin-bottom:16px; box-shadow:0 1px 8px rgba(0,0,0,0.03); background:#f9f9fb;">
-            <h3 style="margin-top:0;">Book Reviews</h3>
+        <div class="boxed-section">
+            <h3>Book Reviews</h3>
             <p><a href="book_reviews/list.html">View Book Reviews</a></p>
         </div>
-        <div class="boxed-section" style="border:1px solid #ccc; border-radius:8px; padding:18px; margin-bottom:16px; box-shadow:0 1px 8px rgba(0,0,0,0.03); background:#f9f9fb;">
-            <h3 style="margin-top:0;">Some Links I Find Interesting</h3>
-            <ul style="margin-bottom:0;">
+        <div class="boxed-section">
+            <h3>Some Links I Find Interesting</h3>
+            <ul>
                 <li><a href="https://gradient.ngo/" target="_blank">Gradient</a></li>
                 <li><a href="https://www.edge.org/" target="_blank">Edge.org</a></li>
                 <li><a href="https://www.quantamagazine.org/" target="_blank">Quanta Magazine</a></li>
                 <li><a href="https://nintil.com/" target="_blank">Nintil</a></li>
                 <li><a href="https://www.lesswrong.com/" target="_blank">LessWrong</a></li>
-                <!-- Add or remove links as desired -->
             </ul>
         </div>
     </main>
@@ -266,18 +263,15 @@
             const filterInfo = document.getElementById('filter-info');
             let activeFilters = new Set();
 
-            // Add click event listeners to tag buttons
             tagButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     const tag = this.getAttribute('data-tag');
                     
                     if (tag === 'all') {
-                        // Show all articles
                         clearAllFilters();
                         return;
                     }
                     
-                    // Toggle filter
                     if (activeFilters.has(tag)) {
                         activeFilters.delete(tag);
                         this.classList.remove('active');
@@ -286,19 +280,16 @@
                         this.classList.add('active');
                     }
                     
-                    // Remove 'all' active state
                     document.querySelector('[data-tag="all"]').classList.remove('active');
-                    
                     filterArticles();
                 });
             });
 
             function filterArticles() {
                 let visibleCount = 0;
-                
                 articles.forEach(article => {
                     const articleTags = article.getAttribute('data-tags').split(',');
-                    const hasMatchingTag = activeFilters.size === 0 || 
+                    const hasMatchingTag = activeFilters.size === 0 ||
                         Array.from(activeFilters).some(filter => articleTags.includes(filter));
                     
                     if (hasMatchingTag) {
@@ -309,7 +300,6 @@
                     }
                 });
                 
-                // Update filter info
                 if (activeFilters.size === 0) {
                     filterInfo.textContent = 'Showing all posts';
                 } else {
@@ -332,7 +322,6 @@
             document.querySelector('[data-tag="all"]').classList.add('active');
         });
 
-        // Global function for clear filters button
         function clearAllFilters() {
             const tagButtons = document.querySelectorAll('.tag-button');
             const articles = document.querySelectorAll('article[data-tags]');
