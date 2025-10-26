@@ -6,10 +6,11 @@
     <meta name="description" content="Diogo Franquinho - Blog Post 2">
     <title>The Philosophy and Mathematics of Finance: A Brief Overview</title>
     <link rel="stylesheet" href="../css/style.css">
+    <script src="../js/post-utilities.js" defer></script>
 </head>
 <body>
     <header>
-        <nav class="top-nav">
+        <nav class="top-nav sticky-nav">
             <h2>
                 <a href="../index.html#biography">Biography</a> | 
                 <a href="../index.html#research">Research</a> | 
@@ -25,23 +26,26 @@
     <main>
         <article>
             <h2>The Philosophy and Mathematics of Finance: A Brief Overview</h2>
+            <div class="article-meta">
+                <span class="post-date">Date: November 20, 2024</span>
+                <span class="reading-time" id="reading-time">Calculating reading time...</span>
+            </div>
             <h3>Conceptual, Mathematical, and Ethical Considerations</h3>
-            <p>Date: November 20, 2024</p>
 
             <p>Modern finance sits at the intersection of mathematics, economics, and philosophy. In recent years, growing interest in the philosophical and mathematical foundations of finance has illuminated the ways in which mathematical models, logical reasoning, and ethical questions underpin our financial systems. This post combines and explores both the mathematics behind finance and the conceptual, epistemological, and ethical challenges it brings.</p>
 
             <h3>The Role of Mathematics in Finance</h3>
-            <p>Finance fundamentally involves the management of money and other assets over time. At its core, finance relies heavily on mathematical models and probabilistic thinking to make decisions and allocate value for the future. According to Joel David Hamkins, mathematics is not just a computational tool, but a way of thinking that fundamentally shapes our understanding of the world<sup><a href="L#ref1">[1]</a></sup>. In finance, mathematical models drive everything from derivative pricing to risk management and investment strategies.</p>
+            <p>Finance fundamentally involves the management of money and other assets over time. At its core, finance relies heavily on mathematical models and probabilistic thinking to make decisions and allocate value for the future. According to Joel David Hamkins, mathematics is not just a computational tool, but a way of thinking that fundamentally shapes our understanding of the world<sup><a href="#ref1">[1]</a></sup>. In finance, mathematical models drive everything from derivative pricing to risk management and investment strategies.</p>
             
             <p>One of the key philosophical questions in finance relates to the nature of the mathematical objects used in its models. What is the ontological status of such entities as “expected value,” “arbitrage,” or “risk?” Are these constructs merely mathematical abstractions, or do they represent something substantive in the “real world” of finance? These questions mirror classic debates in the philosophy of mathematics about the existence and nature of mathematical objects.</p>
             
             <h3>Stochastic Processes and Uncertainty</h3>
-            <p>Stochastic processes are at the heart of modern finance, providing frameworks to model random variables evolving over time, such as stock prices or interest rates. The concept of probability is therefore central—and it raises important epistemological questions: How should we interpret probabilistic statements about future financial outcomes? What are the limitations of statistical inference in the context of highly nonlinear, interconnected markets<sup><a href="L#ref3">[3]</a></sup>?</p>
+            <p>Stochastic processes are at the heart of modern finance, providing frameworks to model random variables evolving over time, such as stock prices or interest rates. The concept of probability is therefore central—and it raises important epistemological questions: How should we interpret probabilistic statements about future financial outcomes? What are the limitations of statistical inference in the context of highly nonlinear, interconnected markets<sup><a href="#ref3">[3]</a></sup>?</p>
             
             <p>The interpretation of uncertainty in finance includes subjective and objective approaches to probability. Are we quantifying an intrinsic randomness in the world, or merely expressing our lack of knowledge? How should we update our beliefs (or models) in light of new information, and what does it mean to make “rational” decisions under uncertainty?</p>
 
             <h3>Ethical and Political Aspects</h3>
-            <p>Finance is not just a technical or purely mathematical discipline; it has real-world consequences, as highlighted by crises such as the 2008 financial collapse. The use of sophisticated models and mathematical abstractions presents ethical questions about responsibility and “model risk.” When models break down or are misapplied, the societal consequences can be severe<sup><a href="L#ref4">[4]</a></sup>. Should financial models be treated with the same philosophical and ethical scrutiny as scientific theories or technological artifacts?</p>
+            <p>Finance is not just a technical or purely mathematical discipline; it has real-world consequences, as highlighted by crises such as the 2008 financial collapse. The use of sophisticated models and mathematical abstractions presents ethical questions about responsibility and “model risk.” When models break down or are misapplied, the societal consequences can be severe<sup><a href="#ref4">[4]</a></sup>. Should financial models be treated with the same philosophical and ethical scrutiny as scientific theories or technological artifacts?</p>
             
             <p>Normative questions cut deeper still: Should financial institutions prioritize shareholder value exclusively, or attend to broader social responsibilities? How do we ensure that mathematical sophistication does not mask risks or legitimize unfair outcomes, particularly when such models are opaque?</p>
 
@@ -50,35 +54,38 @@
             
             <h3>Toward an Interdisciplinary Philosophy of Finance</h3>
             <p>Bridging philosophy, mathematics, and economics is crucial for a robust understanding of finance. Continuous dialogue between philosophers, mathematicians, economists, and financial professionals is necessary to both clarify conceptual issues and grapple with the real-world impact of financial practices. This synthesis can lead to better policy, more reliable models, and more ethical outcomes for individuals and markets alike.</p>
-            
-            <div class="post-navigation" style="display: flex; justify-content: space-between; align-items: center; margin: 2em 0;">
-                <a href="post5.html" class="nav-button" id="prev-post" style="flex: 1; text-align: left;">← Previous Post</a>
-                <span style="flex: 0 0 2em;"></span>
-                <a href="post7.html" class="nav-button" id="next-post" style="flex: 1; text-align: right;">Next Post →</a>
+
+            <div class="post-navigation">
+                <a href="#" class="nav-button" id="prev-post">← Previous Post</a>
+                <a href="#" class="nav-button" id="next-post">Next Post →</a>
             </div>
+
+            <div id="related-posts-container"></div>
 
             <section id="references">
                 <h3>References</h3>
                 <ol>
                     <li id="ref1">
-                        Hamkins, J. D. (2021). <a href="Lhttps://mitpress.mit.edu/9780262542234/lectures-on-the-philosophy-of-mathematics/" target="_blank"><em>Lectures on the Philosophy of Mathematics</em></a>. Cambridge, MA: MIT Press.
+                        Hamkins, J. D. (2021). <a href="https://mitpress.mit.edu/9780262542234/lectures-on-the-philosophy-of-mathematics/" target="_blank"><em>Lectures on the Philosophy of Mathematics</em></a>. Cambridge, MA: MIT Press.
                     </li>
                     <li id="ref2">
-                        Herzog, L. (2023). <a href="Lhttps://plato.stanford.edu/entries/money-finance/">Philosophy of Money and Finance</a>. Stanford Encyclopedia of Philosophy.
+                        Herzog, L. (2023). <a href="https://plato.stanford.edu/entries/money-finance/">Philosophy of Money and Finance</a>. Stanford Encyclopedia of Philosophy.
                     </li>
                     <li id="ref3">
-                        Hacking, I. (2001). <a href="Lhttp://fitelson.org/confirmation/hacking_introduction_to_probability_and_inductive_logic.pdf" target="_blank"><em>An Introduction to Probability and Inductive Logic</em></a>. Princeton, NJ: Princeton University Press.
+                        Hacking, I. (2001). <a href="http://fitelson.org/confirmation/hacking_introduction_to_probability_and_inductive_logic.pdf" target="_blank"><em>An Introduction to Probability and Inductive Logic</em></a>. Princeton, NJ: Princeton University Press.
                     </li>
                     <li id="ref4">
-                        MacKenzie, D. (2006). <a href="Lhttps://personal.lse.ac.uk/ROBERT49/teaching/ph232/pdf/MacKenzie2006.pdf" target="_blank"><em>An Engine, Not a Camera: How Financial Models Shape Markets</em></a>. Princeton, NJ: Princeton University Press.
+                        MacKenzie, D. (2006). <a href="https://personal.lse.ac.uk/ROBERT49/teaching/ph232/pdf/MacKenzie2006.pdf" target="_blank"><em>An Engine, Not a Camera: How Financial Models Shape Markets</em></a>. Princeton, NJ: Princeton University Press.
                     </li>
                     <li id="ref5">
-                        Shubik, M. (2011). <a href="Lhttps://elischolar.library.yale.edu/cgi/viewcontent.cgi?article=2298&context=cowles-discussion-paper-series" target="_blank"><em>The Theory of Money and Financial Institutions, Volume 3</em></a>. Cambridge, MA: MIT Press.
+                        Shubik, M. (2011). <a href="https://elischolar.library.yale.edu/cgi/viewcontent.cgi?article=2298&context=cowles-discussion-paper-series" target="_blank"><em>The Theory of Money and Financial Institutions, Volume 3</em></a>. Cambridge, MA: MIT Press.
                     </li>
                 </ol>
             </section>
         </article>
+
     </main>
+    <button class="back-to-top" id="backToTop">↑</button>
 
     <footer>
         <p>&copy; Diogo Franquinho | Blog</p>

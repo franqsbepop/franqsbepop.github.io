@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Kolmogorov Complexity and Fractal Geometry: a technical exploration of algorithmic information, effective dimension, and the geometry of information." />
     <title>Kolmogorov Complexity and Fractal Geometry: Information as Dimension</title>
-    <link rel="stylesheet" href="L../css/style.css" />
+    <link rel="stylesheet" href="../css/style.css" />
 
     <!-- Optional: MathJax for formulas. Remove if not needed. -->
     <script>
@@ -16,17 +16,18 @@
         document.head.appendChild(s);
       })();
     </script>
+    <script src="../js/post-utilities.js" defer></script>
 </head>
 <body>
     <header>
-        <nav class="top-nav">
+        <nav class="top-nav sticky-nav">
             <h2>
-                <a href="L../index.html#biography">Biography</a> |
-                <a href="L../index.html#research">Research</a> |
-                <a href="L../index.html#publications">Publications</a> |
-                <a href="L../index.html#teaching">Teaching</a> |
-                <a href="L../blog.html">Blog</a> |
-                <a href="L../index.html#contact">Contact</a>
+                <a href="../index.html#biography">Biography</a> |
+                <a href="../index.html#research">Research</a> |
+                <a href="../index.html#publications">Publications</a> |
+                <a href="../index.html#teaching">Teaching</a> |
+                <a href="../blog.html">Blog</a> |
+                <a href="../index.html#contact">Contact</a>
             </h2>
         </nav>
         <div class="container"></div>
@@ -35,7 +36,10 @@
     <main>
         <article>
             <h2>Kolmogorov Complexity and Fractal Geometry: Information as Dimension</h2>
-            <p><em>Date: October 26, 2025</em></p>
+            <div class="article-meta">
+                <span class="post-date">Date: October 26, 2025</span>
+                <span class="reading-time" id="reading-time">Calculating reading time...</span>
+            </div>
 
             <p>
                 Mathematics hosts two complementary lenses on structure. <strong>Kolmogorov complexity</strong> quantifies the shortest description of an object; <strong>fractal geometry</strong> quantifies how detail scales with resolution. This post shows how these meet in the notion of <em>algorithmic (effective) dimension</em>: roughly, the rate at which the information needed to specify a point grows as you zoom in.
@@ -120,6 +124,16 @@
                 </p>
             </section>
 
+            <div class="post-navigation">
+
+                <a href="#" class="nav-button" id="prev-post">← Previous Post</a>
+
+                <a href="#" class="nav-button" id="next-post">Next Post →</a>
+
+            </div>
+
+            <div id="related-posts-container"></div>
+
             <section id="references">
                 <h3>References</h3>
                 <ol>
@@ -133,7 +147,9 @@
                 </ol>
             </section>
         </article>
+
     </main>
+    <button class="back-to-top" id="backToTop">↑</button>
 
     <footer>
         <p>&copy; Diogo Franquinho | Blog</p>

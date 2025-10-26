@@ -5,18 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Diogo Franquinho - Blog Post 13">
     <title>Mathematical Philosophy and Large Language Models</title>
-    <link rel="stylesheet" href="L../css/style.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="../js/post-utilities.js" defer></script>
 </head>
 <body>
     <header>
-        <nav class="top-nav">
+        <nav class="top-nav sticky-nav">
             <h2>
-                <a href="L../index.html#biography">Biography</a> | 
-                <a href="L../index.html#research">Research</a> | 
-                <a href="L../index.html#publications">Publications</a> | 
-                <a href="L../index.html#teaching">Teaching</a> | 
-                <a href="L../blog.html">Blog</a> | 
-                <a href="L../index.html#contact">Contact</a>
+                <a href="../index.html#biography">Biography</a> | 
+                <a href="../index.html#research">Research</a> | 
+                <a href="../index.html#publications">Publications</a> | 
+                <a href="../index.html#teaching">Teaching</a> | 
+                <a href="../blog.html">Blog</a> | 
+                <a href="../index.html#contact">Contact</a>
             </h2>
         </nav>
         <div class="container"></div>
@@ -25,7 +26,10 @@
     <main>
         <article>
             <h2>Mathematical Philosophy and Large Language Models: New Frontiers in Mathematical Reasoning</h2>
-            <p>Date: December 2, 2024</p>
+            <div class="article-meta">
+                <span class="post-date">Date: December 2, 2024</span>
+                <span class="reading-time" id="reading-time">Calculating reading time...</span>
+            </div>
 
             <p>
                 The rapid advance of Large Language Models (LLMs) has brought fresh insight to both the philosophy of mathematics and the role of artificial intelligence in mathematical practice. State-of-the-art systems such as OpenAI's GPT-4 and Google's Gemini can now engage with complex mathematical language, generate solution outlines, and even reason through portions of proofs, casting new light on the relationship between formal logic and natural language<sup>[1]</sup>.
@@ -43,17 +47,29 @@
                 As LLMs continue to evolve, their influence on mathematical methodology and philosophical inquiry is likely to deepen. Issues at the very foundation—such as the nature of mathematical objects, the validity of proofs, or the interplay between syntax and semantics—may gain new context as the boundary blurs between formal manipulation and the flexible, dialogic nature of mathematical conversation. Understanding this interplay will be central not only to AI research but also to the future philosophy of mathematics<sup>[2]</sup>.
             </p>
 
+            <div class="post-navigation">
+
+                <a href="#" class="nav-button" id="prev-post">← Previous Post</a>
+
+                <a href="#" class="nav-button" id="next-post">Next Post →</a>
+
+            </div>
+
+            <div id="related-posts-container"></div>
+
             <section id="references">
                 <h3>References</h3>
                 <ol>
-                    <li id="ref1"><a href="Lhttps://arxiv.org/pdf/2303.08774">OpenAI. (2023). GPT-4 Technical Report. arXiv:2301.10848.</a></li>
-                    <li id="ref2"><a href="Lhttps://plato.stanford.edu/entries/philosophy-mathematics/">Shapiro, S. (2020). Philosophy of Mathematics. The Stanford Encyclopedia of Philosophy.</a></li>
-                    <li id="ref3"><a href="Lhttps://arxiv.org/pdf/2103.03874">Hendrycks, D., et al. (2021). Measuring Mathematical Problem Solving With the MATH Dataset. arXiv:1904.01557.</a></li>
-                    <li id="ref4"><a href="Lhttps://arxiv.org/pdf/2110.14168">Cobbe, K., et al. (2022). Training Verifiers to Solve Math Word Problems. arXiv:2206.14858.</a></li>
+                    <li id="ref1"><a href="https://arxiv.org/pdf/2303.08774">OpenAI. (2023). GPT-4 Technical Report. arXiv:2301.10848.</a></li>
+                    <li id="ref2"><a href="https://plato.stanford.edu/entries/philosophy-mathematics/">Shapiro, S. (2020). Philosophy of Mathematics. The Stanford Encyclopedia of Philosophy.</a></li>
+                    <li id="ref3"><a href="https://arxiv.org/pdf/2103.03874">Hendrycks, D., et al. (2021). Measuring Mathematical Problem Solving With the MATH Dataset. arXiv:1904.01557.</a></li>
+                    <li id="ref4"><a href="https://arxiv.org/pdf/2110.14168">Cobbe, K., et al. (2022). Training Verifiers to Solve Math Word Problems. arXiv:2206.14858.</a></li>
                 </ol>
             </section>
         </article>
+
     </main>
+    <button class="back-to-top" id="backToTop">↑</button>
 
     <footer>
         <p>&copy; Diogo Franquinho | Blog</p>
