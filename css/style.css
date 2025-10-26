@@ -504,19 +504,14 @@ footer {
 /* Blog Post Card Layout */
 article {
     margin-bottom: 30px;
-    padding: 40px;
-    background-color: #f9f6f0;
-    max-width: 100%;
-    margin-left: auto;
-    margin-right: auto;
 }
 
-/* Main article content in individual posts */
+/* Main article content in individual posts - match blog.html style */
 main article {
-    background-color: #faf8f3;
-    padding: 40px;
-    margin: 20px auto;
+    padding: 0;
+    margin: 0 auto;
     max-width: 700px;
+    background-color: transparent;
 }
 
 /* Only apply box styling to articles within #blog-posts section (blog.html) */
