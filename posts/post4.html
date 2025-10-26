@@ -6,10 +6,11 @@
     <meta name="description" content="Diogo Franquinho - Blog Post 4">
     <title>On the integration of artifical inteligence and other computational devices in the learning paradigm</title>
     <link rel="stylesheet" href="../css/style.css">
+    <script src="../js/post-utilities.js" defer></script>
 </head>
 <body>
     <header>
-        <nav class="top-nav">
+        <nav class="top-nav sticky-nav">
             <h2>
                 <a href="../index.html#biography">Biography</a> | 
                 <a href="../index.html#research">Research</a> | 
@@ -25,8 +26,10 @@
     <main>
         <article>
             <h2>On the integration of artifical inteligence and other computational devices in the learning paradigm</h2>
-
-            <p>Date: October 5, 2024</p>
+            <div class="article-meta">
+                <span class="post-date">Date: October 5, 2024</span>
+                <span class="reading-time" id="reading-time">Calculating reading time...</span>
+            </div>
             
             <p>The integration of artificial intelligence (AI) and computational tools into education represents a significant shift in how we approach learning and teaching. This post explores the opportunities and challenges this integration presents.</p>
 
@@ -41,26 +44,27 @@
             <p>As we continue to develop and implement these technologies, it's crucial to maintain focus on the fundamental goal, namely, improving learning outcomes for all students while ensuring equitable access to educational opportunities.</p>
         </article>
 
-        <div class="post-navigation" style="display: flex; justify-content: space-between; align-items: center; margin: 2em 0;">
-            <a href="post3.html" class="nav-button" id="prev-post" style="flex: 1; text-align: left;">← Previous Post</a>
-            <span style="flex: 0 0 2em;"></span>
-            <a href="post5.html" class="nav-button" id="next-post" style="flex: 1; text-align: right;">Next Post →</a>
-        </div>
+            <div class="post-navigation">
+                <a href="#" class="nav-button" id="prev-post">← Previous Post</a>
+                <a href="#" class="nav-button" id="next-post">Next Post →</a>
+            </div>
 
+            <div id="related-posts-container"></div>
 
-    <section id="references">
+            <section id="references">
         <h3>References</h3>
         <ol>
             <li id="ref1">
-                Bloom, B. S. (1984). <a href="Lhttps://gwern.net/doc/psychology/1984-bloom.pdf" target="_blank">The 2 Sigma Problem: The Search for Methods of Group Instruction as Effective as One-to-One Tutoring.</a> <i>Educational Researcher</i>, 13(6), 4-16.
+                Bloom, B. S. (1984). <a href="https://gwern.net/doc/psychology/1984-bloom.pdf" target="_blank">The 2 Sigma Problem: The Search for Methods of Group Instruction as Effective as One-to-One Tutoring.</a> <i>Educational Researcher</i>, 13(6), 4-16.
             </li>
             <li id="ref2">
-                Wing, J. M. (2006). <a href="Lhttps://www.cs.cmu.edu/~15110-s13/Wing06-ct.pdf" target="_blank">Computational Thinking</a>. <i>Communications of the ACM</i>, 49(3), 33-35.
+                Wing, J. M. (2006). <a href="https://www.cs.cmu.edu/~15110-s13/Wing06-ct.pdf" target="_blank">Computational Thinking</a>. <i>Communications of the ACM</i>, 49(3), 33-35.
             </li>
         </ol>
     </section>
 
     </main>
+    <button class="back-to-top" id="backToTop">↑</button>
 
     <footer>
         <p>&copy; Diogo Franquinho | Blog</p>

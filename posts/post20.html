@@ -5,18 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Self-Reference: The Foundation and the Limit of Intelligence">
     <title>Self-Reference: The Foundation and the Limit of Intelligence</title>
-    <link rel="stylesheet" href="L../css/style.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="../js/post-utilities.js" defer></script>
 </head>
 <body>
     <header>
-        <nav class="top-nav">
+        <nav class="top-nav sticky-nav">
             <h2>
-                <a href="L../index.html#biography">Biography</a> | 
-                <a href="L../index.html#research">Research</a> | 
-                <a href="L../index.html#publications">Publications</a> | 
-                <a href="L../index.html#teaching">Teaching</a> | 
-                <a href="L../blog.html">Blog</a> | 
-                <a href="L../index.html#contact">Contact</a>
+                <a href="../index.html#biography">Biography</a> | 
+                <a href="../index.html#research">Research</a> | 
+                <a href="../index.html#publications">Publications</a> | 
+                <a href="../index.html#teaching">Teaching</a> | 
+                <a href="../blog.html">Blog</a> | 
+                <a href="../index.html#contact">Contact</a>
             </h2>
         </nav>
         <div class="container"></div>
@@ -25,7 +26,10 @@
     <main>
         <article>
             <h2>Self-Reference: The Foundation and the Limit of Intelligence</h2>
-            <p>Date: January 30, 2025</p>
+            <div class="article-meta">
+                <span class="post-date">Date: January 30, 2025</span>
+                <span class="reading-time" id="reading-time">Calculating reading time...</span>
+            </div>
             
             <p>
                 Self-reference lies at the heart of intelligence. It allows systems—biological or artificial—to construct internal models of themselves, predict their own behavior, and learn from self-generated representations. Yet it also defines the ultimate boundary of formal reasoning: the point beyond which a system cannot consistently describe itself without paradox. From Gödel's incompleteness to Turing's halting problem and modern self-modeling AI, self-reference has emerged as both the mechanism of understanding and the source of undecidability. This article examines how reflexivity functions as the structural essence of intelligence, and why every attempt at self-understanding—whether logical, computational, or cognitive—confronts the same recursive horizon.
@@ -59,6 +63,16 @@
                 From Gödel to modern AI, the evolution of reflexivity reveals a single principle: intelligence is self-referential but incomplete. To reason, learn, or adapt, a system must represent itself, yet it can never do so perfectly. This tension defines intelligence. Self-reference is not a defect but the architecture of cognition: a loop that maintains coherence at the edge of paradox.
             </p>
 
+            <div class="post-navigation">
+
+                <a href="#" class="nav-button" id="prev-post">← Previous Post</a>
+
+                <a href="#" class="nav-button" id="next-post">Next Post →</a>
+
+            </div>
+
+            <div id="related-posts-container"></div>
+
             <section id="references">
                 <h3>References</h3>
                 <ol>
@@ -75,7 +89,9 @@
                 </ol>
             </section>
         </article>
+
     </main>
+    <button class="back-to-top" id="backToTop">↑</button>
 
     <footer>
         <p>&copy; Diogo Franquinho | Blog</p>

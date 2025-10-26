@@ -5,18 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Diogo Franquinho - Blog Post 18">
     <title>Sticky Path Dependency: On progress, stagnation and hope for the future</title>
-    <link rel="stylesheet" href="L../css/style.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="../js/post-utilities.js" defer></script>
 </head>
 <body>
     <header>
-        <nav class="top-nav">
+        <nav class="top-nav sticky-nav">
             <h2>
-                <a href="L../index.html#biography">Biography</a> | 
-                <a href="L../index.html#research">Research</a> | 
-                <a href="L../index.html#publications">Publications</a> | 
-                <a href="L../index.html#teaching">Teaching</a> | 
-                <a href="L../blog.html">Blog</a> | 
-                <a href="L../index.html#contact">Contact</a>
+                <a href="../index.html#biography">Biography</a> | 
+                <a href="../index.html#research">Research</a> | 
+                <a href="../index.html#publications">Publications</a> | 
+                <a href="../index.html#teaching">Teaching</a> | 
+                <a href="../blog.html">Blog</a> | 
+                <a href="../index.html#contact">Contact</a>
             </h2>
         </nav>
         <div class="container"></div>
@@ -25,9 +26,11 @@
     <main>
         <article>
             <h2>Sticky Path Dependency</h2>
+            <div class="article-meta">
+                <span class="post-date">Date: January 22, 2025</span>
+                <span class="reading-time" id="reading-time">Calculating reading time...</span>
+            </div>
             <h3>On progress, stagnation and hope for the future</h3>
-
-            <p>Date: January 22, 2025</p>
             
             <p>Progress is often imagined as a linear ascent—an arrow from ignorance to enlightenment, from poverty to prosperity. Yet, as any careful observer of history or mathematics knows, the true trajectory is far more intricate, shaped by the recursive influence of prior choices. The concept of <strong>path dependence</strong> encapsulates this: past decisions, technologies, and institutions do not merely precede the present—they delimit its possibilities. When these inherited paths become “sticky,” they resist even the most rational attempts at reform, and progress stalls.</p>
 
@@ -36,17 +39,29 @@
             <p>Yet, history is not without its discontinuities. The 1969 Moon landing stands as a paradigmatic example: a moment when vision, coordination, and scientific rigor converged to break free from the gravitational pull of precedent. It was a demonstration that, given sufficient collective will, humanity can transcend even the stickiest of inherited constraints. But for every moonshot, there are countless instances where progress is arrested by the inertia of the past—where institutions, cultures, and individuals remain bound to obsolete logics, unable or unwilling to rechoose their path<sup>[2]</sup>.</p>
 
             <p>Hope for the future, then, is not a matter of blind optimism, but of cultivated agency. To unstick ourselves from the ruts of history, we must rigorously analyze the mechanisms that sustain path dependence, and design institutions with built-in flexibility and resilience. This requires the precision of a mathematician: to identify the fixed points of our systems, to model the costs of transition, and to engineer conditions for creative disruption. It also demands the courage to question sacred traditions, to foster dissent, and to treat the eradication of cultural malpractices with the same urgency and ambition as a lunar mission. Only by embracing experimentation, diversity of thought, and the willingness to confront our own inherited limitations can we hope to overcome stagnation and unlock new, more just possibilities<sup>[3]</sup>.</p>
-            
+
+            <div class="post-navigation">
+
+                <a href="#" class="nav-button" id="prev-post">← Previous Post</a>
+
+                <a href="#" class="nav-button" id="next-post">Next Post →</a>
+
+            </div>
+
+            <div id="related-posts-container"></div>
+
             <section id="references">
                 <h3>References</h3>
                 <ol>
-                    <li id="ref1"><a href="Lhttps://en.wikipedia.org/wiki/Path_dependence">Path Dependence - Wikipedia</a></li>
-                    <li id="ref2"><a href="Lhttps://www.sciencedirect.com/science/article/pii/S0048733302000625">David, P. A. (2001). Path dependence, its critics and the quest for 'historical economics'. Science Direct.</a></li>
-                    <li id="ref3"><a href="Lhttps://www.nature.com/articles/d41586-021-02107-2">Arthur, W. B. (2021). Complexity economics: path dependence and the evolution of economic systems. Nature.</a></li>
+                    <li id="ref1"><a href="https://en.wikipedia.org/wiki/Path_dependence">Path Dependence - Wikipedia</a></li>
+                    <li id="ref2"><a href="https://www.sciencedirect.com/science/article/pii/S0048733302000625">David, P. A. (2001). Path dependence, its critics and the quest for 'historical economics'. Science Direct.</a></li>
+                    <li id="ref3"><a href="https://www.nature.com/articles/d41586-021-02107-2">Arthur, W. B. (2021). Complexity economics: path dependence and the evolution of economic systems. Nature.</a></li>
                 </ol>
             </section>
         </article>
+
     </main>
+    <button class="back-to-top" id="backToTop">↑</button>
 
     <footer>
         <p>&copy; Diogo Franquinho | Blog</p>

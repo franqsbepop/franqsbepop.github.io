@@ -80,15 +80,34 @@ function getPostNavigation() {
     const currentPage = window.location.pathname;
     const currentPost = currentPage.split('/').pop();
     const currentIndex = postOrder.indexOf(currentPost);
-    
+
     if (currentIndex === -1) return null;
-    
+
     return {
         prev: currentIndex > 0 ? postOrder[currentIndex - 1] : null,
         next: currentIndex < postOrder.length - 1 ? postOrder[currentIndex + 1] : null,
         prevIndex: currentIndex - 1,
         nextIndex: currentIndex + 1
     };
+}
+
+// Back-to-top button behaviour
+function initBackToTop() {
+    const button = document.getElementById('backToTop');
+    if (!button) return;
+
+    button.addEventListener('click', event => {
+        event.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    window.addEventListener('scroll', () => {
+        if (window.pageYOffset > 300) {
+            button.classList.add('visible');
+        } else {
+            button.classList.remove('visible');
+        }
+    });
 }
 
 // Post data for related posts
@@ -101,14 +120,23 @@ const postData = {
     'post6.html': { title: 'The Philosophy of Mathematics in Finance', tags: ['philosophy', 'mathematics', 'finance'], date: 'November 20, 2024' },
     'post7.html': { title: 'Brain-Computer Interfaces', tags: ['technology', 'neuroscience', 'ai'], date: 'December 10, 2024' },
     'post8.html': { title: 'Ethical Implications of Finance in Von Neumann Universes', tags: ['philosophy', 'mathematics', 'ethics'], date: 'November 27, 2024' },
-    'post12.html': { title: 'Leonard Euler Infinite-Dimensional Influence', tags: ['mathematics', 'history'], date: 'December 1, 2024' },
+    'post9.html': { title: 'Grothendieck, von Neumann and Hilbert', tags: ['mathematics', 'history'], date: 'November 27, 2024' },
+    'post10.html': { title: 'Turing and Shannon: The Mathematical Foundations of Modern Computing', tags: ['mathematics', 'technology', 'history'], date: 'November 28, 2024' },
+    'post11.html': { title: 'Mathematical Beauty and Taste', tags: ['mathematics', 'philosophy'], date: 'November 29, 2024' },
+    'post12.html': { title: 'Leonard Euler', tags: ['mathematics', 'history'], date: 'December 1, 2024' },
     'post13.html': { title: 'Mathematical Philosophy and Large Language Models', tags: ['philosophy', 'machine-learning', 'mathematics'], date: 'December 2, 2024' },
-    'post14.html': { title: 'The Unreasonable Effectiveness of Mathematics', tags: ['philosophy', 'mathematics', 'machine-learning'], date: 'December 4, 2024' },
+    'post14.html': { title: 'The unreasonable effectiveness of mathematics: from Wigner to Karpathy', tags: ['philosophy', 'mathematics', 'machine-learning'], date: 'December 4, 2024' },
     'post15.html': { title: 'Econophysics: Bridging Economics and Physics', tags: ['economics', 'finance', 'mathematics'], date: 'December 15, 2024' },
+    'post16.html': { title: 'Understanding Distributions', tags: ['mathematics', 'statistics', 'education'], date: 'December 20, 2024' },
+    'post17.html': { title: 'There is always an ε', tags: ['mathematics', 'education'], date: 'January 15, 2025' },
     'post18.html': { title: 'Sticky Path Dependency', tags: ['society', 'economics', 'history'], date: 'January 22, 2025' },
+    'post19.html': { title: "Short Selling: The Market's Unloved Watchdog", tags: ['finance', 'economics', 'markets'], date: 'January 22, 2025' },
     'post20.html': { title: 'Self-Reference: The Foundation and the Limit of Intelligence', tags: ['philosophy', 'mathematics', 'ai', 'logic'], date: 'January 29, 2025' },
     'post21.html': { title: 'Never vote for a lawyer', tags: ['society', 'economics', 'history'], date: 'November 13, 2024' },
-    'post25.html': { title: 'Kolmogorov Complexity and Fractal Geometry', tags: ['mathematics', 'information-theory', 'fractal-geometry'], date: 'October 26, 2025' }
+    'post22.html': { title: 'Theoretical Foundations of Data-Driven Stochastic Modelling with Financial Market Applications', tags: ['research', 'mathematics', 'finance'], date: 'November 13, 2024' },
+    'post23.html': { title: 'Theoretical Foundations of Data-Driven Stochastic Modelling with Financial Market Applications', tags: ['research', 'mathematics', 'finance'], date: 'November 13, 2024' },
+    'post25.html': { title: 'Kolmogorov Complexity and Fractal Geometry', tags: ['mathematics', 'information-theory', 'fractal-geometry'], date: 'October 26, 2025' },
+    'postX.html': { title: 'Mathematical Modelling in Stochastic Analysis and Finance', tags: ['research', 'mathematics', 'finance'], date: 'November 13, 2024' }
 };
 
 // Get related posts based on current post's tags
@@ -164,24 +192,35 @@ document.addEventListener('DOMContentLoaded', function() {
     calculateReadingTime();
     generateTableOfContents();
     displayRelatedPosts();
-    
+
+    const prevButton = document.getElementById('prev-post');
+    const nextButton = document.getElementById('next-post');
     const nav = getPostNavigation();
+
     if (nav) {
-        const prevButton = document.getElementById('prev-post');
-        const nextButton = document.getElementById('next-post');
-        
         if (prevButton && nav.prev) {
             prevButton.href = nav.prev;
         } else if (prevButton) {
             prevButton.classList.add('disabled');
             prevButton.href = '#';
         }
-        
+
         if (nextButton && nav.next) {
             nextButton.href = nav.next;
         } else if (nextButton) {
             nextButton.classList.add('disabled');
             nextButton.href = '#';
         }
+    } else {
+        if (prevButton) {
+            prevButton.classList.add('disabled');
+            prevButton.href = '#';
+        }
+        if (nextButton) {
+            nextButton.classList.add('disabled');
+            nextButton.href = '#';
+        }
     }
+
+    initBackToTop();
 });
