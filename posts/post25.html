@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Kolmogorov Complexity and Fractal Geometry: a technical exploration of algorithmic information, effective dimension, and the geometry of information." />
+    <title>Kolmogorov Complexity and Fractal Geometry: Information as Dimension</title>
+    <link rel="stylesheet" href="../css/style.css" />
+
+    <!-- Optional: MathJax for formulas. Remove if not needed. -->
+    <script>
+      (function() {
+        var s = document.createElement('script');
+        s.src = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js";
+        s.async = true;
+        document.head.appendChild(s);
+      })();
+    </script>
+</head>
+<body>
+    <header>
+        <nav class="top-nav">
+            <h2>
+                <a href="../index.html#biography">Biography</a> |
+                <a href="../index.html#research">Research</a> |
+                <a href="../index.html#publications">Publications</a> |
+                <a href="../index.html#teaching">Teaching</a> |
+                <a href="../blog.html">Blog</a> |
+                <a href="../index.html#contact">Contact</a>
+            </h2>
+        </nav>
+        <div class="container"></div>
+    </header>
+
+    <main>
+        <article>
+            <h2>Kolmogorov Complexity and Fractal Geometry: Information as Dimension</h2>
+            <p><em>Date: October 26, 2025</em></p>
+
+            <p>
+                Mathematics hosts two complementary lenses on structure. <strong>Kolmogorov complexity</strong> quantifies the shortest description of an object; <strong>fractal geometry</strong> quantifies how detail scales with resolution. This post shows how these meet in the notion of <em>algorithmic (effective) dimension</em>: roughly, the rate at which the information needed to specify a point grows as you zoom in.
+            </p>
+
+            <section id="kolmogorov-complexity">
+                <h3>1. Kolmogorov Complexity in One Paragraph</h3>
+                <p>
+                    Fix a universal Turing machine \(U\). The Kolmogorov complexity of a finite binary string \(x\) is
+                    \[
+                    K(x) = \min_{p}\,\{\,|p| : U(p) = x\,\}.
+                    \]
+                    It is a machine-invariant notion up to an additive constant. Low \(K(x)\) means high compressibility (regularity); high \(K(x)\) indicates algorithmic randomness (incompressibility).
+                </p>
+            </section>
+
+            <section id="fractal-geometry">
+                <h3>2. Fractal Geometry in One Paragraph</h3>
+                <p>
+                    For a set \(F \subset \mathbb{R}^n\), the (upper) box-counting dimension uses
+                    \[
+                    N(\varepsilon) := \text{the minimum number of cubes of side } \varepsilon \text{ covering } F,
+                    \]
+                    and defines
+                    \[
+                    \overline{\dim}_B(F) = \limsup_{\varepsilon\to 0}\frac{\log N(\varepsilon)}{\log(1/\varepsilon)}.
+                    \]
+                    Hausdorff dimension refines this via measures, but both capture how “detail” scales under magnification.
+                </p>
+            </section>
+
+            <section id="algorithmic-dimension">
+                <h3>3. Algorithmic (Effective) Dimension</h3>
+                <p>
+                    The bridge is to ask: how many bits does it take to specify a point \(x\) at precision \(r\)? Let \(x_r\) be a shortest binary description of a rational approximation of \(x\) within radius \(r\). The <em>effective Hausdorff dimension</em> (algorithmic dimension) is
+                    \[
+                    \dim_A(x) = \liminf_{r \to 0}\frac{K(x_r)}{-\log r}.
+                    \]
+                    Intuitively, \(\dim_A(x)\) is the <em>information density</em> of \(x\) per unit of scale. For many computable self-similar fractals, \(\dim_A(x)\) equals the classical Hausdorff dimension for “typical” points of the set.
+                </p>
+                <p>
+                    This yields a slogan: <strong>dimension is information growth under zoom</strong>. If describing \(x\) to \(k\) binary digits needs about \(D \cdot k\) bits on average, then \(D\) plays the role of a dimension.
+                </p>
+            </section>
+
+            <section id="simple-rules-infinite-detail">
+                <h3>4. Simple Rules, Infinite Detail</h3>
+                <p>
+                    The Mandelbrot iteration \(z_{n+1}=z_n^2+c\) has a very low description length, yet its boundary exhibits unbounded geometric intricacy. There is no contradiction: a short program can <em>generate</em> a set whose local specification at arbitrary precision demands ever more bits. Algorithmic simplicity of the <em>rule</em> coexists with geometric complexity of the <em>object</em>.
+                </p>
+            </section>
+
+            <section id="deterministic-vs-random-fractals">
+                <h3>5. Deterministic vs Random Fractals</h3>
+                <ul>
+                    <li><strong>Deterministic self-similar sets</strong> (e.g., Cantor, Sierpiński) have finite descriptions (low global \(K\)), but points on them can still possess nontrivial \(\dim_A\) matching the set’s fractal dimension.</li>
+                    <li><strong>Random fractals</strong> (e.g., fractional Brownian paths) often have higher algorithmic complexity for typical realizations; effective dimensions of sample paths reflect this and relate to classical almost-sure fractal dimensions.</li>
+                </ul>
+            </section>
+
+            <section id="quantitative-links">
+                <h3>6. Quantitative Links and Heuristics</h3>
+                <p>
+                    A practical heuristic: if approximating \(x\) to \(k\) bits requires on average about \(Dk\) bits of description (beyond a constant), then \(\dim_A(x)\approx D\). For computable self-similar sets with similarity ratio \(r\) and \(m\) pieces, the classical dimension is \(D=\log m/\log(1/r)\); effective dimensions of typical points align with this value.
+                </p>
+            </section>
+
+            <section id="implications">
+                <h3>7. Implications Across Fields</h3>
+                <ul>
+                    <li><strong>Complex systems & chaos:</strong> entropy rates and algorithmic randomness of trajectories interface with fractal attractors.</li>
+                    <li><strong>Signal & image modeling:</strong> fractal compression exploits self-similarity (low program-size) while permitting high visible detail.</li>
+                    <li><strong>Finance & econophysics:</strong> roughness of paths (e.g., Hurst exponent) aligns with information growth rates in empirical data.</li>
+                    <li><strong>Foundations:</strong> “information has geometry” — scale laws manifest as effective dimensions of data-generating processes.</li>
+                </ul>
+            </section>
+
+            <section id="conclusion">
+                <h3>8. Conclusion</h3>
+                <p>
+                    Kolmogorov complexity measures compressibility; fractal dimension measures scaling of detail. Their synthesis, effective dimension, treats <em>geometry as information per scale</em>. Simple rules can unfold into sets whose local description demands linear-in-precision information — turning dimension into the derivative of information with respect to resolution.
+                </p>
+            </section>
+
+            <section id="references">
+                <h3>References</h3>
+                <ol>
+                    <li id="ref1">A. N. Kolmogorov, “Three approaches to the quantitative definition of information,” <em>Problems of Information Transmission</em>, 1965.</li>
+                    <li id="ref2">G. J. Chaitin, <em>Algorithmic Information Theory</em>, Cambridge University Press, 1987.</li>
+                    <li id="ref3">K. Falconer, <em>Fractal Geometry: Mathematical Foundations and Applications</em>, Wiley, 3rd ed., 2014.</li>
+                    <li id="ref4">J. H. Lutz, “Dimension in complexity classes,” in <em>Proceedings of the 15th Annual IEEE Conference on Computational Complexity</em>, 2000.</li>
+                    <li id="ref5">E. Mayordomo, “A Kolmogorov complexity characterization of constructive Hausdorff dimension,” <em>Information Processing Letters</em>, 84(1):1–3, 2002.</li>
+                    <li id="ref6">J. Reimann, “Computability and fractal dimension,” in <em>New Computational Paradigms</em>, Springer, 2008.</li>
+                    <li id="ref7">B. Mandelbrot, <em>The Fractal Geometry of Nature</em>, W. H. Freeman, 1982.</li>
+                </ol>
+            </section>
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; Diogo Franquinho | Blog</p>
+    </footer>
+</body>
+</html>
