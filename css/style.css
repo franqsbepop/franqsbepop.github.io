@@ -5,6 +5,15 @@
     box-sizing: border-box;
 }
 
+/* Design Tokens */
+:root {
+    --box-background: #f3f3f3;
+    --box-border: #d0d0d0;
+    --box-accent: #3a3a3a;
+    --box-hover-background: #e8e8e8;
+    --box-hover-border: #c4c4c4;
+}
+
 /* Base Styles */
 body {
     font-family: "Georgia", "Times New Roman", serif;
@@ -227,16 +236,18 @@ footer {
 }
 
 .note-category {
-    background-color: #f0ede6;
-    border: 1px solid #e0d8c8;
-    border-radius: 6px;
+    background-color: var(--box-background);
+    border: 1px solid var(--box-border);
+    border-left: 6px solid var(--box-accent);
+    border-radius: 0;
     padding: 25px;
-    transition: all 0.2s ease;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .note-category:hover {
-    border-color: #d0c4b0;
-    background-color: #e8e2d8;
+    border-color: var(--box-hover-border);
+    background-color: var(--box-hover-background);
+    border-left-color: var(--box-accent);
 }
 
 .note-category h3 {
@@ -317,17 +328,19 @@ footer {
 .math-block {
     text-align: center;
     margin: 25px 0;
-    padding: 20px;
-    background-color: #f0ede6;
-    border-radius: 6px;
-    border-left: 3px solid #0066cc;
+    padding: 20px 24px;
+    background-color: var(--box-background);
+    border: 1px solid var(--box-border);
+    border-left: 6px solid var(--box-accent);
+    border-radius: 0;
 }
 
 .note-content pre {
-    background-color: #f0ede6;
-    border: 1px solid #e0d8c8;
-    border-radius: 6px;
-    padding: 20px;
+    background-color: var(--box-background);
+    border: 1px solid var(--box-border);
+    border-left: 6px solid var(--box-accent);
+    border-radius: 0;
+    padding: 20px 24px;
     overflow-x: auto;
     margin: 20px 0;
 }
@@ -363,10 +376,11 @@ footer {
 /* Tag System Styles */
 .tag-container {
     margin: 20px 0;
-    padding: 20px;
-    background-color: #f0ede6;
-    border-radius: 6px;
-    border: 1px solid #e0d8c8;
+    padding: 20px 24px;
+    background-color: var(--box-background);
+    border-radius: 0;
+    border: 1px solid var(--box-border);
+    border-left: 6px solid var(--box-accent);
 }
 
 .tag-filter {
@@ -516,17 +530,35 @@ main article {
 
 /* Only apply box styling to articles within #blog-posts section (blog.html) */
 #blog-posts article {
-    background-color: #fefefe;
-    border: 1px solid #e0d8c8;
-    border-radius: 8px;
+    background-color: var(--box-background);
+    border: 1px solid var(--box-border);
+    border-left: 6px solid var(--box-accent);
+    border-radius: 0;
     padding: 25px 30px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    transition: all 0.3s ease;
+    box-shadow: none;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 #blog-posts article:hover {
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    border-color: #d0c4b0;
+    background-color: var(--box-hover-background);
+    border-color: var(--box-hover-border);
+    border-left-color: var(--box-accent);
+}
+
+.boxed-section {
+    background-color: var(--box-background);
+    border: 1px solid var(--box-border);
+    border-left: 6px solid var(--box-accent);
+    border-radius: 0;
+    padding: 22px 26px;
+    margin: 25px 0;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.boxed-section:hover {
+    background-color: var(--box-hover-background);
+    border-color: var(--box-hover-border);
+    border-left-color: var(--box-accent);
 }
 
 article h2 {
@@ -681,17 +713,18 @@ article p {
 }
 
 .related-post-item {
-    background-color: #f0ede6;
-    border: 1px solid #e0d8c8;
-    border-radius: 6px;
-    padding: 15px;
-    transition: all 0.3s ease;
+    background-color: var(--box-background);
+    border: 1px solid var(--box-border);
+    border-left: 6px solid var(--box-accent);
+    border-radius: 0;
+    padding: 15px 18px;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .related-post-item:hover {
-    background-color: #e8e2d8;
-    border-color: #d0c4b0;
-    transform: translateY(-2px);
+    background-color: var(--box-hover-background);
+    border-color: var(--box-hover-border);
+    border-left-color: var(--box-accent);
 }
 
 .related-post-item a {
@@ -713,10 +746,11 @@ article p {
 
 /* Table of Contents */
 .table-of-contents {
-    background-color: #f0ede6;
-    border: 1px solid #e0d8c8;
-    border-radius: 6px;
-    padding: 20px;
+    background-color: var(--box-background);
+    border: 1px solid var(--box-border);
+    border-left: 6px solid var(--box-accent);
+    border-radius: 0;
+    padding: 20px 24px;
     margin: 30px 0;
 }
 
@@ -779,6 +813,12 @@ article p {
     font-size: 14px;
     color: #666;
     flex-wrap: wrap;
+    background-color: var(--box-background);
+    border: 1px solid var(--box-border);
+    border-left: 6px solid var(--box-accent);
+    border-radius: 0;
+    padding: 12px 18px;
+    align-items: center;
 }
 
 .article-meta .post-date {
