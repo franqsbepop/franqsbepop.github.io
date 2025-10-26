@@ -503,16 +503,33 @@ footer {
 
 /* Blog Post Card Layout */
 article {
+    margin-bottom: 30px;
+    padding: 40px;
+    background-color: #f9f6f0;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Main article content in individual posts */
+main article {
+    background-color: #faf8f3;
+    padding: 40px;
+    margin: 20px auto;
+    max-width: 700px;
+}
+
+/* Only apply box styling to articles within #blog-posts section (blog.html) */
+#blog-posts article {
     background-color: #fefefe;
     border: 1px solid #e0d8c8;
     border-radius: 8px;
     padding: 25px 30px;
-    margin-bottom: 30px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     transition: all 0.3s ease;
 }
 
-article:hover {
+#blog-posts article:hover {
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     border-color: #d0c4b0;
 }
@@ -584,6 +601,7 @@ article p {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 20px;
     margin-top: 40px;
     padding-top: 30px;
     border-top: 2px solid #e0d8c8;
@@ -776,7 +794,7 @@ article p {
 @media (max-width: 768px) {
     .post-navigation {
         flex-direction: column;
-        gap: 15px;
+        gap: 20px;
     }
 
     .nav-button {
