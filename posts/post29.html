@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Exploring Cylindrical Semi-martingale Optimal Transport, contiguity of probability measures, and their significance in large financial markets." />
+    <title>Cylindrical Semi-martingale OT, Measure Contiguity, and Large Financial Markets</title>
+    <link rel="stylesheet" href="../css/style.css" />
+
+    <!-- Optional: MathJax for formulas (as in post27.html) -->
+    <script>
+      (function() {
+        var s = document.createElement('script');
+        s.src = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js";
+        s.async = true;
+        document.head.appendChild(s);
+      })();
+    </script>
+    <script src="../js/post-utilities.js" defer></script>
+</head>
+<body>
+    <header>
+        <nav class="top-nav sticky-nav">
+            <h2>
+                <a href="../index.html#biography">Biography</a> |
+                <a href="../index.html#research">Research</a> |
+                <a href="../index.html#publications">Publications</a> |
+                <a href="../index.html#teaching">Teaching</a> |
+                <a href="../blog.html">Blog</a> |
+                <a href="../index.html#contact">Contact</a>
+            </h2>
+        </nav>
+        <div class="container"></div>
+    </header>
+
+    <main>
+        <article>
+            <h2>Cylindrical Semi-martingale Optimal Transport and Contiguity: Large Financial Markets</h2>
+            <div class="article-meta">
+                <span class="post-date">Date: April 26, 2025</span>
+                <span class="reading-time" id="reading-time">Calculating reading time...</span>
+            </div>
+            
+            <div class="post-tags">
+                <span class="post-tag">Optimal Transport</span>
+                <span class="post-tag">Stochastic Processes</span>
+                <span class="post-tag">Large Financial Markets</span>
+                <span class="post-tag">Contiguity</span>
+                <span class="post-tag">Probability Theory</span>
+            </div>
+
+            <h3>Motivation: Moving Beyond Classical OT</h3>
+            <p>
+                <strong>Optimal Transport</strong> (OT) lies at the crossroads of mathematics, statistics, finance, and machine learning. In the classical setting, OT seeks an optimal coupling between two probability measures on a finite-dimensional space. But for modern <em>large financial markets</em>, with possibly infinitely many assets or factors, the relevant objects are infinite-dimensional stochastic processes, and classical OT must be replaced by its <b>cylindrical, semi-martingale</b> counterpart.
+            </p>
+            <p>
+                Here we explore <b>cylindrical semi-martingale OT</b> and the key probabilistic notion of <b>contiguity</b>, emphasizing their deep interplay in large market settings.
+            </p>
+
+            <h3>From Finite Dimensions to Cylindrical Semi-martingales</h3>
+            <ul>
+                <li>
+                    <strong>Classical OT problem:</strong>
+                    Given two probability measures \(\mu, \nu\) on \(\mathbb{R}^d\), find
+                    \[
+                    \inf_{\pi \in \Pi(\mu, \nu)} \int c(x, y)\, \pi(dx, dy)
+                    \]
+                    where \(c\) is a cost and \(\Pi(\mu, \nu)\) the set of couplings with marginals \(\mu, \nu\).
+                </li>
+                <li>
+                    <strong>Infinite-Dimensional (Cylindrical) Viewpoint:</strong>
+                    For spaces such as \(\mathbb{R}^\infty\) or path spaces, probability measures are often only <em>cylindrical</em>: all finite-dimensional marginals (projections) are specified, but there is no guarantee of a true measure on the infinite product.
+                </li>
+                <li>
+                    <strong>Semi-martingales & Cylindricality:</strong>
+                    In finance, price evolution is described by families \(\{S^i_t\}_{i \in I}\), where \(I\) can be infinite. <em>Cylindrical semi-martingales</em> are specified by their finite subfamilies, each being a semi-martingale. The full process lives only via this consistent finite-dimensional structure.
+                </li>
+            </ul>
+
+            <h3>Optimal Transport of Cylindrical Semi-martingale Laws</h3>
+            <p>
+                Consider cylindrical laws \(\mathbb{P} = (\mathbb{P}^n)_{n \geq 1}\) and \(\mathbb{Q} = (\mathbb{Q}^n)_{n \geq 1}\), where each \(\mathbb{P}^n\), \(\mathbb{Q}^n\) is a measure on \(\mathbb{D}([0,T]; \mathbb{R}^n)\) (vector-valued Skorokhod space). The <b>cylindrical OT problem</b> seeks an optimal coupling at every level \(n\) that is consistent as \(n \to \infty\):
+            </p>
+            <p>
+                <span style="font-size:0.98em">
+                    For cost functionals \(C_n\):
+                    \[
+                    \inf_{\pi^n \in \Pi(\mathbb{P}^n, \mathbb{Q}^n)} \int C_n(\omega, \eta) \;\pi^n(d\omega, d\eta)
+                    \]
+                    subject to martingale/semi-martingale constraints on projections.
+                </span>
+            </p>
+            <ul>
+                <li>Costs \(C_n\) may be e.g. sums of pathwise quadratic variation, or supremum norms, depending on applications.</li>
+                <li><strong>Martingale constraints:</strong> As in <em>martingale OT</em>, one enforces that the canonical processes are (local) martingales under the coupling for each finite block.</li>
+                <li>
+                    <strong>Challenge:</strong> To ensure a meaningful infinite-dimensional solution, we need <b>tightness</b> and precise consistency across \(n\). This is where <b>contiguity</b> becomes central.
+                </li>
+            </ul>
+
+            <h3>Contiguity of Probability Measures</h3>
+            <p>
+                Given sequences of probability measures \((\mathbb{P}_n)\), \((\mathbb{Q}_n)\) on a common measurable space,
+                \[
+                \mathbb{Q}_n \triangleleft \mathbb{P}_n\quad \Longleftrightarrow\quad \forall A_n: \ \mathbb{P}_n(A_n) \to 0 \implies \mathbb{Q}_n(A_n) \to 0.
+                \]
+                That is, any sequence of events negligible under \(\mathbb{P}_n\) is also negligible under \(\mathbb{Q}_n\). This "vanishing together" ensures no sequence of events has probability "leaking" from 1 to 0.
+            </p>
+            <p>
+                In large financial markets (<em>cf.</em> Kabanov & Kramkov), <b>contiguity</b> replaces absolute continuity as we move from static to growing, infinite systems. It ensures stability of risk-neutral pricing, the absence of asymptotic arbitrage, and robust duality for hedging/pricing limits.
+            </p>
+            <ul>
+                <li><strong>Financial Significance:</strong> Contiguity is used to rule out "free lunch with vanishing risk," even as the market dimension explodes.</li>
+                <li><strong>Technical Role:</strong> If families of measures and their couplings are contiguous, limiting results for pricing, superhedging, or risk management persist in the infinite market.</li>
+            </ul>
+
+            <h3>Applications in Large Financial Markets</h3>
+            <ol>
+                <li>
+                    <strong>Model-Independent Pricing & Hedging:</strong><br>
+                    Superhedging prices may be characterized as the values of martingale OT problems indexed by \(n\), with existence and duality persisting when <b>contiguity</b> holds:
+                    \[
+                        \mathrm{price}_n = \sup_{\mathbb{Q}_n \triangleleft \mathbb{P}_n, \ \mathbb{Q}_n \text{ martingale}} \mathbb{E}_{\mathbb{Q}_n}[H_n]
+                    \]
+                    and as \(n \to \infty\), price stability follows from the consistency/contiguity apparatus.
+                </li>
+                <li>
+                    <strong>No-Free-Lunch Equivalents:</strong><br>
+                    The <em>Fundamental Theorem of Asset Pricing</em> for large markets is equivalent to the existence of a <b>contiguous</b> family of equivalent martingale measures (\(\mathbb{Q}_n \triangleleft \mathbb{P}_n\)), which excludes asymptotic arbitrage.
+                </li>
+                <li>
+                    <strong>Risk Management:</strong><br>
+                    In large/infinite universes (indices, climate, operational risk, etc), we encounter portfolios on spaces where only finite margins are observable. Robust risk bounds rely on cylindrical formulations and the preservation of tail properties via contiguity.
+                </li>
+            </ol>
+
+            <h3>Key References and Further Reading</h3>
+            <ol>
+                <li>Acciaio, Bouchard, Touzi & von Handel. <em>Martingale Optimal Transport in the Skorokhod Space</em>. Stochastic Proc. Appl. 2017.</li>
+                <li>V. Coti Zelati & R.L. Schilling. <em>Optimal Transport in Infinite Dimensions</em>. J. Funct. Anal., 2021.</li>
+                <li>Kabanov, Y. & Kramkov, D. <em>Large Financial Markets: Asymptotic Arbitrage and Contiguity</em>. Theory Probab. Appl., 1994.</li>
+                <li>B.S. Tsirelson. <em>Nonclassical stochastic flows and continuous products</em>. Probability Surveys, 2004.</li>
+                <li>J. Jacod & A.N. Shiryaev. <em>Limit Theorems for Stochastic Processes</em>. Springer, 2nd ed., 2003.</li>
+                <li><a href="https://en.wikipedia.org/wiki/Contiguity_of_measures" target="_blank">Wikipedia: Contiguity of Measures</a></li>
+            </ol>
+
+            <h3>Conclusion</h3>
+            <p>
+                In summary: <b>Cylindrical semi-martingale optimal transport</b> and <b>contiguity</b> are fundamental for modern mathematical finance, economics, and probability. They provide the toolbox needed for robust pricing and hedging in infinite-dimensional models, managing risk in sprawling markets, and ensuring that the mathematical structure persists as complexity grows. Their interplay signals new frontiers for theory and practice alike.
+            </p>
+        </article>
+    </main>
+
+    <button class="back-to-top" id="backToTop">↑</button>
+
+    <footer>
+        <p>&copy; Diogo Franquinho | Blog</p>
+    </footer>
+</body>
+</html>
