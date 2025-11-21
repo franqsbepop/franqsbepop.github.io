@@ -71,8 +71,12 @@ const postOrder = [
     'post20.html',
     'post21.html',
     'post22.html',
-    'post23.html',
-    'post25.html'
+    'post26.html',
+    'post25.html',
+    'post27.html',
+    'post28.html',
+    'post29.html',
+    'post30.html'
 ];
 
 // Function to get current post index and adjacent posts
@@ -134,8 +138,12 @@ const postData = {
     'post20.html': { title: 'Self-Reference: The Foundation and the Limit of Intelligence', tags: ['philosophy', 'mathematics', 'ai', 'logic'], date: 'January 29, 2025' },
     'post21.html': { title: 'Never vote for a lawyer', tags: ['society', 'economics', 'history'], date: 'November 13, 2024' },
     'post22.html': { title: 'Theoretical Foundations of Data-Driven Stochastic Modelling with Financial Market Applications', tags: ['research', 'mathematics', 'finance'], date: 'November 13, 2024' },
-    'post23.html': { title: 'Theoretical Foundations of Data-Driven Stochastic Modelling with Financial Market Applications', tags: ['research', 'mathematics', 'finance'], date: 'November 13, 2024' },
+    'post26.html': { title: 'On the Information Bottleneck Principle', tags: ['mathematics', 'information-theory', 'statistics', 'machine-learning'], date: 'November 15, 2025' },
     'post25.html': { title: 'Kolmogorov Complexity and Fractal Geometry', tags: ['mathematics', 'information-theory', 'fractal-geometry'], date: 'October 26, 2025' },
+    'post27.html': { title: 'Optimal Transport Meets Martingales', tags: ['mathematics', 'stochastic-processes', 'ot', 'probability'], date: 'December 5, 2025' },
+    'post28.html': { title: 'Cybernetics: The Science of Systems and Control', tags: ['philosophy', 'systems-theory', 'cybernetics', 'science'], date: 'March 18, 2025' },
+    'post29.html': { title: 'Cylindrical Semi-martingale OT, Measure Contiguity, and Large Financial Markets', tags: ['mathematics', 'probability', 'finance', 'stochastic-processes'], date: 'April 26, 2025' },
+    'post30.html': { title: 'How to Organize an Unforgettable Hackathon', tags: ['technology', 'community', 'innovation', 'events'], date: 'April 26, 2025' },
     'postX.html': { title: 'Mathematical Modelling in Stochastic Analysis and Finance', tags: ['research', 'mathematics', 'finance'], date: 'November 13, 2024' }
 };
 
@@ -223,4 +231,40 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     initBackToTop();
+    ensureSocialMetaTags();
 });
+
+// Add Open Graph / Twitter meta tags if missing
+function ensureSocialMetaTags() {
+    const descriptionMeta = document.querySelector('meta[name="description"]');
+    if (!descriptionMeta) return; // Skip if this isn't a post page
+
+    const head = document.head;
+    const title = document.title || '';
+    const description = descriptionMeta.content || '';
+    const url = window.location.href;
+    const fallbackImage = '/images/icon.png';
+    const existingImage = document.querySelector('meta[property="og:image"]')?.content || fallbackImage;
+
+    function upsertMeta(attrName, attrValue, content) {
+        let el = document.querySelector(`meta[${attrName}="${attrValue}"]`);
+        if (!el) {
+            el = document.createElement('meta');
+            el.setAttribute(attrName, attrValue);
+            head.appendChild(el);
+        }
+        el.setAttribute('content', content);
+    }
+
+    upsertMeta('property', 'og:title', title);
+    upsertMeta('property', 'og:description', description);
+    upsertMeta('property', 'og:type', 'article');
+    upsertMeta('property', 'og:url', url);
+    upsertMeta('property', 'og:image', existingImage);
+
+    upsertMeta('name', 'twitter:card', 'summary_large_image');
+    upsertMeta('name', 'twitter:title', title);
+    upsertMeta('name', 'twitter:description', description);
+    upsertMeta('name', 'twitter:image', existingImage);
+    upsertMeta('name', 'twitter:url', url);
+}

@@ -248,6 +248,62 @@
                     <span class="post-tag">Fractal Geometry</span>
                 </div>
             </article>
+            <article data-tags="mathematics,information-theory,statistics,machine-learning">
+                <h2><a href="posts/post26.html">On the Information Bottleneck Principle</a></h2>
+                <p>Date: November 15, 2025</p>
+                <p>The information bottleneck principle provides a framework for extracting relevant information from signals by balancing compression with predictive power. This post discusses its foundations in information theory, applications in statistics and deep learning, and how it guides the structure of efficient representations.</p>
+                <div class="post-tags">
+                    <span class="post-tag">Mathematics</span>
+                    <span class="post-tag">Information Theory</span>
+                    <span class="post-tag">Statistics</span>
+                    <span class="post-tag">Machine Learning</span>
+                </div>
+            </article>
+            <article data-tags="technology,community,innovation,events">
+                <h2><a href="posts/post30.html">How to Organize an Unforgettable Hackathon</a></h2>
+                <p>Date: April 26, 2025</p>
+                <p>A concise guide to planning hackathons: setting goals, themes, team roles, judging, and keeping participants energized while fostering collaboration and community.</p>
+                <div class="post-tags">
+                    <span class="post-tag">Hackathon</span>
+                    <span class="post-tag">Organization</span>
+                    <span class="post-tag">Innovation</span>
+                    <span class="post-tag">Community</span>
+                </div>
+            </article>
+            <article data-tags="mathematics,stochastic-processes,ot,probability">
+                <h2><a href="posts/post27.html">Optimal Transport Meets Martingales</a></h2>
+                <p>Date: December 5, 2025</p>
+                <p>This post explores the union of optimal transport and martingale theory. We examine how enforcing a martingale constraint in transport problems leads to rich mathematical structures, with significant applications to mathematical finance and model-independent option pricing.</p>
+                <div class="post-tags">
+                    <span class="post-tag">Mathematics</span>
+                    <span class="post-tag">Optimal Transport</span>
+                    <span class="post-tag">Stochastic Processes</span>
+                    <span class="post-tag">Probability</span>
+                </div>
+            </article>
+            <article data-tags="philosophy,systems-theory,cybernetics,science">
+                <h2><a href="posts/post28.html">Cybernetics: The Science of Systems and Control</a></h2>
+                <p>Date: March 18, 2025</p>
+                <p>An introduction to cybernetics, the transdisciplinary study of systems, feedback, and regulation in biology, engineering, and society. This post covers its historical roots, key concepts, and enduring influence across scientific and philosophical thought.</p>
+                <div class="post-tags">
+                    <span class="post-tag">Philosophy</span>
+                    <span class="post-tag">Systems Theory</span>
+                    <span class="post-tag">Cybernetics</span>
+                    <span class="post-tag">Science</span>
+                </div>
+            </article>
+            <article data-tags="mathematics,probability,finance,stochastic-processes">
+                <h2><a href="posts/post29.html">Cylindrical Semi-martingale OT, Measure Contiguity, and Large Financial Markets</a></h2>
+                <p>Date: April 26, 2025</p>
+                <p>We delve into optimal transport in infinite-dimensional settings (cylindrical semi-martingale OT) and the probabilistic notion of contiguity, exploring their roles and interactions in the context of large financial markets.</p>
+                <div class="post-tags">
+                    <span class="post-tag">Optimal Transport</span>
+                    <span class="post-tag">Stochastic Processes</span>
+                    <span class="post-tag">Large Financial Markets</span>
+                    <span class="post-tag">Contiguity</span>
+                    <span class="post-tag">Probability Theory</span>
+                </div>
+            </article>
         </section>
 
         <br>
@@ -402,6 +458,23 @@
             articles.forEach(article => article.classList.remove('hidden'));
             filterInfo.textContent = 'Showing all posts';
         }
+
+        // Sort posts by displayed date (newest first) after DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            const postsSection = document.querySelector('#blog-posts');
+            if (!postsSection) return;
+
+            const articles = Array.from(postsSection.querySelectorAll('article[data-tags]'));
+            const datedArticles = articles.map(article => {
+                const dateEl = article.querySelector('p');
+                const dateText = dateEl ? dateEl.textContent.replace('Date:', '').trim() : '';
+                const parsedDate = dateText ? new Date(dateText) : new Date(0);
+                return { article, parsedDate };
+            });
+
+            datedArticles.sort((a, b) => b.parsedDate - a.parsedDate);
+            datedArticles.forEach(item => postsSection.appendChild(item.article));
+        });
     </script>
 </body>
 </html>

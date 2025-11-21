@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content="On the Information Bottleneck Principle: its foundations in information theory, applications in statistics and deep learning, and how it guides the structure of efficient representations." />
+    <title>On the Information Bottleneck Principle</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <script src="../js/post-utilities.js" defer></script>
+</head>
+<body>
+    <header>
+        <nav class="top-nav sticky-nav">
+            <h2>
+                <a href="../index.html#biography">Biography</a> | 
+                <a href="../index.html#research">Research</a> | 
+                <a href="../index.html#publications">Publications</a> | 
+                <a href="../index.html#teaching">Teaching</a> | 
+                <a href="../blog.html">Blog</a> | 
+                <a href="../index.html#contact">Contact</a>
+            </h2>
+        </nav>
+        <div class="container"></div>
+    </header>
+    <main>
+        <article>
+            <h2>On the Information Bottleneck Principle</h2>
+            <div class="article-meta">
+                <span class="post-date">Date: November 15, 2025</span>
+                <span class="reading-time" id="reading-time">Calculating reading time...</span>
+            </div>
+
+            <p>
+                The <strong>Information Bottleneck (IB) principle</strong> is a compelling idea at the intersection of information theory, statistics, and modern machine learning. Introduced by Naftali Tishby and colleagues in 1999, the IB principle offers an answer to a fundamental question: <em>How can we extract the most relevant information about an output variable from a high-dimensional input, while discarding as much irrelevant detail as possible?</em>
+            </p>
+
+            <section id="motivation">
+                <h3>1. Motivation: Compression vs. Relevance</h3>
+                <p>
+                    In many real-world problems, we observe signals or data (<var>X</var>) and wish to predict or infer a target variable (<var>Y</var>). However, the raw data might be full of noise or contain information irrelevant for predicting <var>Y</var>. Classic information theory (Shannon 1948) addresses how to compress data without losing information about itself, but in practice, we care about keeping only what is useful for a specific task.
+                </p>
+                <p>
+                    The IB principle formulates this as a trade-off: find a compressed representation, <var>T</var> (a "bottleneck" variable), that retains the information relevant for predicting <var>Y</var> but forgets as much as possible about the input <var>X</var> itself.
+                </p>
+            </section>
+
+            <section id="formalism">
+                <h3>2. Formal Definition</h3>
+                <p>
+                    Let <var>X</var> (input) and <var>Y</var> (target) be random variables. The goal is to construct a representation <var>T = f(X)</var> that satisfies:
+                </p>
+                <ul>
+                    <li>
+                        <strong>Compression:</strong> <var>T</var> should capture as little information about <var>X</var> as possible (minimize the mutual information <var>I(X;T)</var>).
+                    </li>
+                    <li>
+                        <strong>Relevance:</strong> <var>T</var> should retain all information about <var>Y</var> (maximize <var>I(T;Y)</var>).
+                    </li>
+                </ul>
+                <p>
+                    These two objectives are in tension. The Information Bottleneck Lagrangian formalizes their balance as:
+                </p>
+                <div class="math-block">
+                    <em>Minimize</em> &nbsp; <var>L_\text{IB} = I(X;T) - \beta\, I(T;Y)</var>
+                </div>
+                <p>
+                    where <var>\beta &gt; 0</var> is a parameter controlling the trade-off between compression and prediction. For <var>\beta = 0</var>, we compress aggressively. For large <var>\beta</var>, we preserve all predictive power.
+                </p>
+            </section>
+
+            <section id="example">
+                <h3>3. Example: Noisy Parity</h3>
+                <p>
+                    Suppose <var>X</var> is a sequence of bits, and <var>Y</var> is their parity (even or odd), possibly with some noise. The IB principle urges us not to keep every bit of <var>X</var>, but only what is necessary for determining <var>Y</var>—the parity, not the specific identity of each bit.
+                </p>
+            </section>
+
+            <section id="applications">
+                <h3>4. Applications</h3>
+                <ul>
+                    <li>
+                        <strong>Statistics & Representation Learning:</strong> The IB principle frames sufficient statistics and feature selection in probabilistic terms. A sufficient statistic is a bottleneck variable that preserves all the information about <var>Y</var>.
+                    </li>
+                    <li>
+                        <strong>Deep Learning:</strong> Tishby and Zaslavsky (2015) proposed that deep neural networks learn representations that implicitly obey the IB principle: earlier layers gradually discard information about <var>X</var> that is irrelevant to <var>Y</var>, leading to efficient, generalizable representations. The IB view also illuminates why deep networks are robust to overfitting and can compress large input data into features predictive of labels.
+                    </li>
+                    <li>
+                        <strong>Information Theory:</strong> The IB method generalizes the rate-distortion theory. It has inspired new variational objectives for learning neural representations (e.g., the <strong>Variational Information Bottleneck</strong>).
+                    </li>
+                    <li>
+                        <strong>Clustering:</strong> IB leads to the "information bottleneck clustering" algorithm, grouping data so that cluster identities preserve information about relevant targets.
+                    </li>
+                </ul>
+            </section>
+            
+            <section id="structure-of-efficient-representations">
+                <h3>5. Efficient Representations</h3>
+                <p>
+                    The bottleneck formalism guides us to seek representations that are not just compressed, but <em>structured for prediction</em>. In neural networks, for instance, bottleneck layers or stochastic noise (dropout) can be interpreted as forcing the network to forget input details and form robust, minimal descriptions necessary for the task.
+                </p>
+                <p>
+                    More generally, the IB perspective unifies feature selection, dimensionality reduction, and latent variable modeling as special cases of <em>extracting minimal sufficient representations for a task</em>.
+                </p>
+            </section>
+
+            <section id="outlook">
+                <h3>6. Outlook and Open Problems</h3>
+                <p>
+                    The principle remains an active research area. Can we characterize the optimal bottleneck for complex, structured data? How does the IB view inform generative modeling, transfer learning, or causal inference? Ongoing work explores these questions, extending IB ideas to settings with multiple tasks, temporal data, or unsupervised learning.
+                </p>
+            </section>
+
+            <div class="post-navigation">
+
+                <a href="post25.html" class="nav-button" id="prev-post">← Previous Post</a>
+
+                <a href="#" class="nav-button" id="next-post">Next Post →</a>
+
+            </div>
+
+            <div id="related-posts-container"></div>
+
+            <section id="references">
+                <h3>References</h3>
+                <ol>
+                    <li id="ref1">N. Tishby, F. C. Pereira, and W. Bialek, “The Information Bottleneck Method,” Proc. 37th Annual Allerton Conf., 1999. <a href="https://arxiv.org/abs/physics/0004057">arXiv</a></li>
+                    <li id="ref2">C. E. Shannon, “A Mathematical Theory of Communication,” Bell System Technical Journal, vol. 27, pp. 379–423, 1948.</li>
+                    <li id="ref3">R. Gilad-Bachrach, N. Tishby, and A. Navot, “The Clustering Information Bottleneck,” in Advances in Neural Information Processing Systems (NIPS), 2002.</li>
+                    <li id="ref4">A. Alemi, I. Fischer, J. Dillon, and K. Murphy, “Deep Variational Information Bottleneck,” ICLR 2017. <a href="https://arxiv.org/abs/1612.00410">arXiv</a></li>
+                    <li id="ref5">N. Tishby and N. Zaslavsky, “Deep Learning and the Information Bottleneck Principle,” 2015. <a href="https://arxiv.org/abs/1503.02406">arXiv</a></li>
+                    <li id="ref6">D. Barber and F. Agakov, “The IM Algorithm: A Variational Approach to Information Maximization,” NIPS, 2003.</li>
+                </ol>
+            </section>
+        </article>
+    </main>
+    <button class="back-to-top" id="backToTop">↑</button>
+    <footer>
+        <p>&copy; Diogo Franquinho | Blog</p>
+    </footer>
+</body>
+</html>
