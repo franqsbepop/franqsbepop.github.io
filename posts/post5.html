@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Diogo Franquinho - Blog Post 5">
-    <title>The philosophy of financial markets</title>
+    <title>Optimal Transport Meets Martingales</title>
     <link rel="stylesheet" href="../css/style.css">
     <script src="../js/post-utilities.js" defer></script>
 </head>
@@ -25,29 +25,62 @@
 
     <main>
         <article>
-            <h2>The philosophy of financial markets</h2>
+            <h2>Optimal Transport Meets Martingales</h2>
             <div class="article-meta">
-                <span class="post-date">Date: November 20, 2024</span>
+                <span class="post-date">Date: December 5, 2025</span>
                 <span class="reading-time" id="reading-time">Calculating reading time...</span>
             </div>
             
-            <h3>Ethical and Conceptual Considerations</h3>
+            <h3>Exploring the Fusion of Optimal Transport and Martingale Theory</h3>
 
-            <p>In recent years, there has been growing interest in the philosophical underpinnings of finance. This post explores how philosophical inquiry can shed light on the nature of finance, its ethical implications, and its role in society.</p>
+            <p>
+                This post explores the union of optimal transport and martingale theory. We examine how enforcing a martingale constraint in transport problems leads to rich mathematical structures, with significant applications to mathematical finance and model-independent option pricing.
+            </p>
 
-            <p>At its core, finance involves the management of money and other assets over time. As the Stanford Encyclopedia of Philosophy notes, finance can be broadly defined as "the set of economic practices and institutions that have to do with the intertemporal allocation of value"<sup>[1]</sup>. This definition highlights the temporal aspect of finance, which distinguishes it from simple exchange or barter.</p>
+            <h3>Optimal Transport in Brief</h3>
+            <p>
+                Optimal transport is a classical mathematical problem that seeks the most efficient way to move "mass" (probability distributions, resources, etc.) from one configuration to another, given a cost function. Since its inception by Monge and later Kantorovich, optimal transport has become a central topic in probability, analysis, and beyond, offering tools for comparing, interpolating, and transforming probability measures.
+            </p>
 
-            <p>One of the key philosophical questions in finance relates to the nature of value and how it is created, measured, and transferred over time. This leads to deeper questions about the ontology of financial assets. For instance, what exactly is a stock or a bond? Are they merely social constructs, or do they represent something more tangible?</p>
+            <h3>Introducing Martingale Constraints</h3>
+            <p>
+                A martingale is a stochastic process that, informally, models a "fair game": its expected value in the future, conditioned on the present, is equal to its current value. Martingale constraints naturally appear in financial mathematics—especially in the theory of no-arbitrage and derivative pricing—where price processes under risk-neutral measures must be martingales.
+            </p>
+            <p>
+                The <strong>martingale optimal transport problem</strong> arises by adding a martingale constraint to the classical transport setup: we seek a coupling of random variables (or measures) such that the transportation plan is a martingale. This powerful idea blends the geometry of transport with dynamic stochastic constraints.
+            </p>
 
-            <p>The concept of risk is central to finance, and it raises important epistemological questions. How can we know or predict future financial outcomes? What are the limits of our ability to model and quantify risk? These questions have practical implications for financial decision-making and regulation.</p>
+            <h3>Mathematical Formulation</h3>
+            <p>
+                Given marginals μ and ν on ℝ (or more generally in higher dimensions), a martingale coupling π between μ and ν is a probability measure on ℝ × ℝ with first marginal μ, second marginal ν, and such that the conditional expectation E[Y|X] = X. The martingale optimal transport (MOT) problem is to minimize (or maximize) the expected cost c(X, Y) over all such martingale couplings π.
+            </p>
 
-            <p>Ethical considerations are also crucial in finance. The 2008 financial crisis highlighted the potential for financial practices to have far-reaching societal impacts. This raises questions about the moral responsibilities of financial actors and institutions. Should financial institutions prioritize shareholder value, or do they have broader social responsibilities?</p>
+            <h3>Why Is This Important?</h3>
+            <ul>
+                <li><strong>Finance & Model-Independent Pricing:</strong> MOT plays a crucial role in robust (model-independent) option pricing. Many fundamental results—such as the Breeden-Litzenberger formula or bounds for exotic options—are elegantly expressed through martingale couplings that only depend on observed marginal laws (market data), not on full dynamic models.</li>
+                <li><strong>Deeper Structure:</strong> The combination of transport geometry and martingale dynamics leads to surprising new results, dualities, and connections with convex analysis and stochastic processes.</li>
+                <li><strong>Applications Beyond Finance:</strong> Martingale transport has relevance to optimal stopping, stochastic control, and even fields like statistics (e.g., rearrangement inequalities under dynamic constraints).</li>
+            </ul>
 
-            <p>The philosophy of finance also intersects with broader questions in political philosophy. For example, how should we balance individual financial freedom with the need for collective financial stability? What are the moral implications of creating and trading complex financial derivatives?</p>
+            <h3>Example: Model-Independent Option Bounds</h3>
+            <p>
+                Suppose you know the prices of vanilla call and put options for all strikes. This determines (via Breeden-Litzenberger) the marginal law of the asset at maturity. The <em>martingale optimal transport problem</em> then allows you to compute the sharpest possible upper and lower bounds for the price of a path-dependent or exotic option (subject to no-arbitrage), <em>without</em> specifying a particular financial model.
+            </p>
+            <p>
+                This model-independent philosophy is fundamentally geometric and robust—a paradigm shift from specifying detailed stochastic differential equations to focusing on marginal distributions and their martingale couplings.
+            </p>
 
-            <p>As we continue to grapple with these questions, it's clear that a deeper philosophical understanding of finance is crucial. This can inform policy decisions, shape financial practices, and help individuals make more ethically informed financial choices.</p>
+            <h3>Current Research and Open Questions</h3>
+            <ul>
+                <li>Characterization of martingale couplings and their extremal structure</li>
+                <li>Regularity and uniqueness of optimal martingale plans</li>
+                <li>Duality theory and connections to convex analysis</li>
+                <li>Extensions to multi-period and continuous-time frameworks</li>
+            </ul>
 
-            <p>Moving forward, it's important to foster interdisciplinary dialogue between philosophers, economists, and finance professionals to address these complex issues and develop a more robust philosophical framework for understanding finance.</p>
+            <p>
+                The interplay between optimal transport and martingales continues to generate exciting advances at the intersection of probability, analysis, and financial mathematics. Whether you are drawn by robust finance, stochastic analysis, or the beauty of mathematical structure, martingale optimal transport offers a landscape rich in ideas and applications.
+            </p>
 
             <div class="post-navigation">
                 <a href="#" class="nav-button" id="prev-post">← Previous Post</a>
@@ -57,10 +90,17 @@
             <div id="related-posts-container"></div>
 
             <section id="references">
-                <h3>References</h3>
+                <h3>References & Further Reading</h3>
                 <ol>
-                    <li id="ref1">
-                        <a href="https://plato.stanford.edu/entries/money-finance/">Herzog, L. (2023). Philosophy of Money and Finance. Stanford Encyclopedia of Philosophy.</a>
+                    <li>
+                        Beiglböck, M., Henry-Labordère, P., & Penkner, F. (2013). <a href="https://www.mat.univie.ac.at/~mathias/BHLP_05_21.pdf" target="_blank">Model-independent bounds for option prices: A mass transport approach</a>. <em>Finance and Stochastics</em>, 17(3), 477–501.
+                    </li>
+                    <li>
+                        Hobson, D. (1998). <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=114188" target="_blank">Robust hedging of the lookback option</a>. <em>Finance and Stochastics</em>, 2(4), 329–347.
+                    </li>
+                    <li>Henry-Labordère, P. (2017). <a href="https://www.routledge.com/Model-free-Hedging-A-Martingale-Optimal-Transport-Viewpoint/Henry-Labordere/p/book/9780367657963" target="_blank"><em>Model-free Hedging: A Martingale Optimal Transport Viewpoint</em></a>.</li>
+                    <li>
+                        Villani, C. (2009). <a href="http://elenaher.dinauz.org/B07D.StFlour.pdf" target="_blank"><em>Optimal Transport: Old and New</em></a>.
                     </li>
                 </ol>
             </section>
@@ -74,4 +114,3 @@
     </footer>
 </body>
 </html>
-
