@@ -219,12 +219,43 @@ img {
 
 /* Footer */
 footer {
-    text-align: center;
     font-size: 14px;
     margin-top: 60px;
     padding: 20px 0;
     color: #666;
     border-top: 1px solid #e1e1e1;
+}
+
+.footer-content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.footer-content p {
+    margin: 0;
+    text-align: left;
+}
+
+.footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    justify-content: flex-end;
+}
+
+.footer-links a {
+    color: #666;
+    border-bottom: none;
+}
+
+.footer-links a:hover {
+    color: #333;
+    border-bottom: 1px solid #333;
 }
 
 /* Notes Section */
@@ -512,6 +543,16 @@ footer {
     .tag-button {
         padding: 5px 10px;
         font-size: 12px;
+    }
+
+    .footer-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .footer-links {
+        justify-content: flex-start;
     }
 }
 

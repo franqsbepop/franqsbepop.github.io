@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Blog post about generative models">
+    <title>Generative Models: Foundations, Types, and Applications</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="../js/post-utilities.js" defer></script>
+</head>
+<body>
+    <header>
+        <nav class="top-nav sticky-nav">
+            <h2>
+                <a href="../index.html#biography">Biography</a> | 
+                <a href="../index.html#research">Research</a> | 
+                <a href="../index.html#publications">Publications</a> | 
+                <a href="../index.html#teaching">Teaching</a> | 
+                <a href="../blog.html">Blog</a> | 
+                <a href="../index.html#contact">Contact</a>
+            </h2>
+        </nav>
+        <div class="container"></div>
+    </header>
+
+    <main>
+        <article>
+            <h2>Generative Models: Foundations, Types, and Applications</h2>
+            <div class="article-meta">
+                <span class="post-date">Date: November 13, 2024</span>
+                <span class="reading-time" id="reading-time">Calculating reading time...</span>
+            </div>
+            <p>
+                Generative models are a class of machine learning models that aim to learn how data is generated, so they can create new data with similar characteristics. Unlike discriminative models that focus on distinguishing between classes, generative models capture the underlying probability distribution of the input data, allowing them to generate novel samples.
+            </p>
+            <p>
+                <strong>Why Generative Models?</strong> Understanding and generating data is at the heart of artificial intelligence. Generative models have the potential not only to synthesize realistic images, text, or audio but also to help us model uncertainties, improve data augmentation, and even enable creativity in AI.
+            </p>
+            <p>
+                <strong>Key Types of Generative Models:</strong>
+            </p>
+            <ul>
+                <li><strong>Gaussian Mixture Models (GMMs):</strong> Classic statistical models that use a mixture of Gaussians to approximate complex data distributions.</li>
+                <li><strong>Hidden Markov Models (HMMs):</strong> Widely used for sequential data such as speech and time series analysis.</li>
+                <li><strong>Variational Autoencoders (VAEs):</strong> Neural network-based models that learn smooth latent representations, allowing interpolation and creation of new samples with controlled variation.</li>
+                <li><strong>Generative Adversarial Networks (GANs):</strong> Consist of two neural networks—the generator and discriminator—in a game-theoretic setup, often producing highly realistic outputs, especially for images and audio.</li>
+                <li><strong>Autoregressive Models:</strong> Models like PixelCNN, WaveNet, and language models such as GPT generate data step by step, conditioning each part of the output on previous steps.</li>
+                <li><strong>Diffusion Models:</strong> Recent advances such as Denoising Diffusion Probabilistic Models (DDPMs) learn to generate data by reversing a gradual noising process. These have become state-of-the-art in image generation.</li>
+            </ul>
+            <p>
+                <strong>Notable Applications:</strong>
+            </p>
+            <ul>
+                <li><strong>Image Synthesis:</strong> Generative models are responsible for the rise of AI-generated artwork, deepfakes, and data augmentation in computer vision.</li>
+                <li><strong>Natural Language Generation:</strong> Language models like GPT-3/4 can write essays, stories, code, and even simulate conversations indistinguishable from humans.</li>
+                <li><strong>Audio and Music Generation:</strong> Models like Jukebox or WaveNet generate realistic speech or original musical compositions.</li>
+                <li><strong>Drug Discovery and Scientific Simulations:</strong> Generative models can design new molecules or simulate complex systems for scientific research.</li>
+                <li><strong>Super-Resolution and Inpainting:</strong> Filling in missing data or enhancing low-resolution content is another important application of these techniques.</li>
+            </ul>
+            <p>
+                <strong>Challenges and Future Directions:</strong>
+                Despite their impressive achievements, generative models face challenges:
+            </p>
+            <ul>
+                <li>Training instability (especially in GANs), mode collapse, or failure to model the full diversity in data.</li>
+                <li>Ethical and societal concerns over deepfakes, data misuse, and authenticity of generated content.</li>
+                <li>Controlling and interpreting the output of generative networks.</li>
+                <li>Efficiently generating high-resolution or multi-modal data.</li>
+            </ul>
+            <p>
+                As research advances, generative models will become even more powerful, controllable, and accessible—opening new possibilities for science, art, and technology, while also demanding careful consideration of their broader impact.
+            </p>
+            <div class="post-navigation">
+                <a href="#" class="nav-button" id="prev-post">← Previous Post</a>
+                <a href="#" class="nav-button" id="next-post">Next Post →</a>
+            </div>
+            <div id="related-posts-container"></div>
+            <section id="references">
+                <h3>References</h3>
+                <ol>
+                    <li>Kingma, D. P., & Welling, M. (2014). Auto-Encoding Variational Bayes. <em>arXiv preprint arXiv:1312.6114.</em> <a href="https://arxiv.org/abs/1312.6114">Link</a></li>
+                    <li>Goodfellow, I. et al. (2014). Generative adversarial nets. <em>NeurIPS, 27.</em> <a href="https://papers.nips.cc/paper/2014/hash/5ca3e9b122f61f8f06494c97b1afccf3-Abstract.html">Link</a></li>
+                    <li>Van den Oord, A. et al. (2016). Pixel Recurrent Neural Networks. <em>ICML.</em> <a href="https://arxiv.org/abs/1601.06759">Link</a></li>
+                    <li>Radford, A., Narasimhan, K., Salimans, T., & Sutskever, I. (2018). Improving Language Understanding by Generative Pre-Training. <em>OpenAI.</em> <a href="https://cdn.openai.com/research-covers/language-unsupervised/language_understanding_paper.pdf">Link</a></li>
+                    <li>Dhariwal, P., & Nichol, A. (2021). Diffusion Models Beat GANs on Image Synthesis. <em>NeurIPS.</em> <a href="https://arxiv.org/abs/2105.05233">Link</a></li>
+                    <li>Oord, A. v. d., Dieleman, S., & Zen, H. (2016). WaveNet: A Generative Model for Raw Audio. <em>arXiv preprint arXiv:1609.03499.</em> <a href="https://arxiv.org/abs/1609.03499">Link</a></li>
+                    <li>Ramesh, A., Pavlov, M., Goh, G., et al. (2021). Zero-Shot Text-to-Image Generation. <em>ICML.</em> <a href="https://arxiv.org/abs/2102.12092">Link</a></li>
+                </ol>
+            </section>
+        </article>
+    </main>
+</body>
+</html>
