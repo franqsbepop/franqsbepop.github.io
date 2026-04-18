@@ -57,68 +57,43 @@ body {
 /* Header */
 header {
     margin-bottom: 60px;
+    border-bottom: 1px solid #e1e1e1;
+    padding-bottom: 40px;
 }
 
 .header-inner {
-    display: flex;
-    align-items: center;
-    gap: 32px;
     max-width: 700px;
     margin: 0 auto;
     padding: 0 20px;
-}
-
-.profile-photo {
-    width: 110px;
-    height: 110px;
-    border-radius: 50%;
-    object-fit: cover;
-    flex-shrink: 0;
-    border: 2px solid #d4d4d4;
-}
-
-.header-text {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
+    text-align: left;
 }
 
 header h1 {
-    font-size: 28px;
+    font-size: 34px;
     font-weight: normal;
     color: #2c2c2c;
-    margin: 0;
+    margin: 0 0 10px 0;
     font-family: "Georgia", "Times New Roman", serif;
+    letter-spacing: 0.01em;
 }
 
 .header-tagline {
-    font-size: 14px;
+    font-size: 15px;
     color: #555;
-    margin: 0;
-    line-height: 1.5;
+    margin: 0 0 4px 0;
+    line-height: 1.6;
 }
 
 .header-topics {
-    font-size: 13px;
+    font-size: 14px;
     color: #888;
-    margin: 0;
+    margin: 0 0 18px 0;
     font-style: italic;
 }
 
 @media (max-width: 600px) {
-    .header-inner {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        gap: 18px;
-    }
-
-    .header-text {
-        align-items: center;
-    }
-
     header h1 {
-        font-size: 22px;
+        font-size: 26px;
     }
 }
 
