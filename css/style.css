@@ -56,16 +56,16 @@ body {
 
 /* Header */
 header {
-    margin-bottom: 60px;
+    margin-bottom: 30px;
     border-bottom: 1px solid #e1e1e1;
-    padding-bottom: 40px;
+    padding-bottom: 25px;
 }
 
 .header-inner {
     max-width: 700px;
     margin: 0 auto;
     padding: 0 20px;
-    text-align: left;
+    text-align: center;
 }
 
 header h1 {
