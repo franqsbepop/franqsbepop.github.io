@@ -1,0 +1,284 @@
+/* Observatory prototype styles.
+   Layered on top of ../css/style.css — reuses its design tokens
+   (--box-background, --box-border, --box-accent), serif type, and cream
+   background rather than introducing a separate visual language. */
+
+.observatory-header {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+
+.observatory-kicker {
+    font-family: "SF Mono", Monaco, Consolas, monospace;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #888;
+}
+
+.observatory-header h1 {
+    font-family: "Georgia", "Times New Roman", serif;
+    font-weight: normal;
+    font-size: 32px;
+    color: #2c2c2c;
+    margin: 0;
+}
+
+.observatory-subtitle {
+    color: #666;
+    font-size: 15px;
+}
+
+.demo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: "SF Mono", Monaco, Consolas, monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #8d6e63;
+    background-color: #fff8e1;
+    border: 1px solid #ffe082;
+    padding: 4px 10px;
+    margin-top: 10px;
+    width: fit-content;
+}
+
+.demo-badge::before {
+    content: "●";
+    font-size: 9px;
+    color: #ff9800;
+}
+
+.observatory-note {
+    font-size: 13px;
+    color: #888;
+    font-style: italic;
+    margin: 4px 0 0 0;
+}
+
+/* Section shell — same boxed-section language as the rest of the site */
+.observatory-section {
+    margin: 40px 0;
+}
+
+.observatory-section h2 {
+    font-size: 20px;
+    font-weight: normal;
+    font-family: "Georgia", "Times New Roman", serif;
+    color: #2c2c2c;
+    border-bottom: 1px solid #d4d4d4;
+    padding-bottom: 8px;
+    margin-bottom: 18px;
+}
+
+.observatory-section-hint {
+    font-size: 13px;
+    color: #888;
+    margin: -12px 0 18px 0;
+}
+
+/* Overview metrics row */
+.metrics-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+}
+
+.metric-tile {
+    background-color: var(--box-background);
+    border: 1px solid var(--box-border);
+    border-left: 6px solid var(--box-accent);
+    padding: 18px 20px;
+}
+
+.metric-value {
+    font-family: "Georgia", "Times New Roman", serif;
+    font-size: 30px;
+    color: #2c2c2c;
+    line-height: 1.1;
+}
+
+.metric-label {
+    font-size: 13px;
+    color: #666;
+    margin-top: 6px;
+}
+
+/* Top posts */
+.ranked-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border-top: 1px solid #e1e1e1;
+}
+
+.ranked-item {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    padding: 14px 4px;
+    border-bottom: 1px solid #e1e1e1;
+}
+
+.ranked-item-index {
+    font-family: "SF Mono", Monaco, Consolas, monospace;
+    font-size: 13px;
+    color: #999;
+    width: 22px;
+    flex-shrink: 0;
+}
+
+.ranked-item-title {
+    flex: 1;
+    color: #2c2c2c;
+    font-size: 15px;
+}
+
+.ranked-item-meta {
+    font-size: 13px;
+    color: #666;
+    white-space: nowrap;
+    font-family: "SF Mono", Monaco, Consolas, monospace;
+}
+
+/* Reading metrics */
+.reading-metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+}
+
+.reading-metric {
+    padding: 16px 0;
+    border-top: 1px solid #e1e1e1;
+}
+
+.reading-metric-value {
+    font-family: "Georgia", "Times New Roman", serif;
+    font-size: 24px;
+    color: #2c2c2c;
+}
+
+.reading-metric-value.unavailable {
+    font-size: 15px;
+    color: #999;
+    font-style: italic;
+    font-family: "Georgia", "Times New Roman", serif;
+}
+
+.reading-metric-label {
+    font-size: 13px;
+    color: #666;
+    margin-top: 4px;
+}
+
+/* Sources / reference list */
+.source-list {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid #e1e1e1;
+}
+
+.source-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 4px;
+    border-bottom: 1px solid #e1e1e1;
+    font-size: 15px;
+}
+
+.source-item-text {
+    color: #2c2c2c;
+}
+
+.source-item-domain {
+    color: #888;
+    font-size: 13px;
+    font-family: "SF Mono", Monaco, Consolas, monospace;
+}
+
+.source-item-count {
+    color: #666;
+    font-size: 13px;
+    font-family: "SF Mono", Monaco, Consolas, monospace;
+    white-space: nowrap;
+}
+
+/* Reading paths */
+.path-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.path-item {
+    font-size: 15px;
+    color: #2c2c2c;
+    padding: 10px 14px;
+    background-color: var(--box-background);
+    border: 1px solid var(--box-border);
+    border-left: 6px solid var(--box-accent);
+}
+
+.path-item .path-arrow {
+    color: #999;
+    margin: 0 8px;
+}
+
+.path-item .path-count {
+    float: right;
+    font-family: "SF Mono", Monaco, Consolas, monospace;
+    font-size: 13px;
+    color: #888;
+}
+
+/* Acquisition bars */
+.acquisition-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.acquisition-row {
+    display: grid;
+    grid-template-columns: 90px 1fr 48px;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+}
+
+.acquisition-label {
+    color: #2c2c2c;
+}
+
+.acquisition-bar-track {
+    background-color: #eee6d8;
+    height: 10px;
+}
+
+.acquisition-bar-fill {
+    background-color: var(--box-accent);
+    height: 10px;
+}
+
+.acquisition-share {
+    text-align: right;
+    color: #666;
+    font-family: "SF Mono", Monaco, Consolas, monospace;
+    font-size: 13px;
+}
+
+@media (max-width: 600px) {
+    .observatory-header h1 {
+        font-size: 26px;
+    }
+
+    .acquisition-row {
+        grid-template-columns: 80px 1fr 40px;
+    }
+}

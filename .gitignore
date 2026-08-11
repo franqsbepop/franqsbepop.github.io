@@ -1,0 +1,4 @@
+# Cloudflare Worker local dev/build artifacts — never commit secrets here.
+worker/.dev.vars
+worker/.wrangler/
+worker/node_modules/

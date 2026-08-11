@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Observatory — Diogo Franquinho</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
+    <link rel="icon" href="../images/favicon.ico">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="observatory.css">
+</head>
+<body>
+    <header>
+        <nav class="top-nav sticky-nav">
+            <a href="../index.html">Home</a> |
+            <a href="../blog.html">Blog</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="breadcrumbs">
+            <a href="../index.html">Home</a><span class="separator">›</span>
+            <span>Observatory</span>
+        </div>
+
+        <div class="observatory-header">
+            <span class="observatory-kicker">Internal instrument · not indexed</span>
+            <h1>OBSERVATORY</h1>
+            <p class="observatory-subtitle">Website analytics</p>
+            <span class="demo-badge" id="status-badge">Loading…</span>
+            <p class="observatory-note" id="status-note">Checking for a live data connection…</p>
+        </div>
+
+        <section class="observatory-section" id="overview">
+            <h2>Overview</h2>
+            <div class="metrics-row" id="overview-metrics">
+                <!-- populated by analytics/index.html's script from data.js -->
+            </div>
+        </section>
+
+        <section class="observatory-section" id="top-posts">
+            <h2>Top Posts</h2>
+            <p class="observatory-section-hint">Views and 90% scroll-completion rate, ranked by views.</p>
+            <div class="ranked-list" id="top-posts-list"></div>
+        </section>
+
+        <section class="observatory-section" id="reading">
+            <h2>Reading</h2>
+            <div class="reading-metrics" id="reading-metrics"></div>
+        </section>
+
+        <section class="observatory-section" id="sources">
+            <h2>Sources</h2>
+            <p class="observatory-section-hint">Most clicked references across all posts.</p>
+            <div class="source-list" id="reference-list"></div>
+        </section>
+
+        <section class="observatory-section" id="reading-paths">
+            <h2>Reading paths</h2>
+            <p class="observatory-section-hint">Where readers go next, inferred from related_post_click and book_review_open events.</p>
+            <div class="path-list" id="paths-list"></div>
+        </section>
+
+        <section class="observatory-section" id="acquisition">
+            <h2>Acquisition</h2>
+            <p class="observatory-section-hint">Referrer / UTM sources, as Umami reports them.</p>
+            <div class="acquisition-list" id="acquisition-list"></div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p id="footer-note">&copy; Diogo Franquinho | Observatory</p>
+            <div class="footer-links">
+                <a href="../index.html">Home</a>
+                <a href="../blog.html">Blog</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Demo mode (?demo=1) loads the old fabricated-data prototype instead
+         of the real Worker-backed data.js — see the inline script below. -->
+    <script src="observatory-config.js"></script>
+    <script src="demo-data.js"></script>
+    <script src="data.js"></script>
+    <script>
+        var IS_DEMO = /(?:^|[?&])demo=1(?:&|$)/.test(window.location.search);
+
+        function el(tag, className, html) {
+            var e = document.createElement(tag);
+            if (className) e.className = className;
+            if (html !== undefined) e.innerHTML = html;
+            return e;
+        }
+
+        function fmtNumber(n) {
+            return n === null || n === undefined ? '—' : n.toLocaleString();
+        }
+
+        function fmtPercent(n) {
+            return n === null || n === undefined ? '—' : Math.round(n * 100) + '%';
+        }
+
+        function clearChildren(container) {
+            while (container.firstChild) container.removeChild(container.firstChild);
+        }
+
+        function renderUnavailable(container, message) {
+            container.appendChild(el('div', 'observatory-section-hint', message || 'Not available.'));
+        }
+
+        function renderOverview(data) {
+            var container = document.getElementById('overview-metrics');
+            clearChildren(container);
+            var items = [
+                { label: 'Visitors', value: data.visitors },
+                { label: 'Page views', value: data.pageViews },
+                { label: 'Posts read', value: data.postsRead },
+                { label: 'Reference clicks', value: data.referenceClicks }
+            ];
+            items.forEach(function (item) {
+                var tile = el('div', 'metric-tile');
+                tile.appendChild(el('div', 'metric-value', fmtNumber(item.value)));
+                tile.appendChild(el('div', 'metric-label', item.label));
+                container.appendChild(tile);
+            });
+        }
+
+        function renderTopPosts(data) {
+            var container = document.getElementById('top-posts-list');
+            clearChildren(container);
+            if (!data.posts || !data.posts.length) {
+                renderUnavailable(container, 'No post views recorded yet in this range.');
+                return;
+            }
+            data.posts.forEach(function (post) {
+                var row = el('div', 'ranked-item');
+                row.appendChild(el('div', 'ranked-item-index', String(post.rank).padStart(2, '0')));
+                row.appendChild(el('div', 'ranked-item-title', post.title));
+                row.appendChild(el('div', 'ranked-item-meta', fmtNumber(post.views) + ' views · ' + fmtPercent(post.completionRate) + ' completion'));
+                container.appendChild(row);
+            });
+        }
+
+        function renderReading(data) {
+            var container = document.getElementById('reading-metrics');
+            clearChildren(container);
+
+            var scroll50 = el('div', 'reading-metric');
+            scroll50.appendChild(el('div', 'reading-metric-value', fmtPercent(data.scroll50Rate)));
+            scroll50.appendChild(el('div', 'reading-metric-label', '50% scroll completion'));
+            container.appendChild(scroll50);
+
+            var scroll90 = el('div', 'reading-metric');
+            scroll90.appendChild(el('div', 'reading-metric-value', fmtPercent(data.scroll90Rate)));
+            scroll90.appendChild(el('div', 'reading-metric-label', '90% scroll completion'));
+            container.appendChild(scroll90);
+
+            var session = el('div', 'reading-metric');
+            if (data.medianSessionDuration === null || data.medianSessionDuration === undefined) {
+                session.appendChild(el('div', 'reading-metric-value unavailable', 'Not available'));
+                session.appendChild(el('div', 'reading-metric-label', 'Median session duration — not a default Umami metric, needs a custom query'));
+            } else {
+                session.appendChild(el('div', 'reading-metric-value', data.medianSessionDuration));
+                session.appendChild(el('div', 'reading-metric-label', 'Median session duration'));
+            }
+            container.appendChild(session);
+        }
+
+        function renderReferences(data) {
+            var container = document.getElementById('reference-list');
+            clearChildren(container);
+            if (!data.references || !data.references.length) {
+                renderUnavailable(container, 'No reference clicks recorded yet in this range.');
+                return;
+            }
+            data.references.forEach(function (ref) {
+                var row = el('div', 'source-item');
+                var left = el('div');
+                left.appendChild(el('div', 'source-item-text', ref.text));
+                left.appendChild(el('div', 'source-item-domain', ref.domain));
+                row.appendChild(left);
+                row.appendChild(el('div', 'source-item-count', ref.clicks + ' clicks'));
+                container.appendChild(row);
+            });
+        }
+
+        function renderPaths(data) {
+            var container = document.getElementById('paths-list');
+            clearChildren(container);
+            if (!data.paths || !data.paths.length) {
+                renderUnavailable(container, 'No related_post_click / book_review_open events recorded yet in this range.');
+                return;
+            }
+            data.paths.forEach(function (path) {
+                var row = el('div', 'path-item', path.from + '<span class="path-arrow">&rarr;</span>' + path.to + '<span class="path-count">' + path.count + '</span>');
+                container.appendChild(row);
+            });
+        }
+
+        function renderAcquisition(data) {
+            var container = document.getElementById('acquisition-list');
+            clearChildren(container);
+            if (!data.sources || !data.sources.length) {
+                renderUnavailable(container, 'No referrer data recorded yet in this range.');
+                return;
+            }
+            data.sources.forEach(function (source) {
+                var row = el('div', 'acquisition-row');
+                row.appendChild(el('div', 'acquisition-label', source.label));
+                var track = el('div', 'acquisition-bar-track');
+                var fill = el('div', 'acquisition-bar-fill');
+                fill.style.width = Math.round(source.share * 100) + '%';
+                track.appendChild(fill);
+                row.appendChild(track);
+                row.appendChild(el('div', 'acquisition-share', fmtPercent(source.share)));
+                container.appendChild(row);
+            });
+        }
+
+        function setStatus(mode, detail) {
+            var badge = document.getElementById('status-badge');
+            var note = document.getElementById('status-note');
+            var footerNote = document.getElementById('footer-note');
+            if (mode === 'demo') {
+                badge.textContent = 'Demo data';
+                note.textContent = 'This is a visual prototype. Every number on this page is fabricated placeholder data — none of it comes from Umami. Remove ?demo=1 from the URL to view live data.';
+                footerNote.textContent = '© Diogo Franquinho | Observatory prototype — demo data';
+            } else if (mode === 'live') {
+                badge.textContent = 'Live data';
+                badge.style.color = '#2e7d32';
+                badge.style.background = '#eef7ee';
+                badge.style.borderColor = '#bfe3bf';
+                note.textContent = 'Updated ' + detail + '. Sourced from the real Umami account via the private Observatory Worker.';
+                footerNote.textContent = '© Diogo Franquinho | Observatory — live data';
+            } else {
+                badge.textContent = 'Unavailable';
+                badge.style.color = '#8d6e63';
+                badge.style.background = '#fff8e1';
+                badge.style.borderColor = '#ffe082';
+                note.textContent = 'Unable to load live analytics: ' + detail + '. Showing no data rather than guessing — see worker/README.md to configure the live connection, or add ?demo=1 to the URL to view the prototype with fabricated data.';
+                footerNote.textContent = '© Diogo Franquinho | Observatory — unable to load live data';
+            }
+        }
+
+        function relativeTime(isoString) {
+            if (!isoString) return 'just now';
+            var seconds = Math.round((Date.now() - new Date(isoString).getTime()) / 1000);
+            if (seconds < 5) return 'just now';
+            if (seconds < 60) return seconds + 's ago';
+            var minutes = Math.round(seconds / 60);
+            if (minutes < 60) return minutes + (minutes === 1 ? ' minute ago' : ' minutes ago');
+            var hours = Math.round(minutes / 60);
+            return hours + (hours === 1 ? ' hour ago' : ' hours ago');
+        }
+
+        // Each section renders its own "couldn't load" state on failure
+        // (rather than staying blank) even though today all six calls share
+        // one underlying request — this keeps sections independent if a
+        // future Worker version ever lets some succeed while others fail.
+        function loadSection(getter, containerId, renderFn) {
+            return getter().then(renderFn).catch(function (err) {
+                var container = document.getElementById(containerId);
+                clearChildren(container);
+                renderUnavailable(container, 'Unable to load: ' + err.message);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var api = IS_DEMO ? window.ObservatoryDemoData : window.ObservatoryData;
+
+            if (!api) {
+                setStatus('error', 'data layer failed to load');
+                return;
+            }
+
+            var overviewResult = null;
+
+            Promise.all([
+                loadSection(api.getOverview, 'overview-metrics', function (data) { overviewResult = data; renderOverview(data); }),
+                loadSection(api.getTopPosts, 'top-posts-list', renderTopPosts),
+                loadSection(api.getReadingMetrics, 'reading-metrics', renderReading),
+                loadSection(api.getReferenceClicks, 'reference-list', renderReferences),
+                loadSection(api.getReadingPaths, 'paths-list', renderPaths),
+                loadSection(api.getAcquisition, 'acquisition-list', renderAcquisition)
+            ]).then(function () {
+                if (IS_DEMO) {
+                    setStatus('demo');
+                } else if (overviewResult) {
+                    setStatus('live', relativeTime(overviewResult.generatedAt));
+                } else {
+                    setStatus('error', 'no data could be loaded — see the sections above for details');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

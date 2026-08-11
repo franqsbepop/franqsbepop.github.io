@@ -1,0 +1,15 @@
+name = "observatory-worker"
+main = "observatory-worker.js"
+compatibility_date = "2024-09-23"
+
+# Plain, non-secret configuration — safe to commit.
+# umamiWebsiteId is already public: it's visible in every page's tracking
+# script tag (js/analytics-config.js), so it's not a credential.
+[vars]
+UMAMI_WEBSITE_ID = "8e51e5be-2e16-42a9-84b1-933852d0eeba"
+UMAMI_API_BASE = "https://cloud.umami.is/api"
+ALLOWED_ORIGIN = "https://diogofranquinho.com"
+
+# UMAMI_API_TOKEN is NOT set here. It must be added as a Cloudflare secret
+# with `wrangler secret put UMAMI_API_TOKEN`, never written to this file or
+# committed to git. See worker/README.md.
