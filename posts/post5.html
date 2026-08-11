@@ -39,7 +39,7 @@
 
             <h3>Optimal Transport in Brief</h3>
             <p>
-                Optimal transport is a classical mathematical problem that seeks the most efficient way to move "mass" (probability distributions, resources, etc.) from one configuration to another, given a cost function. Since its inception by Monge and later Kantorovich, optimal transport has become a central topic in probability, analysis, and beyond, offering tools for comparing, interpolating, and transforming probability measures.
+                Optimal transport is a classical mathematical problem that seeks the most efficient way to move "mass" (probability distributions, resources, etc.) from one configuration to another, given a cost function. Since its inception by Monge and later Kantorovich, optimal transport has become a central topic in probability, analysis, and beyond, offering tools for comparing, interpolating, and transforming probability measures<sup><a href="#ref4">[4]</a></sup>.
             </p>
 
             <h3>Introducing Martingale Constraints</h3>
@@ -47,7 +47,7 @@
                 A martingale is a stochastic process that, informally, models a "fair game": its expected value in the future, conditioned on the present, is equal to its current value. Martingale constraints naturally appear in financial mathematics—especially in the theory of no-arbitrage and derivative pricing—where price processes under risk-neutral measures must be martingales.
             </p>
             <p>
-                The <strong>martingale optimal transport problem</strong> arises by adding a martingale constraint to the classical transport setup: we seek a coupling of random variables (or measures) such that the transportation plan is a martingale. This powerful idea blends the geometry of transport with dynamic stochastic constraints.
+                The <strong>martingale optimal transport problem</strong> arises by adding a martingale constraint to the classical transport setup: we seek a coupling of random variables (or measures) such that the transportation plan is a martingale. This powerful idea blends the geometry of transport with dynamic stochastic constraints<sup><a href="#ref3">[3]</a></sup>.
             </p>
 
             <h3>Mathematical Formulation</h3>
@@ -57,14 +57,14 @@
 
             <h3>Why Is This Important?</h3>
             <ul>
-                <li><strong>Finance & Model-Independent Pricing:</strong> MOT plays a crucial role in robust (model-independent) option pricing. Many fundamental results—such as the Breeden-Litzenberger formula or bounds for exotic options—are elegantly expressed through martingale couplings that only depend on observed marginal laws (market data), not on full dynamic models.</li>
+                <li><strong>Finance & Model-Independent Pricing:</strong> MOT plays a crucial role in robust (model-independent) option pricing. Many fundamental results—such as the Breeden-Litzenberger formula or bounds for exotic options—are elegantly expressed through martingale couplings that only depend on observed marginal laws (market data), not on full dynamic models<sup><a href="#ref1">[1]</a></sup>.</li>
                 <li><strong>Deeper Structure:</strong> The combination of transport geometry and martingale dynamics leads to surprising new results, dualities, and connections with convex analysis and stochastic processes.</li>
                 <li><strong>Applications Beyond Finance:</strong> Martingale transport has relevance to optimal stopping, stochastic control, and even fields like statistics (e.g., rearrangement inequalities under dynamic constraints).</li>
             </ul>
 
             <h3>Example: Model-Independent Option Bounds</h3>
             <p>
-                Suppose you know the prices of vanilla call and put options for all strikes. This determines (via Breeden-Litzenberger) the marginal law of the asset at maturity. The <em>martingale optimal transport problem</em> then allows you to compute the sharpest possible upper and lower bounds for the price of a path-dependent or exotic option (subject to no-arbitrage), <em>without</em> specifying a particular financial model.
+                Suppose you know the prices of vanilla call and put options for all strikes. This determines (via Breeden-Litzenberger) the marginal law of the asset at maturity. The <em>martingale optimal transport problem</em> then allows you to compute the sharpest possible upper and lower bounds for the price of a path-dependent or exotic option (subject to no-arbitrage), <em>without</em> specifying a particular financial model<sup><a href="#ref1">[1]</a></sup><sup><a href="#ref2">[2]</a></sup>.
             </p>
             <p>
                 This model-independent philosophy is fundamentally geometric and robust—a paradigm shift from specifying detailed stochastic differential equations to focusing on marginal distributions and their martingale couplings.
@@ -92,15 +92,15 @@
             <section id="references">
                 <h3>References & Further Reading</h3>
                 <ol>
-                    <li>
+                    <li id="ref1">
                         Beiglböck, M., Henry-Labordère, P., & Penkner, F. (2013). <a href="https://www.mat.univie.ac.at/~mathias/BHLP_05_21.pdf" target="_blank">Model-independent bounds for option prices: A mass transport approach</a>. <em>Finance and Stochastics</em>, 17(3), 477–501.
                     </li>
-                    <li>
-                        Hobson, D. (1998). <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=114188" target="_blank">Robust hedging of the lookback option</a>. <em>Finance and Stochastics</em>, 2(4), 329–347.
+                    <li id="ref2">
+                        Hobson, D. (1998). <a href="https://doi.org/10.1007/s007800050044" target="_blank">Robust hedging of the lookback option</a>. <em>Finance and Stochastics</em>, 2(4), 329–347.
                     </li>
-                    <li>Henry-Labordère, P. (2017). <a href="https://www.routledge.com/Model-free-Hedging-A-Martingale-Optimal-Transport-Viewpoint/Henry-Labordere/p/book/9780367657963" target="_blank"><em>Model-free Hedging: A Martingale Optimal Transport Viewpoint</em></a>.</li>
-                    <li>
-                        Villani, C. (2009). <a href="http://elenaher.dinauz.org/B07D.StFlour.pdf" target="_blank"><em>Optimal Transport: Old and New</em></a>.
+                    <li id="ref3">Henry-Labordère, P. (2017). <a href="https://www.routledge.com/Model-free-Hedging-A-Martingale-Optimal-Transport-Viewpoint/Henry-Labordere/p/book/9780367657963" target="_blank"><em>Model-free Hedging: A Martingale Optimal Transport Viewpoint</em></a>.</li>
+                    <li id="ref4">
+                        Villani, C. (2009). <a href="https://link.springer.com/book/10.1007/978-3-540-71050-9" target="_blank"><em>Optimal Transport: Old and New</em></a>. Springer.
                     </li>
                 </ol>
             </section>
