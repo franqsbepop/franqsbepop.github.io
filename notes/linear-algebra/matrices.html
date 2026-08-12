@@ -21,160 +21,181 @@
 </head>
 <body>
     <nav class="top-nav">
-        <a href="../../index.html">← Back to Home</a> | 
+        <a href="../../index.html">← Back to Home</a> |
         <a href="../../index.html#notes">Notes</a>
     </nav>
 
     <main>
         <header>
             <h1>Matrices and Operations</h1>
-            <p class="note-meta">Last updated: December 2024</p>
+            <p class="note-meta">Last updated: August 2026</p>
         </header>
 
         <section class="note-content">
             <div class="disclaimer">
                 <p><strong>Disclaimer:</strong> These are my personal notes compiled for my own reference and learning. They may contain errors, incomplete information, or personal interpretations. While I strive for accuracy, these notes are not peer-reviewed and should not be considered authoritative sources. Please consult official textbooks, research papers, or other reliable sources for academic or professional purposes.</p>
             </div>
-            
-            <h2>1. Matrix Definition</h2>
-            <p>A matrix $A$ of size $m \times n$ is an array of numbers:</p>
-            <div class="math-block">
-                $$A = \begin{bmatrix}
-                a_{11} & a_{12} & \cdots & a_{1n} \\
-                a_{21} & a_{22} & \cdots & a_{2n} \\
-                \vdots & \vdots & \ddots & \vdots \\
-                a_{m1} & a_{m2} & \cdots & a_{mn}
-                \end{bmatrix}$$
+
+            <div class="table-of-contents">
+                <h3>Contents</h3>
+                <ol>
+                    <li><a href="#motivation">Two ways to think about a matrix</a></li>
+                    <li><a href="#operations">Operations, and why multiplication is defined that way</a></li>
+                    <li><a href="#special">Special matrices</a></li>
+                    <li><a href="#determinant">The determinant</a></li>
+                    <li><a href="#invertibility">Invertibility: an equivalence theorem</a></li>
+                    <li><a href="#rank">Rank and the structure of solution sets</a></li>
+                    <li><a href="#elimination">Gaussian elimination and its cost</a></li>
+                    <li><a href="#computation">Computation</a></li>
+                    <li><a href="#pitfalls">Common pitfalls</a></li>
+                    <li><a href="#connections">Connections</a></li>
+                    <li><a href="#references">References</a></li>
+                </ol>
             </div>
 
-            <h2>2. Basic Operations</h2>
-            <h3>2.1 Matrix Addition</h3>
-            <p>For matrices $A$ and $B$ of the same size:</p>
-            <div class="math-block">
-                $$(A + B)_{ij} = A_{ij} + B_{ij}$$
-            </div>
+            <h2 id="motivation">1. Two ways to think about a matrix</h2>
+            <p>A matrix is simultaneously two different mathematical objects, and conflating them is a common source of confusion. As a <strong>linear map</strong>, $A\in\mathbb{R}^{m\times n}$ sends $v\in\mathbb{R}^n$ to $Av\in\mathbb{R}^m$, and every property discussed below (invertibility, rank, determinant) is really a property of this map, only incidentally represented by a grid of numbers. As <strong>data</strong>, a matrix is a table — a covariance structure, an adjacency structure, a design matrix of regressors — and operations like transpose or multiplication are then bookkeeping rather than geometry. This note develops the linear-map view carefully, since it is what makes determinants, rank, and invertibility genuinely one connected theory rather than three separate ad hoc procedures.</p>
 
-            <h3>2.2 Scalar Multiplication</h3>
-            <p>For scalar $c$ and matrix $A$:</p>
-            <div class="math-block">
-                $$(cA)_{ij} = c \cdot A_{ij}$$
-            </div>
+            <h2 id="operations">2. Operations, and why multiplication is defined that way</h2>
+            <p>Addition and scalar multiplication are entrywise: $(A+B)_{ij}=A_{ij}+B_{ij}$, $(cA)_{ij}=cA_{ij}$ — unsurprising, since $\mathbb{R}^{m\times n}$ is itself a vector space (of dimension $mn$) under these operations, a fact used without comment in <a href="vector-spaces.html">the vector spaces note</a>.</p>
+            <p>Matrix multiplication looks less obvious until derived from the linear-map view rather than memorized as a rule. If $A$ represents a linear map $\mathbb{R}^n\to\mathbb{R}^m$ and $B$ represents $\mathbb{R}^p\to\mathbb{R}^n$, define $AB$ to be the matrix representing the <em>composition</em> $A\circ B:\mathbb{R}^p\to\mathbb{R}^m$, i.e. the matrix satisfying $(AB)x = A(Bx)$ for every $x$. Since $(Bx)_i = \sum_k B_{ik}x_k$ and $A(Bx))_i=\sum_j A_{ij}(Bx)_j$, substituting gives $(A(Bx))_i = \sum_j A_{ij}\sum_k B_{jk}x_k = \sum_k\Big(\sum_j A_{ij}B_{jk}\Big)x_k$, which forces</p>
+            <div class="math-block">$$(AB)_{ik} = \sum_j A_{ij}B_{jk}.$$</div>
+            <p>The row-times-column formula is not an arbitrary convention; it is the unique formula that makes matrix multiplication represent function composition. This immediately explains two otherwise-mysterious facts: multiplication is associative, $(AB)C=A(BC)$, because function composition is always associative; and it is generally <em>not</em> commutative, because composing functions in a different order is a different function.</p>
+            <p>The transpose satisfies $(A^\top)_{ij}=A_{ji}$, with $(AB)^\top = B^\top A^\top$ (order reverses) — verify directly from the formula above: $\big((AB)^\top\big)_{ki} = (AB)_{ik} = \sum_j A_{ij}B_{jk} = \sum_j (B^\top)_{kj}(A^\top)_{ji} = (B^\top A^\top)_{ki}$.</p>
 
-            <h3>2.3 Matrix Multiplication</h3>
-            <p>For $A$ of size $m \times n$ and $B$ of size $n \times p$:</p>
-            <div class="math-block">
-                $$(AB)_{ij} = \sum_{k=1}^n A_{ik} B_{kj}$$
-            </div>
-            <p><strong>Note:</strong> Matrix multiplication is not commutative: $AB \neq BA$ in general.</p>
-
-            <h2>3. Special Matrices</h2>
+            <h2 id="special">3. Special matrices</h2>
             <ul>
-                <li><strong>Identity Matrix:</strong> $I_n = \text{diag}(1, 1, \ldots, 1)$</li>
-                <li><strong>Zero Matrix:</strong> $0_{m \times n}$ with all entries zero</li>
-                <li><strong>Diagonal Matrix:</strong> $D = \text{diag}(d_1, d_2, \ldots, d_n)$</li>
-                <li><strong>Symmetric Matrix:</strong> $A^T = A$</li>
-                <li><strong>Skew-Symmetric:</strong> $A^T = -A$</li>
+                <li><strong>Identity</strong> $I$: represents the identity map, so $IA=AI=A$ for any compatible $A$.</li>
+                <li><strong>Diagonal</strong> $D=\operatorname{diag}(d_1,\ldots,d_n)$: acts by independent scaling along the coordinate axes, $Dx = (d_1x_1,\ldots,d_nx_n)$ — the case where the eigenvector basis (see <a href="eigenvalues.html">eigenvalues and eigenvectors</a>) is already the standard basis.</li>
+                <li><strong>Symmetric</strong> ($A^\top=A$) and <strong>skew-symmetric</strong> ($A^\top=-A$): every square real matrix decomposes uniquely as $A = \tfrac{1}{2}(A+A^\top) + \tfrac12(A-A^\top)$, a symmetric part plus a skew-symmetric part, mirroring the even/odd decomposition of a function.</li>
+                <li><strong>Orthogonal</strong> ($Q^\top Q = I$, equivalently $Q^{-1}=Q^\top$): represents a map that preserves lengths and angles ($\|Qx\|^2 = x^\top Q^\top Q x = x^\top x = \|x\|^2$) — rotations and reflections. These are exactly the matrices appearing in the spectral theorem's eigenbasis change of coordinates.</li>
             </ul>
 
-            <h2>4. Transpose</h2>
-            <p>The transpose of matrix $A$ is:</p>
-            <div class="math-block">
-                $$(A^T)_{ij} = A_{ji}$$
+            <h2 id="determinant">4. The determinant</h2>
+            <p>Rather than starting from the cofactor-expansion formula (which is correct but looks arbitrary), it is more honest to state what property actually characterizes the determinant, and treat cofactor expansion as one consequence.</p>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Characterization of the determinant)</span>
+                <p>There is a unique function $\det:\mathbb{R}^{n\times n}\to\mathbb{R}$ that is (i) linear in each column separately with the other columns fixed (multilinear), (ii) equal to $0$ whenever two columns coincide (alternating), and (iii) satisfies $\det(I)=1$ (normalized).</p>
             </div>
-            <p>Properties:</p>
+            <p>The proof of existence and uniqueness is a genuine piece of multilinear algebra and is not reproduced here (Axler, 2024, Ch. 10, gives a full modern treatment; Strang, 2016, §5.1–5.2 gives the classical cofactor-expansion construction and shows it satisfies (i)–(iii)). What matters is that every familiar property of the determinant is forced by (i)–(iii) rather than being a separate fact to memorize:</p>
             <ul>
-                <li>$(A^T)^T = A$</li>
-                <li>$(A + B)^T = A^T + B^T$</li>
-                <li>$(AB)^T = B^T A^T$</li>
-                <li>$(cA)^T = cA^T$</li>
+                <li><strong>Row/column swap flips sign.</strong> Swapping two columns of $I$ and using alternating + multilinear on the sum of the swapped columns forces $\det$ to change sign — this is what makes $\det$ an oriented volume, not just a volume.</li>
+                <li><strong>Singular $\Rightarrow$ $\det=0$.</strong> If the columns of $A$ are linearly dependent, one column is a linear combination of the others; multilinearity reduces $\det(A)$ to a sum of determinants each having a repeated column, all zero by (ii).</li>
+                <li><strong>$\det(AB)=\det(A)\det(B)$.</strong> Both sides, as functions of $A$ for fixed $B$, are multilinear and alternating in the columns of $A$ and agree at $A=I$; uniqueness (up to the normalization already fixed) forces equality.</li>
+                <li><strong>$\det(A^\top)=\det(A)$.</strong> A direct consequence of the cofactor-expansion formula, or of property (i)–(iii) applied to rows instead of columns.</li>
+                <li><strong>Geometric meaning.</strong> $|\det(A)|$ is the volume of the image of the unit cube under $A$ (multilinearity in the columns is exactly linearity of volume in each edge vector), and $\operatorname{sign}(\det A)$ records whether $A$ preserves or reverses orientation.</li>
+                <li><strong>Eigenvalue product.</strong> $\det(A)=\prod_i\lambda_i$ — proved already in <a href="eigenvalues.html">the eigenvalues note</a> from the characteristic polynomial, restated here as a consequence of this section's determinant rather than a separate fact.</li>
             </ul>
 
-            <h2>5. Determinant</h2>
-            <p>For a $2 \times 2$ matrix:</p>
-            <div class="math-block">
-                $$\det(A) = \begin{vmatrix} a & b \\ c & d \end{vmatrix} = ad - bc$$
+            <figure class="note-figure">
+                <img src="matrices/figures/determinant_area.png" alt="Two panels showing a grid deformed by a 2x2 matrix, with the unit square mapped to a parallelogram. Left panel has positive determinant and preserved corner orientation; right panel has negative determinant and reversed corner orientation.">
+                <figcaption><strong>Figure — $|\det|$ is an area, $\operatorname{sign}(\det)$ is an orientation.</strong> The dashed square is the unit square $[0,1]^2$; the shaded parallelogram is its image under $A$ (left, $\det A = 2.5$) and $B$ (right, $\det B=-3$). Matched markers track where each corner lands. Left: the corners $\bigcirc\to\square\to\triangle\to\Diamond$ still trace counterclockwise after the map — orientation preserved, matching $\det A&gt;0$. Right: the same corner sequence now traces clockwise — orientation reversed, matching $\det B&lt;0$. In both cases the shaded area is exactly $|\det|$ times the unit square's area of $1$.</figcaption>
+            </figure>
+
+            <h2 id="invertibility">5. Invertibility: an equivalence theorem</h2>
+            <div class="note-box">
+                <span class="note-box-label">Theorem</span>
+                <p>For $A\in\mathbb{R}^{n\times n}$, the following are equivalent: (a) $A$ is invertible ($\exists\, A^{-1}$ with $AA^{-1}=A^{-1}A=I$); (b) $\det(A)\neq0$; (c) $Ax=0$ only for $x=0$ (trivial nullspace); (d) the columns of $A$ are linearly independent, hence a basis of $\mathbb{R}^n$; (e) $A$ has full rank $n$; (f) $Ax=b$ has a unique solution for every $b\in\mathbb{R}^n$.</p>
             </div>
-            <p>For larger matrices, use cofactor expansion or row operations.</p>
+            <p>(a)$\Leftrightarrow$(b) is the content of the Cramer's-rule / adjugate construction $A^{-1}=\frac{1}{\det A}\operatorname{adj}(A)$, well-defined exactly when $\det A\neq0$; (b)$\Leftrightarrow$(c) was shown in Section 4 (singular $\Rightarrow$ dependent columns $\Rightarrow$ nontrivial nullspace, and the argument reverses); (c)$\Leftrightarrow$(d)$\Leftrightarrow$(e) are restatements of linear independence and full rank (Section 6); (a)+(c)$\Rightarrow$(f) since $A^{-1}b$ is the unique solution when it exists. For the $2\times2$ case this specializes to the familiar</p>
+            <div class="math-block">$$A^{-1} = \frac{1}{\det A}\begin{pmatrix}d & -b\\ -c & a\end{pmatrix} \quad\text{for } A=\begin{pmatrix}a&b\\c&d\end{pmatrix},\ \det A = ad-bc\neq0,$$</div>
+            <p>a special case of the general adjugate formula, verifiable directly by multiplying it out.</p>
 
-            <h2>6. Inverse</h2>
-            <p>A matrix $A$ is invertible if $\det(A) \neq 0$. The inverse satisfies:</p>
-            <div class="math-block">
-                $$AA^{-1} = A^{-1}A = I$$
+            <h2 id="rank">6. Rank and the structure of solution sets</h2>
+            <div class="note-box">
+                <span class="note-box-label">Definition</span>
+                <p>$\operatorname{rank}(A)$ is the dimension of the column space $\{Ax : x\in\mathbb{R}^n\}\subseteq\mathbb{R}^m$ — equivalently (a nontrivial fact, proved in <a href="vector-spaces.html">the vector spaces note</a> via the rank–nullity theorem) the dimension of the row space, so $\operatorname{rank}(A)=\operatorname{rank}(A^\top)$ despite row space and column space living in different spaces when $m\neq n$.</p>
             </div>
-            <p>For $2 \times 2$ matrix:</p>
-            <div class="math-block">
-                $$A^{-1} = \frac{1}{\det(A)} \begin{bmatrix} d & -b \\ -c & a \end{bmatrix}$$
+            <p>Rank governs solvability of $Ax=b$ directly: a solution exists iff $b$ lies in the column space, i.e. iff $\operatorname{rank}([A\mid b]) = \operatorname{rank}(A)$ (appending $b$ does not enlarge the column space); the solution is unique iff additionally the nullspace of $A$ is trivial, i.e. $\operatorname{rank}(A)=n$ (the number of columns) — the general version of the invertibility theorem above, which was the special case $m=n$ with a solution guaranteed to exist.</p>
+
+            <h2 id="elimination">7. Gaussian elimination and its cost</h2>
+            <p>Elimination reduces $A$ to upper-triangular row-echelon form by, at each step $k=1,\ldots,n-1$, using row $k$'s pivot to zero out column $k$ in all rows below it. This simultaneously computes $\det(A)$ (product of the resulting diagonal, up to the sign from any row swaps), the rank (number of nonzero pivot rows), and — augmented with $I$, or via back-substitution — the solution to $Ax=b$ or the inverse $A^{-1}$.</p>
+            <div class="note-box">
+                <span class="note-box-label">Proposition (Operation count)</span>
+                <p>Gaussian elimination on a dense $n\times n$ matrix costs $\frac{2}{3}n^3+O(n^2)$ floating-point operations.</p>
             </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> At step $k$, eliminating column $k$ below the pivot touches an $(n-k)\times(n-k+1)$ block: each of the $n-k$ rows needs one multiplier computed and then a multiply-subtract across the $\approx n-k$ remaining entries, costing $\approx 2(n-k)^2$ operations. Summing over steps: $\sum_{k=1}^{n-1} 2(n-k)^2 = 2\sum_{j=1}^{n-1} j^2 \approx 2\int_0^n x^2\,dx = \frac{2}{3}n^3$, using the standard approximation of a sum by an integral for the leading-order term. <span class="qed">∎</span>
+            </div>
+            <p>This cubic scaling is why, for large systems, one avoids recomputing a full elimination from scratch when solving $Ax=b$ for many right-hand sides $b$: the elimination is cached as an $LU$ factorization ($A=LU$, $L$ lower-triangular, $U$ the upper-triangular result), computed once at $\frac{2}{3}n^3$ cost, after which each new $b$ costs only $O(n^2)$ via forward/back substitution.</p>
 
-            <h2>7. Rank</h2>
-            <p>The rank of a matrix is the maximum number of linearly independent rows (or columns).</p>
-            <ul>
-                <li>$\text{rank}(A) \leq \min(m, n)$</li>
-                <li>$\text{rank}(A) = \text{rank}(A^T)$</li>
-                <li>$\text{rank}(AB) \leq \min(\text{rank}(A), \text{rank}(B))$</li>
-            </ul>
+            <h2 id="computation">8. Computation</h2>
+            <p>The figure above is generated by <code>matrices/generate_figures.py</code> in this note's directory. The snippet below directly verifies the operation-count proof of Section 7 — a plain-loop (unvectorized) elimination counts its own multiply/subtract/divide operations, rather than trusting wall-clock timing of an optimized library routine, which would be confounded by caching and multithreading effects unrelated to the underlying flop count. It also confirms the rank/solvability criterion of Section 6 on a concrete rank-deficient system.</p>
+            <pre><code>import numpy as np
 
-            <h2>8. Row Operations</h2>
-            <p>Elementary row operations:</p>
-            <ul>
-                <li><strong>Row Swap:</strong> Exchange two rows</li>
-                <li><strong>Row Scaling:</strong> Multiply a row by a non-zero scalar</li>
-                <li><strong>Row Addition:</strong> Add a multiple of one row to another</li>
-            </ul>
+def gaussian_elimination_flop_count(A):
+    """Plain-loop Gaussian elimination (no pivoting), counting flops."""
+    A = A.copy()
+    n = A.shape[0]
+    flops = 0
+    for k in range(n - 1):
+        for i in range(k + 1, n):
+            m = A[i, k] / A[k, k]
+            flops += 1  # the division
+            for j in range(k, n):
+                A[i, j] -= m * A[k, j]
+                flops += 2  # one multiply, one subtract
+    return flops
 
-            <h2>9. Row Echelon Form (REF)</h2>
-            <p>A matrix is in REF if:</p>
-            <ul>
-                <li>All zero rows are at the bottom</li>
-                <li>Leading coefficient (pivot) is 1</li>
-                <li>Pivots are to the right of pivots in rows above</li>
-            </ul>
+for n in (20, 40, 80, 160):
+    rng = np.random.default_rng(0)
+    A = rng.normal(size=(n, n)) + n * np.eye(n)  # diagonally dominant: avoids zero pivots
+    flops = gaussian_elimination_flop_count(A)
+    predicted = (2 / 3) * n**3
+    print(f"n={n:4d}: measured = {flops:9d}   (2/3)n^3 = {predicted:9.0f}   ratio = {flops/predicted:.3f}")
 
-            <h2>10. Reduced Row Echelon Form (RREF)</h2>
-            <p>In addition to REF properties:</p>
-            <ul>
-                <li>All entries above and below pivots are zero</li>
-            </ul>
+# A rank-deficient system: does b lie in the column space of A?
+A = np.array([[1.0, 2.0], [2.0, 4.0]])       # rank 1: columns are parallel
+b_consistent = np.array([1.0, 2.0])          # in the column space -&gt; infinitely many solutions
+b_inconsistent = np.array([1.0, 3.0])        # not in the column space -&gt; no solution
 
-            <h2>11. Systems of Linear Equations</h2>
-            <p>A system $Ax = b$ can be solved using:</p>
-            <ul>
-                <li><strong>Gaussian Elimination:</strong> Convert to REF</li>
-                <li><strong>Gauss-Jordan:</strong> Convert to RREF</li>
-                <li><strong>Matrix Inversion:</strong> $x = A^{-1}b$ (if $A$ is invertible)</li>
-            </ul>
-
-            <h2>12. Code Example</h2>
-            <pre><code># Python code for matrix operations
-import numpy as np
-
-# Create matrices
-A = np.array([[1, 2], [3, 4]])
-B = np.array([[5, 6], [7, 8]])
-
-# Basic operations
-C = A + B  # Addition
-D = A @ B  # Matrix multiplication
-E = A.T    # Transpose
-
-# Determinant and inverse
-det_A = np.linalg.det(A)
-inv_A = np.linalg.inv(A)
-
-# Solve system Ax = b
-b = np.array([1, 2])
-x = np.linalg.solve(A, b)
-
-print(f"Determinant: {det_A}")
-print(f"Inverse:\n{inv_A}")
-print(f"Solution: {x}")
+print("rank(A) =", np.linalg.matrix_rank(A))
+print("rank([A|b_consistent])  =", np.linalg.matrix_rank(np.column_stack([A, b_consistent])))
+print("rank([A|b_inconsistent]) =", np.linalg.matrix_rank(np.column_stack([A, b_inconsistent])))
 </code></pre>
+            <p>Actual output:</p>
+            <pre><code>n=  20: measured =      5510   (2/3)n^3 =      5333   ratio = 1.033
+n=  40: measured =     43420   (2/3)n^3 =     42667   ratio = 1.018
+n=  80: measured =    344440   (2/3)n^3 =    341333   ratio = 1.009
+n= 160: measured =   2743280   (2/3)n^3 =   2730667   ratio = 1.005
 
-            <h2>13. References</h2>
+rank(A) = 1
+rank([A|b_consistent])  = 1
+rank([A|b_inconsistent]) = 2</code></pre>
+            <p>The measured-to-predicted ratio converges to $1$ as $n$ grows — exactly what the proof predicts, since the proof's approximation error is the $O(n^2)$ term dropped by the leading-order calculation, which shrinks relative to $\frac23n^3$ as $n\to\infty$. And exactly as Section 6 predicts: appending the consistent $b$ leaves the rank at $1$ (a solution exists — indeed infinitely many, since $\operatorname{rank}(A)=1&lt;2=n$), while appending the inconsistent $b$ raises the rank to $2$ (no solution exists).</p>
+
+            <h2 id="pitfalls">9. Common pitfalls</h2>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — Matrix multiplication has zero divisors</span>
+                <p>$AB=0$ does <em>not</em> imply $A=0$ or $B=0$. Example: $A=\begin{pmatrix}1&0\\0&0\end{pmatrix}$, $B=\begin{pmatrix}0&0\\0&1\end{pmatrix}$ — both nonzero, $AB=0$. Geometrically unsurprising: $B$'s image (the second coordinate axis) lies entirely in $A$'s nullspace (the second coordinate axis), so composing sends everything to $0$. This rules out "cancel $A$ from both sides" reasoning that is valid for scalars.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — $\det(A+B)\neq\det(A)+\det(B)$ in general</span>
+                <p>The determinant is multilinear in the <em>columns</em>, not additive as a function of the whole matrix. There is no simple formula for $\det(A+B)$ in terms of $\det(A)$ and $\det(B)$ except in special cases (e.g. one being a scalar multiple of the identity).</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — Inverse of a product reverses order</span>
+                <p>$(AB)^{-1}=B^{-1}A^{-1}$, not $A^{-1}B^{-1}$ — check directly: $(AB)(B^{-1}A^{-1}) = A(BB^{-1})A^{-1}=AIA^{-1}=I$. The same order-reversal as the transpose identity in Section 2, for the same reason (undoing a composition means undoing the last step first).</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — "Invertible in exact arithmetic" is not "safe to invert numerically"</span>
+                <p>$\det(A)\neq0$ only says $A^{-1}$ exists as a mathematical object; it says nothing about numerical stability. A matrix that is technically invertible but has a very small $|\det|$ relative to its entries' scale (nearly-dependent columns) amplifies input errors enormously when solved — a fact quantified by the <em>condition number</em>, not by the determinant's magnitude alone. This is outside this note's scope; see Trefethen &amp; Bau (1997, Lecture 12) for the precise statement and Golub &amp; Van Loan (2013, §2.6) for its consequences for the algorithms in Section 7.</p>
+            </div>
+
+            <h2 id="connections">10. Connections</h2>
             <ul>
-                <li>Strang, G. (2016). <em>Introduction to Linear Algebra</em>.</li>
-                <li>Lay, D. C. (2015). <em>Linear Algebra and Its Applications</em>.</li>
-                <li>Hoffman, K., & Kunze, R. (1971). <em>Linear Algebra</em>.</li>
+                <li><strong><a href="eigenvalues.html">Eigenvalues and eigenvectors</a>.</strong> The determinant developed here from first principles is exactly the tool used there to define the characteristic polynomial and prove $\det(A)=\prod_i\lambda_i$.</li>
+                <li><strong><a href="vector-spaces.html">Vector spaces</a>.</strong> Rank, column space, and nullspace are defined properly (and rank–nullity proved) there; this note only uses the results.</li>
+                <li><strong>Regression (OLS).</strong> The normal equations $\hat\beta=(X^\top X)^{-1}X^\top y$ require $X^\top X$ invertible, i.e. by the equivalence theorem of Section 5, $X$'s columns linearly independent — exactly the "no perfect multicollinearity" assumption in a regression note's Gauss–Markov conditions, now visible as a rank condition rather than an ad hoc requirement.</li>
+                <li><strong>Optimization / Hessians.</strong> A symmetric Hessian being positive definite (all eigenvalues positive, Section 4's eigenvalue-product fact plus the spectral theorem) is what makes a critical point a strict local minimum — the determinant sign test used in a multivariable-calculus second-derivative test is the $2\times2$ case of this.</li>
+            </ul>
+
+            <h2 id="references">11. References</h2>
+            <ul>
+                <li>Strang, G. (2016). <em>Introduction to Linear Algebra</em> (5th ed.). Wellesley-Cambridge Press.</li>
+                <li>Axler, S. (2024). <em>Linear Algebra Done Right</em> (4th ed.). Springer.</li>
+                <li>Golub, G. H., &amp; Van Loan, C. F. (2013). <em>Matrix Computations</em> (4th ed.). Johns Hopkins University Press.</li>
+                <li>Trefethen, L. N., &amp; Bau, D. (1997). <em>Numerical Linear Algebra</em>. SIAM.</li>
             </ul>
         </section>
     </main>
@@ -183,4 +204,4 @@ print(f"Solution: {x}")
         <p>&copy; Diogo Franquinho | Technical Notes</p>
     </footer>
 </body>
-</html> 
+</html>
