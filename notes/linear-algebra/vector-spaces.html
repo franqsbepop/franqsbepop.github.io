@@ -21,176 +21,199 @@
 </head>
 <body>
     <nav class="top-nav">
-        <a href="../../index.html">← Back to Home</a> | 
+        <a href="../../index.html">← Back to Home</a> |
         <a href="../../index.html#notes">Notes</a>
     </nav>
 
     <main>
         <header>
             <h1>Vector Spaces</h1>
-            <p class="note-meta">Last updated: December 2024</p>
+            <p class="note-meta">Last updated: August 2026</p>
         </header>
 
         <section class="note-content">
             <div class="disclaimer">
                 <p><strong>Disclaimer:</strong> These are my personal notes compiled for my own reference and learning. They may contain errors, incomplete information, or personal interpretations. While I strive for accuracy, these notes are not peer-reviewed and should not be considered authoritative sources. Please consult official textbooks, research papers, or other reliable sources for academic or professional purposes.</p>
             </div>
-            
-            <h2>1. Definition of Vector Space</h2>
-            <p>A vector space $V$ over a field $\mathbb{F}$ is a set with two operations:</p>
-            <ul>
-                <li><strong>Vector Addition:</strong> $+ : V \times V \to V$</li>
-                <li><strong>Scalar Multiplication:</strong> $\cdot : \mathbb{F} \times V \to V$</li>
-            </ul>
-            <p>These operations must satisfy 10 axioms (associativity, commutativity, identity, etc.).</p>
 
-            <h2>2. Examples of Vector Spaces</h2>
-            <ul>
-                <li><strong>$\mathbb{R}^n$:</strong> $n$-tuples of real numbers</li>
-                <li><strong>$\mathbb{C}^n$:</strong> $n$-tuples of complex numbers</li>
-                <li><strong>$M_{m \times n}(\mathbb{R})$:</strong> $m \times n$ real matrices</li>
-                <li><strong>$\mathcal{P}_n$:</strong> Polynomials of degree $\leq n$</li>
-                <li><strong>$C[a,b]$:</strong> Continuous functions on $[a,b]$</li>
-            </ul>
-
-            <h2>3. Subspaces</h2>
-            <p>A subset $W$ of vector space $V$ is a subspace if:</p>
-            <ul>
-                <li>$W$ is non-empty</li>
-                <li>For all $\mathbf{u}, \mathbf{v} \in W$, $\mathbf{u} + \mathbf{v} \in W$</li>
-                <li>For all $\mathbf{u} \in W$ and $c \in \mathbb{F}$, $c\mathbf{u} \in W$</li>
-            </ul>
-
-            <h2>4. Linear Independence</h2>
-            <p>Vectors $\mathbf{v}_1, \mathbf{v}_2, \ldots, \mathbf{v}_n$ are linearly independent if:</p>
-            <div class="math-block">
-                $$c_1\mathbf{v}_1 + c_2\mathbf{v}_2 + \cdots + c_n\mathbf{v}_n = \mathbf{0} \implies c_1 = c_2 = \cdots = c_n = 0$$
-            </div>
-            <p>Otherwise, they are linearly dependent.</p>
-
-            <h2>5. Spanning Sets</h2>
-            <p>The span of vectors $\mathbf{v}_1, \mathbf{v}_2, \ldots, \mathbf{v}_n$ is:</p>
-            <div class="math-block">
-                $$\text{span}\{\mathbf{v}_1, \mathbf{v}_2, \ldots, \mathbf{v}_n\} = \{c_1\mathbf{v}_1 + c_2\mathbf{v}_2 + \cdots + c_n\mathbf{v}_n : c_i \in \mathbb{F}\}$$
+            <div class="table-of-contents">
+                <h3>Contents</h3>
+                <ol>
+                    <li><a href="#motivation">Why abstract away from $\mathbb{R}^n$</a></li>
+                    <li><a href="#definition">Vector spaces and subspaces</a></li>
+                    <li><a href="#independence">Linear independence and span</a></li>
+                    <li><a href="#basis">Basis, and why dimension is well-defined</a></li>
+                    <li><a href="#rank-nullity">Linear maps and the rank–nullity theorem</a></li>
+                    <li><a href="#inner-product">Inner products and Cauchy–Schwarz</a></li>
+                    <li><a href="#projection">Orthogonal projection as best approximation</a></li>
+                    <li><a href="#gram-schmidt">Gram–Schmidt orthogonalization</a></li>
+                    <li><a href="#computation">Computation</a></li>
+                    <li><a href="#pitfalls">Common pitfalls</a></li>
+                    <li><a href="#connections">Connections</a></li>
+                    <li><a href="#references">References</a></li>
+                </ol>
             </div>
 
-            <h2>6. Basis</h2>
-            <p>A basis for vector space $V$ is a linearly independent spanning set.</p>
-            <p><strong>Properties:</strong></p>
-            <ul>
-                <li>Every vector in $V$ can be written uniquely as a linear combination of basis vectors</li>
-                <li>All bases have the same number of vectors (dimension)</li>
-                <li>Any linearly independent set can be extended to a basis</li>
-            </ul>
+            <h2 id="motivation">1. Why abstract away from $\mathbb{R}^n$</h2>
+            <p>Everything in <a href="matrices.html">matrices</a> and <a href="eigenvalues.html">eigenvalues</a> was stated for $\mathbb{R}^n$, but nothing in the arguments actually used coordinates — only addition, scalar multiplication, and the axioms they satisfy. Polynomials of degree $\leq n$, continuous functions on $[a,b]$, and $m\times n$ matrices themselves all add and scale the same way $\mathbb{R}^n$ vectors do, without any natural list of coordinates. Formalizing exactly which properties of $\mathbb{R}^n$ were actually being used lets every theorem proved for $\mathbb{R}^n$ transfer immediately to these other settings — this is the entire payoff of the abstraction, not abstraction for its own sake.</p>
 
-            <h2>7. Dimension</h2>
-            <p>The dimension of a vector space $V$, denoted $\dim(V)$, is the number of vectors in any basis.</p>
-            <ul>
-                <li>$\dim(\mathbb{R}^n) = n$</li>
-                <li>$\dim(M_{m \times n}(\mathbb{R})) = mn$</li>
-                <li>$\dim(\mathcal{P}_n) = n + 1$</li>
-                <li>$\dim(C[a,b]) = \infty$</li>
-            </ul>
-
-            <h2>8. Coordinates</h2>
-            <p>For basis $B = \{\mathbf{v}_1, \mathbf{v}_2, \ldots, \mathbf{v}_n\}$, the coordinate vector of $\mathbf{v}$ is:</p>
-            <div class="math-block">
-                $$[\mathbf{v}]_B = \begin{bmatrix} c_1 \\ c_2 \\ \vdots \\ c_n \end{bmatrix}$$
+            <h2 id="definition">2. Vector spaces and subspaces</h2>
+            <div class="note-box">
+                <span class="note-box-label">Definition</span>
+                <p>A <strong>vector space</strong> over a field $\mathbb{F}$ (here always $\mathbb{R}$ or $\mathbb{C}$) is a set $V$ with an addition $V\times V\to V$ and scalar multiplication $\mathbb{F}\times V\to V$ satisfying the familiar axioms: addition is commutative and associative with an identity $0$ and inverses; scalar multiplication distributes over both vector and scalar addition, is associative ($a(bv)=(ab)v$), and $1v=v$.</p>
             </div>
-            <p>where $\mathbf{v} = c_1\mathbf{v}_1 + c_2\mathbf{v}_2 + \cdots + c_n\mathbf{v}_n$.</p>
-
-            <h2>9. Linear Transformations</h2>
-            <p>A function $T: V \to W$ is linear if:</p>
-            <ul>
-                <li>$T(\mathbf{u} + \mathbf{v}) = T(\mathbf{u}) + T(\mathbf{v})$</li>
-                <li>$T(c\mathbf{u}) = cT(\mathbf{u})$</li>
-            </ul>
-            <p>For finite-dimensional spaces, $T$ can be represented by a matrix.</p>
-
-            <h2>10. Kernel and Image</h2>
-            <p>For linear transformation $T: V \to W$:</p>
-            <ul>
-                <li><strong>Kernel:</strong> $\ker(T) = \{\mathbf{v} \in V : T(\mathbf{v}) = \mathbf{0}\}$</li>
-                <li><strong>Image:</strong> $\text{im}(T) = \{T(\mathbf{v}) : \mathbf{v} \in V\}$</li>
-            </ul>
-            <p><strong>Rank-Nullity Theorem:</strong></p>
-            <div class="math-block">
-                $$\dim(\ker(T)) + \dim(\text{im}(T)) = \dim(V)$$
+            <p>Beyond $\mathbb{F}^n$: $\mathcal{P}_n$ (polynomials of degree $\leq n$), $C[a,b]$ (continuous real functions on $[a,b]$), and $\mathbb{R}^{m\times n}$ (Section 2 of <a href="matrices.html">the matrices note</a> uses exactly this fact) are all vector spaces under pointwise/entrywise addition and scaling.</p>
+            <div class="note-box">
+                <span class="note-box-label">Proposition (Subspace test)</span>
+                <p>A subset $W\subseteq V$ is a subspace (itself a vector space under $V$'s operations) iff $0\in W$, and $W$ is closed under addition and scalar multiplication.</p>
             </div>
+            <p>The remaining axioms (associativity, distributivity, etc.) hold automatically for $W$ because they already hold for all of $V$; only closure and containing $0$ are genuinely restrictive. This is why checking "is this a subspace" is a two- or three-line closure argument rather than re-verifying eight axioms from scratch — used throughout without comment whenever this note collection calls a set a subspace (e.g. eigenspaces in <a href="eigenvalues.html">the eigenvalues note</a>, which are kernels, and kernels are always subspaces by exactly this test: $0\in\ker A$, and $Av=0,Aw=0\Rightarrow A(cv+w)=cAv+Aw=0$).</p>
 
-            <h2>11. Inner Product Spaces</h2>
-            <p>An inner product on $V$ is a function $\langle \cdot, \cdot \rangle : V \times V \to \mathbb{F}$ satisfying:</p>
-            <ul>
-                <li>$\langle \mathbf{u}, \mathbf{v} \rangle = \overline{\langle \mathbf{v}, \mathbf{u} \rangle}$</li>
-                <li>$\langle \mathbf{u} + \mathbf{v}, \mathbf{w} \rangle = \langle \mathbf{u}, \mathbf{w} \rangle + \langle \mathbf{v}, \mathbf{w} \rangle$</li>
-                <li>$\langle c\mathbf{u}, \mathbf{v} \rangle = c\langle \mathbf{u}, \mathbf{v} \rangle$</li>
-                <li>$\langle \mathbf{u}, \mathbf{u} \rangle \geq 0$ with equality iff $\mathbf{u} = \mathbf{0}$</li>
-            </ul>
-
-            <h2>12. Orthogonality</h2>
-            <p>Vectors $\mathbf{u}$ and $\mathbf{v}$ are orthogonal if $\langle \mathbf{u}, \mathbf{v} \rangle = 0$.</p>
-            <p><strong>Orthogonal Projection:</strong></p>
-            <div class="math-block">
-                $$\text{proj}_{\mathbf{v}}(\mathbf{u}) = \frac{\langle \mathbf{u}, \mathbf{v} \rangle}{\langle \mathbf{v}, \mathbf{v} \rangle}\mathbf{v}$$
+            <h2 id="independence">3. Linear independence and span</h2>
+            <div class="note-box">
+                <span class="note-box-label">Definition</span>
+                <p>$v_1,\ldots,v_k\in V$ are <strong>linearly independent</strong> if $\sum_i c_iv_i=0 \Rightarrow c_1=\cdots=c_k=0$. Their <strong>span</strong> is $\{\sum_i c_iv_i : c_i\in\mathbb{F}\}$, the smallest subspace containing them all.</p>
             </div>
+            <p>Independence is exactly the condition under which every vector in the span has a <em>unique</em> representation as a combination of $v_1,\ldots,v_k$: if $\sum c_iv_i=\sum c_i'v_i$, subtracting gives $\sum(c_i-c_i')v_i=0$, which independence forces to $c_i=c_i'$ for all $i$. This is the property basis representations rely on in Section 4.</p>
 
-            <h2>13. Gram-Schmidt Process</h2>
-            <p>To orthogonalize vectors $\mathbf{v}_1, \mathbf{v}_2, \ldots, \mathbf{v}_n$:</p>
-            <div class="math-block">
-                $$\mathbf{u}_1 = \mathbf{v}_1$$
-                $$\mathbf{u}_2 = \mathbf{v}_2 - \text{proj}_{\mathbf{u}_1}(\mathbf{v}_2)$$
-                $$\mathbf{u}_3 = \mathbf{v}_3 - \text{proj}_{\mathbf{u}_1}(\mathbf{v}_3) - \text{proj}_{\mathbf{u}_2}(\mathbf{v}_3)$$
-                $$\vdots$$
+            <h2 id="basis">4. Basis, and why dimension is well-defined</h2>
+            <div class="note-box">
+                <span class="note-box-label">Definition</span>
+                <p>A <strong>basis</strong> of $V$ is a linearly independent spanning set.</p>
             </div>
+            <p>Calling $\dim V$ "the number of vectors in a basis" presupposes that this number does not depend on which basis you pick — a fact that needs proof, not just faith.</p>
+            <div class="note-box">
+                <span class="note-box-label">Lemma (Steinitz exchange)</span>
+                <p>If $u_1,\ldots,u_m$ spans $V$ and $w_1,\ldots,w_k\in V$ are linearly independent, then $k\leq m$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> By induction, swap $w$'s into the spanning list one at a time. Since $u_1,\ldots,u_m$ spans $V$, write $w_1=\sum_i a_iu_i$; not all $a_i$ are $0$ (else $w_1=0$, contradicting independence), so reorder so $a_1\neq0$ and solve for $u_1$ in terms of $w_1,u_2,\ldots,u_m$ — this new list still spans $V$ (it spans everything the old list did, since $u_1$ is recovered from it). Repeat: having replaced $u_1,\ldots,u_{j-1}$ with $w_1,\ldots,w_{j-1}$ in the spanning list, write $w_j$ in terms of $w_1,\ldots,w_{j-1},u_j,\ldots,u_m$; the coefficient on some $u_i$ ($i\geq j$) must be nonzero, since otherwise $w_j$ would be a combination of $w_1,\ldots,w_{j-1}$, contradicting independence of the $w$'s — swap that $u_i$ out. This requires $m\geq j$ at each step $j=1,\ldots,k$, so in particular $m\geq k$. <span class="qed">∎</span>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Dimension is well-defined)</span>
+                <p>Any two bases of $V$ have the same number of elements.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> If $B_1$ (size $m$) and $B_2$ (size $k$) are both bases: $B_1$ spans and $B_2$ is independent, so $k\leq m$ by the lemma; symmetrically, $B_2$ spans and $B_1$ is independent, so $m\leq k$. Hence $m=k$. <span class="qed">∎</span>
+            </div>
+            <p>This is the fact silently invoked every time a diagonalization argument counts eigenvectors against $n$ in <a href="eigenvalues.html">the eigenvalues note</a>, or a rank is called "the" dimension of a column space in <a href="matrices.html">the matrices note</a> — dimension is only a meaningful invariant to compare across different bases because of this theorem.</p>
 
-            <h2>14. Code Example</h2>
-            <pre><code># Python code for vector spaces
-import numpy as np
-from scipy import linalg
+            <h2 id="rank-nullity">5. Linear maps and the rank–nullity theorem</h2>
+            <p>For a linear map $T:V\to W$ between finite-dimensional spaces, $\ker T = \{v: Tv=0\}$ and $\operatorname{im} T=\{Tv : v\in V\}$ are subspaces of $V$ and $W$ respectively (immediate from the subspace test of Section 2, exactly as for matrix kernels above).</p>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Rank–nullity)</span>
+                <p>$\dim\ker T + \dim\operatorname{im} T = \dim V$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> Let $v_1,\ldots,v_p$ be a basis of $\ker T$ ($p=\dim\ker T$) and extend it to a basis $v_1,\ldots,v_p,v_{p+1},\ldots,v_n$ of $V$ ($n=\dim V$; extension of an independent set to a basis is always possible in finite dimensions). Claim: $Tv_{p+1},\ldots,Tv_n$ is a basis of $\operatorname{im}T$. <em>Spanning:</em> any $Tv = T(\sum_i c_iv_i) = \sum_{i&gt;p} c_i Tv_i$ since $Tv_i=0$ for $i\leq p$. <em>Independence:</em> if $\sum_{i&gt;p} c_iTv_i=0$, then $T(\sum_{i&gt;p}c_iv_i)=0$, so $\sum_{i&gt;p}c_iv_i\in\ker T$, hence is itself a combination of $v_1,\ldots,v_p$; but $v_1,\ldots,v_n$ are independent, so the only way $\sum_{i&gt;p}c_iv_i$ can equal a combination of $v_1,\ldots,v_p$ is if all the $c_i$ ($i&gt;p$) and the implied coefficients are $0$. So $\dim\operatorname{im}T = n-p = \dim V-\dim\ker T$. <span class="qed">∎</span>
+            </div>
+            <p>For $T$ represented by a matrix $A$, $\operatorname{im}T$ is the column space, so $\dim\operatorname{im}T=\operatorname{rank}(A)$ and $\dim\ker T$ is the <strong>nullity</strong> — this is the theorem underlying the rank/nullity claims used without proof in <a href="matrices.html">the matrices note</a>'s solvability criterion (Section 6 there).</p>
 
-# Check linear independence
-def is_linearly_independent(vectors):
-    matrix = np.array(vectors).T
-    rank = np.linalg.matrix_rank(matrix)
-    return rank == len(vectors)
+            <h2 id="inner-product">6. Inner products and Cauchy–Schwarz</h2>
+            <div class="note-box">
+                <span class="note-box-label">Definition</span>
+                <p>An <strong>inner product</strong> on a real vector space $V$ is $\langle\cdot,\cdot\rangle:V\times V\to\mathbb{R}$ that is symmetric, bilinear, and positive definite ($\langle v,v\rangle\geq0$, with equality iff $v=0$). It induces a norm $\|v\|=\sqrt{\langle v,v\rangle}$.</p>
+            </div>
+            <p>The dot product $x\cdot y=\sum_ix_iy_i$ on $\mathbb{R}^n$ is the standard example, but far from the only one: $\langle f,g\rangle=\int_a^bf(x)g(x)\,dx$ makes $C[a,b]$ an inner product space, and this is not a curiosity — it is exactly the structure underlying Fourier series (orthogonality of $\sin(nx),\cos(nx)$ under this inner product) and least-squares function approximation.</p>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Cauchy–Schwarz)</span>
+                <p>$|\langle x,y\rangle| \leq \|x\|\,\|y\|$, with equality iff $x,y$ are linearly dependent.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> If $y=0$ both sides are $0$. Otherwise, for any $t\in\mathbb{R}$, positive-definiteness gives $0\leq\|x-ty\|^2 = \|x\|^2 - 2t\langle x,y\rangle + t^2\|y\|^2$, a quadratic in $t$ that is never negative, so its discriminant is $\leq0$: $4\langle x,y\rangle^2 - 4\|x\|^2\|y\|^2\leq0$, i.e. $\langle x,y\rangle^2\leq\|x\|^2\|y\|^2$. Equality in the discriminant means the quadratic has a real root $t^*$, i.e. $\|x-t^*y\|^2=0$, i.e. $x=t^*y$ — dependence. <span class="qed">∎</span>
+            </div>
+            <p>Cauchy–Schwarz is what makes $\cos\theta = \langle x,y\rangle/(\|x\|\|y\|)$ well-defined (the ratio is guaranteed to lie in $[-1,1]$) — the algebraic fact underneath the geometric notion of "angle" in any inner product space, not just $\mathbb{R}^2$ or $\mathbb{R}^3$.</p>
 
-# Find basis
-def find_basis(vectors):
-    matrix = np.array(vectors).T
-    rank = np.linalg.matrix_rank(matrix)
-    return matrix[:, :rank]
+            <h2 id="projection">7. Orthogonal projection as best approximation</h2>
+            <p>Given a subspace $W\subseteq V$ and $x\in V$, which point of $W$ is closest to $x$?</p>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Best approximation)</span>
+                <p>If $u_1,\ldots,u_k$ is an orthonormal basis of $W$, the point of $W$ minimizing $\|x-w\|$ is $P_Wx = \sum_{i=1}^k\langle x,u_i\rangle u_i$, and the minimizing residual $x-P_Wx$ is orthogonal to all of $W$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> First check $x-P_Wx\perp W$: for each basis vector $u_j$, $\langle x-P_Wx, u_j\rangle = \langle x,u_j\rangle - \sum_i\langle x,u_i\rangle\langle u_i,u_j\rangle = \langle x,u_j\rangle-\langle x,u_j\rangle=0$ using orthonormality ($\langle u_i,u_j\rangle=1$ if $i=j$, else $0$); orthogonality to every basis vector gives orthogonality to all of $W$ by linearity. Now for any $w\in W$, write $x-w = (x-P_Wx)+(P_Wx-w)$, a sum of a vector orthogonal to $W$ and a vector in $W$ (since $P_Wx-w\in W$). The Pythagorean identity (immediate from bilinearity and orthogonality: $\|a+b\|^2=\|a\|^2+\|b\|^2$ when $\langle a,b\rangle=0$) gives $\|x-w\|^2 = \|x-P_Wx\|^2+\|P_Wx-w\|^2 \geq \|x-P_Wx\|^2$, with equality iff $w=P_Wx$. <span class="qed">∎</span>
+            </div>
+            <p>For $W=\operatorname{span}\{u\}$ one-dimensional, this reduces to the familiar $P_Wx = \dfrac{\langle x,u\rangle}{\langle u,u\rangle}u$ (no need for $u$ to be unit-length; the normalization is absorbed into the denominator).</p>
 
-# Gram-Schmidt orthogonalization
-def gram_schmidt(vectors):
-    basis = []
-    for v in vectors:
-        w = v.copy()
-        for u in basis:
-            w -= np.dot(v, u) / np.dot(u, u) * u
-        if np.linalg.norm(w) > 1e-10:
-            w = w / np.linalg.norm(w)
-            basis.append(w)
-    return basis
+            <figure class="note-figure">
+                <img src="vector-spaces/figures/orthogonal_projection.png" alt="A vector x, its orthogonal projection onto a line W, and the residual vector connecting the projection to x, meeting at a right angle, with the Pythagorean identity verified numerically.">
+                <figcaption><strong>Figure — The residual $x-P_Wx$ is exactly what the theorem says it is: perpendicular to $W$.</strong> $x=(1.5,3)$ projected onto $W=\operatorname{span}\{(3,1)\}$. The right-angle marker at the foot of $P_Wx$ is not decorative — it is the theorem's own conclusion, and the printed identity $\|x\|^2=\|P_Wx\|^2+\|x-P_Wx\|^2$ ($11.25 = 5.62+5.62$) is the Pythagorean step inside the proof, verified numerically rather than only symbolically.</figcaption>
+            </figure>
 
-# Example
-v1 = np.array([1, 1, 0])
-v2 = np.array([1, 0, 1])
-v3 = np.array([0, 1, 1])
+            <h2 id="gram-schmidt">8. Gram–Schmidt orthogonalization</h2>
+            <p>The best-approximation formula above needs an orthonormal basis of $W$ to start from. Gram–Schmidt builds one from an arbitrary basis $v_1,\ldots,v_k$ by inductively subtracting off the projection onto everything already orthogonalized:</p>
+            <div class="math-block">
+                $$w_1=v_1,\qquad w_j = v_j - \sum_{i&lt;j}\frac{\langle v_j,w_i\rangle}{\langle w_i,w_i\rangle}w_i \ \ (j\geq2), \qquad u_i = \frac{w_i}{\|w_i\|}.$$
+            </div>
+            <p>Correctness is an induction on $j$ using exactly Section 7's theorem: assuming $w_1,\ldots,w_{j-1}$ (equivalently $u_1,\ldots,u_{j-1}$) are already an orthogonal basis of $W_{j-1}=\operatorname{span}\{v_1,\ldots,v_{j-1}\}$, the sum being subtracted is precisely $P_{W_{j-1}}v_j$, so $w_j = v_j - P_{W_{j-1}}v_j$ is (by the best-approximation theorem's proof) orthogonal to all of $W_{j-1}$, and nonzero because $v_j\notin W_{j-1}$ (linear independence of the original basis).</p>
 
-vectors = [v1, v2, v3]
-print(f"Linearly independent: {is_linearly_independent(vectors)}")
+            <figure class="note-figure">
+                <img src="vector-spaces/figures/gram_schmidt.png" alt="Two panels: left shows two non-orthogonal vectors v1 and v2 with the projection of v2 onto v1 and the resulting orthogonal residual w2; right shows the resulting orthonormal pair u1, u2 at a right angle, with their dot product confirmed near zero numerically.">
+                <figcaption><strong>Figure — Gram–Schmidt is repeated application of Section 7's projection formula.</strong> Left: $v_2$'s component along $u_1$ is subtracted off, leaving $w_2\perp u_1$ by construction — not a new idea, the same orthogonal-residual fact proved in Section 7. Right: normalizing gives an orthonormal pair; the printed dot product ($\approx5\times10^{-17}$) confirms orthogonality up to floating-point roundoff rather than merely asserting it.</figcaption>
+            </figure>
 
-orthogonal_basis = gram_schmidt(vectors)
-print("Orthogonal basis:")
-for i, v in enumerate(orthogonal_basis):
-    print(f"u{i+1} = {v}")
+            <h2 id="computation">9. Computation</h2>
+            <p>The figures above are generated by <code>vector-spaces/generate_figures.py</code>. The snippet below verifies the rank–nullity theorem on a concrete linear map, and confirms Cauchy–Schwarz including its equality case.</p>
+            <pre><code>import numpy as np
+
+# Rank-nullity on a concrete linear map R^4 -&gt; R^3
+A = np.array([
+    [1.0, 2.0, -1.0, 0.0],
+    [2.0, 4.0,  0.0, 1.0],
+    [1.0, 2.0,  1.0, 1.0],
+])
+rank = np.linalg.matrix_rank(A)
+n = A.shape[1]
+nullity = n - rank
+print(f"rank(A) = {rank}, nullity(A) = {nullity}, rank + nullity = {rank + nullity} (= n = {n})")
+
+# Cauchy-Schwarz: strict for generic vectors, equality exactly when parallel
+rng = np.random.default_rng(0)
+x = rng.normal(size=5)
+y = rng.normal(size=5)
+print(f"generic:  |&lt;x,y&gt;| = {abs(x @ y):.4f}  &lt;=  ||x|| ||y|| = {np.linalg.norm(x)*np.linalg.norm(y):.4f}")
+
+y_parallel = 3.0 * x
+lhs = abs(x @ y_parallel)
+rhs = np.linalg.norm(x) * np.linalg.norm(y_parallel)
+print(f"parallel: |&lt;x,y&gt;| = {lhs:.4f}  ==  ||x|| ||y|| = {rhs:.4f}")
 </code></pre>
+            <p>Actual output:</p>
+            <pre><code>rank(A) = 2, nullity(A) = 2, rank + nullity = 4 (= n = 4)
+generic:  |&lt;x,y&gt;| = 1.0838  &lt;=  ||x|| ||y|| = 1.8912
+parallel: |&lt;x,y&gt;| = 2.2240  ==  ||x|| ||y|| = 2.2240</code></pre>
+            <p>Confirms the rank–nullity theorem numerically (this particular $A$ has two independent columns, so a $2$-dimensional kernel), and Cauchy–Schwarz both as a strict inequality for generic vectors and as an exact equality once $y$ is forced parallel to $x$ — exactly the equality condition proved in Section 6.</p>
 
-            <h2>15. References</h2>
+            <h2 id="pitfalls">10. Common pitfalls</h2>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — A spanning set need not be a basis</span>
+                <p>Spanning only requires enough vectors; a spanning set with redundant (dependent) vectors is not a basis, and "the dimension" is not "however many spanning vectors happen to be on hand" — it is the size of an <em>independent</em> spanning set, well-defined only by the theorem of Section 4.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — The subspace test needs all three conditions</span>
+                <p>Closed under addition alone, or under scalar multiplication alone, is not sufficient. The set $\{(x,y):xy\geq0\}\subset\mathbb{R}^2$ is closed under scalar multiplication by nonnegative scalars but not under addition ($(1,0)$ and $(0,-1)\cdot(-1)=(0,1)$... more simply, $(1,-1)+(-1,1)$ type combinations easily leave such cone-like sets); the standard cautionary example is any single quadrant union or cone that is not a full linear subspace.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — "Orthogonal" and "orthonormal" are not the same word</span>
+                <p>Orthogonal only means pairwise perpendicular ($\langle u_i,u_j\rangle=0$ for $i\neq j$); orthonormal additionally requires unit length ($\langle u_i,u_i\rangle=1$). The clean projection formula $P_Wx=\sum_i\langle x,u_i\rangle u_i$ in Section 7 requires orthonormality specifically — for a merely orthogonal basis, each term needs the $\langle u_i,u_i\rangle$ normalization restored, exactly as in the one-dimensional formula noted after the theorem.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — Infinite-dimensional spaces need more care</span>
+                <p>$C[a,b]$ has no finite basis, and the Steinitz exchange argument of Section 4 as stated is a finite-dimensional argument; infinite-dimensional vector spaces do have bases (Hamel bases), but proving this in general requires the axiom of choice, and such bases are typically unusable in practice (uncountable, non-constructive). Function spaces are instead usually handled through the orthonormal-<em>sequence</em> machinery of Section 8 (e.g. Fourier series) rather than through a Hamel basis — a genuinely different and more useful notion of "basis" in that setting, outside this note's scope.</p>
+            </div>
+
+            <h2 id="connections">11. Connections</h2>
             <ul>
-                <li>Strang, G. (2016). <em>Introduction to Linear Algebra</em>.</li>
-                <li>Lay, D. C. (2015). <em>Linear Algebra and Its Applications</em>.</li>
-                <li>Hoffman, K., & Kunze, R. (1971). <em>Linear Algebra</em>.</li>
+                <li><strong><a href="matrices.html">Matrices</a> and <a href="eigenvalues.html">eigenvalues</a>.</strong> Column space, nullspace, rank, and eigenspaces are all subspaces in the sense of Section 2; the rank–nullity theorem proved here is what those notes' solvability and diagonalization arguments both quietly rely on.</li>
+                <li><strong>Regression (OLS).</strong> The fitted values $X\hat\beta$ in ordinary least squares are, by construction, the point of $\operatorname{col}(X)$ closest to $y$ in Euclidean norm — literally $P_{\operatorname{col}(X)}y$ in the notation of Section 7. The normal equations $X^\top(y-X\hat\beta)=0$ are exactly the orthogonality condition "$y-X\hat\beta \perp \operatorname{col}(X)$" from the best-approximation theorem, applied with $\langle\cdot,\cdot\rangle$ the standard dot product — OLS is orthogonal projection, not a separate idea that happens to look similar.</li>
+                <li><strong><a href="../econometrics/time-series-analysis.html">Time series analysis</a>.</strong> The partial autocorrelation function there is defined via "the best linear predictor of $X_t$ from $X_{t-1},\ldots,X_{t-h}$" — precisely $P_Wx$ of this note, with $W=\operatorname{span}\{X_{t-1},\ldots,X_{t-h}\}$ inside the (infinite-dimensional, but still inner-product) space of finite-variance random variables under $\langle Y,Z\rangle=\operatorname{Cov}(Y,Z)$.</li>
+            </ul>
+
+            <h2 id="references">12. References</h2>
+            <ul>
+                <li>Axler, S. (2024). <em>Linear Algebra Done Right</em> (4th ed.). Springer.</li>
+                <li>Halmos, P. R. (1974). <em>Finite-Dimensional Vector Spaces</em> (2nd ed.). Springer.</li>
+                <li>Strang, G. (2016). <em>Introduction to Linear Algebra</em> (5th ed.). Wellesley-Cambridge Press.</li>
             </ul>
         </section>
     </main>
@@ -199,4 +222,4 @@ for i, v in enumerate(orthogonal_basis):
         <p>&copy; Diogo Franquinho | Technical Notes</p>
     </footer>
 </body>
-</html> 
+</html>
