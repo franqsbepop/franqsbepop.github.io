@@ -21,153 +21,235 @@
 </head>
 <body>
     <nav class="top-nav">
-        <a href="../../index.html">← Back to Home</a> | 
+        <a href="../../index.html">← Back to Home</a> |
         <a href="../../index.html#notes">Notes</a>
     </nav>
 
     <main>
         <header>
             <h1>Eigenvalues and Eigenvectors</h1>
-            <p class="note-meta">Last updated: December 2024</p>
+            <p class="note-meta">Last updated: August 2026</p>
         </header>
 
         <section class="note-content">
             <div class="disclaimer">
                 <p><strong>Disclaimer:</strong> These are my personal notes compiled for my own reference and learning. They may contain errors, incomplete information, or personal interpretations. While I strive for accuracy, these notes are not peer-reviewed and should not be considered authoritative sources. Please consult official textbooks, research papers, or other reliable sources for academic or professional purposes.</p>
             </div>
-            
-            <h2>1. Definition</h2>
-            <p>For a square matrix $A$, a non-zero vector $v$ is an eigenvector if:</p>
-            <div class="math-block">
-                $$Av = \lambda v$$
-            </div>
-            <p>where $\lambda$ is the corresponding eigenvalue.</p>
 
-            <h2>2. Characteristic Equation</h2>
-            <p>The eigenvalues are solutions to the characteristic equation:</p>
-            <div class="math-block">
-                $$\det(A - \lambda I) = 0$$
-            </div>
-            <p>This is a polynomial equation in $\lambda$ of degree $n$ (where $A$ is $n \times n$).</p>
-
-            <h2>3. Finding Eigenvalues</h2>
-            <h3>3.1 For $2 \times 2$ Matrix</h3>
-            <p>For $A = \begin{bmatrix} a & b \\ c & d \end{bmatrix}$:</p>
-            <div class="math-block">
-                $$\det(A - \lambda I) = \begin{vmatrix} a-\lambda & b \\ c & d-\lambda \end{vmatrix} = (a-\lambda)(d-\lambda) - bc = 0$$
-            </div>
-            <p>This gives the quadratic equation:</p>
-            <div class="math-block">
-                $$\lambda^2 - (a+d)\lambda + (ad-bc) = 0$$
+            <div class="table-of-contents">
+                <h3>Contents</h3>
+                <ol>
+                    <li><a href="#motivation">Why invariant directions matter</a></li>
+                    <li><a href="#definitions">Eigenvalues, eigenvectors, eigenspaces</a></li>
+                    <li><a href="#characteristic-polynomial">The characteristic polynomial</a></li>
+                    <li><a href="#multiplicity">Algebraic vs. geometric multiplicity</a></li>
+                    <li><a href="#diagonalization">Diagonalization — and a subtlety about which field</a></li>
+                    <li><a href="#spectral-theorem">The spectral theorem for symmetric matrices</a></li>
+                    <li><a href="#power-method">The power method</a></li>
+                    <li><a href="#pca">Application: PCA as a Rayleigh-quotient problem</a></li>
+                    <li><a href="#dynamical-systems">Application: linear dynamical systems and companion matrices</a></li>
+                    <li><a href="#computation">Computation</a></li>
+                    <li><a href="#pitfalls">Common pitfalls</a></li>
+                    <li><a href="#connections">Connections</a></li>
+                    <li><a href="#references">References</a></li>
+                </ol>
             </div>
 
-            <h3>3.2 For Larger Matrices</h3>
-            <p>Use row operations or software to find roots of the characteristic polynomial.</p>
+            <h2 id="motivation">1. Why invariant directions matter</h2>
+            <p>A linear map $A: \mathbb{R}^n \to \mathbb{R}^n$ generally rotates, shears, and rescales vectors all at once, in a way that depends on direction. The question this note answers is: are there directions along which $A$ acts by pure scaling — no rotation, no shearing, just stretching or compressing? Such directions, when they exist, are exactly where the geometry of $A$ becomes one-dimensional and hence trivially easy to reason about: repeated application of $A$, matrix exponentials, stability of dynamical systems, and directions of maximal variance in data all reduce to scalar arithmetic once expressed along these directions. This is the entire reason eigenvalues are worth a dedicated theory rather than being an isolated curiosity of $2\times2$ examples.</p>
 
-            <h2>4. Finding Eigenvectors</h2>
-            <p>For each eigenvalue $\lambda$, solve the system:</p>
-            <div class="math-block">
-                $$(A - \lambda I)v = 0$$
+            <h2 id="definitions">2. Eigenvalues, eigenvectors, eigenspaces</h2>
+            <div class="note-box">
+                <span class="note-box-label">Definition</span>
+                <p>For a square matrix $A \in \mathbb{C}^{n\times n}$, a nonzero vector $v \in \mathbb{C}^n$ is an <strong>eigenvector</strong> of $A$ with <strong>eigenvalue</strong> $\lambda \in \mathbb{C}$ if</p>
+                <div class="math-block">$$Av = \lambda v.$$</div>
+                <p>For a fixed $\lambda$, the set $E_\lambda = \{v : Av = \lambda v\} = \ker(A-\lambda I)$ is the <strong>eigenspace</strong> of $\lambda$ — a genuine linear subspace of $\mathbb{C}^n$ (it is the kernel of the linear map $A-\lambda I$, and kernels of linear maps are always subspaces), containing all eigenvectors for $\lambda$ together with the zero vector.</p>
             </div>
-            <p>The solution space is the eigenspace corresponding to $\lambda$.</p>
+            <p>An eigenvector is defined only up to nonzero scalar multiple: if $v$ is an eigenvector, so is $cv$ for any $c\neq 0$, with the same eigenvalue. "The eigenvector for $\lambda$" is therefore an abuse of language for "a nonzero vector spanning (part of) $E_\lambda$" — see the pitfalls section for why this matters when comparing eigenvectors computed by different methods or software.</p>
 
-            <h2>5. Properties</h2>
-            <ul>
-                <li><strong>Trace:</strong> $\text{tr}(A) = \sum_{i=1}^n \lambda_i$</li>
-                <li><strong>Determinant:</strong> $\det(A) = \prod_{i=1}^n \lambda_i$</li>
-                <li><strong>Power:</strong> If $Av = \lambda v$, then $A^k v = \lambda^k v$</li>
-                <li><strong>Inverse:</strong> If $A$ is invertible, $A^{-1}v = \frac{1}{\lambda}v$</li>
-            </ul>
-
-            <h2>6. Diagonalization</h2>
-            <p>A matrix $A$ is diagonalizable if there exists an invertible matrix $P$ such that:</p>
-            <div class="math-block">
-                $$P^{-1}AP = D = \text{diag}(\lambda_1, \lambda_2, \ldots, \lambda_n)$$
+            <h2 id="characteristic-polynomial">3. The characteristic polynomial</h2>
+            <div class="note-box">
+                <span class="note-box-label">Theorem</span>
+                <p>$\lambda$ is an eigenvalue of $A$ if and only if $\det(A - \lambda I) = 0$.</p>
             </div>
-            <p>where the columns of $P$ are eigenvectors of $A$.</p>
-
-            <h2>7. Conditions for Diagonalization</h2>
-            <ul>
-                <li><strong>Sufficient:</strong> $A$ has $n$ linearly independent eigenvectors</li>
-                <li><strong>Necessary:</strong> All eigenvalues are real (for real matrices)</li>
-                <li><strong>Special Case:</strong> Symmetric matrices are always diagonalizable</li>
-            </ul>
-
-            <h2>8. Spectral Decomposition</h2>
-            <p>For a symmetric matrix $A$:</p>
-            <div class="math-block">
-                $$A = Q\Lambda Q^T$$
+            <div class="proof">
+                <span class="proof-label">Proof.</span> $\lambda$ is an eigenvalue iff $Av=\lambda v$ has a solution $v\neq 0$, iff $(A-\lambda I)v = 0$ has a nontrivial solution, iff $A-\lambda I$ is singular (a linear map with nontrivial kernel is not injective, hence not invertible on a finite-dimensional space), iff $\det(A-\lambda I) = 0$. <span class="qed">∎</span>
             </div>
-            <p>where $Q$ is orthogonal (eigenvectors) and $\Lambda$ is diagonal (eigenvalues).</p>
+            <p>The function $p_A(\lambda) = \det(A-\lambda I)$ is a degree-$n$ polynomial in $\lambda$ (the <strong>characteristic polynomial</strong>), so by the Fundamental Theorem of Algebra it has exactly $n$ roots over $\mathbb{C}$, counted with multiplicity. This is why every $n\times n$ matrix — real or complex — has exactly $n$ eigenvalues over $\mathbb{C}$, even though a real matrix need not have any real eigenvalues at all (Section 5 gives a concrete example). Because $p_A$ has real coefficients when $A$ is real, non-real roots come in conjugate pairs $a\pm bi$.</p>
 
-            <h2>9. Jordan Canonical Form</h2>
-            <p>When a matrix is not diagonalizable, it can be written as:</p>
-            <div class="math-block">
-                $$A = PJP^{-1}$$
-            </div>
-            <p>where $J$ is a block diagonal matrix with Jordan blocks.</p>
-
-            <h2>10. Applications</h2>
-            <h3>10.1 Principal Component Analysis (PCA)</h3>
-            <p>Eigenvalues of the covariance matrix give the variance explained by each principal component.</p>
-
-            <h3>10.2 Dynamical Systems</h3>
-            <p>For the system $x_{n+1} = Ax_n$, the long-term behavior depends on the eigenvalues of $A$.</p>
-
-            <h3>10.3 Quantum Mechanics</h3>
-            <p>Observables are represented by Hermitian matrices, and eigenvalues correspond to possible measurement outcomes.</p>
-
-            <h2>11. Power Method</h2>
-            <p>To find the dominant eigenvalue and eigenvector:</p>
-            <div class="math-block">
-                $$v_{k+1} = \frac{Av_k}{\|Av_k\|}$$
-            </div>
-            <p>The eigenvalue is approximated by:</p>
-            <div class="math-block">
-                $$\lambda \approx \frac{v_k^T A v_k}{v_k^T v_k}$$
+            <div class="note-box">
+                <span class="note-box-label">Worked example</span>
+                <p>For $A = \begin{pmatrix}2.0 & 0.6\\ 0.6 & 1.2\end{pmatrix}$:</p>
+                <div class="math-block">$$p_A(\lambda) = (2-\lambda)(1.2-\lambda) - 0.6^2 = \lambda^2 - 3.2\lambda + 2.04,$$</div>
+                <p>giving $\lambda = \dfrac{3.2 \pm \sqrt{3.2^2 - 4(2.04)}}{2} = \dfrac{3.2\pm\sqrt{2.08}}{2} \approx 2.321,\ 0.879$. This is the matrix used in the figure below.</p>
             </div>
 
-            <h2>12. Code Example</h2>
-            <pre><code># Python code for eigenvalues and eigenvectors
-import numpy as np
-from scipy import linalg
+            <div class="note-box">
+                <span class="note-box-label">Proposition (Trace and determinant as symmetric functions of the eigenvalues)</span>
+                <p>For $A\in\mathbb{C}^{n\times n}$ with eigenvalues $\lambda_1,\ldots,\lambda_n$ (with multiplicity), $\ \operatorname{tr}(A) = \sum_i \lambda_i$ and $\det(A) = \prod_i \lambda_i$.</p>
+            </div>
+            <p>This follows from writing $\det(\lambda I - A) = \prod_i(\lambda-\lambda_i)$ and comparing coefficients: the coefficient of $\lambda^{n-1}$ on the left is $-\operatorname{tr}(A)$ (a standard fact about expanding the determinant of $\lambda I - A$ along its diagonal-dominant structure) and on the right is $-\sum_i\lambda_i$; evaluating at $\lambda=0$ gives $\det(-A) = (-1)^n\det(A) = \prod_i(-\lambda_i) = (-1)^n\prod_i\lambda_i$. Verify against the worked example: $\operatorname{tr}(A) = 2+1.2 = 3.2 = 2.321+0.879$, and $\det(A) = 2.4-0.36=2.04 = 2.321\times0.879$.</p>
 
-# Create a matrix
-A = np.array([[4, -2], [-2, 4]])
+            <figure class="note-figure">
+                <img src="eigenvalues/figures/eigenvector_geometry.png" alt="Left panel: unit circle with the two eigenvector directions of a symmetric 2x2 matrix marked. Right panel: the image of the unit circle under the matrix, an ellipse, showing that only the eigenvector directions remain unrotated.">
+                <figcaption><strong>Figure — Eigenvectors as the only directions $A$ does not rotate.</strong> Left: the unit circle, with the two eigenvector directions of the worked-example matrix $A$ marked. Right: the image $\{Av : \|v\|=1\}$, an ellipse. The thin gray arrows show where twelve evenly-spaced sample directions land — every one of them is rotated away from its original direction. Only the two colored eigenvector axes map to themselves (scaled by $\lambda_1\approx2.32$ and $\lambda_2\approx0.88$ respectively), which is visually exactly the semi-major and semi-minor axes of the resulting ellipse — no coincidence, since $A$ is symmetric (Section 6).</figcaption>
+            </figure>
 
-# Find eigenvalues and eigenvectors
-eigenvals, eigenvecs = np.linalg.eig(A)
+            <h2 id="multiplicity">4. Algebraic vs. geometric multiplicity</h2>
+            <div class="note-box">
+                <span class="note-box-label">Definition</span>
+                <p>The <strong>algebraic multiplicity</strong> of eigenvalue $\lambda$ is its multiplicity as a root of $p_A$. The <strong>geometric multiplicity</strong> is $\dim E_\lambda$, the number of linearly independent eigenvectors it actually admits.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Proposition</span>
+                <p>$1 \leq \text{geometric multiplicity} \leq \text{algebraic multiplicity}$ for every eigenvalue.</p>
+            </div>
+            <p>The lower bound is immediate ($\lambda$ being an eigenvalue means $E_\lambda$ is nontrivial). For the upper bound: extend a basis $v_1,\ldots,v_k$ of $E_\lambda$ ($k=$ geometric multiplicity) to a basis of $\mathbb{C}^n$; in this basis $A$ has block form $\begin{pmatrix}\lambda I_k & B\\ 0 & C\end{pmatrix}$, so $p_A(\mu) = (\lambda-\mu)^k\, p_C(\mu)$, which exhibits $(\lambda-\mu)^k$ as a factor of $p_A$ — i.e. the algebraic multiplicity is at least $k$.</p>
+            <p>The inequality can be strict, and when it is, $A$ is called <strong>defective</strong> at that eigenvalue:</p>
+            <div class="note-box">
+                <span class="note-box-label">Example (A defective matrix)</span>
+                <p>$J = \begin{pmatrix}2 & 1\\ 0 & 2\end{pmatrix}$ has characteristic polynomial $(2-\lambda)^2$, so $\lambda=2$ has algebraic multiplicity $2$. But $J - 2I = \begin{pmatrix}0&1\\0&0\end{pmatrix}$ has rank $1$, so $\dim\ker(J-2I) = 1$: the geometric multiplicity is only $1$. There is genuinely only one independent eigenvector direction, $(1,0)^\top$, even though the characteristic polynomial "wants" two.</p>
+            </div>
 
-print("Eigenvalues:", eigenvals)
-print("Eigenvectors:")
-print(eigenvecs)
+            <h2 id="diagonalization">5. Diagonalization — and a subtlety about which field</h2>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Diagonalizability)</span>
+                <p>$A \in \mathbb{C}^{n\times n}$ is diagonalizable over $\mathbb{C}$ — i.e. $A = PDP^{-1}$ for some invertible $P\in\mathbb{C}^{n\times n}$ and diagonal $D$ — if and only if $\mathbb{C}^n$ has a basis of eigenvectors of $A$, if and only if the geometric multiplicity equals the algebraic multiplicity for every eigenvalue.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> If $A=PDP^{-1}$, the columns of $P$ satisfy $AP = PD$, i.e. $A p_i = d_i p_i$: they are eigenvectors, and they form a basis since $P$ is invertible. Conversely, if $v_1,\ldots,v_n$ is a basis of eigenvectors with eigenvalues $\lambda_1,\ldots,\lambda_n$, let $P=[v_1\,\cdots\,v_n]$ and $D=\operatorname{diag}(\lambda_1,\ldots,\lambda_n)$; then $AP=PD$ and $P$ is invertible (its columns are a basis), giving $A=PDP^{-1}$. The multiplicity restatement follows because a basis of eigenvectors exists iff the eigenspaces $E_{\lambda_i}$ together span $\mathbb{C}^n$, iff $\sum_i \dim E_{\lambda_i} = n$, iff (since geometric multiplicities never exceed algebraic ones and the algebraic multiplicities already sum to $n$) every eigenvalue has geometric multiplicity equal to its algebraic multiplicity. <span class="qed">∎</span>
+            </div>
 
-# Verify: Av = λv
-for i in range(len(eigenvals)):
-    lambda_i = eigenvals[i]
-    v_i = eigenvecs[:, i]
-    Av = A @ v_i
-    lambda_v = lambda_i * v_i
-    print(f"Av = {Av}")
-    print(f"λv = {lambda_v}")
-    print(f"Difference: {np.linalg.norm(Av - lambda_v)}")
+            <div class="note-box">
+                <span class="note-box-label">Corollary</span>
+                <p>If $A$ has $n$ distinct eigenvalues, $A$ is diagonalizable.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> It suffices to show eigenvectors $v_1,\ldots,v_k$ for distinct eigenvalues $\lambda_1,\ldots,\lambda_k$ are linearly independent, by induction on $k$. The base case $k=1$ is trivial. Suppose it holds for $k-1$ and that $\sum_{i=1}^k c_i v_i = 0$. Apply $A - \lambda_k I$: since $(A-\lambda_k I)v_k = 0$ and $(A-\lambda_k I)v_i = (\lambda_i-\lambda_k)v_i$ for $i&lt;k$, this gives $\sum_{i=1}^{k-1} c_i(\lambda_i-\lambda_k) v_i = 0$. By the inductive hypothesis $v_1,\ldots,v_{k-1}$ are independent, so $c_i(\lambda_i-\lambda_k)=0$ for $i&lt;k$; since $\lambda_i\neq\lambda_k$, $c_i=0$ for $i&lt;k$, and then $c_k v_k = 0$ forces $c_k=0$ too. With $n$ distinct eigenvalues this gives $n$ independent eigenvectors — a full basis. <span class="qed">∎</span>
+            </div>
 
-# Diagonalization
-D = np.diag(eigenvals)
-P = eigenvecs
-P_inv = np.linalg.inv(P)
+            <div class="note-box">
+                <span class="note-box-label">Proposition (Real diagonalizability is a strictly stronger requirement)</span>
+                <p>If $A\in\mathbb{R}^{n\times n}$ can be written $A=PDP^{-1}$ with $P, D$ <em>both real</em>, then every eigenvalue of $A$ is real.</p>
+            </div>
+            <p>This is immediate: the diagonal entries of $D$ are eigenvalues of $A$, and $D$ real means they are real. It is worth stating carefully because it is easy to conflate with the much more common (and, as stated, false) claim that "a real matrix needs real eigenvalues to be diagonalizable at all." That claim conflates diagonalizability over $\mathbb{C}$, which needs nothing about realness, with diagonalizability over $\mathbb{R}$ specifically:</p>
+            <div class="note-box">
+                <span class="note-box-label">Example (Diagonalizable over $\mathbb{C}$, not over $\mathbb{R}$)</span>
+                <p>The $90°$ rotation $R = \begin{pmatrix}0&-1\\1&0\end{pmatrix}$ has characteristic polynomial $\lambda^2+1$, so its eigenvalues are $\pm i$ — not real. Over $\mathbb{C}$, $R$ has two distinct eigenvalues and is therefore diagonalizable (by the corollary above) with complex $P$ and $D=\operatorname{diag}(i,-i)$. But $R$ has <em>no real eigenvector at all</em>: geometrically, $R$ rotates every nonzero real vector by $90°$, so no real direction is preserved. $R$ is diagonalizable over $\mathbb{C}$ and simultaneously has zero real eigenvectors to diagonalize it over $\mathbb{R}$.</p>
+            </div>
+            <p>Real eigenvalues are necessary but still not sufficient for diagonalizability over any field — the defective matrix $J$ above has the real eigenvalue $2$ (with multiplicity) and is not diagonalizable over $\mathbb{R}$ or $\mathbb{C}$, because its geometric multiplicity falls short.</p>
 
-# Verify: A = PDP^(-1)
-reconstructed = P @ D @ P_inv
-print(f"Original A:\n{A}")
-print(f"Reconstructed A:\n{reconstructed}")
+            <h2 id="spectral-theorem">6. The spectral theorem for symmetric matrices</h2>
+            <p>One class of matrices sidesteps every subtlety above entirely.</p>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Spectral theorem)</span>
+                <p>If $A\in\mathbb{R}^{n\times n}$ is symmetric ($A^\top=A$), then $A$ has $n$ real eigenvalues (with multiplicity) and an orthonormal basis of real eigenvectors: $A = Q\Lambda Q^\top$ for some orthogonal $Q$ ($Q^\top Q = I$) and real diagonal $\Lambda$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof (key lemmas; full induction cited below).</span>
+                <p><em>Eigenvalues are real.</em> Let $Av=\lambda v$ with $v\in\mathbb{C}^n\setminus\{0\}$ possibly complex, and let $v^*$ denote the conjugate transpose. Since $A$ is real and symmetric, $A^*=A$, so $v^*Av$ is real: $(v^*Av)^* = v^*A^*v^{**}=v^*Av$. Then $\lambda = \dfrac{v^*Av}{v^*v}$ is a ratio of two real numbers ($v^*v=\|v\|^2&gt;0$), hence real.</p>
+                <p><em>Eigenvectors for distinct eigenvalues are orthogonal.</em> If $Av_1=\lambda_1v_1$, $Av_2=\lambda_2v_2$, $\lambda_1\neq\lambda_2$: $\lambda_1 v_1^\top v_2 = (Av_1)^\top v_2 = v_1^\top A^\top v_2 = v_1^\top A v_2 = v_1^\top(\lambda_2 v_2) = \lambda_2 v_1^\top v_2$, so $(\lambda_1-\lambda_2)v_1^\top v_2=0$, forcing $v_1^\top v_2=0$.</p>
+                <p>These two facts handle the case of $n$ distinct eigenvalues completely. When eigenvalues repeat, producing a full <em>orthonormal</em> basis (rather than merely a basis) requires an inductive argument — peel off one real eigenvector, restrict $A$ to its orthogonal complement (which $A$ maps to itself precisely because $A$ is symmetric), and recurse on a smaller symmetric matrix. This step is standard but not repeated here; see Axler (2024, Ch. 7) or Strang (2016, §6.4) for the complete induction. <span class="qed">∎</span></p>
+            </div>
+            <p>The practical content: symmetric matrices are always diagonalizable, always over $\mathbb{R}$, and the diagonalizing change of basis can always be taken orthogonal — none of the three failure modes above (complex eigenvalues, defectiveness, non-orthogonality) can occur. This is exactly why covariance matrices (Section 8) and Hessians of smooth functions are so well-behaved: both are symmetric by construction.</p>
+
+            <h2 id="power-method">7. The power method</h2>
+            <div class="note-box">
+                <span class="note-box-label">Proposition</span>
+                <p>Suppose $A$ is diagonalizable with eigenpairs $(\lambda_i, u_i)$ ordered $|\lambda_1| &gt; |\lambda_2| \geq \cdots \geq |\lambda_n|$ (a strict gap at the top). For almost any starting vector $v_0$, the normalized iterates</p>
+                <div class="math-block">$$v_{k} = \frac{Av_{k-1}}{\|Av_{k-1}\|}$$</div>
+                <p>converge to $\pm u_1/\|u_1\|$, with the alignment error shrinking at rate $O\big(|\lambda_2/\lambda_1|^{k}\big)$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> Write $v_0 = \sum_i c_i u_i$ in the eigenbasis; "almost any" excludes the measure-zero set with $c_1=0$. Then $A^k v_0 = \sum_i c_i\lambda_i^k u_i = \lambda_1^k\Big(c_1 u_1 + \sum_{i\geq2} c_i\big(\lambda_i/\lambda_1\big)^k u_i\Big)$. Since $|\lambda_i/\lambda_1|&lt;1$ for $i\geq2$, the sum vanishes as $k\to\infty$, so $A^kv_0/\lambda_1^k \to c_1u_1$, and normalizing removes the (possibly complex, but here real and sign-ambiguous) scalar $\lambda_1^kc_1$, leaving $v_k \to \pm u_1/\|u_1\|$ at the geometric rate governed by the largest excluded ratio $|\lambda_2/\lambda_1|$. <span class="qed">∎</span>
+            </div>
+
+            <figure class="note-figure">
+                <img src="eigenvalues/figures/power_iteration.png" alt="Log-scale plot of the alignment error between the power-iteration direction and the true dominant eigenvector versus iteration number, decaying linearly on the log scale exactly matching the predicted |lambda_2/lambda_1|^2k rate.">
+                <figcaption><strong>Figure — The convergence rate is not a rule of thumb, it is exactly $|\lambda_2/\lambda_1|$ per step.</strong> A random $6\times6$ symmetric matrix with prescribed eigenvalues $\{5, 3, -2, 1.5, -1, 0.5\}$ is iterated from a random starting vector. The measured alignment error (black) sits exactly on top of the theoretical rate $|\lambda_2/\lambda_1|^{2k} = 0.6^{2k}$ derived above (dashed) — a direct numerical confirmation of the proof, not just the qualitative claim "it converges."</figcaption>
+            </figure>
+
+            <h2 id="pca">8. Application: PCA as a Rayleigh-quotient problem</h2>
+            <p>Given mean-centered data with (symmetric, positive semi-definite) sample covariance matrix $\hat\Sigma$, the variance of the data projected onto a unit direction $v$ is exactly the <strong>Rayleigh quotient</strong> $v^\top\hat\Sigma v$. Principal component analysis asks: which direction maximizes this?</p>
+            <div class="note-box">
+                <span class="note-box-label">Proposition</span>
+                <p>$\max_{\|v\|=1} v^\top\hat\Sigma v = \lambda_1$, the largest eigenvalue of $\hat\Sigma$, attained at $v=u_1$, its corresponding (unit) eigenvector.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> Maximize $v^\top\hat\Sigma v$ subject to $v^\top v=1$ via a Lagrange multiplier: $\mathcal{L}(v,\mu) = v^\top\hat\Sigma v - \mu(v^\top v - 1)$. Setting $\nabla_v\mathcal L = 2\hat\Sigma v - 2\mu v = 0$ gives exactly the eigenvector equation $\hat\Sigma v = \mu v$: every critical point is an eigenvector, with objective value $v^\top\hat\Sigma v = \mu v^\top v = \mu$ at that point. The maximum over this finite candidate set is achieved at the largest eigenvalue, $\mu=\lambda_1$. (By the spectral theorem, $\hat\Sigma$ being symmetric guarantees real eigenvalues and an orthonormal eigenbasis, so this candidate set is exhaustive and orthogonal — the same argument applied on the orthogonal complement of $u_1$ recovers $\lambda_2$ as the second principal direction, and so on.) <span class="qed">∎</span>
+            </div>
+            <p>So "the direction of maximum variance" and "the top eigenvector of the covariance matrix" are not merely correlated facts about PCA — the second is the closed-form solution to the optimization problem defining the first. This is a special case of the general Courant–Fischer min-max theorem for symmetric matrices (see Horn &amp; Johnson, 2013, §4.2).</p>
+
+            <figure class="note-figure">
+                <img src="eigenvalues/figures/pca_variance_direction.png" alt="Left panel: scatter plot of correlated 2D data with the two principal axes drawn as arrows. Right panel: the variance of the data projected onto direction theta as a function of theta, showing a clean sinusoidal curve peaking exactly at the top eigenvalue and troughing at the bottom eigenvalue." >
+                <figcaption><strong>Figure — The variance-maximizing direction is exactly the top eigenvector.</strong> Left: 400 samples from a correlated bivariate Gaussian, with the two eigenvectors of the sample covariance matrix drawn (scaled by $2\sqrt{\lambda_i}$). Right: the Rayleigh quotient $v(\theta)^\top\hat\Sigma\,v(\theta)$ swept over every direction $\theta\in[0,\pi]$ — its maximum ($\lambda_1$) and minimum ($\lambda_2$) are attained exactly at the two eigenvector directions from the left panel, as the proposition above guarantees, not merely approximately.</figcaption>
+            </figure>
+
+            <h2 id="dynamical-systems">9. Application: linear dynamical systems and companion matrices</h2>
+            <p>For the linear recursion $\mathbf{x}_{t} = A\mathbf{x}_{t-1}$, iterating gives $\mathbf{x}_t = A^t\mathbf{x}_0$. If $A$ is diagonalizable with eigenpairs $(\lambda_i,u_i)$ and $\mathbf{x}_0 = \sum_i c_iu_i$, then exactly as in the power-method proof, $\mathbf{x}_t = \sum_i c_i\lambda_i^t u_i$. The long-run behavior is governed entirely by $|\lambda_1|$, the <strong>spectral radius</strong>: the system contracts to $0$ if $|\lambda_1|&lt;1$, is bounded but non-decaying if $|\lambda_1|=1$, and diverges if $|\lambda_1|&gt;1$.</p>
+            <p>This is precisely the mechanism behind the AR($p$) causality condition derived in <a href="../econometrics/time-series-analysis.html">the time series analysis note</a> (Section 5 there), made explicit here. Writing the AR($p$) recursion $X_t = \sum_{i=1}^p\phi_iX_{t-i}+\varepsilon_t$ in companion form with state $\mathbf{v}_t=(X_t,\ldots,X_{t-p+1})^\top$:</p>
+            <div class="math-block">
+                $$\mathbf{v}_t = C\mathbf{v}_{t-1} + e_1\varepsilon_t, \qquad C = \begin{pmatrix}\phi_1 & \phi_2 & \cdots & \phi_{p-1} & \phi_p\\ 1 & 0 & \cdots & 0 & 0\\ 0 & 1 & \cdots & 0 & 0\\ \vdots & & \ddots & & \vdots\\ 0 & 0 & \cdots & 1 & 0\end{pmatrix}, \qquad e_1=\begin{pmatrix}1\\0\\\vdots\\0\end{pmatrix}.$$
+            </div>
+            <p>Expanding $\det(\lambda I - C)$ along the first row gives $\det(\lambda I-C) = \lambda^p - \phi_1\lambda^{p-1}-\cdots-\phi_p$, and substituting $\lambda = 1/z$ and multiplying through by $z^p$ recovers exactly $z^p\det(1/z\cdot I - C) = 1-\phi_1z-\cdots-\phi_pz^p = \Phi(z)$, the AR characteristic polynomial from the time-series note. So the eigenvalues of the companion matrix $C$ are exactly the <em>reciprocals</em> of the roots of $\Phi$: "roots of $\Phi$ outside the unit circle" (the stated causality condition) is algebraically identical to "eigenvalues of $C$ inside the unit circle" (the spectral-radius stability condition derived in this section) — two descriptions of one fact, one from time-series econometrics and one from linear dynamical systems.</p>
+
+            <h2 id="computation">10. Computation</h2>
+            <p>The figures above are generated by <code>eigenvalues/generate_figures.py</code> in this note's directory (runnable via <code>python3 generate_figures.py</code>, requiring numpy and matplotlib). The snippet below verifies, numerically, three of the specific claims made above: the trace/determinant identities, the defective Jordan block's rank deficiency, and the complex eigenvalues of a real rotation matrix.</p>
+            <pre><code>import numpy as np
+
+A = np.array([[2.0, 0.6], [0.6, 1.2]])
+vals, vecs = np.linalg.eigh(A)          # symmetric solver: guarantees real, orthonormal output
+print("eigenvalues:", vals)
+print("trace(A) =", np.trace(A), " sum(eigenvalues) =", vals.sum())
+print("det(A)   =", np.linalg.det(A), " prod(eigenvalues) =", vals.prod())
+
+J = np.array([[2.0, 1.0], [0.0, 2.0]])  # defective: algebraic mult. 2, geometric mult. 1
+print("rank(J - 2I) =", np.linalg.matrix_rank(J - 2 * np.eye(2)), "(expect 1, not 0)")
+
+R = np.array([[0.0, -1.0], [1.0, 0.0]])  # 90-degree rotation: no real eigenvector
+print("eigenvalues of R:", np.linalg.eig(R).eigenvalues)
 </code></pre>
+            <p>Actual output:</p>
+            <pre><code>eigenvalues: [0.87888974 2.32111026]
+trace(A) = 3.2  sum(eigenvalues) = 3.2
+det(A)   = 2.04  prod(eigenvalues) = 2.04
+rank(J - 2I) = 1 (expect 1, not 0)
+eigenvalues of R: [0.+1.j 0.-1.j]
+</code></pre>
+            <p>Confirms, respectively: the trace/determinant proposition of Section 3; that $J$ is genuinely defective (rank $1$, not $0$ — a full-rank-deficient $A-\lambda I$ would mean geometric multiplicity $2$, matching the algebraic multiplicity, which is not the case here); and the rotation matrix's non-real spectrum from Section 5.</p>
 
-            <h2>13. References</h2>
+            <h2 id="pitfalls">11. Common pitfalls</h2>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — "Real matrix needs real eigenvalues to be diagonalizable"</span>
+                <p>False as a blanket statement (Section 5). Diagonalizability over $\mathbb{C}$ requires nothing about realness — any matrix with $n$ distinct eigenvalues qualifies, real or not. Real eigenvalues are necessary only for diagonalizability <em>by a real change of basis</em> specifically, which is what "diagonalizable" silently means in most applied contexts (e.g. PCA, dynamical systems with real state), but is a different, stronger claim from diagonalizability in general.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — Algebraic multiplicity $\neq$ geometric multiplicity, in general</span>
+                <p>A repeated root of the characteristic polynomial does not guarantee a matching number of independent eigenvectors (Section 4's Jordan block). Defective matrices are not diagonalizable at all — not over $\mathbb R$, not over $\mathbb C$ — and require the Jordan normal form instead, which is not derived in this note; see Strang (2016, §6.6) or Horn &amp; Johnson (2013, Ch. 3).</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — "Diagonalizable" does not imply "orthogonally diagonalizable"</span>
+                <p>Every matrix with $n$ distinct eigenvalues is diagonalizable, but the change-of-basis matrix $P$ is orthogonal ($P^{-1}=P^\top$) only when $A$ is symmetric (more generally, normal: $AA^\top=A^\top A$). For a generic diagonalizable non-symmetric matrix, $P$'s columns are linearly independent eigenvectors but need not be orthogonal, or even unit length.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — Treating "the" eigenvector as unique</span>
+                <p>Eigenvectors are only determined up to a nonzero scalar (Section 2); different libraries or algorithms may return eigenvectors scaled or sign-flipped relative to each other for the exact same matrix, which is not a numerical error. Only the one-dimensional eigenspace (or higher-dimensional, for repeated eigenvalues) is well-defined, not a single canonical vector within it.</p>
+            </div>
+
+            <h2 id="connections">12. Connections</h2>
             <ul>
-                <li>Strang, G. (2016). <em>Introduction to Linear Algebra</em>.</li>
-                <li>Lay, D. C. (2015). <em>Linear Algebra and Its Applications</em>.</li>
-                <li>Hoffman, K., & Kunze, R. (1971). <em>Linear Algebra</em>.</li>
+                <li><strong><a href="../econometrics/time-series-analysis.html">Time series analysis</a>.</strong> The AR($p$) causality condition is, by the derivation in Section 9, literally the same spectral-radius stability condition as this note's dynamical-systems section, applied to the AR process's companion matrix.</li>
+                <li><strong><a href="vector-spaces.html">Vector spaces</a>.</strong> Eigenspaces are subspaces; the diagonalization theorem is a direct-sum decomposition of $\mathbb{C}^n$ into eigenspaces exactly when their dimensions add up to $n$.</li>
+                <li><strong><a href="../calculus/multivariable-calculus.html">Multivariable calculus</a>.</strong> The second-derivative test for a critical point of $f(x,y)$ (that note's Section 7.1) classifies the point by the sign of $D = f_{xx}f_{yy}-f_{xy}^2 = \det(\text{Hessian})$ — exactly the sign of the product of the (necessarily real, by the spectral theorem) Hessian eigenvalues, since the Hessian is symmetric. A positive-definite Hessian (both eigenvalues positive) is a local minimum; this note's Rayleigh-quotient machinery is what makes that statement precise in higher dimensions.</li>
+                <li><strong>Probabilistic models (covariance structure).</strong> Every covariance matrix is symmetric positive semi-definite, so the spectral theorem applies unconditionally: its eigendecomposition always exists, is always real, and is always orthogonal — the mathematical fact underlying both PCA (Section 8) and the shape of Gaussian confidence ellipsoids.</li>
+            </ul>
+
+            <h2 id="references">13. References</h2>
+            <ul>
+                <li>Strang, G. (2016). <em>Introduction to Linear Algebra</em> (5th ed.). Wellesley-Cambridge Press.</li>
+                <li>Axler, S. (2024). <em>Linear Algebra Done Right</em> (4th ed.). Springer.</li>
+                <li>Horn, R. A., &amp; Johnson, C. R. (2013). <em>Matrix Analysis</em> (2nd ed.). Cambridge University Press.</li>
+                <li>Trefethen, L. N., &amp; Bau, D. (1997). <em>Numerical Linear Algebra</em>. SIAM.</li>
             </ul>
         </section>
     </main>
@@ -176,4 +258,4 @@ print(f"Reconstructed A:\n{reconstructed}")
         <p>&copy; Diogo Franquinho | Technical Notes</p>
     </footer>
 </body>
-</html> 
+</html>
