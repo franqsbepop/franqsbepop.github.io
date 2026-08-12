@@ -21,125 +21,194 @@
 </head>
 <body>
     <nav class="top-nav">
-        <a href="../../index.html">← Back to Home</a> | 
+        <a href="../../index.html">← Back to Home</a> |
         <a href="../../index.html#notes">Notes</a>
     </nav>
 
     <main>
         <header>
             <h1>Causal Inference</h1>
-            <p class="note-meta">Last updated: December 2024</p>
+            <p class="note-meta">Last updated: August 2026</p>
         </header>
 
         <section class="note-content">
             <div class="disclaimer">
                 <p><strong>Disclaimer:</strong> These are my personal notes compiled for my own reference and learning. They may contain errors, incomplete information, or personal interpretations. While I strive for accuracy, these notes are not peer-reviewed and should not be considered authoritative sources. Please consult official textbooks, research papers, or other reliable sources for academic or professional purposes.</p>
             </div>
-            
-            <h2>1. Potential Outcomes Framework</h2>
-            <p>For each unit $i$, we have potential outcomes:</p>
-            <div class="math-block">
-                $$Y_i(1): \text{outcome if treated}$$
-                $$Y_i(0): \text{outcome if not treated}$$
-            </div>
-            <p>The individual treatment effect is:</p>
-            <div class="math-block">
-                $$\tau_i = Y_i(1) - Y_i(0)$$
+
+            <div class="table-of-contents">
+                <h3>Contents</h3>
+                <ol>
+                    <li><a href="#potential-outcomes">Potential outcomes and the fundamental problem</a></li>
+                    <li><a href="#assumptions">Identification assumptions, and why each is needed</a></li>
+                    <li><a href="#naive-bias">What a naive comparison actually estimates</a></li>
+                    <li><a href="#randomization">Randomized experiments</a></li>
+                    <li><a href="#iv">Instrumental variables and the Wald estimator</a></li>
+                    <li><a href="#rdd">Regression discontinuity</a></li>
+                    <li><a href="#did">Difference-in-differences and parallel trends</a></li>
+                    <li><a href="#propensity">The propensity score theorem</a></li>
+                    <li><a href="#computation">Computation</a></li>
+                    <li><a href="#pitfalls">Common pitfalls</a></li>
+                    <li><a href="#connections">Connections</a></li>
+                    <li><a href="#references">References</a></li>
+                </ol>
             </div>
 
-            <h2>2. Average Treatment Effect (ATE)</h2>
-            <p>The average treatment effect is:</p>
-            <div class="math-block">
-                $$\tau = E[Y_i(1) - Y_i(0)] = E[Y_i(1)] - E[Y_i(0)]$$
+            <h2 id="potential-outcomes">1. Potential outcomes and the fundamental problem</h2>
+            <div class="note-box">
+                <span class="note-box-label">Definition (Potential outcomes)</span>
+                <p>For unit $i$ and binary treatment $D_i\in\{0,1\}$, $Y_i(1)$ and $Y_i(0)$ are the outcomes that <em>would</em> occur under treatment and control respectively. The individual treatment effect is $Y_i(1)-Y_i(0)$; the observed outcome is $Y_i = D_iY_i(1)+(1-D_i)Y_i(0)$.</p>
             </div>
-            <p>We can only observe one potential outcome per unit (fundamental problem of causal inference).</p>
+            <p>The <strong>Average Treatment Effect</strong> is $\mathrm{ATE}=E[Y_i(1)-Y_i(0)]$; the <strong>Average Treatment Effect on the Treated</strong> is $\mathrm{ATT}=E[Y_i(1)-Y_i(0)\mid D_i=1]$ — a different quantity in general, since the treated population need not resemble the population at large.</p>
+            <div class="note-box">
+                <span class="note-box-label">The fundamental problem of causal inference</span>
+                <p>For any unit $i$, only one of $Y_i(1),Y_i(0)$ is ever observed — whichever $D_i$ selects. The individual treatment effect is not a quantity any amount of data on unit $i$ alone can recover; every method in this note instead identifies some <em>population-level average</em> by substituting a comparison group for unit $i$'s unobserved counterfactual.</p>
+            </div>
+            <p>This framing matters because it makes precise what regression coefficients estimate under what conditions — and, by the same token, precisely why <a href="regression-methods.html">the regression methods note</a>'s OLS machinery does not automatically answer a causal question just because it is applied to observational data.</p>
 
-            <h2>3. Assumptions for Causal Inference</h2>
+            <h2 id="assumptions">2. Identification assumptions, and why each is needed</h2>
             <ul>
-                <li><strong>Stable Unit Treatment Value Assumption (SUTVA):</strong> No interference between units</li>
-                <li><strong>Ignorability:</strong> $(Y_i(1), Y_i(0)) \perp\!\!\!\perp D_i | X_i$</li>
-                <li><strong>Overlap:</strong> $0 < P(D_i = 1|X_i) < 1$ for all $X_i$</li>
+                <li><strong>SUTVA</strong> (Stable Unit Treatment Value Assumption): unit $i$'s potential outcomes depend only on $i$'s own treatment, not on others' treatment status (no interference/spillovers) and there is only one version of "treated" (no hidden variation). <em>Why needed:</em> without it, $Y_i(1)$ is not even well-defined — "$i$ treated" could mean different things depending on who else is treated. Failure example: vaccinating one person in a population changes the disease exposure of untreated neighbors (herd immunity), so their $Y_i(0)$ is not a fixed number independent of the treatment assignment of others.</li>
+                <li><strong>Ignorability / unconfoundedness</strong>: $(Y_i(0),Y_i(1)) \perp D_i \mid X_i$ — conditional on observed covariates $X_i$, treatment assignment carries no information about potential outcomes. <em>Why needed:</em> without it, any comparison between treated and untreated groups conflates the treatment effect with pre-existing differences (Section 3 makes this precise). Failure example: sicker patients are more likely to receive an aggressive treatment, so treated and untreated patients differ in prognosis even before treatment, for reasons related to the very outcome being measured.</li>
+                <li><strong>Overlap / positivity</strong>: $0&lt;P(D_i=1\mid X_i)&lt;1$ for every value of $X_i$ with positive probability. <em>Why needed:</em> if some covariate stratum is always (or never) treated, there is no comparison group at that stratum to estimate a counterfactual from — the data simply contains no information about what would happen otherwise for those units, however large the sample.</li>
             </ul>
 
-            <h2>4. Randomized Experiments</h2>
-            <p>In randomized experiments, treatment assignment is independent of potential outcomes:</p>
-            <div class="math-block">
-                $$(Y_i(1), Y_i(0)) \perp\!\!\!\perp D_i$$
+            <h2 id="naive-bias">3. What a naive comparison actually estimates</h2>
+            <div class="note-box">
+                <span class="note-box-label">Proposition (Decomposition of the naive difference in means)</span>
+                <p>$$E[Y_i\mid D_i=1] - E[Y_i\mid D_i=0] = \underbrace{E[Y_i(1)-Y_i(0)\mid D_i=1]}_{\mathrm{ATT}} + \underbrace{E[Y_i(0)\mid D_i=1] - E[Y_i(0)\mid D_i=0]}_{\text{selection bias}}.$$</p>
             </div>
-            <p>The simple difference-in-means estimator is unbiased:</p>
-            <div class="math-block">
-                $$\hat{\tau} = \frac{1}{n_1}\sum_{i:D_i=1} Y_i - \frac{1}{n_0}\sum_{i:D_i=0} Y_i$$
+            <div class="proof">
+                <span class="proof-label">Proof.</span> $E[Y_i\mid D_i=1]=E[Y_i(1)\mid D_i=1]$ and $E[Y_i\mid D_i=0]=E[Y_i(0)\mid D_i=0]$ directly from $Y_i=D_iY_i(1)+(1-D_i)Y_i(0)$. Add and subtract $E[Y_i(0)\mid D_i=1]$:
+                $$E[Y_i(1)\mid D_i=1] - E[Y_i(0)\mid D_i=0] = \big(E[Y_i(1)\mid D_i=1]-E[Y_i(0)\mid D_i=1]\big) + \big(E[Y_i(0)\mid D_i=1]-E[Y_i(0)\mid D_i=0]\big).$$
+                The first bracket is $\mathrm{ATT}$ by definition; the second is the selection bias term. <span class="qed">∎</span>
             </div>
+            <p>The selection bias term compares what the treated group's outcome <em>would have been without treatment</em> to the control group's actual outcome — a difference that has nothing to do with the treatment effect and vanishes only under ignorability, since $(Y_i(0))\perp D_i \Rightarrow E[Y_i(0)\mid D_i=1]=E[Y_i(0)\mid D_i=0]$. This decomposition is the formal version of "correlation is not causation": the naive comparison always estimates $\mathrm{ATT}+\text{selection bias}$, and every identification strategy in this note is a different way of arguing the selection bias term is zero (or of estimating it separately, as in DiD, Section 7).</p>
 
-            <h2>5. Instrumental Variables (IV)</h2>
-            <p>When treatment is endogenous, we need an instrument $Z_i$ that satisfies:</p>
+            <h2 id="randomization">4. Randomized experiments</h2>
+            <div class="note-box">
+                <span class="note-box-label">Proposition</span>
+                <p>If $D_i$ is assigned independently of $(Y_i(0),Y_i(1))$ (e.g. by a coin flip), then ignorability holds unconditionally, and $E[Y_i\mid D_i=1]-E[Y_i\mid D_i=0]$ is unbiased for the ATE.</p>
+            </div>
+            <p>This is immediate from Section 3: random assignment makes $D_i\perp(Y_i(0),Y_i(1))$ by construction (not by an assumption requiring justification from domain knowledge), so the selection bias term is exactly zero and $\mathrm{ATT}=\mathrm{ATE}$ (the treated group is, in expectation, a random sample of the whole population). This is precisely why randomized experiments are the benchmark the rest of this note's methods are built to approximate under weaker, observational conditions.</p>
+
+            <h2 id="iv">5. Instrumental variables and the Wald estimator</h2>
+            <p>When treatment is not randomly assigned and no covariate set plausibly satisfies ignorability, an instrument $Z_i$ can substitute for randomization if it satisfies:</p>
             <ul>
-                <li><strong>Relevance:</strong> $Cov(Z_i, D_i) \neq 0$</li>
-                <li><strong>Exclusion:</strong> $Z_i$ affects $Y_i$ only through $D_i$</li>
-                <li><strong>Exogeneity:</strong> $Z_i \perp\!\!\!\perp \epsilon_i$</li>
+                <li><strong>Relevance</strong>: $\mathrm{Cov}(Z_i,D_i)\neq0$ — the instrument actually moves treatment.</li>
+                <li><strong>Exclusion restriction</strong>: $Z_i$ affects $Y_i$ only through $D_i$, not directly.</li>
+                <li><strong>Independence</strong>: $Z_i$ is as good as randomly assigned — independent of $(Y_i(0),Y_i(1))$.</li>
             </ul>
-            <p>The IV estimator is:</p>
-            <div class="math-block">
-                $$\hat{\tau}_{IV} = \frac{Cov(Z_i, Y_i)}{Cov(Z_i, D_i)}$$
+            <div class="note-box">
+                <span class="note-box-label">Derivation (Wald estimator)</span>
+                <p>Under a constant-effects linear model $Y_i=\alpha+\tau D_i+u_i$ with $\mathrm{Cov}(Z_i,u_i)=0$ (implied by independence and exclusion): $\mathrm{Cov}(Z_i,Y_i) = \tau\,\mathrm{Cov}(Z_i,D_i) + \mathrm{Cov}(Z_i,u_i) = \tau\,\mathrm{Cov}(Z_i,D_i)$, so</p>
+                <div class="math-block">$$\tau_{\mathrm{IV}} = \frac{\mathrm{Cov}(Z_i,Y_i)}{\mathrm{Cov}(Z_i,D_i)},$$</div>
+                <p>well-defined precisely because relevance rules out division by zero.</p>
+            </div>
+            <p><strong>Two-stage least squares</strong> generalizes this beyond a single binary instrument: regress $D$ on $Z$ (and covariates) to get fitted values $\hat D$, then regress $Y$ on $\hat D$. By <a href="regression-methods.html">the regression methods note</a>'s projection view of OLS (Section 2 there), $\hat D=P_{\mathrm{col}(Z)}D$ is exactly the part of $D$'s variation spanned by the instrument — 2SLS estimates the causal effect using only the treatment variation that the (assumed exogenous) instrument itself explains, discarding the rest as potentially confounded.</p>
+
+            <h2 id="rdd">6. Regression discontinuity</h2>
+            <p>When treatment is assigned by whether a running variable $X_i$ crosses a known cutoff $c$ (e.g. a test score threshold for a scholarship), units just above and just below $c$ are, absent any special reason for anything else to also change discontinuously at $c$, comparable — differing systematically only in treatment status.</p>
+            <div class="note-box">
+                <span class="note-box-label">Definition (Sharp RDD estimand)</span>
+                <p>$$\tau_{\mathrm{RDD}} = \lim_{x\to c^+} E[Y_i\mid X_i=x] \;-\; \lim_{x\to c^-} E[Y_i\mid X_i=x].$$</p>
+            </div>
+            <p>This is, precisely, a claim that $x\mapsto E[Y_i\mid X_i=x]$ has a <strong>jump discontinuity</strong> at $c$ in the sense of <a href="../mathematical-analysis/continuity.html">the continuity note</a> (Section 4 there) — the one-sided limits both exist, and their difference (rather than their common value, which would signal no effect) is the causal estimate. In practice, each one-sided limit is estimated by local linear regression on data within a bandwidth $h$ of $c$, exactly the two separate fits shown in the figure below.</p>
+
+            <figure class="note-figure">
+                <img src="causal-inference/figures/rdd_discontinuity.png" alt="Scatter plot of an outcome variable against a running variable, with local linear regression fits on either side of a cutoff at zero, showing a vertical jump between the two fitted lines at the cutoff.">
+                <figcaption><strong>Figure — RDD is literally a one-sided-limit estimation problem.</strong> Simulated data with a true jump $\tau=2.0$ at the cutoff $X=0$. Local linear regressions fit separately on each side within a bandwidth $h=0.2$ (shaded) estimate the two one-sided limits; their difference, $\hat\tau_{\mathrm{RDD}}=1.89$, recovers the true jump closely. Points far from the cutoff (outside the shaded band) are shown for context but not used in the local estimates — a design choice, not an incidental one: local linear regression trades away the far-from-cutoff data specifically to avoid the discontinuity estimate being contaminated by curvature in $E[Y\mid X=x]$ unrelated to the treatment jump itself.</figcaption>
+            </figure>
+
+            <h2 id="did">7. Difference-in-differences and parallel trends</h2>
+            <p>With outcomes observed pre- and post-treatment for both a treated and an untreated group, DiD identifies a treatment effect under an assumption weaker than unconditional ignorability:</p>
+            <div class="note-box">
+                <span class="note-box-label">Parallel trends assumption</span>
+                <p>$$E[Y_i(0)_{\mathrm{post}} - Y_i(0)_{\mathrm{pre}} \mid D_i=1] = E[Y_i(0)_{\mathrm{post}} - Y_i(0)_{\mathrm{pre}} \mid D_i=0]$$</p>
+                <p>— absent treatment, the treated group's outcome would have <em>trended</em> the same as the control group's, even if their <em>levels</em> differ (unlike ignorability, this permits arbitrary time-invariant differences between groups).</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Proposition</span>
+                <p>Under parallel trends, $\widehat{\mathrm{ATT}} = \big(\bar Y_{1,\mathrm{post}}-\bar Y_{1,\mathrm{pre}}\big) - \big(\bar Y_{0,\mathrm{post}}-\bar Y_{0,\mathrm{pre}}\big)$ is unbiased for the ATT in the post period.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> $\bar Y_{1,\mathrm{post}}-\bar Y_{1,\mathrm{pre}} = E[Y_i(1)_{\mathrm{post}}-Y_i(0)_{\mathrm{pre}}\mid D_i=1]$ (the treated group's pre-period outcome is $Y_i(0)_{\mathrm{pre}}$, since treatment has not occurred yet). Add and subtract $E[Y_i(0)_{\mathrm{post}}\mid D_i=1]$: this equals $\mathrm{ATT} + E[Y_i(0)_{\mathrm{post}}-Y_i(0)_{\mathrm{pre}}\mid D_i=1]$. Subtracting the control group's observed change $\bar Y_{0,\mathrm{post}}-\bar Y_{0,\mathrm{pre}}=E[Y_i(0)_{\mathrm{post}}-Y_i(0)_{\mathrm{pre}}\mid D_i=0]$ and invoking parallel trends cancels the trend terms exactly, leaving $\mathrm{ATT}$. <span class="qed">∎</span>
             </div>
 
-            <h2>6. Regression Discontinuity Design (RDD)</h2>
-            <p>When treatment assignment depends on a running variable $X_i$ with a cutoff $c$:</p>
-            <div class="math-block">
-                $$D_i = \mathbf{1}\{X_i \geq c\}$$
+            <figure class="note-figure">
+                <img src="causal-inference/figures/did_parallel_trends.png" alt="Line plot showing pre and post period outcomes for a treated group and a control group, with a dashed counterfactual line showing what the treated group's post-period outcome would have been under parallel trends, and the gap between the actual and counterfactual outcome marked as the estimated ATT.">
+                <figcaption><strong>Figure — The parallel-trends counterfactual, made visible.</strong> The control group's change (blue, $2.0\to3.0$) defines the trend the treated group is assumed to have shared absent treatment; projecting that same trend from the treated group's pre-period level (dashed) gives the counterfactual $3.0\to4.0$. The gap between the treated group's actual post-period outcome and this counterfactual, $\widehat{\mathrm{ATT}}=5.5-4.0=1.5$, is exactly the proof's algebra made geometric — and exactly why parallel trends failing (the dashed line being the wrong slope) would bias this gap in either direction.</figcaption>
+            </figure>
+
+            <h2 id="propensity">8. The propensity score theorem</h2>
+            <p>Conditioning on a high-dimensional $X_i$ to satisfy ignorability runs into overlap problems quickly (Section 2) — few or no comparable units may share an identical $X_i$. The propensity score, $e(X_i)=P(D_i=1\mid X_i)$, gives a way to condition on a single scalar instead.</p>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Rosenbaum–Rubin, 1983)</span>
+                <p>If $(Y_i(0),Y_i(1))\perp D_i \mid X_i$, then $(Y_i(0),Y_i(1))\perp D_i \mid e(X_i)$.</p>
             </div>
-            <p>The treatment effect at the cutoff is:</p>
-            <div class="math-block">
-                $$\tau = \lim_{x \downarrow c} E[Y_i|X_i = x] - \lim_{x \uparrow c} E[Y_i|X_i = x]$$
+            <div class="proof">
+                <span class="proof-label">Proof.</span> It suffices to show $P(D_i=1\mid Y_i(0),Y_i(1),e(X_i)) = e(X_i)$. By the tower property, conditioning first on the finer information $(Y_i(0),Y_i(1),X_i)$ and then averaging over $X_i$ given $e(X_i)$:
+                $$P(D_i=1\mid Y_i(0),Y_i(1),e(X_i)) = E\big[P(D_i=1\mid Y_i(0),Y_i(1),X_i) \,\big|\, Y_i(0),Y_i(1),e(X_i)\big].$$
+                By the hypothesis $(Y_i(0),Y_i(1))\perp D_i\mid X_i$, the inner probability equals $P(D_i=1\mid X_i)=e(X_i)$ — a function of $X_i$ that is already exactly determined by the conditioning variable $e(X_i)$ itself, so the outer expectation just returns $e(X_i)$ unchanged. <span class="qed">∎</span>
             </div>
+            <p>This is a genuine dimension-reduction result, not merely a convenient approximation: it says that matching or weighting on the scalar $e(X_i)$ alone recovers exactly the same identification as conditioning on the full covariate vector $X_i$, provided the (unverifiable in general, but sometimes very plausible) ignorability assumption holds for $X_i$ in the first place. In practice $e(X_i)$ is unknown and estimated (typically by logistic regression of $D$ on $X$), which introduces its own estimation-error considerations not covered by the theorem itself.</p>
 
-            <h2>7. Difference-in-Differences (DiD)</h2>
-            <p>For panel data with treatment and control groups over time:</p>
-            <div class="math-block">
-                $$\tau = (E[Y_{i1}|D_i=1] - E[Y_{i0}|D_i=1]) - (E[Y_{i1}|D_i=0] - E[Y_{i0}|D_i=0])$$
-            </div>
-            <p>Key assumption: Parallel trends in the absence of treatment.</p>
+            <h2 id="computation">9. Computation</h2>
+            <p>The figures above are generated by <code>causal-inference/generate_figures.py</code>. The snippet below runs the RDD and DiD estimators shown in the figures, and separately verifies the omitted-variable-bias mechanism behind Section 3's selection-bias term: a naive regression that omits a confounder $X$ affecting both treatment and outcome is biased by exactly $\gamma\cdot\delta$, where $\gamma$ is $X$'s effect on $Y$ and $\delta$ is the regression coefficient of $X$ on $D$.</p>
+            <pre><code>import numpy as np
 
-            <h2>8. Matching Methods</h2>
-            <p>Match treated units with similar control units based on covariates $X_i$:</p>
-            <ul>
-                <li><strong>Exact matching:</strong> Match on exact values of $X_i$</li>
-                <li><strong>Propensity score matching:</strong> Match on $P(D_i=1|X_i)$</li>
-                <li><strong>Nearest neighbor matching:</strong> Match on distance in $X_i$ space</li>
-            </ul>
+rng = np.random.default_rng(2)
+n = 5000
+X = rng.normal(0, 1, n)                     # confounder
+D = 0.5 * X + rng.normal(0, 1, n)           # treatment depends on the confounder
+tau_true, gamma = 2.0, 1.5                  # true effect, and X's effect on Y
+Y = 1 + tau_true * D + gamma * X + rng.normal(0, 1, n)
 
-            <h2>9. Propensity Score</h2>
-            <p>The propensity score is $p(X_i) = P(D_i = 1|X_i)$. Under ignorability:</p>
-            <div class="math-block">
-                $$(Y_i(1), Y_i(0)) \perp\!\!\!\perp D_i | p(X_i)$$
-            </div>
-            <p>This allows us to control for high-dimensional $X_i$ by controlling for the scalar $p(X_i)$.</p>
+naive = np.linalg.lstsq(np.column_stack([np.ones(n), D]), Y, rcond=None)[0]
+full = np.linalg.lstsq(np.column_stack([np.ones(n), D, X]), Y, rcond=None)[0]
+delta = np.linalg.lstsq(np.column_stack([np.ones(n), D]), X, rcond=None)[0][1]
 
-            <h2>10. Code Example</h2>
-            <pre><code># R code for causal inference
-library(AER)
-library(rdd)
-
-# Instrumental Variables
-iv_model <- ivreg(y ~ x | z, data = mydata)
-summary(iv_model)
-
-# Regression Discontinuity
-rd_model <- RDestimate(y ~ x, data = mydata, cutpoint = 0)
-summary(rd_model)
-
-# Difference-in-Differences
-library(plm)
-did_model <- plm(y ~ treated + post + treated:post, 
-                 data = panel_data, model = "within")
-summary(did_model)
+print(f"naive tau_hat (omits X): {naive[1]:.4f}   (true tau = {tau_true})")
+print(f"full  tau_hat (controls X): {full[1]:.4f}")
+print(f"predicted bias = gamma*delta = {gamma*delta:.4f}   actual bias = {naive[1]-tau_true:.4f}")
 </code></pre>
+            <p>Actual output:</p>
+            <pre><code>naive tau_hat (omits X): 2.5876   (true tau = 2.0)
+full  tau_hat (controls X): 1.9987
+predicted bias = gamma*delta = 0.5826   actual bias = 0.5876</code></pre>
+            <p>The predicted and actual bias agree closely: controlling for the confounder recovers the true effect almost exactly, while omitting it produces bias numerically consistent with Section 3's decomposition — the naive coefficient is genuinely $\mathrm{ATE}+\text{selection bias}$, not merely "less accurate."</p>
 
-            <h2>11. References</h2>
+            <h2 id="pitfalls">10. Common pitfalls</h2>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — Ignorability is not testable from data alone</span>
+                <p>Unlike overlap (checkable — do treated and untreated units coexist at every covariate value present in the data), ignorability is a claim about unobserved potential outcomes and can never be directly verified, only argued for on substantive grounds (or replaced by a research design — randomization, an instrument, a discontinuity — that does not require it to hold for arbitrary unobserved confounders).</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — A "significant" pre-trend test does not prove parallel trends</span>
+                <p>Similar pre-period trends across groups are consistent with, but do not prove, the assumption in Section 7 — parallel trends is a statement about the <em>post</em>-period counterfactual, which is by construction unobserved. Pre-trend similarity is suggestive evidence, not verification.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — Weak instruments make the Wald estimator unreliable, not just imprecise</span>
+                <p>As $\mathrm{Cov}(Z_i,D_i)\to0$, Section 5's estimator's denominator approaches zero, and even small violations of the exclusion restriction get amplified without bound in the ratio — a "weak" instrument does not merely widen confidence intervals modestly, it can make the point estimate itself dominated by whatever small direct effect $Z$ has on $Y$, in violation of exclusion.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — RDD requires no manipulation of the running variable at the cutoff</span>
+                <p>If units can influence which side of $c$ they land on (e.g. a student who knows the exact scholarship cutoff score retaking a test to just clear it), the comparability of units just above and below $c$ breaks — those just above are no longer a "similar but treated" version of those just below, but a selected group of manipulators. Checked in practice via a density test for a discontinuity in the running variable itself at $c$.</p>
+            </div>
+
+            <h2 id="connections">11. Connections</h2>
             <ul>
-                <li>Imbens, G. W., & Rubin, D. B. (2015). <em>Causal Inference in Statistics, Social, and Biomedical Sciences</em>.</li>
-                <li>Angrist, J. D., & Pischke, J. S. (2008). <em>Mostly Harmless Econometrics</em>.</li>
-                <li>Morgan, S. L., & Winship, C. (2015). <em>Counterfactuals and Causal Inference</em>.</li>
+                <li><strong><a href="regression-methods.html">Regression methods</a>.</strong> Section 5's 2SLS is literally regression-methods.html's orthogonal-projection view of OLS applied twice; naive OLS of $Y$ on $D$ is exactly the Section 3 decomposition's biased comparison unless ignorability (or an equivalent design) holds.</li>
+                <li><strong><a href="../mathematical-analysis/continuity.html">Continuity and limits</a>.</strong> The sharp RDD estimand (Section 6) is precisely a one-sided-limit jump-discontinuity statement, and local linear regression is precisely how each one-sided limit is estimated in practice.</li>
+                <li><strong><a href="../econometrics/time-series-analysis.html">Time series analysis</a>.</strong> DiD's parallel-trends assumption implicitly requires understanding the untreated group's own trend as a legitimate forecast of the counterfactual — the same forecasting logic developed there, now applied as an identifying assumption rather than a prediction goal.</li>
+            </ul>
+
+            <h2 id="references">12. References</h2>
+            <ul>
+                <li>Imbens, G. W., &amp; Rubin, D. B. (2015). <em>Causal Inference for Statistics, Social, and Biomedical Sciences</em>. Cambridge University Press.</li>
+                <li>Angrist, J. D., &amp; Pischke, J.-S. (2009). <em>Mostly Harmless Econometrics</em>. Princeton University Press.</li>
+                <li>Rosenbaum, P. R., &amp; Rubin, D. B. (1983). The central role of the propensity score in observational studies for causal effects. <em>Biometrika</em>, 70(1), 41–55.</li>
+                <li>Morgan, S. L., &amp; Winship, C. (2014). <em>Counterfactuals and Causal Inference</em> (2nd ed.). Cambridge University Press.</li>
             </ul>
         </section>
     </main>
@@ -148,4 +217,4 @@ summary(did_model)
         <p>&copy; Diogo Franquinho | Technical Notes</p>
     </footer>
 </body>
-</html> 
+</html>
