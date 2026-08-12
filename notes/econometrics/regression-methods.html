@@ -21,110 +21,171 @@
 </head>
 <body>
     <nav class="top-nav">
-        <a href="../../index.html">← Back to Home</a> | 
+        <a href="../../index.html">← Back to Home</a> |
         <a href="../../index.html#notes">Notes</a>
     </nav>
 
     <main>
         <header>
             <h1>Regression Methods</h1>
-            <p class="note-meta">Last updated: December 2024</p>
+            <p class="note-meta">Last updated: August 2026</p>
         </header>
 
         <section class="note-content">
             <div class="disclaimer">
                 <p><strong>Disclaimer:</strong> These are my personal notes compiled for my own reference and learning. They may contain errors, incomplete information, or personal interpretations. While I strive for accuracy, these notes are not peer-reviewed and should not be considered authoritative sources. Please consult official textbooks, research papers, or other reliable sources for academic or professional purposes.</p>
             </div>
-            
-            <h2>1. Linear Regression</h2>
-            <p>The basic linear regression model is:</p>
-            <div class="math-block">
-                $$Y_i = \beta_0 + \beta_1 X_{i1} + \beta_2 X_{i2} + \cdots + \beta_k X_{ik} + \epsilon_i$$
+
+            <div class="table-of-contents">
+                <h3>Contents</h3>
+                <ol>
+                    <li><a href="#model">The linear model and its assumptions</a></li>
+                    <li><a href="#ols-projection">OLS as orthogonal projection</a></li>
+                    <li><a href="#gauss-markov">The Gauss–Markov theorem</a></li>
+                    <li><a href="#sampling">Finite-sample vs. asymptotic inference</a></li>
+                    <li><a href="#heteroscedasticity">Heteroscedasticity and robust standard errors</a></li>
+                    <li><a href="#multicollinearity">Multicollinearity as a rank condition</a></li>
+                    <li><a href="#ridge">Ridge regression as penalized projection</a></li>
+                    <li><a href="#model-selection">Model selection and diagnostics</a></li>
+                    <li><a href="#computation">Computation</a></li>
+                    <li><a href="#pitfalls">Common pitfalls</a></li>
+                    <li><a href="#connections">Connections</a></li>
+                    <li><a href="#references">References</a></li>
+                </ol>
             </div>
-            <p>where $\epsilon_i \sim N(0, \sigma^2)$ and $i = 1, 2, \ldots, n$.</p>
 
-            <h2>2. Ordinary Least Squares (OLS)</h2>
-            <p>The OLS estimator minimizes the sum of squared residuals:</p>
-            <div class="math-block">
-                $$\min_{\beta} \sum_{i=1}^n (Y_i - X_i'\beta)^2$$
+            <h2 id="model">1. The linear model and its assumptions</h2>
+            <p>The model is $y = X\beta + \varepsilon$, with $y\in\mathbb{R}^n$, $X\in\mathbb{R}^{n\times k}$ (the design matrix, columns are regressors including a constant), $\beta\in\mathbb{R}^k$ the parameters, and $\varepsilon$ an unobserved error. The estimation problem this note is built around asks: given only $X$ and $y$, what is the best linear (in $y$) estimate of $\beta$? Three assumptions matter for everything below, and it is worth being explicit about exactly where each one is used rather than bundling them together:</p>
+            <ul>
+                <li><strong>Full column rank of $X$</strong> — needed for $\hat\beta$ to be uniquely defined at all (Section 2).</li>
+                <li><strong>Exogeneity, $E[\varepsilon\mid X]=0$</strong> — needed for $\hat\beta$ to be unbiased (Section 3).</li>
+                <li><strong>Homoscedasticity, $\mathrm{Var}(\varepsilon\mid X)=\sigma^2 I$</strong> — needed specifically for $\hat\beta$ to be the <em>minimum-variance</em> linear unbiased estimator (Section 3); relaxing it does not break unbiasedness, only optimality and the usual standard error formula (Section 5).</li>
+            </ul>
+
+            <h2 id="ols-projection">2. OLS as orthogonal projection</h2>
+            <p>The ordinary least squares estimator minimizes $\|y-X\beta\|^2$ over $\beta\in\mathbb{R}^k$. Written this way, the problem is exactly the best-approximation problem solved in <a href="../linear-algebra/vector-spaces.html">the vector spaces note</a> (Section 7): find the point of the subspace $W=\mathrm{col}(X)=\{X\beta:\beta\in\mathbb{R}^k\}$ closest to $y$ in Euclidean norm.</p>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (OLS solution and normal equations)</span>
+                <p>If $X$ has full column rank, the unique minimizer of $\|y-X\beta\|^2$ is $\hat\beta = (X^\top X)^{-1}X^\top y$, and the fitted values $\hat y = X\hat\beta$ are exactly $P_{\mathrm{col}(X)}\,y$, the orthogonal projection of $y$ onto $\mathrm{col}(X)$.</p>
             </div>
-            <p>The solution is:</p>
-            <div class="math-block">
-                $$\hat{\beta} = (X'X)^{-1}X'Y$$
+            <div class="proof">
+                <span class="proof-label">Proof.</span> By the best-approximation theorem (vector spaces note, Section 7), the minimizer of $\|y-w\|$ over $w\in W$ is the unique $w^*\in W$ with $y-w^*\perp W$. Since $W=\mathrm{col}(X)$, $w^*=X\hat\beta$ for some $\hat\beta$, and orthogonality to $W$ means orthogonality to every column of $X$: $X^\top(y-X\hat\beta)=0$ — the <strong>normal equations</strong>. Full column rank makes $X^\top X$ invertible (its columns are independent, so $v^\top X^\top Xv = \|Xv\|^2&gt;0$ for $v\neq0$, hence $X^\top X$ has trivial nullspace — invertible by the equivalence theorem in <a href="../linear-algebra/matrices.html">the matrices note</a>, Section 5), so the normal equations solve uniquely to $\hat\beta=(X^\top X)^{-1}X^\top y$. <span class="qed">∎</span>
             </div>
+            <p>This is not merely an alternative derivation to the usual calculus argument (set $\nabla_\beta\|y-X\beta\|^2=-2X^\top(y-X\beta)=0$, which gives the same normal equations) — it is the reason the normal equations take that specific form: they are the orthogonality condition of a projection, not an arbitrary first-order condition. Every downstream fact — the residual's orthogonality to every regressor, the Pythagorean decomposition of total sum of squares, why adding regressors never increases the residual sum of squares — is a restatement of this geometric fact.</p>
 
-            <h2>3. Assumptions (Gauss-Markov)</h2>
-            <ul>
-                <li><strong>Linearity:</strong> $E[Y|X] = X\beta$</li>
-                <li><strong>Random sampling:</strong> $(X_i, Y_i)$ are i.i.d.</li>
-                <li><strong>No perfect multicollinearity:</strong> $X$ has full rank</li>
-                <li><strong>Homoscedasticity:</strong> $Var(\epsilon_i|X_i) = \sigma^2$</li>
-                <li><strong>No autocorrelation:</strong> $Cov(\epsilon_i, \epsilon_j|X) = 0$ for $i \neq j$</li>
-            </ul>
+            <figure class="note-figure">
+                <img src="regression-methods/figures/ols_projection.png" alt="A three-dimensional plot showing the observation vector y, its orthogonal projection onto the column space of X (a plane), the fitted values y-hat, and the residual vector connecting them at a right angle.">
+                <figcaption><strong>Figure — The regression geometry, made literal.</strong> With $n=3$ observations and $k=2$ regressors (an intercept and one slope), $\mathrm{col}(X)$ is a plane in $\mathbb{R}^3$. $\hat y$ is the point of that plane closest to $y$; the residual $y-\hat y$ meets the plane at a right angle, and numerically $X^\top(y-\hat y)\approx(0,0)$ confirms the normal equations, while $\|y\|^2=\|\hat y\|^2+\|y-\hat y\|^2$ ($77.0=68.8+8.2$) confirms the Pythagorean identity from the projection proof. This is the exact picture behind $R^2=\|\hat y\|^2/\|y\|^2$ (for centered $y$): the fraction of $y$'s squared length that lies in the plane $\mathrm{col}(X)$ can reach.</figcaption>
+            </figure>
 
-            <h2>4. Properties of OLS</h2>
-            <p>Under the Gauss-Markov assumptions, OLS is:</p>
-            <ul>
-                <li><strong>Unbiased:</strong> $E[\hat{\beta}] = \beta$</li>
-                <li><strong>BLUE:</strong> Best Linear Unbiased Estimator</li>
-                <li><strong>Consistent:</strong> $\hat{\beta} \xrightarrow{p} \beta$</li>
-            </ul>
-
-            <h2>5. Heteroscedasticity</h2>
-            <p>When $Var(\epsilon_i|X_i) \neq \sigma^2$, we have heteroscedasticity. Solutions:</p>
-            <ul>
-                <li><strong>Robust standard errors:</strong> White's estimator</li>
-                <li><strong>Weighted Least Squares (WLS):</strong> When variance structure is known</li>
-                <li><strong>Feasible GLS:</strong> When variance structure is estimated</li>
-            </ul>
-
-            <h2>6. Multicollinearity</h2>
-            <p>When predictors are highly correlated, we can use:</p>
-            <ul>
-                <li><strong>Ridge Regression:</strong> Adds penalty $\lambda \sum_{j=1}^k \beta_j^2$</li>
-                <li><strong>Lasso:</strong> Adds penalty $\lambda \sum_{j=1}^k |\beta_j|$</li>
-                <li><strong>Elastic Net:</strong> Combines both penalties</li>
-            </ul>
-
-            <h2>7. Model Selection</h2>
-            <p>Information criteria for model selection:</p>
-            <div class="math-block">
-                $$AIC = 2k - 2\ln(L)$$
-                $$BIC = k\ln(n) - 2\ln(L)$$
+            <h2 id="gauss-markov">3. The Gauss–Markov theorem</h2>
+            <p>Unbiasedness of $\hat\beta$ under exogeneity is immediate: $E[\hat\beta\mid X] = (X^\top X)^{-1}X^\top E[y\mid X] = (X^\top X)^{-1}X^\top X\beta = \beta$. The substantial result is that OLS is not merely unbiased, but optimal among linear unbiased estimators.</p>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Gauss–Markov)</span>
+                <p>Under exogeneity and homoscedasticity, for any other linear unbiased estimator $\tilde\beta=Cy$ of $\beta$, $\mathrm{Var}(\tilde\beta\mid X) - \mathrm{Var}(\hat\beta\mid X)$ is positive semi-definite. OLS is the <strong>B</strong>est <strong>L</strong>inear <strong>U</strong>nbiased <strong>E</strong>stimator (BLUE).</p>
             </div>
-            <p>where $k$ is the number of parameters, $n$ is sample size, and $L$ is the likelihood.</p>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> Write $C=(X^\top X)^{-1}X^\top + D$ for some $k\times n$ matrix $D$ (always possible — this just defines $D$). Unbiasedness of $\tilde\beta=Cy$ for every $\beta$ requires $E[\tilde\beta\mid X]=CX\beta=\beta$ for all $\beta$, i.e. $CX=I$. Compute $CX = (X^\top X)^{-1}X^\top X + DX = I + DX$, so unbiasedness forces $DX=0$ (hence also $X^\top D^\top=0$). Then</p>
+                <div class="math-block">
+                    $$\mathrm{Var}(\tilde\beta\mid X) = C(\sigma^2 I)C^\top = \sigma^2\Big[(X^\top X)^{-1}X^\top + D\Big]\Big[X(X^\top X)^{-1} + D^\top\Big]$$
+                    $$= \sigma^2\Big[(X^\top X)^{-1} + \underbrace{(X^\top X)^{-1}X^\top D^\top}_{=0} + \underbrace{DX(X^\top X)^{-1}}_{=0} + DD^\top\Big] = \mathrm{Var}(\hat\beta\mid X) + \sigma^2 DD^\top.$$
+                </div>
+                <p>$DD^\top$ is a Gram matrix, hence positive semi-definite ($v^\top DD^\top v = \|D^\top v\|^2\geq0$ for every $v$), so $\mathrm{Var}(\tilde\beta\mid X)-\mathrm{Var}(\hat\beta\mid X)=\sigma^2DD^\top\succeq0$. <span class="qed">∎</span>
+            </div>
+            <p>The proof is worth pausing on for what it reveals: <em>every</em> linear unbiased estimator differs from OLS by a term $Dy$ with $DX=0$ — i.e. by something computed from a direction in $y$-space that is invisible to $X$. Adding such a term can never reduce variance (it is uncorrelated noise, from the estimator's point of view, layered on top of the OLS estimator) and can only add to it. Note precisely what Gauss–Markov does <em>not</em> claim: it says nothing about biased estimators (ridge, Section 7, deliberately trades some bias for lower variance) and nothing beyond the class of linear estimators.</p>
 
-            <h2>8. Diagnostics</h2>
+            <h2 id="sampling">4. Finite-sample vs. asymptotic inference</h2>
+            <p>Two distinct routes give a sampling distribution for $\hat\beta$, and it matters which one is actually being used:</p>
             <ul>
-                <li><strong>Residual plots:</strong> Check for patterns</li>
-                <li><strong>Q-Q plots:</strong> Check normality</li>
-                <li><strong>Leverage:</strong> $h_{ii} = X_i'(X'X)^{-1}X_i$</li>
-                <li><strong>Cook's distance:</strong> Measure of influence</li>
+                <li><strong>Finite-sample (exact):</strong> if, additionally, $\varepsilon\mid X\sim N(0,\sigma^2I)$, then $\hat\beta\mid X$ is <em>exactly</em> $N(\beta, \sigma^2(X^\top X)^{-1})$ for any sample size $n$ — a linear transformation of a Gaussian vector is Gaussian. $t$-tests and $F$-tests based on the exact $t$- and $F$-distributions (using $s^2=\frac{1}{n-k}\|y-X\hat\beta\|^2$ in place of the unknown $\sigma^2$) are then exact for every $n$, not approximations.</li>
+                <li><strong>Asymptotic:</strong> without normality, $\hat\beta$ is not exactly Gaussian in finite samples, but under standard regularity conditions $\sqrt{n}(\hat\beta-\beta)\xrightarrow{d} N(0,\sigma^2Q^{-1})$ as $n\to\infty$, where $Q=\lim\frac{1}{n}X^\top X$ — a Central Limit Theorem argument applied to $\frac{1}{n}X^\top\varepsilon$, valid only in the limit, and only an approximation at any finite $n$.</li>
             </ul>
+            <p>Conflating these is a common error: citing "asymptotic normality" to justify treating a small-sample $t$-statistic as exactly $t$-distributed skips a step — the exact result needs the stronger Gaussian-errors assumption, while the CLT-based result is only approximately correct and says nothing about how large $n$ must be for the approximation to be adequate.</p>
 
-            <h2>9. Code Example</h2>
-            <pre><code># R code for linear regression
-library(car)
+            <h2 id="heteroscedasticity">5. Heteroscedasticity and robust standard errors</h2>
+            <p>If $\mathrm{Var}(\varepsilon\mid X)=\Omega\neq\sigma^2I$ (heteroscedastic or correlated errors), $\hat\beta$ is <em>still unbiased</em> — unbiasedness in Section 3 only used $E[\varepsilon\mid X]=0$ — but the Gauss–Markov optimality argument breaks (it used $\mathrm{Var}(\varepsilon\mid X)=\sigma^2I$ explicitly to collapse $C\Omega C^\top$ to $\sigma^2CC^\top$), and the standard variance formula $\sigma^2(X^\top X)^{-1}$ is simply wrong: the correct variance is</p>
+            <div class="math-block">$$\mathrm{Var}(\hat\beta\mid X) = (X^\top X)^{-1}X^\top\Omega X(X^\top X)^{-1}.$$</div>
+            <p>(Direct substitution: $\hat\beta-\beta=(X^\top X)^{-1}X^\top\varepsilon$, so $\mathrm{Var}(\hat\beta\mid X)=(X^\top X)^{-1}X^\top\,\mathrm{Var}(\varepsilon\mid X)\,X(X^\top X)^{-1}$.) The <strong>White / sandwich estimator</strong> replaces the unknown $\Omega$ with $\hat\Omega=\mathrm{diag}(\hat\varepsilon_1^2,\ldots,\hat\varepsilon_n^2)$ (squared OLS residuals), giving a consistent estimate of this "sandwich" formula without needing to know the specific form of the heteroscedasticity. This corrects the standard errors used for inference; it does not change $\hat\beta$ itself, which remains the same point estimate under either the homoscedastic or heteroscedastic variance formula.</p>
 
-# Fit model
-model <- lm(y ~ x1 + x2 + x3, data = mydata)
-summary(model)
+            <h2 id="multicollinearity">6. Multicollinearity as a rank condition</h2>
+            <p>"Perfect multicollinearity" — one regressor an exact linear combination of others — means $X$ does not have full column rank, i.e. by the equivalence theorem in <a href="../linear-algebra/matrices.html">the matrices note</a> (Section 5), $X^\top X$ is singular and $\hat\beta=(X^\top X)^{-1}X^\top y$ is not merely poorly estimated — it is <em>undefined</em>, because the normal equations have infinitely many solutions (any $\beta$ on an affine subspace gives the same fitted values, hence the same minimized $\|y-X\beta\|^2$). This is a statement about identification, not estimation precision.</p>
+            <p><strong>Near</strong>-multicollinearity (a small but nonzero smallest eigenvalue of $X^\top X$) does not break identification — $\hat\beta$ is still unique — but Section 3's variance formula $\sigma^2(X^\top X)^{-1}$ blows up in the directions of small eigenvalues, since $(X^\top X)^{-1}$'s eigenvalues are the reciprocals of $X^\top X$'s (a direct consequence of the diagonalization theorem in <a href="../linear-algebra/eigenvalues.html">the eigenvalues note</a>, Section 5): the coefficients on collinear regressors become individually very imprecisely estimated, even though the fit $\hat y$ itself remains stable.</p>
 
-# Check assumptions
-plot(model)
-vif(model)  # Check multicollinearity
+            <h2 id="ridge">7. Ridge regression as penalized projection</h2>
+            <p>Ridge regression minimizes $\|y-X\beta\|^2+\lambda\|\beta\|^2$ for $\lambda&gt;0$. Setting the gradient to zero: $-2X^\top(y-X\beta)+2\lambda\beta=0 \Rightarrow (X^\top X+\lambda I)\beta = X^\top y$, giving</p>
+            <div class="math-block">$$\hat\beta_{\mathrm{ridge}} = (X^\top X + \lambda I)^{-1}X^\top y.$$</div>
+            <p>$X^\top X+\lambda I$ has the same eigenvectors as $X^\top X$ but every eigenvalue shifted up by $\lambda$ (if $X^\top Xv=\mu v$, then $(X^\top X+\lambda I)v=(\mu+\lambda)v$) — so it is invertible for any $\lambda&gt;0$ <em>even when $X^\top X$ itself is singular or near-singular</em>, directly resolving the Section 6 problem at its source rather than merely reporting large standard errors. This is a biased estimator ($E[\hat\beta_{\mathrm{ridge}}\mid X]=(X^\top X+\lambda I)^{-1}X^\top X\beta\neq\beta$ in general — consistent with Gauss–Markov's silence on biased estimators, Section 3) that deliberately trades bias for reduced variance: as $\lambda\to\infty$, $\hat\beta_{\mathrm{ridge}}\to0$ (zero variance, maximal bias); as $\lambda\to0$, it recovers OLS.</p>
 
-# Robust standard errors
-library(sandwich)
-library(lmtest)
-coeftest(model, vcov = vcovHC(model, type = "HC1"))
+            <figure class="note-figure">
+                <img src="regression-methods/figures/ridge_path.png" alt="Left panel: ridge regression coefficient paths shrinking toward zero as the penalty lambda increases. Right panel: the smallest eigenvalue of X-transpose-X plus lambda times identity, growing away from a near-zero value as lambda increases, log-log scale.">
+                <figcaption><strong>Figure — Ridge regularizes exactly the failure mode of Section 6.</strong> A simulated design with 5 regressors where column 5 is nearly identical to column 1 ($\mathrm{cond}(X^\top X)\approx3\times10^4$, smallest eigenvalue $\approx0.006$). Left: as $\lambda$ grows, all five ridge coefficients shrink toward $0$, with $\hat\beta_1$ and $\hat\beta_5$ (the collinear pair) shrinking together rather than independently exploding in opposite directions the way unpenalized OLS would. Right: the smallest eigenvalue of $X^\top X+\lambda I$ increases linearly with $\lambda$ exactly as the eigenvalue-shift argument predicts, moving the matrix away from the singularity that made $\hat\beta_{\mathrm{OLS}}$ so unstable in this design.</figcaption>
+            </figure>
+
+            <h2 id="model-selection">8. Model selection and diagnostics</h2>
+            <p>AIC and BIC for comparing regression specifications are the same information criteria derived (with proof of the consistency/efficiency distinction) in <a href="../econometrics/time-series-analysis.html">the time series note</a>, Section 11 — not re-derived here. What is specific to regression is residual diagnostics: a plot of residuals $\hat\varepsilon_i$ against fitted values $\hat y_i$ or against each regressor should show no remaining pattern (a curved pattern suggests a missing nonlinear term; a fan shape suggests heteroscedasticity, motivating Section 5's correction; runs of same-signed residuals in ordered/time-indexed data suggest serial correlation, which biases the usual standard errors for a different reason than heteroscedasticity does and is treated properly in <a href="../econometrics/time-series-analysis.html">the time series note</a>).</p>
+
+            <h2 id="computation">9. Computation</h2>
+            <p>The figures above are generated by <code>regression-methods/generate_figures.py</code>. The snippet below verifies the Gauss–Markov theorem's conclusion by direct Monte Carlo simulation: OLS is compared against a different linear unbiased estimator (weighted least squares with weights that are valid — unrelated to $y$ — but wrong, i.e. not proportional to the true, in this case constant, error variance), confirming OLS attains the lower variance the theorem promises rather than merely asserting it.</p>
+            <pre><code>import numpy as np
+
+rng = np.random.default_rng(0)
+n = 200
+X = np.column_stack([np.ones(n), rng.normal(size=n)])
+beta_true = np.array([2.0, 1.5])
+
+A_ols = np.linalg.inv(X.T @ X) @ X.T                     # OLS: C = (X'X)^-1 X'
+w = 1.0 + 0.5 * np.sin(np.arange(n))                      # arbitrary weights, unrelated to X or y
+W = np.diag(w)
+A_alt = np.linalg.inv(X.T @ W @ X) @ X.T @ W              # a different linear unbiased estimator
+
+n_sims = 5000
+ols_betas = np.zeros((n_sims, 2))
+alt_betas = np.zeros((n_sims, 2))
+for i in range(n_sims):
+    eps = rng.normal(0, 1.0, n)                            # homoscedastic errors: Gauss-Markov applies
+    y = X @ beta_true + eps
+    ols_betas[i] = A_ols @ y
+    alt_betas[i] = A_alt @ y
+
+print("OLS   mean:", ols_betas.mean(0).round(4), " var:", ols_betas.var(0).round(5))
+print("Alt   mean:", alt_betas.mean(0).round(4), " var:", alt_betas.var(0).round(5))
 </code></pre>
+            <p>Actual output:</p>
+            <pre><code>OLS   mean: [2.001 1.5  ] var: [0.00497 0.00538]
+Alt   mean: [2.0006 1.4994] var: [0.00559 0.00603]</code></pre>
+            <p>Both estimators are unbiased (means match $\beta_{\mathrm{true}}=(2,1.5)$ closely across 5000 simulations), exactly as the theorem's hypothesis requires of any competitor — and OLS's variance is lower in both coordinates, exactly as the theorem's conclusion promises, not merely for this specific alternative but (by the proof) for <em>any</em> linear unbiased estimator under these homoscedastic conditions.</p>
 
-            <h2>10. References</h2>
+            <h2 id="pitfalls">10. Common pitfalls</h2>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — High $R^2$ is not evidence of a well-specified or causal model</span>
+                <p>$R^2=\|\hat y\|^2/\|y\|^2$ (centered) only measures how close $y$ is to the subspace $\mathrm{col}(X)$ — it says nothing about whether $X$ causes $y$, whether the functional form is right, or whether omitted variables are biasing $\hat\beta$. A spurious regression (see <a href="../econometrics/time-series-analysis.html">the time series note</a>, Section 10) can have a very high $R^2$ with no real relationship at all.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — Heteroscedasticity biases standard errors, not $\hat\beta$</span>
+                <p>Section 5 derived this precisely: $\hat\beta$ stays unbiased under heteroscedasticity (only exogeneity is needed for that), but the textbook variance formula $\sigma^2(X^\top X)^{-1}$ becomes wrong, making ordinary $t$-statistics and confidence intervals unreliable even though the point estimate itself is fine.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — Multicollinearity is a variance problem, not a bias problem</span>
+                <p>Section 6: near-collinear regressors do not bias $\hat\beta$ (unbiasedness never used any rank condition beyond exact identification) — they inflate its variance in the collinear directions specifically. Dropping a "collinear" variable to "fix" this removes a variance problem by reintroducing omitted-variable bias if that variable genuinely belongs in the model — often a worse trade.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — Gauss–Markov optimality is only within the linear unbiased class, under homoscedasticity</span>
+                <p>It does not say OLS beats every possible estimator — nonlinear or biased estimators (ridge, Section 7; maximum likelihood under non-Gaussian, non-homoscedastic error models) can and often do have lower mean squared error, precisely because they operate outside the class the theorem restricts itself to.</p>
+            </div>
+
+            <h2 id="connections">11. Connections</h2>
             <ul>
-                <li>Wooldridge, J. M. (2016). <em>Introductory Econometrics: A Modern Approach</em>.</li>
-                <li>Greene, W. H. (2018). <em>Econometric Analysis</em>.</li>
-                <li>Hayashi, F. (2000). <em>Econometrics</em>.</li>
+                <li><strong><a href="../linear-algebra/vector-spaces.html">Vector spaces</a>.</strong> OLS is literally the orthogonal projection theorem applied to $\mathrm{col}(X)$ — Section 2 is not an analogy but a direct instance.</li>
+                <li><strong><a href="../linear-algebra/matrices.html">Matrices</a> and <a href="../linear-algebra/eigenvalues.html">eigenvalues</a>.</strong> Identification (Section 6) is exactly the invertibility equivalence theorem; the variance blow-up under near-collinearity is exactly the eigenvalue-inversion relationship between $X^\top X$ and $(X^\top X)^{-1}$; ridge's fix (Section 7) is exactly an eigenvalue shift.</li>
+                <li><strong><a href="../econometrics/time-series-analysis.html">Time series analysis</a>.</strong> OLS applied to a lagged dependent variable (estimating an AR(1)) is consistent but not unbiased in finite samples, unlike the setting here — that note's Section 15 connections explain precisely why the strict exogeneity this note's Gauss–Markov proof relies on fails there.</li>
+                <li><strong><a href="../econometrics/causal-inference.html">Causal inference</a>.</strong> Everything in this note is about the best linear <em>predictor</em> of $y$ given $X$; whether $\hat\beta$ has a causal interpretation is a separate question, addressed there.</li>
+            </ul>
+
+            <h2 id="references">12. References</h2>
+            <ul>
+                <li>Wooldridge, J. M. (2020). <em>Introductory Econometrics: A Modern Approach</em> (7th ed.). Cengage.</li>
+                <li>Greene, W. H. (2018). <em>Econometric Analysis</em> (8th ed.). Pearson.</li>
+                <li>Hayashi, F. (2000). <em>Econometrics</em>. Princeton University Press.</li>
             </ul>
         </section>
     </main>
@@ -133,4 +194,4 @@ coeftest(model, vcov = vcovHC(model, type = "HC1"))
         <p>&copy; Diogo Franquinho | Technical Notes</p>
     </footer>
 </body>
-</html> 
+</html>
