@@ -21,533 +21,225 @@
 </head>
 <body>
     <nav class="top-nav">
-        <a href="../../index.html">← Back to Home</a> | 
+        <a href="../../index.html">← Back to Home</a> |
         <a href="../../index.html#notes">Notes</a>
     </nav>
 
     <main>
         <header>
             <h1>Sequences and Series</h1>
-            <p class="note-meta">Last updated: December 2024</p>
+            <p class="note-meta">Last updated: August 2026</p>
         </header>
 
         <section class="note-content">
             <div class="disclaimer">
                 <p><strong>Disclaimer:</strong> These are my personal notes compiled for my own reference and learning. They may contain errors, incomplete information, or personal interpretations. While I strive for accuracy, these notes are not peer-reviewed and should not be considered authoritative sources. Please consult official textbooks, research papers, or other reliable sources for academic or professional purposes.</p>
             </div>
-            
-            <h2>1. Sequences</h2>
-            <h3>1.1 Definition</h3>
-            <p>A sequence is a function $f: \mathbb{N} \rightarrow \mathbb{R}$, usually denoted as $\{a_n\}_{n=1}^{\infty}$ or simply $\{a_n\}$.</p>
-            <p>The $n$-th term is $a_n = f(n)$.</p>
 
-            <h3>1.2 Convergence of Sequences</h3>
-            <p><strong>Definition:</strong> A sequence $\{a_n\}$ converges to $L$ if:</p>
-            <div class="math-block">
-                $$\forall \epsilon > 0, \exists N \in \mathbb{N} \text{ such that } \forall n \geq N: |a_n - L| < \epsilon$$
-            </div>
-            <p>We write $\lim_{n \to \infty} a_n = L$ or $a_n \to L$.</p>
-
-            <h3>1.3 Properties of Convergent Sequences</h3>
-            <ul>
-                <li><strong>Uniqueness:</strong> If $a_n \to L$ and $a_n \to M$, then $L = M$</li>
-                <li><strong>Boundedness:</strong> Every convergent sequence is bounded</li>
-                <li><strong>Algebra of Limits:</strong> If $a_n \to L$ and $b_n \to M$, then:
-                    <ul>
-                        <li>$a_n + b_n \to L + M$</li>
-                        <li>$a_n \cdot b_n \to L \cdot M$</li>
-                        <li>$\frac{a_n}{b_n} \to \frac{L}{M}$ (if $M \neq 0$)</li>
-                    </ul>
-                </li>
-                <li><strong>Squeeze Theorem:</strong> If $a_n \leq b_n \leq c_n$ and $a_n \to L$, $c_n \to L$, then $b_n \to L$</li>
-            </ul>
-
-            <h3>1.4 Monotone Sequences</h3>
-            <p><strong>Monotone Convergence Theorem:</strong> Every bounded monotone sequence converges.</p>
-            <ul>
-                <li><strong>Increasing:</strong> $a_n \leq a_{n+1}$ for all $n$</li>
-                <li><strong>Decreasing:</strong> $a_n \geq a_{n+1}$ for all $n$</li>
-            </ul>
-
-            <h3>1.5 Subsequences</h3>
-            <p>A subsequence $\{a_{n_k}\}$ is obtained by selecting terms at indices $n_1 < n_2 < n_3 < \ldots$</p>
-            <p><strong>Bolzano-Weierstrass Theorem:</strong> Every bounded sequence has a convergent subsequence.</p>
-
-            <h3>1.6 Cauchy Sequences</h3>
-            <p><strong>Definition:</strong> A sequence $\{a_n\}$ is Cauchy if:</p>
-            <div class="math-block">
-                $$\forall \epsilon > 0, \exists N \in \mathbb{N} \text{ such that } \forall m,n \geq N: |a_m - a_n| < \epsilon$$
-            </div>
-            <p><strong>Cauchy Criterion:</strong> A sequence converges if and only if it is Cauchy.</p>
-
-            <h2>2. Series</h2>
-            <h3>2.1 Definition</h3>
-            <p>Given a sequence $\{a_n\}$, the series $\sum_{n=1}^{\infty} a_n$ is defined as the limit of partial sums:</p>
-            <div class="math-block">
-                $$S_N = \sum_{n=1}^{N} a_n$$
-            </div>
-            <p>The series converges if $\lim_{N \to \infty} S_N$ exists and is finite.</p>
-
-            <h3>2.2 Convergence Tests</h3>
-            <h4>2.2.1 Divergence Test</h4>
-            <p>If $\lim_{n \to \infty} a_n \neq 0$, then $\sum a_n$ diverges.</p>
-            <p><strong>Note:</strong> If $\lim_{n \to \infty} a_n = 0$, the series may converge or diverge.</p>
-
-            <h4>2.2.2 Integral Test</h4>
-            <p>If $f(x)$ is positive, continuous, and decreasing for $x \geq 1$, then:</p>
-            <div class="math-block">
-                $$\sum_{n=1}^{\infty} f(n) \text{ and } \int_1^{\infty} f(x) dx$$
-            </div>
-            <p>either both converge or both diverge.</p>
-
-            <h4>2.2.3 Comparison Tests</h4>
-            <p><strong>Direct Comparison:</strong> If $0 \leq a_n \leq b_n$ for all $n$:</p>
-            <ul>
-                <li>If $\sum b_n$ converges, then $\sum a_n$ converges</li>
-                <li>If $\sum a_n$ diverges, then $\sum b_n$ diverges</li>
-            </ul>
-            
-            <p><strong>Limit Comparison:</strong> If $a_n, b_n > 0$ and $\lim_{n \to \infty} \frac{a_n}{b_n} = c > 0$, then $\sum a_n$ and $\sum b_n$ have the same convergence behavior.</p>
-
-            <h4>2.2.4 Ratio Test</h4>
-            <p>For $\sum a_n$ with $a_n > 0$, let $L = \lim_{n \to \infty} \frac{a_{n+1}}{a_n}$:</p>
-            <ul>
-                <li>If $L < 1$, the series converges</li>
-                <li>If $L > 1$, the series diverges</li>
-                <li>If $L = 1$, the test is inconclusive</li>
-            </ul>
-
-            <h4>2.2.5 Root Test</h4>
-            <p>For $\sum a_n$ with $a_n \geq 0$, let $L = \lim_{n \to \infty} \sqrt[n]{a_n}$:</p>
-            <ul>
-                <li>If $L < 1$, the series converges</li>
-                <li>If $L > 1$, the series diverges</li>
-                <li>If $L = 1$, the test is inconclusive</li>
-            </ul>
-
-            <h3>2.3 Alternating Series</h3>
-            <p><strong>Alternating Series Test (Leibniz):</strong> If $\{a_n\}$ is decreasing and $a_n \to 0$, then $\sum (-1)^n a_n$ converges.</p>
-            
-            <p><strong>Error Estimation:</strong> For alternating series, the error in using $S_N$ as an approximation is at most $|a_{N+1}|$.</p>
-
-            <h3>2.4 Absolute and Conditional Convergence</h3>
-            <ul>
-                <li><strong>Absolutely Convergent:</strong> $\sum |a_n|$ converges</li>
-                <li><strong>Conditionally Convergent:</strong> $\sum a_n$ converges but $\sum |a_n|$ diverges</li>
-            </ul>
-            <p><strong>Theorem:</strong> If $\sum |a_n|$ converges, then $\sum a_n$ converges.</p>
-
-            <h2>3. Power Series</h2>
-            <h3>3.1 Definition</h3>
-            <p>A power series centered at $a$ is:</p>
-            <div class="math-block">
-                $$\sum_{n=0}^{\infty} c_n (x-a)^n$$
-            </div>
-            <p>where $c_n$ are coefficients and $a$ is the center.</p>
-
-            <h3>3.2 Radius of Convergence</h3>
-            <p>For every power series, there exists $R \geq 0$ (possibly $\infty$) such that:</p>
-            <ul>
-                <li>The series converges for $|x-a| < R$</li>
-                <li>The series diverges for $|x-a| > R$</li>
-                <li>Convergence at $|x-a| = R$ must be checked separately</li>
-            </ul>
-
-            <p><strong>Formula for Radius of Convergence:</strong></p>
-            <div class="math-block">
-                $$R = \frac{1}{\lim_{n \to \infty} \left|\frac{c_{n+1}}{c_n}\right|} \quad \text{or} \quad R = \frac{1}{\lim_{n \to \infty} \sqrt[n]{|c_n|}}$$
+            <div class="table-of-contents">
+                <h3>Contents</h3>
+                <ol>
+                    <li><a href="#sequences">Sequences and the definition of a limit</a></li>
+                    <li><a href="#completeness">Completeness, and the Monotone Convergence Theorem</a></li>
+                    <li><a href="#bolzano-weierstrass">Bolzano–Weierstrass</a></li>
+                    <li><a href="#cauchy">Cauchy sequences: convergence without knowing the limit</a></li>
+                    <li><a href="#series">Series as sequences of partial sums</a></li>
+                    <li><a href="#tests">Convergence tests, derived rather than listed</a></li>
+                    <li><a href="#absolute">Absolute vs. conditional convergence, and rearrangement</a></li>
+                    <li><a href="#power-series">Power series and the radius of convergence</a></li>
+                    <li><a href="#computation">Computation</a></li>
+                    <li><a href="#pitfalls">Common pitfalls</a></li>
+                    <li><a href="#connections">Connections</a></li>
+                    <li><a href="#references">References</a></li>
+                </ol>
             </div>
 
-            <h3>3.3 Properties of Power Series</h3>
-            <ul>
-                <li><strong>Term-by-term differentiation:</strong> Inside the radius of convergence</li>
-                <li><strong>Term-by-term integration:</strong> Inside the radius of convergence</li>
-                <li><strong>Uniform convergence:</strong> On compact subsets of the interval of convergence</li>
-            </ul>
-
-            <h2>4. Taylor and Maclaurin Series</h2>
-            <h3>4.1 Taylor Series</h3>
-            <p>If $f$ is infinitely differentiable at $a$, the Taylor series is:</p>
-            <div class="math-block">
-                $$f(x) = \sum_{n=0}^{\infty} \frac{f^{(n)}(a)}{n!}(x-a)^n$$
+            <h2 id="sequences">1. Sequences and the definition of a limit</h2>
+            <div class="note-box">
+                <span class="note-box-label">Definition</span>
+                <p>A sequence $\{a_n\}_{n=1}^\infty$ <strong>converges</strong> to $L$, written $a_n\to L$, if</p>
+                <div class="math-block">$$\forall\epsilon&gt;0\ \exists N\in\mathbb{N} \text{ such that } n\geq N \Rightarrow |a_n-L|&lt;\epsilon.$$</div>
+            </div>
+            <p>Read this as a two-player commitment: whatever tolerance $\epsilon$ is demanded, the sequence must eventually (past some index $N$, which may depend on $\epsilon$) stay within that tolerance forever after — not just visit it occasionally.</p>
+            <div class="note-box">
+                <span class="note-box-label">Proposition</span>
+                <p>Limits are unique, and every convergent sequence is bounded.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> <em>Uniqueness:</em> if $a_n\to L$ and $a_n\to L'$ with $L\neq L'$, take $\epsilon=|L-L'|/2&gt;0$; eventually $|a_n-L|&lt;\epsilon$ and $|a_n-L'|&lt;\epsilon$ simultaneously, so by the triangle inequality $|L-L'|\leq|L-a_n|+|a_n-L'|&lt;2\epsilon=|L-L'|$, a contradiction. <em>Boundedness:</em> taking $\epsilon=1$ in the definition, all but finitely many terms ($n\geq N$) lie in $(L-1,L+1)$; the finitely many terms before $N$ are individually bounded, so the whole sequence is bounded by the max of these finitely many values and $|L|+1$. <span class="qed">∎</span>
             </div>
 
-            <h3>4.2 Maclaurin Series</h3>
-            <p>Taylor series centered at $a = 0$:</p>
-            <div class="math-block">
-                $$f(x) = \sum_{n=0}^{\infty} \frac{f^{(n)}(0)}{n!}x^n$$
+            <h2 id="completeness">2. Completeness, and the Monotone Convergence Theorem</h2>
+            <p>The $\epsilon$-$N$ definition only tells you how to verify a <em>candidate</em> limit — it says nothing about when a limit exists. That existence question is where $\mathbb{R}$'s defining property enters:</p>
+            <div class="note-box">
+                <span class="note-box-label">Completeness axiom</span>
+                <p>Every nonempty subset of $\mathbb{R}$ that is bounded above has a least upper bound (supremum) in $\mathbb{R}$.</p>
+            </div>
+            <p>This is not a theorem — it is what distinguishes $\mathbb{R}$ from $\mathbb{Q}$, which fails it ($\{q\in\mathbb{Q}:q^2&lt;2\}$ is bounded above in $\mathbb{Q}$ but has no rational supremum). Every existence result in this note ultimately traces back to this one axiom.</p>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Monotone Convergence Theorem)</span>
+                <p>Every bounded, monotone (increasing or decreasing) sequence converges.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> Suppose $\{a_n\}$ is increasing and bounded above. By completeness, $L=\sup\{a_n : n\in\mathbb{N}\}$ exists. Given $\epsilon&gt;0$, $L-\epsilon$ is not an upper bound (else $L$ would not be the <em>least</em> one), so some $a_N&gt;L-\epsilon$; since the sequence is increasing, $a_n\geq a_N&gt;L-\epsilon$ for all $n\geq N$, and $a_n\leq L$ always (as $L$ is an upper bound), so $|a_n-L|&lt;\epsilon$ for $n\geq N$. The decreasing case is symmetric, using the infimum. <span class="qed">∎</span>
+            </div>
+            <p>Note precisely what was and was not needed: monotonicity plus boundedness gives existence of a limit without ever exhibiting it — a genuinely different kind of conclusion from computing a limit directly, and one that would be false over $\mathbb{Q}$ (an increasing, bounded sequence of rationals can have an irrational supremum, hence no limit within $\mathbb{Q}$).</p>
+
+            <h2 id="bolzano-weierstrass">3. Bolzano–Weierstrass</h2>
+            <div class="note-box">
+                <span class="note-box-label">Theorem</span>
+                <p>Every bounded sequence in $\mathbb{R}$ has a convergent subsequence.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> <em>Every sequence has a monotone subsequence.</em> Call index $n$ a "peak" if $a_n\geq a_m$ for all $m&gt;n$. If there are infinitely many peaks $n_1&lt;n_2&lt;\cdots$, then $\{a_{n_k}\}$ is (weakly) decreasing by definition of peak — a monotone subsequence. If there are only finitely many peaks, pick $n_1$ past the last peak; since $n_1$ is not a peak, some $n_2&gt;n_1$ has $a_{n_2}&gt;a_{n_1}$; since $n_2$ is also not a peak, some $n_3&gt;n_2$ has $a_{n_3}&gt;a_{n_2}$; continuing gives a strictly increasing subsequence. Either way, a monotone subsequence exists. This subsequence is bounded (inheriting the bound on the original sequence), so it converges by the Monotone Convergence Theorem. <span class="qed">∎</span>
+            </div>
+            <p>This proof is worth pausing on: it produces the monotone subsequence by a purely combinatorial argument about indices (no analysis yet), then hands off to Section 2's theorem for the actual convergence — a clean illustration of how a small number of foundational results (completeness $\Rightarrow$ MCT $\Rightarrow$ Bolzano–Weierstrass) generate the rest of the theory.</p>
+
+            <h2 id="cauchy">4. Cauchy sequences: convergence without knowing the limit</h2>
+            <div class="note-box">
+                <span class="note-box-label">Definition</span>
+                <p>$\{a_n\}$ is <strong>Cauchy</strong> if $\forall\epsilon&gt;0\ \exists N$ such that $m,n\geq N \Rightarrow |a_m-a_n|&lt;\epsilon$.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Cauchy criterion)</span>
+                <p>A sequence in $\mathbb{R}$ converges if and only if it is Cauchy.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> ($\Rightarrow$) If $a_n\to L$: given $\epsilon&gt;0$, eventually $|a_n-L|&lt;\epsilon/2$, so for $m,n$ both past that point, $|a_m-a_n|\leq|a_m-L|+|L-a_n|&lt;\epsilon$. ($\Leftarrow$) If $\{a_n\}$ is Cauchy, it is bounded (same argument as boundedness of convergent sequences, using the Cauchy condition with $\epsilon=1$ in place of a known limit), so by Bolzano–Weierstrass it has a convergent subsequence $a_{n_k}\to L$. Given $\epsilon&gt;0$, the Cauchy condition gives $N$ with $|a_m-a_n|&lt;\epsilon/2$ for $m,n\geq N$; choosing $n_k\geq N$ with $|a_{n_k}-L|&lt;\epsilon/2$ gives, for any $n\geq N$, $|a_n-L|\leq|a_n-a_{n_k}|+|a_{n_k}-L|&lt;\epsilon$ — the whole sequence, not just the subsequence, converges to $L$. <span class="qed">∎</span>
+            </div>
+            <p>The genuine payoff: the Cauchy condition only references the sequence's own terms, so it can certify convergence <em>before knowing the limit</em> — indispensable whenever the limit is exactly the unknown object being constructed (as in the mean-square convergence arguments used to construct the causal MA($\infty$) representation of an AR(1) process in <a href="../econometrics/time-series-analysis.html">the time series note</a>). And exactly like the Monotone Convergence Theorem, this theorem is specific to complete spaces: $\mathbb{Q}$ has Cauchy sequences (e.g. truncated decimal expansions of $\sqrt2$) that do not converge within $\mathbb{Q}$.</p>
+
+            <h2 id="series">5. Series as sequences of partial sums</h2>
+            <div class="note-box">
+                <span class="note-box-label">Definition</span>
+                <p>$\sum_{n=1}^\infty a_n$ <strong>converges</strong> to $S$ if the sequence of partial sums $S_N=\sum_{n=1}^N a_n$ converges to $S$ in the sense of Section 1.</p>
+            </div>
+            <p>This is not a new theory — every fact about sequences above applies verbatim to $\{S_N\}$. In particular the Cauchy criterion for $\{S_N\}$ reads $|S_m-S_n|=\left|\sum_{k=n+1}^m a_k\right|&lt;\epsilon$ for $m&gt;n\geq N$, the form used repeatedly below.</p>
+
+            <h2 id="tests">6. Convergence tests, derived rather than listed</h2>
+            <div class="note-box">
+                <span class="note-box-label">Divergence test</span>
+                <p>If $\sum a_n$ converges then $a_n\to0$.</p>
+            </div>
+            <p>Immediate from the Cauchy criterion with $m=n+1$: $|a_{n+1}|&lt;\epsilon$ eventually. The converse is false — the standard counterexample is below.</p>
+            <div class="note-box">
+                <span class="note-box-label">Geometric series</span>
+                <p>$\sum_{n=0}^\infty r^n = \dfrac{1}{1-r}$ for $|r|&lt;1$; diverges for $|r|\geq1$.</p>
+            </div>
+            <p>$S_N=\sum_{n=0}^{N-1}r^n$ satisfies $S_N-rS_N = 1-r^N$ (telescoping), so $S_N=\dfrac{1-r^N}{1-r}$ for $r\neq1$; $r^N\to0$ iff $|r|&lt;1$, giving the limit $\frac{1}{1-r}$. For $|r|\geq1$, $r^N$ does not $\to0$, so $S_N$ does not converge (and diverges to $+\infty$ for $r=1$ trivially).</p>
+            <div class="note-box">
+                <span class="note-box-label">Integral test</span>
+                <p>If $f$ is positive, continuous, decreasing on $[1,\infty)$ and $a_n=f(n)$, then $\sum a_n$ converges iff $\int_1^\infty f(x)\,dx$ converges.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> Since $f$ is decreasing, on $[k,k+1]$: $f(k+1)\leq f(x)\leq f(k)$, so integrating gives $f(k+1)\leq\int_k^{k+1}f(x)\,dx\leq f(k)$. Summing $k=1,\ldots,N-1$: $\sum_{k=2}^N a_k \leq \int_1^N f(x)\,dx \leq \sum_{k=1}^{N-1}a_k$. Both the partial sums and $\int_1^N f$ are increasing in $N$ (integrand and terms positive), and each side is bounded iff the other is, by the sandwiching inequality — so by the Monotone Convergence Theorem, one converges iff the other does. <span class="qed">∎</span>
+            </div>
+            <p>This is precisely what proves the <strong>$p$-series</strong> result $\sum 1/n^p$ converges iff $p&gt;1$: $\int_1^\infty x^{-p}\,dx = \frac{1}{p-1}$ converges iff $p&gt;1$ (direct computation). In particular $p=1$ (the harmonic series) diverges — while $a_n=1/n\to0$, confirming the divergence test's converse failure claimed above.</p>
+            <div class="note-box">
+                <span class="note-box-label">Comparison and ratio tests</span>
+                <p><strong>Comparison:</strong> if $0\leq a_n\leq b_n$ eventually and $\sum b_n$ converges, so does $\sum a_n$. <strong>Ratio test:</strong> if $a_n&gt;0$ and $L=\lim a_{n+1}/a_n$ exists, $\sum a_n$ converges if $L&lt;1$, diverges if $L&gt;1$, and is inconclusive if $L=1$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof (ratio test, via comparison).</span> If $L&lt;1$, pick $r$ with $L&lt;r&lt;1$; eventually (past some $N$) $a_{n+1}/a_n&lt;r$, so $a_{N+k}&lt;a_N r^k$ for $k\geq0$ — comparison against the convergent geometric series $\sum a_Nr^k$ gives convergence. If $L&gt;1$, eventually $a_{n+1}&gt;a_n$, so $a_n\not\to0$, and the divergence test applies. At $L=1$ both $\sum1/n$ (diverges) and $\sum1/n^2$ (converges, by the integral test) have ratio $\to1$, so the test cannot distinguish them — genuinely inconclusive, not merely "harder." <span class="qed">∎</span>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Alternating series test (Leibniz)</span>
+                <p>If $b_n\geq0$ is decreasing with $b_n\to0$, then $\sum(-1)^{n+1}b_n$ converges, and the error after $N$ terms is at most $b_{N+1}$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> The even partial sums $S_{2k}$ are increasing ($S_{2k+2}-S_{2k}=b_{2k+1}-b_{2k+2}\geq0$ by the decreasing hypothesis) and bounded above by $b_1$ (regroup $S_{2k}=b_1-(b_2-b_3)-\cdots-b_{2k}\leq b_1$), so by the Monotone Convergence Theorem $S_{2k}\to S$ for some $S$; and $S_{2k+1}-S_{2k}=b_{2k+1}\to0$ forces the odd partial sums to the same limit. Since $S$ lies between any two consecutive partial sums, $|S_N-S|\leq|S_{N+1}-S_N|=b_{N+1}$. <span class="qed">∎</span>
             </div>
 
-            <h3>4.3 Common Maclaurin Series</h3>
-            <ul>
-                <li>$e^x = \sum_{n=0}^{\infty} \frac{x^n}{n!} = 1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \ldots$</li>
-                <li>$\sin x = \sum_{n=0}^{\infty} \frac{(-1)^n x^{2n+1}}{(2n+1)!} = x - \frac{x^3}{3!} + \frac{x^5}{5!} - \ldots$</li>
-                <li>$\cos x = \sum_{n=0}^{\infty} \frac{(-1)^n x^{2n}}{(2n)!} = 1 - \frac{x^2}{2!} + \frac{x^4}{4!} - \ldots$</li>
-                <li>$\frac{1}{1-x} = \sum_{n=0}^{\infty} x^n = 1 + x + x^2 + x^3 + \ldots$ for $|x| < 1$</li>
-                <li>$(1+x)^r = \sum_{n=0}^{\infty} \binom{r}{n} x^n$ for $|x| < 1$</li>
-                <li>$\ln(1+x) = \sum_{n=1}^{\infty} \frac{(-1)^{n+1} x^n}{n} = x - \frac{x^2}{2} + \frac{x^3}{3} - \ldots$ for $|x| < 1$</li>
-            </ul>
-
-            <h3>4.4 Taylor's Theorem with Remainder</h3>
-            <p><strong>Lagrange Form:</strong></p>
-            <div class="math-block">
-                $$f(x) = \sum_{n=0}^{N} \frac{f^{(n)}(a)}{n!}(x-a)^n + \frac{f^{(N+1)}(c)}{(N+1)!}(x-a)^{N+1}$$
+            <h2 id="absolute">7. Absolute vs. conditional convergence, and rearrangement</h2>
+            <div class="note-box">
+                <span class="note-box-label">Proposition</span>
+                <p>If $\sum|a_n|$ converges, then $\sum a_n$ converges (absolute convergence implies convergence).</p>
             </div>
-            <p>where $c$ is between $a$ and $x$.</p>
-
-            <h2>5. Special Series</h2>
-            <h3>5.1 Geometric Series</h3>
-            <div class="math-block">
-                $$\sum_{n=0}^{\infty} ar^n = \frac{a}{1-r} \quad \text{for } |r| < 1$$
+            <div class="proof">
+                <span class="proof-label">Proof.</span> By the Cauchy criterion applied to $\sum|a_n|$: $\left|\sum_{k=n+1}^m|a_k|\right|&lt;\epsilon$ eventually. By the triangle inequality, $\left|\sum_{k=n+1}^m a_k\right|\leq\sum_{k=n+1}^m|a_k|&lt;\epsilon$ for the same range — so $\{S_N\}$ is itself Cauchy, hence converges. <span class="qed">∎</span>
             </div>
-
-            <h3>5.2 Harmonic Series</h3>
-            <div class="math-block">
-                $$\sum_{n=1}^{\infty} \frac{1}{n} = 1 + \frac{1}{2} + \frac{1}{3} + \ldots \quad \text{(diverges)}$$
+            <p>The alternating harmonic series $\sum(-1)^{n+1}/n$ converges (Leibniz, Section 6) but $\sum1/n$ diverges (harmonic series) — <strong>conditional</strong> convergence: convergent, but not absolutely. This distinction is not a technicality:</p>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Riemann rearrangement, stated without proof)</span>
+                <p>If $\sum a_n$ converges conditionally, then for <em>any</em> target $T\in\mathbb{R}\cup\{\pm\infty\}$, some reordering of the same terms sums to $T$.</p>
             </div>
+            <p>(See Rudin, 1976, Thm. 3.54, for the proof — a direct construction alternating between adding enough positive terms to exceed $T$ and enough negative terms to drop back below it, which terminates infinitely often only because both the positive and negative parts of a conditionally convergent series individually diverge.) Absolutely convergent series have no such pathology — every rearrangement of an absolutely convergent series converges to the <em>same</em> sum, so "the sum of the series," for an absolutely convergent series, is a property of the underlying set of terms, not of the order they happen to be listed in; for a conditionally convergent series it is not.</p>
 
-            <h3>5.3 p-Series</h3>
-            <div class="math-block">
-                $$\sum_{n=1}^{\infty} \frac{1}{n^p} \begin{cases}
-                \text{converges} & \text{if } p > 1 \\
-                \text{diverges} & \text{if } p \leq 1
-                \end{cases}$$
+            <figure class="note-figure">
+                <img src="sequences-series/figures/riemann_rearrangement.png" alt="Plot of partial sums of the alternating harmonic series in standard order converging to ln(2), alongside three rearrangements of the same terms converging to 1, -1, and 0 respectively.">
+                <figcaption><strong>Figure — Same terms, same series, four different sums.</strong> All four curves sum <em>exactly</em> the terms $\pm1,\pm1/2,\pm1/3,\ldots$ of the alternating harmonic series — only the order differs. Standard order gives $\ln2\approx0.693$; each rearranged curve greedily adds positive terms until exceeding its target, then negative terms until dropping back below it, and converges to precisely that target. This is only possible because the series is conditionally, not absolutely, convergent — the positive and negative parts $\sum 1/(2k-1)$ and $\sum1/(2k)$ each diverge to $+\infty$ individually, so there is always "enough left" of either sign to push the partial sum toward any target.</figcaption>
+            </figure>
+
+            <h2 id="power-series">8. Power series and the radius of convergence</h2>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Cauchy–Hadamard)</span>
+                <p>For $\sum_{n=0}^\infty c_n(x-a)^n$, let $\rho=\limsup_{n\to\infty}|c_n|^{1/n}$ and $R=1/\rho$ (with $R=\infty$ if $\rho=0$, $R=0$ if $\rho=\infty$). The series converges (absolutely) for $|x-a|&lt;R$ and diverges for $|x-a|&gt;R$; behavior exactly at $|x-a|=R$ is not determined by $R$ alone.</p>
             </div>
+            <p>This follows from the root test (the same comparison-to-geometric-series idea as the ratio test in Section 6, applied to $|c_n(x-a)^n|^{1/n}=|c_n|^{1/n}|x-a|$): the terms' $n$-th roots tend to $\rho|x-a|$, giving convergence when $\rho|x-a|&lt;1$, i.e. $|x-a|&lt;1/\rho=R$. The boundary genuinely depends on the specific series, not just $R$: for $\sum x^n/n$ ($R=1$), $x=-1$ gives the convergent alternating harmonic series while $x=1$ gives the divergent harmonic series — two different behaviors at the same radius. Within the radius of convergence, a power series can be differentiated and integrated term by term, and the result is again a power series with the same radius $R$ (Rudin, 1976, Thm. 8.1); the resulting Taylor coefficients $c_n=f^{(n)}(a)/n!$ and the Lagrange remainder formula bounding the error of a degree-$N$ truncation are not re-derived here, but are exactly the tool used to justify the Maclaurin series listed in a calculus note's treatment of Taylor series.</p>
 
-            <h3>5.4 Telescoping Series</h3>
-            <p>Series where consecutive terms cancel:</p>
-            <div class="math-block">
-                $$\sum_{n=1}^{\infty} (a_n - a_{n+1}) = a_1 - \lim_{n \to \infty} a_n$$
-            </div>
+            <figure class="note-figure">
+                <img src="sequences-series/figures/radius_of_convergence.png" alt="Log-scale plot of partial sums of the power series sum (x/3)^n for x=2 (inside the radius, converges), x=3 (exactly at the radius, diverges), and x=4 (outside the radius, diverges faster).">
+                <figcaption><strong>Figure — The Cauchy–Hadamard radius is a genuine dividing line, verified computationally.</strong> $\sum(x/3)^n$ has $c_n=(1/3)^n$, so $|c_n|^{1/n}=1/3$ exactly (no limit needed — verified numerically in Section 9) and $R=3$. At $x=2&lt;R$ the partial sums flatten to a finite limit; at $x=4&gt;R$ they diverge geometrically; at $x=3=R$ they still diverge, but only linearly ($(x/3)^n=1$ for every $n$, so $S_N=N+1$) — a qualitatively different, slower kind of divergence than outside the radius, illustrating that "at the boundary" is its own regime, not a blend of the two sides.</figcaption>
+            </figure>
 
-            <h2>6. Fourier Series</h2>
-            <h3>6.1 Definition</h3>
-            <p>For a periodic function $f(x)$ with period $2\pi$:</p>
-            <div class="math-block">
-                $$f(x) = \frac{a_0}{2} + \sum_{n=1}^{\infty} \left(a_n \cos(nx) + b_n \sin(nx)\right)$$
-            </div>
-            <p>where:</p>
-            <div class="math-block">
-                $$a_n = \frac{1}{\pi} \int_{-\pi}^{\pi} f(x) \cos(nx) dx$$
-                $$b_n = \frac{1}{\pi} \int_{-\pi}^{\pi} f(x) \sin(nx) dx$$
-            </div>
+            <h2 id="computation">9. Computation</h2>
+            <p>The figures above are generated by <code>sequences-series/generate_figures.py</code>. The snippet below verifies the Cauchy–Hadamard radius numerically for the figure's series, and checks the ratio test's convergent case against a series with a known closed form.</p>
+            <pre><code>import numpy as np
 
-            <h3>6.2 Convergence of Fourier Series</h3>
-            <p><strong>Dirichlet Conditions:</strong> If $f$ is periodic, piecewise continuous, and has finitely many maxima and minima in one period, then the Fourier series converges to:</p>
-            <ul>
-                <li>$f(x)$ at points of continuity</li>
-                <li>$\frac{f(x^+) + f(x^-)}{2}$ at points of discontinuity</li>
-            </ul>
+# Cauchy-Hadamard radius for c_n = (1/3)^n
+n = np.arange(1, 200)
+c_n = (1.0 / 3.0) ** n
+root_n = c_n ** (1.0 / n)
+print(f"|c_n|^(1/n) at n=199: {root_n[-1]:.6f}  -&gt;  R = 1/that = {1/root_n[-1]:.6f}  (exact R = 3)")
 
-            <h2>7. Code Examples</h2>
-            <pre><code># Python implementations for sequences and series analysis
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy import integrate
-import sympy as sp
+# Ratio test convergent case: sum n^2 / 2^n, closed form x(1+x)/(1-x)^3 at x=1/2
+def partial_sum(N):
+    return sum(k**2 / 2**k for k in range(1, N + 1))
 
-class SequenceAnalyzer:
-    def __init__(self, formula, symbolic_var='n'):
-        """
-        Initialize with a formula for the sequence
-        formula: symbolic expression or lambda function
-        """
-        if isinstance(formula, str):
-            self.symbolic_var = sp.Symbol(symbolic_var)
-            self.formula = sp.sympify(formula)
-            self.func = sp.lambdify(self.symbolic_var, self.formula, 'numpy')
-        else:
-            self.func = formula
-            self.formula = None
-    
-    def generate_terms(self, n_terms=50, start=1):
-        """Generate first n_terms of the sequence"""
-        indices = np.arange(start, start + n_terms)
-        return indices, self.func(indices)
-    
-    def plot_sequence(self, n_terms=50, start=1):
-        """Plot the sequence"""
-        indices, terms = self.generate_terms(n_terms, start)
-        
-        plt.figure(figsize=(10, 6))
-        plt.plot(indices, terms, 'bo-', markersize=4, linewidth=1)
-        plt.xlabel('n')
-        plt.ylabel('a_n')
-        plt.title('Sequence Terms')
-        plt.grid(True, alpha=0.3)
-        plt.show()
-    
-    def check_convergence(self, n_terms=1000, tolerance=1e-10):
-        """Heuristic check for convergence"""
-        indices, terms = self.generate_terms(n_terms)
-        
-        # Check if terms approach zero (necessary condition)
-        if abs(terms[-1]) > tolerance:
-            return False, f"Last term |a_{n_terms}| = {abs(terms[-1]):.2e} > {tolerance}"
-        
-        # Check if sequence is Cauchy
-        tail_length = min(100, n_terms // 4)
-        tail = terms[-tail_length:]
-        max_diff = np.max(np.abs(np.diff(tail)))
-        
-        if max_diff < tolerance:
-            return True, f"Sequence appears to converge (max difference in tail: {max_diff:.2e})"
-        else:
-            return False, f"Sequence may not converge (max difference in tail: {max_diff:.2e})"
-
-class SeriesAnalyzer:
-    def __init__(self, term_formula, symbolic_var='n'):
-        """
-        Initialize with a formula for series terms
-        """
-        if isinstance(term_formula, str):
-            self.symbolic_var = sp.Symbol(symbolic_var)
-            self.formula = sp.sympify(term_formula)
-            self.func = sp.lambdify(self.symbolic_var, self.formula, 'numpy')
-        else:
-            self.func = term_formula
-            self.formula = None
-    
-    def partial_sums(self, n_terms=100, start=1):
-        """Calculate partial sums"""
-        indices = np.arange(start, start + n_terms)
-        terms = self.func(indices)
-        partial_sums = np.cumsum(terms)
-        return indices, terms, partial_sums
-    
-    def ratio_test(self, n_terms=100, start=1):
-        """Apply ratio test"""
-        indices = np.arange(start, start + n_terms)
-        terms = np.abs(self.func(indices))
-        
-        # Calculate ratios a_{n+1}/a_n
-        ratios = terms[1:] / terms[:-1]
-        
-        # Remove any infinite or NaN values
-        valid_ratios = ratios[np.isfinite(ratios)]
-        
-        if len(valid_ratios) == 0:
-            return None, "No valid ratios found"
-        
-        # Check if ratios approach a limit
-        tail_ratios = valid_ratios[-20:]  # Last 20 ratios
-        limit = np.mean(tail_ratios)
-        
-        if limit < 1:
-            return "Convergent", f"Ratio test: limit ≈ {limit:.4f} < 1"
-        elif limit > 1:
-            return "Divergent", f"Ratio test: limit ≈ {limit:.4f} > 1"
-        else:
-            return "Inconclusive", f"Ratio test: limit ≈ {limit:.4f} = 1"
-    
-    def plot_convergence(self, n_terms=100, start=1):
-        """Plot partial sums to visualize convergence"""
-        indices, terms, partial_sums = self.partial_sums(n_terms, start)
-        
-        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 8))
-        
-        # Plot terms
-        ax1.plot(indices, terms, 'bo-', markersize=3, linewidth=1)
-        ax1.set_xlabel('n')
-        ax1.set_ylabel('a_n')
-        ax1.set_title('Series Terms')
-        ax1.grid(True, alpha=0.3)
-        
-        # Plot partial sums
-        ax2.plot(indices, partial_sums, 'ro-', markersize=3, linewidth=1)
-        ax2.set_xlabel('n')
-        ax2.set_ylabel('S_n')
-        ax2.set_title('Partial Sums')
-        ax2.grid(True, alpha=0.3)
-        
-        plt.tight_layout()
-        plt.show()
-        
-        return partial_sums[-1]
-
-class PowerSeries:
-    def __init__(self, coefficients, center=0):
-        """
-        Initialize power series with coefficients
-        coefficients: list or function that gives c_n
-        center: center of the series
-        """
-        self.coefficients = coefficients
-        self.center = center
-    
-    def radius_of_convergence(self, n_terms=100):
-        """Estimate radius of convergence using ratio test"""
-        if callable(self.coefficients):
-            coeffs = [self.coefficients(n) for n in range(n_terms)]
-        else:
-            coeffs = self.coefficients[:n_terms]
-        
-        # Remove zeros to avoid division issues
-        nonzero_coeffs = [c for c in coeffs if c != 0]
-        
-        if len(nonzero_coeffs) < 2:
-            return float('inf')
-        
-        # Calculate ratios |c_n|/|c_{n+1}|
-        ratios = []
-        for i in range(len(nonzero_coeffs) - 1):
-            if nonzero_coeffs[i+1] != 0:
-                ratios.append(abs(nonzero_coeffs[i]) / abs(nonzero_coeffs[i+1]))
-        
-        if ratios:
-            return np.mean(ratios[-10:])  # Average of last 10 ratios
-        else:
-            return float('inf')
-    
-    def evaluate(self, x, n_terms=50):
-        """Evaluate power series at point x"""
-        if callable(self.coefficients):
-            coeffs = [self.coefficients(n) for n in range(n_terms)]
-        else:
-            coeffs = self.coefficients[:n_terms]
-        
-        result = 0
-        power = 1
-        for n, c in enumerate(coeffs):
-            result += c * power
-            power *= (x - self.center)
-        
-        return result
-    
-    def plot_function(self, x_range=(-2, 2), n_terms=50, num_points=1000):
-        """Plot the function represented by the power series"""
-        x = np.linspace(x_range[0], x_range[1], num_points)
-        y = [self.evaluate(xi, n_terms) for xi in x]
-        
-        plt.figure(figsize=(10, 6))
-        plt.plot(x, y, 'b-', linewidth=2)
-        plt.xlabel('x')
-        plt.ylabel('f(x)')
-        plt.title(f'Power Series (first {n_terms} terms)')
-        plt.grid(True, alpha=0.3)
-        plt.show()
-
-def taylor_series_demo():
-    """Demonstrate Taylor series for common functions"""
-    x = sp.Symbol('x')
-    
-    # Define functions and their Taylor series
-    functions = {
-        'exp(x)': sp.exp(x),
-        'sin(x)': sp.sin(x),
-        'cos(x)': sp.cos(x),
-        '1/(1-x)': 1/(1-x),
-        'ln(1+x)': sp.log(1+x)
-    }
-    
-    for name, func in functions.items():
-        print(f"\n{name}:")
-        # Calculate Taylor series at x=0
-        series = func.series(x, 0, 6).removeO()
-        print(f"Taylor series: {series}")
-        
-        # Convert to power series coefficients
-        poly = sp.Poly(series, x)
-        coeffs = poly.all_coeffs()
-        coeffs.reverse()  # Reverse to get [c_0, c_1, c_2, ...]
-        print(f"Coefficients: {coeffs}")
-
-# Convergence tests implementation
-def convergence_tests(series_analyzer, n_terms=100):
-    """Apply various convergence tests"""
-    print("=== Convergence Analysis ===")
-    
-    # Ratio test
-    result, explanation = series_analyzer.ratio_test(n_terms)
-    print(f"Ratio Test: {result}")
-    print(f"  {explanation}")
-    
-    # Check if terms approach zero (necessary condition)
-    _, terms, _ = series_analyzer.partial_sums(n_terms)
-    last_term = terms[-1]
-    print(f"\nDivergence Test:")
-    if abs(last_term) < 1e-10:
-        print(f"  Terms approach zero (a_{n_terms} ≈ {last_term:.2e})")
-    else:
-        print(f"  Terms do not approach zero (a_{n_terms} = {last_term:.4f})")
-        print("  Series diverges by divergence test!")
-
-# Example usage
-if __name__ == "__main__":
-    print("=== Sequence Analysis ===")
-    
-    # Example 1: Sequence 1/n
-    seq1 = SequenceAnalyzer(lambda n: 1/n)
-    converges, msg = seq1.check_convergence()
-    print(f"Sequence 1/n: {msg}")
-    
-    # Example 2: Sequence (-1)^n/n
-    seq2 = SequenceAnalyzer(lambda n: (-1)**n / n)
-    converges, msg = seq2.check_convergence()
-    print(f"Sequence (-1)^n/n: {msg}")
-    
-    print("\n=== Series Analysis ===")
-    
-    # Example 1: Harmonic series
-    harmonic = SeriesAnalyzer(lambda n: 1/n)
-    print("Harmonic series 1/n:")
-    convergence_tests(harmonic)
-    
-    # Example 2: Geometric series with r = 1/2
-    geometric = SeriesAnalyzer(lambda n: (0.5)**n)
-    print("\nGeometric series (1/2)^n:")
-    convergence_tests(geometric)
-    
-    # Example 3: Alternating harmonic series
-    alt_harmonic = SeriesAnalyzer(lambda n: (-1)**(n+1) / n)
-    print("\nAlternating harmonic series (-1)^(n+1)/n:")
-    convergence_tests(alt_harmonic)
-    
-    print("\n=== Power Series ===")
-    
-    # Geometric series 1/(1-x) = sum(x^n)
-    geom_coeffs = [1] * 50  # All coefficients are 1
-    ps = PowerSeries(geom_coeffs)
-    R = ps.radius_of_convergence()
-    print(f"Geometric series radius of convergence: {R:.4f}")
-    
-    # Evaluate at x = 0.5
-    value = ps.evaluate(0.5)
-    analytical = 1 / (1 - 0.5)
-    print(f"Series at x=0.5: {value:.6f}")
-    print(f"Analytical 1/(1-0.5): {analytical:.6f}")
-    
-    print("\n=== Taylor Series Demo ===")
-    taylor_series_demo()
+for N in (10, 20, 40):
+    print(f"N={N:3d}: partial sum = {partial_sum(N):.6f}")
+x = 0.5
+print("closed form x(1+x)/(1-x)^3 at x=1/2:", x * (1 + x) / (1 - x)**3)
 </code></pre>
+            <p>Actual output:</p>
+            <pre><code>|c_n|^(1/n) at n=199: 0.333333  -&gt;  R = 1/that = 3.000000  (exact R = 3)
+N= 10: partial sum = 5.857422
+N= 20: partial sum = 5.999537
+N= 40: partial sum = 6.000000
+closed form x(1+x)/(1-x)^3 at x=1/2: 6.0</code></pre>
+            <p>The estimated radius matches $R=3$ to six decimal places, and the ratio-test-justified series visibly converges toward its exact closed-form value $6$ as $N$ grows, consistent with Section 6's proof rather than merely "looking like it settles down."</p>
 
-            <h2>8. Applications</h2>
-            <h3>8.1 Mathematical Analysis</h3>
+            <h2 id="pitfalls">10. Common pitfalls</h2>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — $a_n\to0$ does not imply $\sum a_n$ converges</span>
+                <p>The divergence test is a one-directional necessary condition, not sufficient. The harmonic series $\sum1/n$ is the standard counterexample: terms $\to0$, series diverges (Section 6).</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — Ratio/root test at $L=1$ is not "probably converges" or "probably diverges"</span>
+                <p>It is genuinely uninformative — $\sum1/n$ and $\sum1/n^2$ both have ratio limit $1$ and opposite convergence behavior (Section 6). A different test (often the integral test or a more refined comparison) is required, not a judgment call about how close to $1$ the ratio is.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — Rearranging a conditionally convergent series changes its sum</span>
+                <p>Not a pathological edge case reserved for pure mathematicians: any computation that reorders terms of a conditionally convergent sum (e.g. summing floating-point contributions in a different order, or reindexing a double sum without justifying absolute convergence first) can silently change the numerical answer, exactly as demonstrated in the figure above. Absolute convergence is the standing assumption that makes term reordering safe (Section 7); check it before reordering, not after noticing a discrepancy.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — The radius of convergence says nothing about the boundary</span>
+                <p>$|x-a|=R$ requires separate case-by-case analysis; different power series with the same $R$ can converge at both boundary points, one, or neither (Section 8's example already shows two different behaviors at the two endpoints of a single series).</p>
+            </div>
+
+            <h2 id="connections">11. Connections</h2>
             <ul>
-                <li>Foundation for calculus and real analysis</li>
-                <li>Function approximation and numerical methods</li>
-                <li>Fourier analysis and signal processing</li>
+                <li><strong><a href="continuity.html">Continuity and limits</a>.</strong> That note's sequential characterization of continuity, and the $\epsilon$-$\delta$ definition of a function limit, both directly reuse this note's $\epsilon$-$N$ definition of sequence convergence.</li>
+                <li><strong><a href="convergence.html">Convergence theory</a>.</strong> This note treats sequences and series of <em>numbers</em>; that note treats sequences and series of <em>functions</em>, where an entirely new distinction (pointwise vs. uniform convergence) appears that has no analogue here.</li>
+                <li><strong><a href="../econometrics/time-series-analysis.html">Time series analysis</a>.</strong> The AR(1) process's causal representation $X_t=\sum_{j\geq0}\phi^j\varepsilon_{t-j}$ is constructed there via exactly the Cauchy-criterion argument of Section 4, applied in the space of finite-variance random variables rather than $\mathbb{R}$; the geometric-series convergence condition $|\phi|&lt;1$ from Section 6 is literally the same computation as that note's stationarity condition.</li>
+                <li><strong><a href="../calculus/integration.html">Integration</a>.</strong> The integral test (Section 6) is a direct comparison between a series and an improper integral, and Taylor's theorem (Section 8) underlies that note's treatment of Taylor series as polynomial approximations with quantified error.</li>
             </ul>
 
-            <h3>8.2 Physics and Engineering</h3>
+            <h2 id="references">12. References</h2>
             <ul>
-                <li>Quantum mechanics (wave functions)</li>
-                <li>Heat transfer and diffusion equations</li>
-                <li>Circuit analysis and control systems</li>
-            </ul>
-
-            <h3>8.3 Computer Science</h3>
-            <ul>
-                <li>Algorithm analysis and complexity</li>
-                <li>Numerical computation and approximation</li>
-                <li>Machine learning (optimization convergence)</li>
-            </ul>
-
-            <h2>9. References</h2>
-            <ul>
-                <li>Rudin, W. (1976). <em>Principles of Mathematical Analysis</em>.</li>
-                <li>Apostol, T. M. (1974). <em>Mathematical Analysis</em>.</li>
-                <li>Bartle, R. G., & Sherbert, D. R. (2011). <em>Introduction to Real Analysis</em>.</li>
+                <li>Rudin, W. (1976). <em>Principles of Mathematical Analysis</em> (3rd ed.). McGraw-Hill.</li>
+                <li>Abbott, S. (2015). <em>Understanding Analysis</em> (2nd ed.). Springer.</li>
+                <li>Apostol, T. M. (1974). <em>Mathematical Analysis</em> (2nd ed.). Addison-Wesley.</li>
             </ul>
         </section>
     </main>
@@ -556,4 +248,4 @@ if __name__ == "__main__":
         <p>&copy; Diogo Franquinho | Technical Notes</p>
     </footer>
 </body>
-</html> 
+</html>
