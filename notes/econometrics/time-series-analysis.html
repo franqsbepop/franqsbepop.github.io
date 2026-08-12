@@ -21,81 +21,408 @@
 </head>
 <body>
     <nav class="top-nav">
-        <a href="../../index.html">← Back to Home</a> | 
+        <a href="../../index.html">← Back to Home</a> |
         <a href="../../index.html#notes">Notes</a>
     </nav>
 
     <main>
         <header>
             <h1>Time Series Analysis</h1>
-            <p class="note-meta">Last updated: December 2024</p>
+            <p class="note-meta">Last updated: August 2026</p>
         </header>
 
         <section class="note-content">
             <div class="disclaimer">
                 <p><strong>Disclaimer:</strong> These are my personal notes compiled for my own reference and learning. They may contain errors, incomplete information, or personal interpretations. While I strive for accuracy, these notes are not peer-reviewed and should not be considered authoritative sources. Please consult official textbooks, research papers, or other reliable sources for academic or professional purposes.</p>
             </div>
-            
-            <h2>1. Introduction</h2>
-            <p>Time series analysis deals with data points collected over time. The key characteristic is that observations are not independent.</p>
 
-            <h2>2. Stationarity</h2>
-            <p>A time series $\{X_t\}$ is <strong>weakly stationary</strong> if:</p>
+            <div class="table-of-contents">
+                <h3>Contents</h3>
+                <ol>
+                    <li><a href="#introduction">Stochastic processes and time series</a></li>
+                    <li><a href="#stationarity">Stationarity, white noise, and the autocovariance function</a></li>
+                    <li><a href="#ergodicity">Ergodicity: why one path can be enough</a></li>
+                    <li><a href="#ar1">The AR(1) process</a></li>
+                    <li><a href="#arp">General AR($p$) and the Yule–Walker equations</a></li>
+                    <li><a href="#ma">Moving-average processes and invertibility</a></li>
+                    <li><a href="#arma">ARMA($p,q$): causality and invertibility together</a></li>
+                    <li><a href="#identification">Model identification from the ACF and PACF</a></li>
+                    <li><a href="#unit-roots">Unit roots, integration, and ARIMA</a></li>
+                    <li><a href="#spurious">Spurious regression</a></li>
+                    <li><a href="#model-selection">Model selection: AIC and BIC</a></li>
+                    <li><a href="#forecasting">Forecasting</a></li>
+                    <li><a href="#computation">Computation: simulation and estimation</a></li>
+                    <li><a href="#pitfalls">Common pitfalls</a></li>
+                    <li><a href="#connections">Connections</a></li>
+                    <li><a href="#references">References</a></li>
+                </ol>
+            </div>
+
+            <h2 id="introduction">1. Stochastic processes and time series</h2>
+            <p>A time series is a single observed path of a <strong>stochastic process</strong> $\{X_t\}_{t \in \mathbb{Z}}$: a collection of random variables indexed by time and defined on a common probability space $(\Omega, \mathcal{F}, P)$. This is a stronger structure than the cross-sectional setting of ordinary regression. In cross-sectional data, each unit contributes one draw from (conceptually) many independent copies of the same random variable, and the law of large numbers lets us average across units. In time series data, we typically observe a single realization $x_1, x_2, \ldots, x_T$ — one path through time, not many independent paths. Every tool in this note exists to answer one underlying question: <em>under what conditions can a single path stand in for repeated draws?</em> The answer has two parts, developed in Sections 2 and 3: the process's probability law must not drift over time (stationarity), and time-averages computed along the one observed path must converge to the process's true moments (ergodicity).</p>
+            <p>The rest of the note builds the classical linear time series toolkit — AR, MA, ARMA, and their integrated (ARIMA) extension — from these two foundations, derives rather than states the central results, and uses simulation throughout to make the more subtle distinctions (stationary vs. unit root, causal vs. non-causal, correlation vs. spurious correlation) visually unmistakable rather than purely symbolic.</p>
+
+            <h2 id="stationarity">2. Stationarity, white noise, and the autocovariance function</h2>
+
+            <div class="note-box">
+                <span class="note-box-label">Definition (Strict stationarity)</span>
+                <p>A process $\{X_t\}$ is <strong>strictly stationary</strong> if for every $k \in \mathbb{N}$, every set of times $t_1 &lt; t_2 &lt; \cdots &lt; t_k$, and every integer $h$, the joint distribution of $(X_{t_1}, \ldots, X_{t_k})$ equals the joint distribution of $(X_{t_1+h}, \ldots, X_{t_k+h})$.</p>
+            </div>
+
+            <p>Strict stationarity says the entire probabilistic description of the process is invariant to shifting the time origin. It is a strong requirement — it constrains every joint distribution, of every order, not just means and covariances. In practice we almost always work with a weaker, second-moment version of the same idea.</p>
+
+            <div class="note-box">
+                <span class="note-box-label">Definition (Weak / covariance stationarity)</span>
+                <p>A process $\{X_t\}$ is <strong>weakly stationary</strong> if</p>
+                <ol>
+                    <li>$E[X_t] = \mu$ for all $t$ (constant mean);</li>
+                    <li>$E[X_t^2] &lt; \infty$ for all $t$ (finite second moments);</li>
+                    <li>$\mathrm{Cov}(X_t, X_{t+h}) = \gamma(h)$ depends only on the lag $h$, not on $t$.</li>
+                </ol>
+            </div>
+
+            <div class="note-box">
+                <span class="note-box-label">Proposition</span>
+                <p>Strict stationarity together with finite second moments implies weak stationarity.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> If $(X_t, X_{t+h}) \overset{d}{=} (X_{t+s}, X_{t+h+s})$ for every $s$, then in particular every moment of the joint distribution — including $E[X_t]$, $E[X_t^2]$, and $\mathrm{Cov}(X_t, X_{t+h})$ — is the same function of $h$ regardless of $t$, provided those moments exist. <span class="qed">∎</span>
+            </div>
+
+            <p>The converse fails: weak stationarity does not imply strict stationarity. Standard counterexample (Brockwell &amp; Davis, 2016, Ch. 1): let $\{X_t\}$ be independent across $t$, with $X_t \sim N(0,1)$ when $t$ is even and $X_t$ drawn from any other mean-zero, unit-variance distribution (say a rescaled uniform) when $t$ is odd. Independence across $t$ makes $\gamma(h) = 0$ for all $h \neq 0$ and $\gamma(0) = 1$, so the process is weakly stationary. But the marginal distribution of $X_t$ itself depends on the parity of $t$, so it is not strictly stationary. One important special case where the two notions coincide:</p>
+
+            <div class="note-box">
+                <span class="note-box-label">Proposition (Gaussian processes)</span>
+                <p>If $\{X_t\}$ is a Gaussian process (every finite collection of $X_t$'s is jointly normal), then weak stationarity implies strict stationarity.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> A multivariate normal distribution is completely determined by its mean vector and covariance matrix. Weak stationarity fixes the mean of every $X_t$ at $\mu$ and the covariance of every $k$-tuple $(X_{t_1},\ldots,X_{t_k})$ to depend only on the lag differences $t_i - t_j$, hence not on the time origin — so the mean vector and covariance matrix of $(X_{t_1+h}, \ldots, X_{t_k+h})$ coincide with those of $(X_{t_1}, \ldots, X_{t_k})$ for every $h$. Two jointly Gaussian vectors with the same mean and covariance have the same distribution. <span class="qed">∎</span>
+            </div>
+
+            <p>This is why Gaussian ARMA models — the setting for essentially everything below — can be studied through means and covariances alone without loss of generality.</p>
+
+            <div class="note-box">
+                <span class="note-box-label">Definition (White noise)</span>
+                <p>A process $\{\varepsilon_t\}$ is <strong>white noise</strong>, written $\varepsilon_t \sim \mathrm{WN}(0, \sigma^2)$, if $E[\varepsilon_t] = 0$, $\mathrm{Var}(\varepsilon_t) = \sigma^2 &lt; \infty$ for all $t$, and $\mathrm{Cov}(\varepsilon_t, \varepsilon_s) = 0$ for $t \neq s$.</p>
+            </div>
+
+            <p>Note precisely what this does and does not assume: white noise is <em>uncorrelated</em> across time, not necessarily <em>independent</em> across time, and not necessarily identically distributed. Every derivation in Sections 4–8 (autocovariances, Yule–Walker equations, causality, invertibility) uses only the uncorrelatedness in the definition. Results that need more — consistency of estimators via a law of large numbers, the exact finite-sample or asymptotic distribution of $\hat\phi$, ergodicity — need the stronger assumption that $\{\varepsilon_t\}$ is i.i.d. or Gaussian. Conflating "white noise" with "i.i.d. noise" is flagged again in the pitfalls at the end of this note, because it is easy to smuggle in the stronger assumption without noticing.</p>
+
+            <div class="note-box">
+                <span class="note-box-label">Proposition (Properties of the autocovariance function)</span>
+                <p>For a weakly stationary process with autocovariance $\gamma(h) = \mathrm{Cov}(X_t, X_{t+h})$:</p>
+                <ol>
+                    <li>$\gamma(0) = \mathrm{Var}(X_t) \geq 0$;</li>
+                    <li>$|\gamma(h)| \leq \gamma(0)$ for all $h$;</li>
+                    <li>$\gamma(h) = \gamma(-h)$ (the ACF is even);</li>
+                    <li>$\gamma$ is <strong>positive semi-definite</strong>: for any $n$, any times $t_1,\ldots,t_n$, and any reals $a_1,\ldots,a_n$, $\ \sum_{i=1}^n\sum_{j=1}^n a_i a_j \gamma(t_i - t_j) \geq 0$.</li>
+                </ol>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> (2) is Cauchy–Schwarz applied to $X_t - \mu$ and $X_{t+h} - \mu$. (3) follows by relabeling the stationarity condition with $t \to t-h$: $\mathrm{Cov}(X_t, X_{t+h}) = \mathrm{Cov}(X_{t-h}, X_t) = \mathrm{Cov}(X_t, X_{t-h})$, i.e. $\gamma(h) = \gamma(-h)$. For (4), let $S = \sum_i a_i(X_{t_i} - \mu)$; then $0 \leq \mathrm{Var}(S) = \sum_{i,j} a_i a_j \mathrm{Cov}(X_{t_i}, X_{t_j}) = \sum_{i,j} a_i a_j \gamma(t_i - t_j)$. <span class="qed">∎</span>
+            </div>
+            <p>Property (4) is not a technicality: it is exactly the condition (a form of Bochner's theorem) that characterizes which candidate functions $\gamma$ can arise as the autocovariance of <em>some</em> stationary process at all. The autocorrelation function is the normalized version, $\rho(h) = \gamma(h)/\gamma(0)$, so $\rho(0)=1$ and $|\rho(h)| \le 1$.</p>
+
+            <h2 id="ergodicity">3. Ergodicity: why one path can be enough</h2>
+            <p>Stationarity alone does not guarantee that the sample mean computed along a single observed path, $\bar X_T = \frac{1}{T}\sum_{t=1}^T X_t$, converges to the population mean $\mu = E[X_t]$. A minimal counterexample: let $Z$ be a single random draw from $N(0,1)$, and set $X_t = Z$ for every $t$. This process is (trivially) strictly stationary — every finite-dimensional distribution is just the constant vector $(Z,\ldots,Z)$ shifted nowhere — yet $\bar X_T = Z$ for every $T$, which does not converge to $E[X_t] = 0$ unless $Z$ happens to equal $0$. The process never "explores" the rest of its distribution along a single path.</p>
+            <p><strong>Ergodicity</strong> is the additional condition that rules this out: informally, that time averages along almost every path converge to the corresponding ensemble (expectation) average. The precise statement is the Birkhoff ergodic theorem, which is outside the scope of this note; see Hamilton (1994, Ch. 7) or Brockwell &amp; Davis (2016, Ch. 5) for the full statement and proof. What matters practically is a sufficient condition that is easy to check: a stationary Gaussian process is ergodic if $\sum_{h=-\infty}^\infty |\gamma(h)| &lt; \infty$, i.e. if its autocovariances are absolutely summable. Every causal, invertible ARMA process constructed in Sections 4–7 below satisfies this (its autocovariances decay geometrically), so ergodicity is available whenever it is needed — in particular, it is the formal justification for estimating $\gamma(h)$ and $\phi$ from a single observed path in Section 13.</p>
+
+            <h2 id="ar1">4. The AR(1) process</h2>
+            <p>The first-order autoregression is defined by the recursion</p>
+            <div class="math-block">
+                $$X_t = \phi X_{t-1} + \varepsilon_t, \qquad \varepsilon_t \sim \mathrm{WN}(0, \sigma^2).$$
+            </div>
+            <p>The recursion alone does not pin down a unique process — it must be paired with an initial condition or a stationarity requirement. Whether a stationary solution exists at all, and what it looks like, depends entirely on $\phi$. The figure below simulates six independent realizations of this recursion for three values of $\phi$, holding the driving noise distribution fixed, and makes the qualitative difference impossible to miss before any algebra is done.</p>
+
+            <figure class="note-figure">
+                <img src="time-series-analysis/figures/stationarity_regimes.png" alt="Six simulated AR(1) paths for phi=0.8, phi=1, and phi=1.05, showing stationary fluctuation, a random walk, and explosive divergence respectively.">
+                <figcaption><strong>Figure — Persistence, unit roots, and explosion in an AR(1).</strong> Six independent realizations of $X_t = \phi X_{t-1} + \varepsilon_t$ with $\varepsilon_t \overset{\text{iid}}{\sim} N(0,1)$ and $X_0 = 0$. For $\phi = 0.8$, all six paths hover around the same mean with bounded spread — a shock's effect decays at rate $\phi^h$. For $\phi = 1$ (a random walk), the paths drift apart without bound and never return to a common level: this is a unit root, and it is <em>not</em> a stationary process despite the recursion looking almost identical. For $\phi = 1.05$, the paths diverge geometrically fast (note the $y$-axis scale). The rest of this section derives exactly why $|\phi| &lt; 1$ is the dividing line.</figcaption>
+            </figure>
+
+            <p>Substituting the recursion into itself $n$ times gives</p>
+            <div class="math-block">
+                $$X_t = \phi^n X_{t-n} + \sum_{j=0}^{n-1} \phi^j \varepsilon_{t-j}.$$
+            </div>
+
+            <div class="note-box">
+                <span class="note-box-label">Proposition (Stationary causal solution, $|\phi|&lt;1$)</span>
+                <p>If $|\phi| &lt; 1$, the recursion admits a unique weakly stationary solution defined for all $t \in \mathbb{Z}$:</p>
+                <div class="math-block">
+                    $$X_t = \sum_{j=0}^{\infty} \phi^j \varepsilon_{t-j}.$$
+                </div>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof (sketch).</span> The partial sums $\sum_{j=0}^{n-1}\phi^j\varepsilon_{t-j}$ form a Cauchy sequence in mean square precisely when $\sum_{j=0}^\infty \phi^{2j}\sigma^2 &lt; \infty$, which holds iff $|\phi|&lt;1$ (geometric series); mean-square completeness then gives a well-defined limit, and the "initial condition" term $\phi^n X_{t-n}$ vanishes in mean square as $n\to\infty$ for any process $X_{t-n}$ with bounded variance, since $E[(\phi^n X_{t-n})^2] = \phi^{2n}E[X_{t-n}^2] \to 0$. Uniqueness among stationary, <em>causal</em> (depending only on $\varepsilon_t, \varepsilon_{t-1}, \ldots$) solutions follows because any two such solutions would have to agree with this limit. <span class="qed">∎</span>
+            </div>
+
+            <p>This infinite sum — an $\mathrm{MA}(\infty)$ representation of the AR(1) — is the formal justification for the intuition that $X_t$ is "a weighted history of past shocks, with exponentially decaying weights." From it, $E[X_t]=0$, and</p>
+            <div class="math-block">
+                $$\gamma(0) = \mathrm{Var}(X_t) = \sigma^2 \sum_{j=0}^\infty \phi^{2j} = \frac{\sigma^2}{1-\phi^2}.$$
+            </div>
+
+            <p>For the autocovariance at lag $h \geq 1$, it is cleaner to use the recursion directly rather than the infinite sum. Multiplying $X_t = \phi X_{t-1} + \varepsilon_t$ by $X_{t-h}$ and taking expectations,</p>
+            <div class="math-block">
+                $$\gamma(h) = \phi\,\gamma(h-1) + \underbrace{E[\varepsilon_t X_{t-h}]}_{=\,0 \text{ for } h \geq 1},$$
+            </div>
+            <p>where the covariance term vanishes because, under the causal solution above, $X_{t-h}$ depends only on $\varepsilon_{t-h}, \varepsilon_{t-h-1}, \ldots$, all of which are uncorrelated with $\varepsilon_t$ for $h \geq 1$. This first-order recursion in $h$ solves to</p>
+            <div class="math-block">
+                $$\gamma(h) = \phi^{|h|}\gamma(0), \qquad \rho(h) = \phi^{|h|}.$$
+            </div>
+            <p>So $\phi$ is simultaneously the AR coefficient and the lag-one autocorrelation, and the entire ACF decays geometrically at rate $\phi$ — the mathematical content behind "persistence."</p>
+
+            <div class="note-box">
+                <span class="note-box-label">Remark ($\phi = 1$: the unit root case)</span>
+                <p>At $\phi = 1$ the recursion becomes $X_t = X_{t-1} + \varepsilon_t$, i.e. $X_t = X_0 + \sum_{s=1}^t \varepsilon_s$ — a random walk. Directly, $\mathrm{Var}(X_t) = t\sigma^2$, which grows without bound and depends on $t$: the process is not weakly stationary, and no stationary solution to the recursion exists at all in this case (the geometric series argument above breaks down exactly at $|\phi|=1$). This is the case shown in the middle panel of the figure above.</p>
+            </div>
+
+            <div class="note-box">
+                <span class="note-box-label">Remark ($|\phi|&gt;1$: explosive, and why "just solve backward" is not enough)</span>
+                <p>When $|\phi|&gt;1$, the forward causal sum $\sum_{j\ge0}\phi^j\varepsilon_{t-j}$ diverges, matching the third panel above. A mathematically careful reader may object: doesn't a stationary solution always exist, by solving the recursion <em>backward</em> instead, i.e. $X_t = -\sum_{j=1}^\infty \phi^{-j}\varepsilon_{t+j}$? This sum does converge in mean square (now $|\phi^{-1}|&lt;1$ drives convergence) and is indeed stationary — but it expresses $X_t$ in terms of <em>future</em> shocks $\varepsilon_{t+1}, \varepsilon_{t+2},\ldots$, not past ones. Such a solution is <strong>non-causal</strong>: it cannot be simulated forward in time or used for forecasting, since it requires knowing the future to construct the present. For this reason, "the" AR(1) process is conventionally taken to mean the causal solution, which exists only for $|\phi|&lt;1$.</p>
+            </div>
+
+            <h2 id="arp">5. General AR($p$) and the Yule–Walker equations</h2>
+            <p>Write the backshift operator $B$ by $BX_t = X_{t-1}$, so $B^k X_t = X_{t-k}$. The order-$p$ autoregression is</p>
+            <div class="math-block">
+                $$X_t = \sum_{i=1}^p \phi_i X_{t-i} + \varepsilon_t \quad\Longleftrightarrow\quad \Phi(B)X_t = \varepsilon_t, \qquad \Phi(z) = 1 - \phi_1 z - \cdots - \phi_p z^p.$$
+            </div>
+
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Causality condition for AR($p$))</span>
+                <p>The AR($p$) recursion admits a unique stationary, causal solution if and only if every root of $\Phi(z) = 0$ lies strictly outside the unit circle: $|z| &gt; 1$ for every root $z \in \mathbb{C}$.</p>
+            </div>
+            <p>The full proof (Brockwell &amp; Davis, 2016, Thm. 3.1.1) generalizes the mean-square summability argument used for AR(1) to a companion-matrix representation of the recursion, whose eigenvalues are exactly the reciprocals of the roots of $\Phi$; stationarity requires those eigenvalues to lie inside the unit circle, i.e. the roots of $\Phi$ to lie outside it. (This is precisely the same eigenvalue-location condition that governs stability of the linear recursion $\mathbf v_{t} = A\mathbf v_{t-1}$ in <a href="../linear-algebra/eigenvalues.html">the eigenvalues and eigenvectors note</a>, Section 10.2, applied to the AR($p$) written in companion form.) As a consistency check, for $p=1$: $\Phi(z) = 1-\phi z$ has its single root at $z = 1/\phi$, and $|1/\phi| &gt; 1 \iff |\phi| &lt; 1$ — exactly the AR(1) condition derived above.</p>
+
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Yule–Walker equations)</span>
+                <p>For a causal, stationary AR($p$) process, the autocovariances satisfy</p>
+                <div class="math-block">
+                    $$\gamma(h) = \sum_{i=1}^p \phi_i\, \gamma(h-i), \qquad h \geq 1, \qquad\qquad \gamma(0) = \sum_{i=1}^p \phi_i\, \gamma(i) + \sigma^2.$$
+                </div>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> Multiply the defining recursion by $X_{t-h}$ and take expectations. For $h \geq 1$, causality makes $X_{t-h}$ a function of $\varepsilon_{t-h}, \varepsilon_{t-h-1}, \ldots$ only, so $E[\varepsilon_t X_{t-h}] = 0$, giving the first line. For $h=0$, multiply by $X_t$ instead: $\gamma(0) = \sum_i \phi_i\gamma(i) + E[\varepsilon_t X_t]$, and $E[\varepsilon_t X_t] = \sigma^2$ because in the causal MA($\infty$) representation $X_t = \sum_{j\ge0}\psi_j \varepsilon_{t-j}$ the coefficient on $\varepsilon_t$ itself is $\psi_0 = 1$. <span class="qed">∎</span>
+            </div>
+            <p>Writing the first $p$ equations ($h=1,\ldots,p$) in matrix form, $\boldsymbol\gamma_p = \Gamma_p \boldsymbol\phi$, where $\Gamma_p$ is the $p\times p$ Toeplitz matrix with $(i,j)$ entry $\gamma(i-j)$, gives a linear system relating the autocovariances to the AR coefficients. This is what makes the Yule–Walker equations directly useful for estimation (Section 13): replace $\gamma$ with the sample autocovariance $\hat\gamma$, and solve the resulting linear system for $\hat{\boldsymbol\phi}$.</p>
+
+            <div class="note-box">
+                <span class="note-box-label">Definition (Partial autocorrelation function, PACF)</span>
+                <p>The partial autocorrelation at lag $h$, $\phi_{hh}$, is the coefficient on $X_{t-h}$ in the best linear predictor of $X_t$ from $X_{t-1},\ldots,X_{t-h}$ — equivalently, the correlation between $X_t$ and $X_{t-h}$ after linearly removing the effect of the intermediate observations $X_{t-1},\ldots,X_{t-h+1}$.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Proposition (PACF cutoff for AR($p$))</span>
+                <p>For a causal AR($p$) process, $\phi_{hh} = 0$ for every $h &gt; p$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> The best linear predictor of $X_t$ from $X_{t-1},\ldots,X_{t-h}$ (for $h&gt;p$) cannot do better than the exact linear relationship $X_t = \sum_{i=1}^p \phi_i X_{t-i} + \varepsilon_t$, which already achieves the minimum possible mean-squared error $\sigma^2$ using only $X_{t-1},\ldots,X_{t-p}$ — because $\varepsilon_t$ is uncorrelated with the entire past $X_{t-1}, X_{t-2},\ldots$ (causality), no linear combination of any past observations can reduce the error further. So the best linear predictor puts weight $\phi_i$ on $X_{t-i}$ for $i \le p$ and weight $0$ on $X_{t-i}$ for $p &lt; i \le h$, giving $\phi_{hh}=0$. <span class="qed">∎</span>
+            </div>
+            <p>This is the population-level statement behind the practical rule "PACF cuts off after lag $p$ for an AR($p$)," used for model identification in Section 8. The recursive algorithm that computes all the $\phi_{hh}$ from the ACF in practice (Durbin–Levinson recursion) is not re-derived here; see Brockwell &amp; Davis (2016, §3.4) or Shumway &amp; Stoffer (2017, §3.4).</p>
+
+            <h2 id="ma">6. Moving-average processes and invertibility</h2>
+            <p>The order-$q$ moving average is</p>
+            <div class="math-block">
+                $$X_t = \varepsilon_t + \sum_{j=1}^q \theta_j \varepsilon_{t-j} \quad\Longleftrightarrow\quad X_t = \Theta(B)\varepsilon_t, \qquad \Theta(z) = 1+\theta_1 z + \cdots + \theta_q z^q.$$
+            </div>
+            <p>Unlike an AR process, an MA($q$) process is a <em>finite</em> linear combination of white-noise terms for any values of $\theta_1,\ldots,\theta_q$, so no stability condition is needed for the process itself to exist and be stationary — mean $0$, and $\mathrm{Cov}(X_t,X_{t+h})$ is a finite sum that manifestly does not depend on $t$. What invertibility governs is something different, worked out below.</p>
+
+            <p>For MA(1), $X_t = \varepsilon_t + \theta\varepsilon_{t-1}$, direct expansion gives</p>
+            <div class="math-block">
+                $$\gamma(0) = \sigma^2(1+\theta^2), \qquad \gamma(1) = \theta\sigma^2, \qquad \gamma(h) = 0 \ \text{ for } h \geq 2,$$
+            </div>
+            <p>so $\rho(1) = \dfrac{\theta}{1+\theta^2}$ and $\rho(h)=0$ for $h\ge2$: the ACF cuts off sharply after lag $1$. The same expansion argument for general $q$ gives $\gamma(h)=0$ for all $h&gt;q$ — the ACF of an MA($q$) always cuts off after lag $q$, the mirror image of the AR PACF cutoff above.</p>
+
+            <div class="note-box">
+                <span class="note-box-label">Remark (Non-uniqueness and the need for invertibility)</span>
+                <p>Notice that $\rho(1)$ is unchanged if $\theta$ is replaced by $1/\theta$: $\dfrac{1/\theta}{1+1/\theta^2} = \dfrac{\theta}{\theta^2+1}$. So the MA(1) processes with parameters $\theta$ and $1/\theta$ have <em>identical</em> autocovariance functions and are second-moment indistinguishable, even though they are different processes driven by differently-scaled noise. Something extra is needed to pick out a unique, canonical representative.</p>
+            </div>
+
+            <p>That something is invertibility: requiring that $\varepsilon_t$ can be recovered from present and past values of $X_t$ alone, $\varepsilon_t = \Theta(B)^{-1}X_t$. Formally inverting $\Theta(B) = 1+\theta B$ as a power series, $\Theta(B)^{-1} = \sum_{j\ge0}(-\theta)^j B^j$, which converges (in the same mean-square sense as Section 4) iff $|\theta|&lt;1$. Of the pair $\{\theta, 1/\theta\}$ with identical second moments, exactly one has $|\theta|&lt;1$ (unless $|\theta|=1$, the boundary case revisited in the pitfalls section). This is the MA analogue of the AR causality condition, and it generalizes the same way:</p>
+
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Invertibility condition for MA($q$))</span>
+                <p>The MA($q$) process is invertible — i.e. $\varepsilon_t$ can be written as a convergent (mean-square) linear combination of $X_t, X_{t-1}, \ldots$ — if and only if every root of $\Theta(z)=0$ lies strictly outside the unit circle.</p>
+            </div>
+
+            <h2 id="arma">7. ARMA($p,q$): causality and invertibility together</h2>
+            <p>Combining both components,</p>
+            <div class="math-block">
+                $$\Phi(B) X_t = \Theta(B)\varepsilon_t,$$
+            </div>
+            <p>with $\Phi$ and $\Theta$ as defined above. Two conditions, each already derived, now apply simultaneously and for distinct reasons:</p>
             <ul>
-                <li>$E[X_t] = \mu$ (constant mean)</li>
-                <li>$Var(X_t) = \sigma^2$ (constant variance)</li>
-                <li>$Cov(X_t, X_{t+h}) = \gamma(h)$ (covariance depends only on lag $h$)</li>
+                <li><strong>Causality</strong> (roots of $\Phi$ outside the unit circle) guarantees $X_t$ has a convergent $\mathrm{MA}(\infty)$ representation in past and present shocks — the process can be simulated forward and is physically realizable without appeal to the future.</li>
+                <li><strong>Invertibility</strong> (roots of $\Theta$ outside the unit circle) guarantees $\varepsilon_t$ has a convergent $\mathrm{AR}(\infty)$ representation in past and present $X_t$'s — the innovations can be recovered from data, which is what likelihood-based estimation and multi-step forecasting (Section 12) both rely on.</li>
             </ul>
+            <p>One further, easily-overlooked requirement: $\Phi$ and $\Theta$ must share no common root. If they did, the corresponding factor would cancel from both sides of $\Phi(B)X_t=\Theta(B)\varepsilon_t$, and the model would really be a lower-order ARMA process dressed up with redundant parameters — an identifiability failure, not a genuinely higher-order model. Software that fits ARMA models by maximum likelihood typically produces a warning (or numerically unstable estimates) precisely when the fitted $\hat\Phi$ and $\hat\Theta$ nearly share a root, which is the practical symptom of this cancellation.</p>
 
-            <h2>3. Autocorrelation Function (ACF)</h2>
-            <p>The autocorrelation function is defined as:</p>
+            <h2 id="identification">8. Model identification from the ACF and PACF</h2>
+            <p>Sections 4–7 derived, rather than merely asserted, the following signature pattern:</p>
+            <table>
+                <tr><th>Process</th><th>ACF</th><th>PACF</th></tr>
+                <tr><td>AR($p$)</td><td>tails off (geometric decay, or damped sinusoid if $\Phi$ has complex roots)</td><td>cuts off after lag $p$</td></tr>
+                <tr><td>MA($q$)</td><td>cuts off after lag $q$</td><td>tails off</td></tr>
+                <tr><td>ARMA($p,q$), $p,q\ge1$</td><td>tails off</td><td>tails off</td></tr>
+            </table>
+            <p>The figure below simulates one long realization of each of the four canonical cases and plots the <em>empirical</em> ACF and PACF for each, so the abstract "tails off / cuts off" language in the table can be checked against actual estimated correlograms rather than taken on faith.</p>
+
+            <figure class="note-figure">
+                <img src="time-series-analysis/figures/acf_pacf_signatures.png" alt="Grid of empirical ACF and PACF plots for AR(1), AR(2), MA(1), and ARMA(1,1) processes, showing the characteristic cutoff and decay patterns of each.">
+                <figcaption><strong>Figure — ACF/PACF signatures used for model identification.</strong> Each column simulates $T=3000$ observations from a different process and plots the empirical ACF (top) and PACF (bottom), with the $\pm 1.96/\sqrt{T}$ band for approximate significance under the null of no correlation at that lag. The AR(1) column shows a PACF cutting off sharply after lag 1 while its ACF decays geometrically. The AR(2) column uses complex roots of $\Phi$ ($\phi_1=0.6,\ \phi_2=-0.3$), producing a damped oscillation in the ACF and a PACF cutting off after lag 2. The MA(1) column shows the mirror image: ACF cuts off after lag 1, PACF tails off. The ARMA(1,1) column shows both tailing off, as the theorem in Section 7 predicts, with no finite cutoff in either function.</figcaption>
+            </figure>
+
+            <p>Also verify, directly against the earlier AR(1) derivation: the theoretical ACF $\rho(h)=\phi^h$ from Section 4 is not just an algebraic claim — it is what a long simulated path actually produces once sampling noise is accounted for.</p>
+
+            <figure class="note-figure">
+                <img src="time-series-analysis/figures/acf_theory_vs_empirical.png" alt="Bar chart comparing the theoretical AR(1) autocorrelation function phi^h against the empirical autocorrelation function estimated from a simulated series of length 2000.">
+                <figcaption><strong>Figure — Theory materializing in simulation.</strong> Empirical autocorrelations $\hat\rho(h)$ from a single simulated AR(1) path with $\phi=0.7$, $T=2000$, plotted against the closed-form $\rho(h)=\phi^h$ derived in Section 4. The two track each other closely through the lags where $\rho(h)$ is distinguishable from the $\pm1.96/\sqrt{T}$ noise band; beyond that, $\hat\rho(h)$ is dominated by sampling variability rather than genuine signal, which is itself the practical content of the significance band.</figcaption>
+            </figure>
+
+            <h2 id="unit-roots">9. Unit roots, integration, and ARIMA</h2>
+            <div class="note-box">
+                <span class="note-box-label">Definition (Integrated processes and ARIMA)</span>
+                <p>A process is <strong>integrated of order $d$</strong>, written $I(d)$, if $(1-B)^{d}X_t$ is stationary but $(1-B)^{d-1}X_t$ is not. The ARIMA($p,d,q$) model applies an ARMA($p,q$) structure to the $d$-th difference:</p>
+                <div class="math-block">
+                    $$\Phi(B)(1-B)^d X_t = \Theta(B)\varepsilon_t.$$
+                </div>
+            </div>
+            <p>The random walk from Section 4 is the canonical $I(1)$ example: $(1-B)X_t = \varepsilon_t$ is white noise — trivially a stationary ARMA(0,0) process — while $X_t$ itself is not stationary, matching the definition exactly.</p>
+            <p>Whether a series needs differencing is a hypothesis to test, not something to eyeball from a slowly-decaying sample ACF (see the pitfalls section). The standard test regresses $\Delta X_t$ on $X_{t-1}$ (plus, typically, lagged differences and a deterministic trend),</p>
             <div class="math-block">
-                $$\rho(h) = \frac{\gamma(h)}{\gamma(0)} = \frac{Cov(X_t, X_{t+h})}{Var(X_t)}$$
+                $$\Delta X_t = \rho X_{t-1} + u_t, \qquad H_0: \rho = 0 \text{ (unit root)},$$
+            </div>
+            <p>and tests $H_0$ with the Dickey–Fuller (or augmented Dickey–Fuller) statistic. Deriving its limiting distribution is beyond the scope of this note — the key fact worth stating precisely, because it is exactly what makes unit-root testing a distinct subject rather than routine regression, is that <em>the test statistic does not have the usual $t$-distribution even asymptotically</em>: under $H_0$, $X_{t-1}$ is itself non-stationary, so the standard regression asymptotics fail and a different (Dickey–Fuller) limiting distribution applies. See Dickey &amp; Fuller (1979) for the original derivation, and Hamilton (1994, Ch. 17) for a full treatment.</p>
+
+            <h2 id="spurious">10. Spurious regression</h2>
+            <p>The reason non-stationarity is not a minor technicality: regressing one $I(1)$ series on another <em>completely unrelated</em> $I(1)$ series tends to produce a high $R^2$ and a large, apparently significant $t$-statistic, purely as an artifact of both series accumulating unrelated stochastic trends — not because of any real relationship. This was demonstrated by simulation by Granger &amp; Newbold (1974) and given rigorous asymptotic foundations by Phillips (1986), who showed that in this setting the OLS $t$-statistic <em>diverges</em> as $T\to\infty$ rather than converging to a standard limiting distribution, so the usual "large $t$ means significant" heuristic fails outright.</p>
+
+            <figure class="note-figure">
+                <img src="time-series-analysis/figures/spurious_regression.png" alt="Scatter plots comparing an OLS regression of one independent random walk on another in levels, versus the same regression in first differences, showing a spurious relationship in levels that disappears after differencing.">
+                <figcaption><strong>Figure — A textbook spurious regression, reproduced by construction.</strong> $X_t$ and $Y_t$ are independent random walks by construction — there is no relationship between them at all. Regressing $Y_t$ on $X_t$ in levels (left) gives $R^2=0.50$ and $t=17.3$: overwhelming apparent statistical significance for a relationship that does not exist. Regressing the first differences $\Delta Y_t$ on $\Delta X_t$ instead (right) — which is legitimate here because differencing a random walk gives stationary white noise — gives $R^2=0.01$ and $t=1.3$, correctly failing to detect a relationship. The contrast is the practical lesson: fit models to stationary (or correctly-differenced) series, not to $I(1)$ levels directly, unless the series are cointegrated (next paragraph).</figcaption>
+            </figure>
+
+            <p>Differencing to stationarity is not the only fix, and it is sometimes the wrong one: if two $I(1)$ series share a genuine long-run equilibrium relationship, a linear combination of their <em>levels</em> can itself be stationary even though neither series is — the two series are then said to be <strong>cointegrated</strong>. In that case differencing both series and modeling them separately discards exactly the long-run relationship of interest; the appropriate tool is an error-correction model. Both cointegration testing (Engle &amp; Granger, 1987) and error-correction modeling are outside the scope of this note; they are flagged here as the natural next topic rather than glossed over.</p>
+
+            <h2 id="model-selection">11. Model selection: AIC and BIC</h2>
+            <p>Having fixed a family of ARMA($p,q$) candidates, order selection is typically done by minimizing a penalized log-likelihood over $(p,q)$:</p>
+            <div class="math-block">
+                $$\mathrm{AIC} = -2\ln\hat L + 2k, \qquad \mathrm{BIC} = -2\ln\hat L + k\ln T,$$
+            </div>
+            <p>where $\hat L$ is the maximized likelihood and $k = p+q+1$ counts the AR, MA, and noise-variance parameters. The two penalties are not interchangeable notational variants of the same idea — they answer different questions and were derived from different first principles. AIC (Akaike, 1974) is (twice) an asymptotically unbiased estimator of the expected Kullback–Leibler divergence between the fitted model and the unknown true data-generating process, i.e. it targets predictive accuracy. BIC (Schwarz, 1978) arises from a Laplace approximation to the Bayesian marginal likelihood under a fixed-dimension parameter prior, i.e. it targets identifying the true model.</p>
+            <div class="note-box">
+                <span class="note-box-label">Remark (Consistency vs. efficiency — a genuinely different guarantee, not a rounding difference)</span>
+                <p>If a finite-order ARMA model is truly correct and lies among the candidates, BIC selects it with probability $\to 1$ as $T\to\infty$ (model-selection <em>consistency</em>) because its penalty $k\ln T$ grows without bound relative to AIC's fixed penalty $2k$. AIC is not consistent in this sense — it has a positive asymptotic probability of selecting an over-parameterized model — but it is asymptotically <em>efficient</em>: even when no finite-order model is exactly correct (the more realistic case for most real data), AIC's selected model minimizes mean-squared one-step prediction error asymptotically, a property BIC does not share. Neither criterion dominates the other; they optimize different objectives.</p>
+            </div>
+            <p>In practice, minimizing AIC or BIC over a grid of $(p,q)$ is necessary but not sufficient: it should always be followed by a residual diagnostic (see the pitfalls section) to confirm the chosen model has actually removed the serial correlation it was fit to capture.</p>
+
+            <h2 id="forecasting">12. Forecasting</h2>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Conditional expectation is the minimum mean-squared-error forecast)</span>
+                <p>Let $\mathcal F_T = \sigma(X_T, X_{T-1}, \ldots)$ be the information available at time $T$. Among all (measurable, finite-variance) functions $g$ of $\mathcal F_T$, $\hat X_{T+h} = E[X_{T+h} \mid \mathcal F_T]$ minimizes $E\big[(X_{T+h} - g)^2\big]$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> Write $g^* = E[X_{T+h}\mid\mathcal F_T]$ and decompose, for any competitor $g$ measurable with respect to $\mathcal F_T$:
+                $$E[(X_{T+h}-g)^2] = E[(X_{T+h}-g^*)^2] + E[(g^*-g)^2] + 2E[(X_{T+h}-g^*)(g^*-g)].$$
+                The cross term vanishes: $(g^*-g)$ is $\mathcal F_T$-measurable, and $E[X_{T+h}-g^* \mid \mathcal F_T] = 0$ by definition of conditional expectation, so by the tower property $E[(X_{T+h}-g^*)(g^*-g)] = E\big[(g^*-g)\,E[X_{T+h}-g^*\mid \mathcal F_T]\big] = 0$. What remains is $E[(X_{T+h}-g)^2] = E[(X_{T+h}-g^*)^2] + E[(g^*-g)^2] \ge E[(X_{T+h}-g^*)^2]$, with equality iff $g=g^*$ (a.s.). <span class="qed">∎</span>
             </div>
 
-            <h2>4. ARIMA Models</h2>
-            <p>ARIMA$(p,d,q)$ models combine:</p>
-            <ul>
-                <li><strong>AR(p)</strong>: Autoregressive component of order $p$</li>
-                <li><strong>I(d)</strong>: Integration of order $d$ (differencing)</li>
-                <li><strong>MA(q)</strong>: Moving average component of order $q$</li>
-            </ul>
-
-            <p>The general form is:</p>
+            <p>Applied to the causal AR(1), forward-substituting $h$ steps from the forecast origin $T$,</p>
             <div class="math-block">
-                $$\phi(B)(1-B)^d X_t = \theta(B)\epsilon_t$$
+                $$X_{T+h} = \phi^h X_T + \sum_{j=0}^{h-1}\phi^j \varepsilon_{T+h-j}.$$
             </div>
-            <p>where $\phi(B)$ and $\theta(B)$ are polynomials in the backshift operator $B$.</p>
-
-            <h2>5. Model Selection</h2>
-            <p>Use AIC (Akaike Information Criterion) for model selection:</p>
+            <p>Every $\varepsilon_{T+h-j}$ in the sum lies strictly in the future relative to $T$ and is therefore uncorrelated with (in the Gaussian case, independent of, hence mean-zero conditional on) $\mathcal F_T$, so the conditional-expectation forecast and its error variance are</p>
             <div class="math-block">
-                $$AIC = 2k - 2\ln(L)$$
+                $$\hat X_{T+h} = E[X_{T+h}\mid \mathcal F_T] = \phi^h X_T, \qquad \mathrm{Var}(X_{T+h}-\hat X_{T+h}\mid \mathcal F_T) = \sigma^2\sum_{j=0}^{h-1}\phi^{2j} = \sigma^2\,\frac{1-\phi^{2h}}{1-\phi^2}.$$
             </div>
-            <p>where $k$ is the number of parameters and $L$ is the likelihood.</p>
+            <p>Both expressions have the sensible limiting behavior one should check as a matter of habit: as $h\to\infty$, $\hat X_{T+h}\to 0$ (the unconditional mean) and the forecast variance $\to \sigma^2/(1-\phi^2) = \gamma(0)$ (the unconditional variance) — far enough ahead, conditioning on today provides no information at all, exactly as it should.</p>
 
-            <h2>6. Forecasting</h2>
-            <p>For ARIMA$(1,1,1)$ model, the forecast equation is:</p>
-            <div class="math-block">
-                $$\hat{X}_{t+1} = X_t + \phi_1(X_t - X_{t-1}) + \theta_1\epsilon_t$$
-            </div>
+            <figure class="note-figure">
+                <img src="time-series-analysis/figures/forecast_paths.png" alt="Plot of an observed AR(1) series, its point forecast decaying geometrically to zero, a widening 95% prediction interval, and 30 simulated future sample paths." >
+                <figcaption><strong>Figure — Forecasting an AR(1): point forecast, interval, and simulated paths together.</strong> Observed path (black, $t&lt;0$) from a simulated AR(1) with $\phi=0.8$, followed by the point forecast $\hat X_{T+h}=\phi^h X_T$ (red) and the $95\%$ prediction interval $\hat X_{T+h}\pm1.96\sqrt{\mathrm{Var}(X_{T+h}-\hat X_{T+h})}$ (shaded), both derived above in closed form. The thin blue lines are 30 independently simulated future sample paths conditional on the same $X_T$ — a Monte Carlo check that the analytic interval is, in fact, where the simulated paths actually land. Note how the point forecast decays toward 0 and the interval widens toward $\pm1.96\sqrt{\sigma^2/(1-\phi^2)}$, matching the limiting behavior derived above, rather than continuing to widen indefinitely the way an $I(1)$ process's forecast interval would.</figcaption>
+            </figure>
 
-            <h2>7. Code Example</h2>
-            <pre><code># R code for ARIMA modeling
-library(forecast)
+            <h2 id="computation">13. Computation: simulation and estimation</h2>
+            <p>The figures above were produced by a self-contained script, <code>time-series-analysis/generate_figures.py</code>, in the same directory as this note — it can be re-run directly (<code>python3 generate_figures.py</code>, requiring numpy, matplotlib, scipy, and statsmodels) to regenerate every figure from scratch, and is the appropriate place to look for the exact simulation parameters behind each one.</p>
+            <p>The snippet below is a smaller, standalone illustration of the estimation step referenced throughout Section 5: simulate an AR(1) with a known $\phi$, then recover $\phi$ two ways — via the Yule–Walker equation $\hat\phi = \hat\rho(1)$ (the $p=1$ case of Section 5's linear system), and via ordinary least squares regression of $X_t$ on $X_{t-1}$, which coincide for AR(1) up to a $T/(T-1)$ finite-sample factor in the denominator sums.</p>
+            <pre><code>import numpy as np
+from statsmodels.tsa.stattools import acf
 
-# Fit ARIMA model
-model <- auto.arima(ts_data)
-summary(model)
+rng = np.random.default_rng(7)
+phi_true, sigma2_true, T = 0.65, 1.0, 500
 
-# Forecast
-forecast(model, h=12)
+eps = rng.normal(0, np.sqrt(sigma2_true), T)
+x = np.zeros(T)
+for t in range(1, T):
+    x[t] = phi_true * x[t - 1] + eps[t]
+
+# Yule-Walker: phi_hat = rho_hat(1), the p=1 case of Section 5's linear system
+phi_yw = acf(x, nlags=1, fft=True)[1]
+
+# OLS: regress x_t on x_{t-1}
+y, xlag = x[1:], x[:-1]
+phi_ols = np.sum(xlag * y) / np.sum(xlag**2)
+
+resid = y - phi_ols * xlag
+sigma2_hat = np.var(resid, ddof=1)
+
+print(f"True phi = {phi_true}")
+print(f"Yule-Walker estimate: phi_hat = {phi_yw:.4f}")
+print(f"OLS estimate:         phi_hat = {phi_ols:.4f}")
+print(f"Residual variance estimate: sigma^2_hat = {sigma2_hat:.4f} (true = {sigma2_true})")
 </code></pre>
+            <p>Actual output from running this script:</p>
+            <pre><code>True phi = 0.65
+Yule-Walker estimate: phi_hat = 0.6246
+OLS estimate:         phi_hat = 0.6568
+Residual variance estimate: sigma^2_hat = 0.8819 (true = 1.0)</code></pre>
+            <p>Both estimates land close to the true $\phi=0.65$ at $T=500$, consistent with the ergodicity-backed consistency argument of Section 3; the two estimates are not identical because Yule–Walker and OLS use slightly different normalizations of the same sums in finite samples, a gap that vanishes as $T\to\infty$.</p>
 
-            <h2>8. References</h2>
+            <h2 id="pitfalls">14. Common pitfalls</h2>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — Strict vs. weak stationarity</span>
+                <p>"Stationary" in applied work almost always means <em>weakly</em> stationary. The two coincide for Gaussian processes (Section 2) but not in general — a process can have constant mean and lag-dependent-only covariances while its marginal distribution still drifts over time (e.g. changing skewness or kurtosis), which weak stationarity is simply blind to.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — White noise vs. i.i.d. noise</span>
+                <p>Every derivation of an ACF, Yule–Walker equation, or causality/invertibility condition in this note used only <em>uncorrelatedness</em> of $\{\varepsilon_t\}$. Consistency of the estimators in Section 13, and any claim about ergodicity (Section 3), silently needs the stronger i.i.d. (or at least martingale-difference) assumption. Reading "white noise" as "independent noise" everywhere is usually harmless in practice but is not automatic, and matters for GARCH-type models (mentioned in the connections below) built specifically because financial residuals are uncorrelated but not independent — their squares are autocorrelated even when the levels are not.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — Reading a unit root off the ACF by eye</span>
+                <p>A random walk's sample ACF decays extremely slowly and stays close to 1 for many lags — visually similar to "very strong AR persistence" with $\phi$ close to but below 1. The two require different treatment (differencing vs. not) and cannot be reliably distinguished by eye; use a unit-root test (Section 9), not a visual read of the correlogram.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — Over-differencing</span>
+                <p>Differencing an already-stationary series does not merely do "no harm" — it actively introduces spurious MA structure. If $X_t$ is white noise, $Y_t = X_t - X_{t-1}$ has $\gamma_Y(0)=2\sigma^2$, $\gamma_Y(1)=-\sigma^2$ (by direct expansion, the same technique as Section 6), so $\rho_Y(1) = -1/2$ exactly — a strong, entirely artifactual, negative lag-1 correlation. In MA(1) terms this is $\theta=-1$, exactly on the invertibility boundary derived in Section 6 — over-differencing manufactures a unit MA root, which is numerically difficult to estimate and does not correspond to any real structure in the data. Difference until (not past the point) a unit-root test stops rejecting stationarity.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — Trusting AIC/BIC without a residual diagnostic</span>
+                <p>Minimizing AIC or BIC only compares models within the search grid actually tried; it says nothing about whether the best of those candidates is adequate in absolute terms. Always follow order selection with a residual autocorrelation check (e.g. the Ljung–Box test) — a low-AIC model can still leave significant serial correlation in its residuals if, for instance, a seasonal component was never included in the search space to begin with.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — Forecast intervals understate true uncertainty</span>
+                <p>The prediction interval derived in Section 12, and shown in the forecast figure, assumes $\phi$ and $\sigma^2$ are known exactly. In practice they are estimated (Section 13) with their own sampling uncertainty, which propagates into the forecast and widens the true interval beyond the "known-parameters" formula used here — a caveat about the figure's own construction, not just a generic warning.</p>
+            </div>
+
+            <h2 id="connections">15. Connections</h2>
             <ul>
-                <li>Box, G. E. P., Jenkins, G. M., Reinsel, G. C., & Ljung, G. M. (2015). <em>Time Series Analysis: Forecasting and Control</em>.</li>
-                <li>Hamilton, J. D. (1994). <em>Time Series Analysis</em>.</li>
+                <li><strong><a href="regression-methods.html">Regression methods</a>.</strong> Estimating $\phi$ in Section 13 by OLS regression of $X_t$ on $X_{t-1}$ is consistent as $T\to\infty$ but, unlike the classical Gauss–Markov setting, is <em>biased</em> in finite samples (the Hurwicz bias, downward for $\phi&gt;0$): the regressor $X_{t-1}$ is correlated with the noise entering later observations through the recursion, violating strict exogeneity even though weak exogeneity (needed for consistency) still holds.</li>
+                <li><strong><a href="causal-inference.html">Causal inference</a>.</strong> Serial correlation in panel or repeated time series data invalidates naive OLS standard errors, motivating cluster-robust or Newey–West-type corrections; separately, the parallel-trends assumption behind difference-in-differences is itself, implicitly, a claim about the (non-)stationarity of the counterfactual trend that a treated unit would have followed.</li>
+                <li><strong><a href="../machine-learning/probabilistic-models.html">Probabilistic models</a>.</strong> State-space models and the Kalman filter generalize ARMA to allow time-varying or latent-state dynamics; a causal, invertible ARMA process is exactly the special case of a linear-Gaussian state-space model with time-invariant coefficients. Hidden Markov models play an analogous generalizing role when the latent state is discrete rather than continuous.</li>
+                <li><strong><a href="../mathematical-analysis/convergence.html">Convergence</a>.</strong> The ergodic theorem invoked in Section 3 is the time series analogue of the strong law of large numbers for i.i.d. sequences; mixing conditions (not covered here) play a role analogous to the rate/uniform-integrability conditions that strengthen basic convergence results in that note.</li>
+                <li><strong><a href="../linear-algebra/eigenvalues.html">Eigenvalues and eigenvectors</a>.</strong> The AR($p$) causality condition (Section 5) is an instance of the general stability condition for a linear recursion $\mathbf v_t = A\mathbf v_{t-1}$ written in companion-matrix form: stationary iff every eigenvalue of $A$ lies strictly inside the unit circle.</li>
+                <li><strong>Volatility clustering (not covered in this note).</strong> An ARMA model's white-noise residuals can be uncorrelated yet have autocorrelated <em>squares</em> — exactly the "white noise but not i.i.d." distinction flagged in the pitfalls above. ARCH/GARCH models extend the AR/MA machinery of this note to the conditional variance itself, and are the natural next topic for anyone working with financial return data.</li>
+            </ul>
+
+            <h2 id="references">16. References</h2>
+            <ul>
+                <li>Brockwell, P. J., &amp; Davis, R. A. (2016). <em>Introduction to Time Series and Forecasting</em> (3rd ed.). Springer.</li>
+                <li>Hamilton, J. D. (1994). <em>Time Series Analysis</em>. Princeton University Press.</li>
+                <li>Box, G. E. P., Jenkins, G. M., Reinsel, G. C., &amp; Ljung, G. M. (2015). <em>Time Series Analysis: Forecasting and Control</em> (5th ed.). Wiley.</li>
+                <li>Shumway, R. H., &amp; Stoffer, D. S. (2017). <em>Time Series Analysis and Its Applications: With R Examples</em> (4th ed.). Springer.</li>
+                <li>Dickey, D. A., &amp; Fuller, W. A. (1979). Distribution of the estimators for autoregressive time series with a unit root. <em>Journal of the American Statistical Association</em>, 74(366a), 427–431.</li>
+                <li>Granger, C. W. J., &amp; Newbold, P. (1974). Spurious regressions in econometrics. <em>Journal of Econometrics</em>, 2(2), 111–120.</li>
+                <li>Phillips, P. C. B. (1986). Understanding spurious regressions in econometrics. <em>Journal of Econometrics</em>, 33(3), 311–340.</li>
+                <li>Engle, R. F., &amp; Granger, C. W. J. (1987). Co-integration and error correction: Representation, estimation, and testing. <em>Econometrica</em>, 55(2), 251–276.</li>
+                <li>Akaike, H. (1974). A new look at the statistical model identification. <em>IEEE Transactions on Automatic Control</em>, 19(6), 716–723.</li>
+                <li>Schwarz, G. (1978). Estimating the dimension of a model. <em>The Annals of Statistics</em>, 6(2), 461–464.</li>
             </ul>
         </section>
     </main>
@@ -104,4 +431,4 @@ forecast(model, h=12)
         <p>&copy; Diogo Franquinho | Technical Notes</p>
     </footer>
 </body>
-</html> 
+</html>

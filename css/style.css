@@ -411,6 +411,90 @@ footer {
     font-size: 14px;
 }
 
+.note-content h3 {
+    color: #333;
+    margin-top: 30px;
+    margin-bottom: 14px;
+}
+
+.note-content table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 20px 0;
+    font-size: 15px;
+}
+
+.note-content th,
+.note-content td {
+    border: 1px solid var(--box-border);
+    padding: 8px 12px;
+    text-align: left;
+}
+
+.note-content th {
+    background-color: var(--box-background);
+}
+
+/* Reused for definitions, propositions, theorems, pitfalls, connections:
+   same visual language as .math-block / pre, distinguished by a label. */
+.note-box {
+    background-color: var(--box-background);
+    border: 1px solid var(--box-border);
+    border-left: 6px solid var(--box-accent);
+    border-radius: 0;
+    padding: 20px 24px;
+    margin: 25px 0;
+}
+
+.note-box > :first-child {
+    margin-top: 0;
+}
+
+.note-box > :last-child {
+    margin-bottom: 0;
+}
+
+.note-box-label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.proof {
+    margin: 18px 0 26px 0;
+}
+
+.proof-label {
+    font-style: italic;
+}
+
+.qed {
+    float: right;
+}
+
+.note-figure {
+    margin: 30px 0;
+}
+
+.note-figure img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    border: 1px solid var(--box-border);
+}
+
+.note-figure figcaption {
+    font-size: 14.5px;
+    color: #4a4a4a;
+    line-height: 1.6;
+    margin-top: 12px;
+}
+
+.note-figure figcaption strong {
+    color: #2c2c2c;
+}
+
 /* Disclaimer styling */
 .disclaimer {
     background-color: #fff8e1;
