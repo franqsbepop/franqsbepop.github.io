@@ -21,155 +21,230 @@
 </head>
 <body>
     <nav class="top-nav">
-        <a href="../../index.html">← Back to Home</a> | 
+        <a href="../../index.html">← Back to Home</a> |
         <a href="../../index.html#notes">Notes</a>
     </nav>
 
     <main>
         <header>
             <h1>Integration</h1>
-            <p class="note-meta">Last updated: December 2024</p>
+            <p class="note-meta">Last updated: August 2026</p>
         </header>
 
         <section class="note-content">
             <div class="disclaimer">
                 <p><strong>Disclaimer:</strong> These are my personal notes compiled for my own reference and learning. They may contain errors, incomplete information, or personal interpretations. While I strive for accuracy, these notes are not peer-reviewed and should not be considered authoritative sources. Please consult official textbooks, research papers, or other reliable sources for academic or professional purposes.</p>
             </div>
-            
-            <h2>1. Definition of Integral</h2>
-            <p>The definite integral of $f(x)$ from $a$ to $b$ is:</p>
-            <div class="math-block">
-                $$\int_a^b f(x) \, dx = \lim_{n \to \infty} \sum_{i=1}^n f(x_i) \Delta x$$
-            </div>
-            <p>where $\Delta x = \frac{b-a}{n}$ and $x_i = a + i\Delta x$.</p>
 
-            <h2>2. Fundamental Theorem of Calculus</h2>
-            <p><strong>Part 1:</strong> If $F(x) = \int_a^x f(t) \, dt$, then $F'(x) = f(x)$.</p>
-            <p><strong>Part 2:</strong> If $F'(x) = f(x)$, then:</p>
-            <div class="math-block">
-                $$\int_a^b f(x) \, dx = F(b) - F(a)$$
+            <div class="table-of-contents">
+                <h3>Contents</h3>
+                <ol>
+                    <li><a href="#riemann-sums">Partitions and Riemann sums</a></li>
+                    <li><a href="#definition">The Riemann integral and Riemann's criterion</a></li>
+                    <li><a href="#continuous-integrable">Continuous functions are integrable</a></li>
+                    <li><a href="#properties">Linearity, monotonicity, additivity</a></li>
+                    <li><a href="#ftc">The Fundamental Theorem of Calculus</a></li>
+                    <li><a href="#techniques">Substitution and integration by parts</a></li>
+                    <li><a href="#improper">Improper integrals and the comparison test</a></li>
+                    <li><a href="#numerical">Numerical integration</a></li>
+                    <li><a href="#computation">Computation</a></li>
+                    <li><a href="#pitfalls">Common pitfalls</a></li>
+                    <li><a href="#connections">Connections</a></li>
+                    <li><a href="#references">References</a></li>
+                </ol>
             </div>
 
-            <h2>3. Basic Integration Rules</h2>
+            <h2 id="riemann-sums">1. Partitions and Riemann sums</h2>
+            <div class="note-box">
+                <span class="note-box-label">Definition</span>
+                <p>A <strong>partition</strong> $P=\{a=x_0&lt;x_1&lt;\cdots&lt;x_n=b\}$ of $[a,b]$ splits it into subintervals $[x_{i-1},x_i]$. For $f$ bounded on $[a,b]$, with $m_i=\inf_{[x_{i-1},x_i]}f$ and $M_i=\sup_{[x_{i-1},x_i]}f$, define the <strong>lower</strong> and <strong>upper sums</strong> $\displaystyle L(f,P)=\sum_{i=1}^n m_i\,(x_i-x_{i-1}),\qquad U(f,P)=\sum_{i=1}^n M_i\,(x_i-x_{i-1})$.</p>
+            </div>
+            <p>Always $L(f,P)\leq U(f,P)$, since $m_i\leq M_i$ termwise. A partition $P'\supseteq P$ (containing every point of $P$, plus possibly more) is a <strong>refinement</strong> of $P$; refining can only tighten the bracket:</p>
+            <div class="note-box">
+                <span class="note-box-label">Refinement lemma</span>
+                <p>If $P'$ refines $P$, then $L(f,P)\leq L(f,P')\leq U(f,P')\leq U(f,P)$.</p>
+            </div>
+            <p>Splitting one subinterval $[x_{i-1},x_i]$ into two pieces replaces $m_i(x_i-x_{i-1})$ by the sum of (infimum over each smaller piece) $\times$ (its width); the infimum of $f$ over a subset is always $\geq$ the infimum of $f$ over the whole subinterval, so the replacement term is $\geq m_i(x_i-x_{i-1})$ — hence $L$ does not decrease. The symmetric argument (suprema over subsets are $\leq$ the whole) shows $U$ does not increase. Adding finitely many points is finitely many such splits.</p>
+
+            <h2 id="definition">2. The Riemann integral and Riemann's criterion</h2>
+            <div class="note-box">
+                <span class="note-box-label">Definition</span>
+                <p>The <strong>lower</strong> and <strong>upper integrals</strong> are $\underline{\int_a^b}f=\sup_P L(f,P)$ and $\overline{\int_a^b}f=\inf_P U(f,P)$ (over all partitions $P$). $f$ is <strong>Riemann integrable</strong> on $[a,b]$ if these agree, and then $\int_a^b f=\underline{\int_a^b}f=\overline{\int_a^b}f$.</p>
+            </div>
+            <p>The lower integral never exceeds the upper integral (any lower sum is $\leq$ any upper sum, even for different partitions, via their common refinement and the lemma above), so integrability is exactly the statement that this one general inequality is tight.</p>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Riemann's criterion)</span>
+                <p>$f$ is integrable on $[a,b]$ iff for every $\epsilon&gt;0$ there is a partition $P$ with $U(f,P)-L(f,P)&lt;\epsilon$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> ($\Leftarrow$) Such $P$ gives $\overline{\int}f\leq U(f,P)&lt;L(f,P)+\epsilon\leq\underline{\int}f+\epsilon$; since this holds for every $\epsilon&gt;0$ and $\overline{\int}f\geq\underline{\int}f$ always, the two must be equal. ($\Rightarrow$) Let $I=\int_a^bf$. By definition of sup and inf, for $\epsilon&gt;0$ there are partitions $P_1,P_2$ with $L(f,P_1)&gt;I-\epsilon/2$ and $U(f,P_2)&lt;I+\epsilon/2$. Let $P=P_1\cup P_2$ (their common refinement); the refinement lemma gives $L(f,P)\geq L(f,P_1)&gt;I-\epsilon/2$ and $U(f,P)\leq U(f,P_2)&lt;I+\epsilon/2$, so $U(f,P)-L(f,P)&lt;\epsilon$. <span class="qed">∎</span>
+            </div>
+
+            <h2 id="continuous-integrable">3. Continuous functions are integrable</h2>
+            <div class="note-box">
+                <span class="note-box-label">Theorem</span>
+                <p>If $f$ is continuous on $[a,b]$, then $f$ is Riemann integrable on $[a,b]$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> Since $[a,b]$ is closed and bounded, $f$ is uniformly continuous on it (<a href="continuity.html">continuity note</a>, Section 7). Given $\epsilon&gt;0$, uniform continuity gives $\delta&gt;0$ with $|x-y|&lt;\delta\Rightarrow|f(x)-f(y)|&lt;\frac{\epsilon}{b-a}$. Take any partition $P$ with mesh (every subinterval width) less than $\delta$. On each $[x_{i-1},x_i]$, the Extreme Value Theorem (<a href="continuity.html">continuity note</a>, Section 6) gives points $p_i,q_i$ in it with $f(p_i)=M_i$, $f(q_i)=m_i$; since $|p_i-q_i|&lt;\delta$, uniform continuity gives $M_i-m_i=f(p_i)-f(q_i)&lt;\frac{\epsilon}{b-a}$. Summing: $U(f,P)-L(f,P)=\sum_i(M_i-m_i)(x_i-x_{i-1})&lt;\frac{\epsilon}{b-a}\sum_i(x_i-x_{i-1})=\epsilon$. Riemann's criterion gives integrability. <span class="qed">∎</span>
+            </div>
+            <p>This is the same "uniform" mechanism used throughout the site: a pointwise property ($f$ continuous at each point individually) is not strong enough to control a sum over the whole interval at once, but the compactness-driven upgrade to a <em>uniform</em> statement is — exactly as uniform continuity was needed (not mere continuity) to prove $f(x)=1/x$ fails on $(0,1)$ but a genuinely compact interval always succeeds.</p>
+
+            <figure class="note-figure">
+                <img src="integration/figures/riemann_sums.png" alt="Left panel: a wiggly function with lower-sum rectangles shaded and upper-sum heights traced as a red step function above them, for a 10-piece partition. Right panel: log-log plot showing the upper minus lower sum shrinking at rate 1 over n as the number of subintervals n grows.">
+                <figcaption><strong>Figure — Continuous $\Rightarrow$ integrable: the upper and lower sums squeeze together.</strong> Left: for $f(x)=1.2+0.6\sin(2.5x)-0.15x$ on $[0,3]$ with $n=10$ subintervals, the shaded rectangles are the lower sum and the red step traces the upper-sum heights — the gap between them, summed against subinterval widths, is $U(f,P)-L(f,P)$. Right: as $n$ grows, that gap shrinks like $O(1/n)$ (matching the proof: mesh $\sim1/n$, and $M_i-m_i$ is controlled linearly in mesh width for this smooth $f$), confirming numerically that the bracket squeezes to a single number — the integral.</figcaption>
+            </figure>
+
+            <h2 id="properties">4. Linearity, monotonicity, additivity</h2>
+            <p>For $f,g$ integrable on $[a,b]$ and $c\in[a,b]$:</p>
             <ul>
-                <li><strong>Power Rule:</strong> $\int x^n \, dx = \frac{x^{n+1}}{n+1} + C$ (for $n \neq -1$)</li>
-                <li><strong>Constant Rule:</strong> $\int c \, dx = cx + C$</li>
-                <li><strong>Constant Multiple:</strong> $\int cf(x) \, dx = c\int f(x) \, dx$</li>
-                <li><strong>Sum Rule:</strong> $\int [f(x) + g(x)] \, dx = \int f(x) \, dx + \int g(x) \, dx$</li>
+                <li><strong>Linearity:</strong> $\int_a^b(f+g)=\int_a^bf+\int_a^bg$ and $\int_a^b\alpha f=\alpha\int_a^bf$. (Sums of infima/suprema over a common partition bound $f+g$'s sums between those of $f$ and $g$ added together; taking the common-refinement limit as in Riemann's criterion gives equality.)</li>
+                <li><strong>Monotonicity:</strong> if $f\leq g$ on $[a,b]$, then $\int_a^bf\leq\int_a^bg$. (Every lower sum of $f$ is $\leq$ the corresponding lower sum of $g$, termwise, since $m_i(f)\leq m_i(g)$.)</li>
+                <li><strong>Additivity:</strong> $\int_a^bf=\int_a^cf+\int_c^bf$. (Any partition of $[a,b]$ refines to one that includes $c$; splitting there splits every upper/lower sum accordingly.)</li>
+                <li><strong>Triangle inequality:</strong> $\left|\int_a^bf\right|\leq\int_a^b|f|$. Since $-|f|\leq f\leq|f|$, monotonicity gives $-\int_a^b|f|\leq\int_a^bf\leq\int_a^b|f|$.</li>
             </ul>
+            <p>None of these are re-derived in full $\epsilon$-bookkeeping detail here — each is a short argument directly from the definitions in Sections 1–2, in the same spirit as the algebra-of-limits proofs in the <a href="continuity.html">continuity note</a>, Section 3.</p>
 
-            <h2>4. Common Integrals</h2>
-            <ul>
-                <li><strong>Exponential:</strong> $\int e^x \, dx = e^x + C$</li>
-                <li><strong>Natural Log:</strong> $\int \frac{1}{x} \, dx = \ln|x| + C$</li>
-                <li><strong>Trigonometric:</strong>
-                    <ul>
-                        <li>$\int \sin(x) \, dx = -\cos(x) + C$</li>
-                        <li>$\int \cos(x) \, dx = \sin(x) + C$</li>
-                        <li>$\int \sec^2(x) \, dx = \tan(x) + C$</li>
-                    </ul>
-                </li>
-                <li><strong>Inverse Trig:</strong>
-                    <ul>
-                        <li>$\int \frac{1}{\sqrt{1-x^2}} \, dx = \arcsin(x) + C$</li>
-                        <li>$\int \frac{1}{1+x^2} \, dx = \arctan(x) + C$</li>
-                    </ul>
-                </li>
-            </ul>
+            <h2 id="ftc">5. The Fundamental Theorem of Calculus</h2>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (FTC, Part 1)</span>
+                <p>Let $f$ be integrable on $[a,b]$ and $F(x)=\int_a^xf(t)\,dt$. Then $F$ is continuous on $[a,b]$; and if $f$ is continuous at $x_0\in[a,b]$, then $F$ is differentiable at $x_0$ with $F'(x_0)=f(x_0)$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> $f$ integrable is bounded, say $|f|\leq K$; for $h&gt;0$, $|F(x_0+h)-F(x_0)|=\left|\int_{x_0}^{x_0+h}f\right|\leq Kh\to0$ (additivity + triangle inequality, Section 4), giving continuity of $F$ (the $h&lt;0$ case is symmetric). Now suppose $f$ is continuous at $x_0$. For $h\neq0$: $\dfrac{F(x_0+h)-F(x_0)}{h}-f(x_0)=\dfrac1h\int_{x_0}^{x_0+h}\big[f(t)-f(x_0)\big]\,dt$ (using $f(x_0)=\frac1h\int_{x_0}^{x_0+h}f(x_0)\,dt$, additivity). Given $\epsilon&gt;0$, continuity of $f$ at $x_0$ gives $\delta&gt;0$ with $|t-x_0|&lt;\delta\Rightarrow|f(t)-f(x_0)|&lt;\epsilon$; for $0&lt;|h|&lt;\delta$, the triangle inequality (Section 4) bounds the right side by $\frac1{|h|}\cdot|h|\cdot\epsilon=\epsilon$. So the difference quotient $\to f(x_0)$. <span class="qed">∎</span>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Lemma (zero derivative implies constant)</span>
+                <p>If $g$ is continuous on $[a,b]$, differentiable on $(a,b)$, and $g'\equiv0$ there, then $g$ is constant on $[a,b]$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> For any $x_1&lt;x_2$ in $[a,b]$, the Mean Value Theorem (<a href="differentiation.html">differentiation note</a>, Section 7) gives $c\in(x_1,x_2)$ with $g(x_2)-g(x_1)=g'(c)(x_2-x_1)=0$. So $g$ takes the same value at every pair of points. <span class="qed">∎</span>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (FTC, Part 2 — evaluation)</span>
+                <p>If $f$ is continuous on $[a,b]$ and $F'=f$ on $[a,b]$ for some $F$, then $\displaystyle\int_a^bf(x)\,dx=F(b)-F(a)$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> $f$ continuous is integrable (Section 3), so $G(x)=\int_a^xf(t)\,dt$ is well defined, and $G'=f=F'$ on $[a,b]$ by Part 1. So $(F-G)'\equiv0$, and by the lemma $F-G$ is constant, equal to its value at $a$: $F(x)-G(x)=F(a)-G(a)=F(a)-0=F(a)$ for all $x$. At $x=b$: $F(b)-G(b)=F(a)$, i.e. $\int_a^bf=G(b)=F(b)-F(a)$. <span class="qed">∎</span>
+            </div>
+            <p>Part 1 and Part 2 say, respectively, that integration followed by differentiation returns the original function (at points of continuity), and that differentiation followed by integration returns the original function up to the additive constant fixed by evaluating at the left endpoint — integration and differentiation are, in this precise sense, mutually inverse operations.</p>
 
-            <h2>5. Integration Techniques</h2>
-            <h3>5.1 Substitution</h3>
-            <p>Let $u = g(x)$, then $du = g'(x) \, dx$:</p>
-            <div class="math-block">
-                $$\int f(g(x))g'(x) \, dx = \int f(u) \, du$$
+            <h2 id="techniques">6. Substitution and integration by parts</h2>
+            <p>Both standard techniques are corollaries of the FTC combined with the corresponding differentiation rule, not independent facts requiring their own proof machinery.</p>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Substitution)</span>
+                <p>If $g$ is differentiable with continuous derivative on $[a,b]$, and $f$ is continuous on the range of $g$, then $\displaystyle\int_a^bf(g(x))g'(x)\,dx=\int_{g(a)}^{g(b)}f(u)\,du$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> Let $F(u)=\int_{g(a)}^uf(s)\,ds$, an antiderivative of $f$ by Part 1 (using continuity of $f$). By the chain rule (<a href="differentiation.html">differentiation note</a>, Section 4), $\frac{d}{dx}\big[F(g(x))\big]=F'(g(x))g'(x)=f(g(x))g'(x)$ — so $F\circ g$ is an antiderivative of $x\mapsto f(g(x))g'(x)$, which is continuous (composition and product of continuous functions). Part 2 gives $\int_a^bf(g(x))g'(x)\,dx=F(g(b))-F(g(a))$, and Part 2 applied to $F$ itself gives $F(g(b))-F(g(a))=\int_{g(a)}^{g(b)}f(u)\,du$. <span class="qed">∎</span>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Integration by parts)</span>
+                <p>If $u,v$ are differentiable with continuous derivatives on $[a,b]$, then $\displaystyle\int_a^bu(x)v'(x)\,dx=\big[u(x)v(x)\big]_a^b-\int_a^bu'(x)v(x)\,dx$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> The product rule (<a href="differentiation.html">differentiation note</a>, Section 3) gives $(uv)'=u'v+uv'$, continuous, so Part 2 applies directly: $\int_a^b\big[u'(x)v(x)+u(x)v'(x)\big]\,dx=u(b)v(b)-u(a)v(a)$. Linearity (Section 4) splits the left side into $\int_a^bu'v+\int_a^buv'$; rearranging gives the claim. <span class="qed">∎</span>
             </div>
 
-            <h3>5.2 Integration by Parts</h3>
-            <p>For functions $u(x)$ and $v(x)$:</p>
-            <div class="math-block">
-                $$\int u(x)v'(x) \, dx = u(x)v(x) - \int v(x)u'(x) \, dx$$
+            <h2 id="improper">7. Improper integrals and the comparison test</h2>
+            <div class="note-box">
+                <span class="note-box-label">Definition</span>
+                <p>$\displaystyle\int_a^\infty f(x)\,dx=\lim_{b\to\infty}\int_a^bf(x)\,dx$, said to <strong>converge</strong> if the limit exists (finite), <strong>diverge</strong> otherwise. Integrals over unbounded functions on a finite interval are defined the same way, as a limit of proper integrals avoiding the singularity.</p>
             </div>
-
-            <h3>5.3 Partial Fractions</h3>
-            <p>For rational functions, decompose into simpler fractions:</p>
-            <div class="math-block">
-                $$\frac{P(x)}{Q(x)} = \frac{A}{x-a} + \frac{B}{x-b} + \cdots$$
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Comparison test)</span>
+                <p>If $0\leq f(x)\leq g(x)$ for $x\geq a$ and $\int_a^\infty g$ converges, then $\int_a^\infty f$ converges, with $\int_a^\infty f\leq\int_a^\infty g$.</p>
             </div>
-
-            <h3>5.4 Trigonometric Substitution</h3>
-            <p>For integrals involving $\sqrt{a^2 - x^2}$, $\sqrt{a^2 + x^2}$, or $\sqrt{x^2 - a^2}$:</p>
-            <ul>
-                <li>$\sqrt{a^2 - x^2}$: Let $x = a\sin(\theta)$</li>
-                <li>$\sqrt{a^2 + x^2}$: Let $x = a\tan(\theta)$</li>
-                <li>$\sqrt{x^2 - a^2}$: Let $x = a\sec(\theta)$</li>
-            </ul>
-
-            <h2>6. Applications</h2>
-            <h3>6.1 Area Between Curves</h3>
-            <p>The area between $f(x)$ and $g(x)$ from $a$ to $b$ is:</p>
-            <div class="math-block">
-                $$A = \int_a^b |f(x) - g(x)| \, dx$$
+            <div class="proof">
+                <span class="proof-label">Proof.</span> Let $F(b)=\int_a^bf$. By additivity and $f\geq0$, $F$ is nondecreasing in $b$ ($F(b_2)-F(b_1)=\int_{b_1}^{b_2}f\geq0$ for $b_2&gt;b_1$, by monotonicity applied to $f\geq0$). By monotonicity applied to $f\leq g$, $F(b)\leq\int_a^bg\leq L:=\int_a^\infty g$ for every $b$. A nondecreasing function of $b$ that is bounded above converges to a finite limit as $b\to\infty$ — the same completeness argument as the Monotone Convergence Theorem for sequences (<a href="../mathematical-analysis/sequences-series.html">sequences and series note</a>, Section 2), applied here to a continuous parameter instead of an integer index. So $\lim_{b\to\infty}F(b)$ exists and is $\leq L$. <span class="qed">∎</span>
             </div>
+            <p>This is exactly the mechanism behind the <strong>integral test</strong> proved in the <a href="../mathematical-analysis/sequences-series.html">sequences and series note</a> (Section 6): that proof sandwiches a series' partial sums between two values of $\int_1^Nf$, using that a positive continuous $f$ is integrable (Section 3 here) so the sandwiching integrals are well defined, and then invokes the same monotone-bounded-implies-convergent principle used above, restricted to the integer sequence $N=1,2,3,\ldots$ rather than a continuous limit $b\to\infty$. The classic application is the $p$-integral: $\int_1^\infty x^{-p}\,dx=\frac{1}{p-1}$ for $p&gt;1$ and diverges for $p\leq1$ (direct computation via Part 2, or the limiting case $p=1$ giving $\ln b\to\infty$) — precisely the comparison benchmark the integral test uses to settle the $p$-series.</p>
 
-            <h3>6.2 Volume of Revolution</h3>
-            <p>For rotation around the $x$-axis:</p>
-            <div class="math-block">
-                $$V = \pi \int_a^b [f(x)]^2 \, dx$$
+            <h2 id="numerical">8. Numerical integration</h2>
+            <p>When no closed-form antiderivative is available (or convenient), $\int_a^bf$ is approximated by evaluating $f$ at finitely many points. With $n$ equal subintervals of width $h=(b-a)/n$ and nodes $x_i=a+ih$:</p>
+            <div class="note-box">
+                <span class="note-box-label">Trapezoidal rule</span>
+                <p>$\displaystyle\int_a^bf(x)\,dx\approx\frac h2\Big[f(x_0)+2f(x_1)+\cdots+2f(x_{n-1})+f(x_n)\Big]$, with error $-\dfrac{(b-a)h^2}{12}f''(\xi)$ for some $\xi\in(a,b)$, when $f\in C^2$.</p>
             </div>
-
-            <h3>6.3 Arc Length</h3>
-            <p>The length of the curve $y = f(x)$ from $a$ to $b$ is:</p>
-            <div class="math-block">
-                $$L = \int_a^b \sqrt{1 + [f'(x)]^2} \, dx$$
+            <div class="note-box">
+                <span class="note-box-label">Simpson's rule</span>
+                <p>(even $n$) $\displaystyle\int_a^bf(x)\,dx\approx\frac h3\Big[f(x_0)+4f(x_1)+2f(x_2)+\cdots+4f(x_{n-1})+f(x_n)\Big]$, with error $-\dfrac{(b-a)h^4}{180}f^{(4)}(\xi)$ for some $\xi\in(a,b)$, when $f\in C^4$.</p>
             </div>
+            <p>Both rules replace $f$ on each small piece by an interpolating polynomial (linear for the trapezoidal rule, quadratic for Simpson's, fit through three consecutive nodes) and integrate that polynomial exactly; the stated error terms are proved by applying Taylor's theorem with Lagrange remainder (<a href="differentiation.html">differentiation note</a>, Section 9) to the interpolation error on each piece and summing — not re-derived here, but exactly the same mechanism (a factorial-decaying remainder controlling a polynomial approximation's error) as that section's Taylor-polynomial figure. The exponents are the headline fact: trapezoidal error is $O(h^2)$, Simpson's is $O(h^4)$ — a quadratic fit interpolating one extra point buys two extra powers of $h$, not one, because Simpson's rule is exact for cubics too (the odd-order interpolation error term cancels by symmetry around the midpoint), not just the quadratics it was built to fit exactly.</p>
 
-            <h2>7. Improper Integrals</h2>
-            <p>For integrals with infinite limits or unbounded functions:</p>
-            <div class="math-block">
-                $$\int_a^\infty f(x) \, dx = \lim_{b \to \infty} \int_a^b f(x) \, dx$$
-            </div>
-            <p>The integral converges if the limit exists, diverges otherwise.</p>
+            <figure class="note-figure">
+                <img src="integration/figures/quadrature_convergence.png" alt="Log-log plot of trapezoidal and Simpson's rule error against number of subintervals n, for integral of sin(x) from 0 to pi equal to 2. Trapezoidal error follows a slope of -2, Simpson's rule follows a slope of -4.">
+                <figcaption><strong>Figure — Quadrature error matches the theoretical order, on $\int_0^\pi\sin x\,dx=2$.</strong> The trapezoidal rule's error tracks $O(n^{-2})$ and Simpson's rule's tracks $O(n^{-4})$ almost exactly, over three orders of magnitude in $n$ — doubling $n$ quarters the trapezoidal error and cuts Simpson's by a factor of $16$, exactly as the stated error formulas predict. Section 9 has the numbers.</figcaption>
+            </figure>
 
-            <h2>8. Numerical Integration</h2>
-            <h3>8.1 Trapezoidal Rule</h3>
-            <div class="math-block">
-                $$\int_a^b f(x) \, dx \approx \frac{h}{2}[f(x_0) + 2f(x_1) + 2f(x_2) + \cdots + 2f(x_{n-1}) + f(x_n)]$$
-            </div>
+            <h2 id="computation">9. Computation</h2>
+            <p>The figures above are generated by <code>integration/generate_figures.py</code>. The snippet below reproduces the quadrature convergence data.</p>
+            <pre><code>import numpy as np
 
-            <h3>8.2 Simpson's Rule</h3>
-            <div class="math-block">
-                $$\int_a^b f(x) \, dx \approx \frac{h}{3}[f(x_0) + 4f(x_1) + 2f(x_2) + 4f(x_3) + \cdots + 4f(x_{n-1}) + f(x_n)]$$
-            </div>
+def trapezoidal(f, a, b, n):
+    x = np.linspace(a, b, n + 1)
+    y = f(x)
+    h = (b - a) / n
+    return h * (y[0] / 2 + y[1:-1].sum() + y[-1] / 2)
 
-            <h2>9. Code Example</h2>
-            <pre><code># Python code for integration
-import sympy as sp
-import numpy as np
-from scipy import integrate
+def simpson(f, a, b, n):
+    if n % 2 == 1:
+        n += 1
+    x = np.linspace(a, b, n + 1)
+    y = f(x)
+    h = (b - a) / n
+    return h / 3 * (y[0] + y[-1] + 4 * y[1:-1:2].sum() + 2 * y[2:-1:2].sum())
 
-# Symbolic integration
-x = sp.Symbol('x')
-f = x**2 + 2*x + 1
-integral = sp.integrate(f, x)
-print(f"∫({f}) dx = {integral}")
+f = np.sin
+a, b = 0.0, np.pi
+exact = 2.0
 
-# Definite integral
-definite_integral = sp.integrate(f, (x, 0, 1))
-print(f"∫₀¹({f}) dx = {definite_integral}")
-
-# Numerical integration
-def func(x):
-    return x**2 + 2*x + 1
-
-result, error = integrate.quad(func, 0, 1)
-print(f"Numerical result: {result}")
+for n in [4, 8, 16, 32, 64, 128]:
+    t = trapezoidal(f, a, b, n)
+    s = simpson(f, a, b, n)
+    print(f"n={n:4d}  trapezoidal err={abs(t-exact):.3e}   simpson err={abs(s-exact):.3e}")
 </code></pre>
+            <p>Actual output:</p>
+            <pre><code>n=   4  trapezoidal err=1.039e-01   simpson err=4.560e-03
+n=   8  trapezoidal err=2.577e-02   simpson err=2.692e-04
+n=  16  trapezoidal err=6.430e-03   simpson err=1.659e-05
+n=  32  trapezoidal err=1.607e-03   simpson err=1.033e-06
+n=  64  trapezoidal err=4.016e-04   simpson err=6.453e-08
+n= 128  trapezoidal err=1.004e-04   simpson err=4.032e-09</code></pre>
+            <p>Each doubling of $n$ divides the trapezoidal error by almost exactly $4$ ($2^2$) and Simpson's error by almost exactly $16$ ($2^4$) — the $O(h^2)$ and $O(h^4)$ orders read directly off the ratios, not just off the log-log slope in the figure.</p>
 
-            <h2>10. References</h2>
+            <h2 id="pitfalls">10. Common pitfalls</h2>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — integrable is not the same as continuous</span>
+                <p>The step function $f(x)=0$ for $x&lt;1$, $f(x)=1$ for $x\geq1$ on $[0,2]$ is discontinuous at $x=1$ but perfectly integrable: for a partition with the single subinterval containing $1$ shrunk to width $\eta$, $U(f,P)-L(f,P)=1\cdot\eta$ (every other subinterval has $M_i=m_i$), which $\to0$ as $\eta\to0$. Riemann's criterion is satisfied despite the discontinuity — integrability is a strictly weaker requirement than continuity, the same asymmetry as differentiable vs. $C^1$ in the <a href="differentiation.html">differentiation note</a> (Section 2).</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — FTC Part 1 needs continuity of $f$ <em>at the point in question</em>, not just integrability</span>
+                <p>Let $f(x)=\operatorname{sign}(x)$ on $[-1,1]$ ($-1,0,1$ for $x&lt;0,=0,&gt;0$) and $F(x)=\int_{-1}^xf(t)\,dt$. Direct computation gives $F(x)=-(x+1)$ for $x\leq0$ and $F(x)=x-1$ for $x\geq0$ — that is, $F(x)=|x|-1$, exactly the corner function from the <a href="differentiation.html">differentiation note</a>'s continuous-but-not-differentiable example. $F$ is continuous everywhere (as Part 1 guarantees unconditionally), but not differentiable at $x=0$, precisely the point where $f$ jumps. FTC Part 1's differentiability conclusion is local to points of continuity of $f$; it says nothing at a jump.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — a convergent improper integral does not force the integrand to $0$</span>
+                <p>Let $f$ be $0$ everywhere except narrow triangular spikes of height $1$ centered at each integer $n\geq1$, with base width $1/n^2$. The area of the $n$-th spike is $\frac12\cdot\frac1{n^2}$, so $\int_1^\infty f=\frac12\sum_{n\geq1}\frac1{n^2}$ converges (a $p$-integral-type comparison, $p=2$). Yet $f(x)$ does not tend to $0$: it reaches height $1$ at every integer, forever. This is the integral analogue of the sequences and series note's warning that the divergence test's converse fails for series, and of the sliding-bump pointwise-but-not-uniform-limit example in the <a href="../mathematical-analysis/convergence.html">convergence note</a> (Section 4) — three versions of the same fact, that an integral (or a sum) can stay finite even while the thing being integrated (or summed) refuses to settle down.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — forgetting to change the limits under substitution</span>
+                <p>For $\int_0^2 2xe^{x^2}\,dx$ with $u=x^2$, $du=2x\,dx$: the correct limits transform too, $x:0\to2\Rightarrow u:0\to4$, giving $\int_0^4e^u\,du=e^4-1\approx53.6$. Reusing the original $x$-limits as if they were $u$-limits gives the different (wrong) value $\int_0^2e^u\,du=e^2-1\approx6.39$. Substitution in a <em>definite</em> integral (Section 6) is a statement about the transformed limits $g(a),g(b)$, not the original $a,b$ — skipping that step is a common and entirely avoidable arithmetic error, not a subtlety of the theorem itself.</p>
+            </div>
+
+            <h2 id="connections">11. Connections</h2>
             <ul>
-                <li>Stewart, J. (2015). <em>Calculus: Early Transcendentals</em>.</li>
-                <li>Apostol, T. M. (1967). <em>Calculus, Volume 1</em>.</li>
-                <li>Spivak, M. (2008). <em>Calculus</em>.</li>
+                <li><strong><a href="continuity.html">Continuity and limits</a>.</strong> Uniform continuity and the Extreme Value Theorem on a compact interval are exactly what make continuous functions integrable (Section 3); the FTC Part 1 pitfall above reproduces that note's discontinuity taxonomy at one remove — a jump in $f$ becomes a corner (not a break) in its antiderivative $F$.</li>
+                <li><strong><a href="differentiation.html">Differentiation</a>.</strong> The FTC (Section 5) is precisely the statement that integration and differentiation invert each other; its Part 2 proof leans on the Mean Value Theorem via the zero-derivative-implies-constant lemma, and the numerical integration error bounds (Section 8) are a direct application of that note's Taylor's theorem with Lagrange remainder.</li>
+                <li><strong><a href="../mathematical-analysis/sequences-series.html">Sequences and series</a>.</strong> The comparison test for improper integrals (Section 7) is the same monotone-bounded-implies-convergent argument as that note's Monotone Convergence Theorem, run over a continuous parameter instead of an integer index; it is the mechanism underneath that note's proof of the integral test, which in turn needs this note's Section 3 to know the relevant integrals are well defined in the first place.</li>
+                <li><strong><a href="../mathematical-analysis/convergence.html">Convergence of function sequences</a>.</strong> The spike-integrand pitfall above (Section 10) is a continuous cousin of that note's sliding-bump counterexample, both showing that pointwise smallness of a limit and finiteness of an integral (or sum) are logically independent facts.</li>
+            </ul>
+
+            <h2 id="references">12. References</h2>
+            <ul>
+                <li>Rudin, W. (1976). <em>Principles of Mathematical Analysis</em> (3rd ed.). McGraw-Hill.</li>
+                <li>Apostol, T. M. (1967). <em>Calculus, Volume 1</em> (2nd ed.). Wiley.</li>
+                <li>Spivak, M. (2008). <em>Calculus</em> (4th ed.). Publish or Perish.</li>
+                <li>Burden, R. L., &amp; Faires, J. D. (2010). <em>Numerical Analysis</em> (9th ed.). Brooks/Cole.</li>
             </ul>
         </section>
     </main>
@@ -178,4 +253,4 @@ print(f"Numerical result: {result}")
         <p>&copy; Diogo Franquinho | Technical Notes</p>
     </footer>
 </body>
-</html> 
+</html>
