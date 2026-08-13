@@ -21,347 +21,246 @@
 </head>
 <body>
     <nav class="top-nav">
-        <a href="../../index.html">← Back to Home</a> | 
+        <a href="../../index.html">← Back to Home</a> |
         <a href="../../index.html#notes">Notes</a>
     </nav>
 
     <main>
         <header>
             <h1>Optimization Methods</h1>
-            <p class="note-meta">Last updated: December 2024</p>
+            <p class="note-meta">Last updated: August 2026</p>
         </header>
 
         <section class="note-content">
             <div class="disclaimer">
                 <p><strong>Disclaimer:</strong> These are my personal notes compiled for my own reference and learning. They may contain errors, incomplete information, or personal interpretations. While I strive for accuracy, these notes are not peer-reviewed and should not be considered authoritative sources. Please consult official textbooks, research papers, or other reliable sources for academic or professional purposes.</p>
             </div>
-            
-            <h2>1. Introduction to Optimization</h2>
-            <p>Optimization is the process of finding the best solution from a set of available alternatives. In machine learning, we typically minimize a loss function:</p>
-            <div class="math-block">
-                $$\min_{\theta} L(\theta) = \frac{1}{m}\sum_{i=1}^m \ell(f(x_i; \theta), y_i)$$
+
+            <div class="table-of-contents">
+                <h3>Contents</h3>
+                <ol>
+                    <li><a href="#problem">The optimization problem, and why convexity matters</a></li>
+                    <li><a href="#convexity">Convex sets and functions: the first-order characterization</a></li>
+                    <li><a href="#descent-lemma">$L$-smoothness and the descent lemma</a></li>
+                    <li><a href="#gd-convergence">Gradient descent: $O(1/T)$ convergence</a></li>
+                    <li><a href="#strong-convexity">Strong convexity and linear convergence</a></li>
+                    <li><a href="#newton">Newton's method and local quadratic convergence</a></li>
+                    <li><a href="#sgd">Stochastic gradient descent</a></li>
+                    <li><a href="#momentum">Momentum and adaptive methods, more briefly</a></li>
+                    <li><a href="#kkt">Constrained optimization: Lagrangian duality and KKT</a></li>
+                    <li><a href="#nonconvex">Non-convex optimization and saddle points</a></li>
+                    <li><a href="#computation">Computation</a></li>
+                    <li><a href="#pitfalls">Common pitfalls</a></li>
+                    <li><a href="#connections">Connections</a></li>
+                    <li><a href="#references">References</a></li>
+                </ol>
             </div>
 
-            <h2>2. Gradient Descent</h2>
-            <p>The fundamental optimization algorithm for machine learning:</p>
-            <div class="math-block">
-                $$\theta_{t+1} = \theta_t - \alpha \nabla L(\theta_t)$$
+            <h2 id="problem">1. The optimization problem, and why convexity matters</h2>
+            <p>Machine learning training is, almost without exception, the problem $\min_\theta L(\theta)$ for a loss $L(\theta)=\frac1m\sum_{i=1}^m\ell(f(x_i;\theta),y_i)$. Fermat's theorem (<a href="../calculus/differentiation.html">differentiation note</a>, Section 6, and its multivariable generalization in the <a href="../calculus/multivariable-calculus.html">multivariable calculus note</a>, Section 7) says a differentiable minimizer must be a critical point, $\nabla L(\theta^*)=0$ — necessary, never sufficient. For a general (non-convex) $L$, that is close to all that can be said in general: finding a <em>global</em> minimizer of an arbitrary smooth function is NP-hard, and gradient information alone cannot distinguish a global minimum from a local one, let alone a saddle.</p>
+            <p><strong>Convexity is the property that closes this gap.</strong> Sections 2–7 build, with full proofs, the classical theory of first- and second-order methods on convex objectives: every critical point is a global minimizer, and — with a quantitative smoothness assumption — the rate at which gradient-based methods approach it can be bounded exactly, not just asserted to converge "eventually." Most deep learning objectives are not convex, but the convex theory is not merely a warm-up: it is the exact theory used in enormous swaths of applied optimization (linear/logistic regression, SVMs, LASSO, many control and finance problems), and its proof techniques — the descent lemma, in particular — are reused essentially unchanged in the local, near-a-minimum analysis of non-convex training dynamics.</p>
+
+            <h2 id="convexity">2. Convex sets and functions: the first-order characterization</h2>
+            <div class="note-box">
+                <span class="note-box-label">Definitions</span>
+                <p>$C\subseteq\mathbb R^n$ is <strong>convex</strong> if $x,y\in C,\,t\in[0,1]\Rightarrow tx+(1-t)y\in C$. $f:C\to\mathbb R$ is <strong>convex</strong> if $f(tx+(1-t)y)\leq tf(x)+(1-t)f(y)$ for all $x,y\in C$, $t\in[0,1]$.</p>
             </div>
-            <p>where $\alpha$ is the learning rate and $\nabla L(\theta_t)$ is the gradient.</p>
-
-            <h3>2.1 Batch Gradient Descent</h3>
-            <p>Uses the entire dataset to compute gradients:</p>
-            <div class="math-block">
-                $$\nabla L(\theta) = \frac{1}{m}\sum_{i=1}^m \nabla \ell(f(x_i; \theta), y_i)$$
+            <div class="note-box">
+                <span class="note-box-label">Theorem (First-order characterization)</span>
+                <p>For $f$ differentiable on a convex open set $C$: $f$ is convex iff $f(y)\geq f(x)+\nabla f(x)\cdot(y-x)$ for all $x,y\in C$ — the tangent plane at any point lies entirely below the graph.</p>
             </div>
-            <p><strong>Pros:</strong> Stable convergence, guaranteed to find global minimum for convex functions.</p>
-            <p><strong>Cons:</strong> Slow for large datasets, requires full dataset in memory.</p>
-
-            <h3>2.2 Stochastic Gradient Descent (SGD)</h3>
-            <p>Uses one sample at a time:</p>
-            <div class="math-block">
-                $$\theta_{t+1} = \theta_t - \alpha \nabla \ell(f(x_i; \theta_t), y_i)$$
+            <div class="proof">
+                <span class="proof-label">Proof.</span> ($\Rightarrow$) Fix $x,y\in C$ and let $\phi(t)=f(x+t(y-x))$ for $t\in[0,1]$ (restricting to the segment, exactly the reduction used throughout the <a href="../calculus/multivariable-calculus.html">multivariable calculus note</a>, e.g. its Section 6). Convexity of $f$ along this segment makes $\phi$ convex on $[0,1]$ in the ordinary one-variable sense. For $0&lt;s&lt;t\leq1$, writing $s=\frac st\cdot t+(1-\frac st)\cdot0$ and applying convexity of $\phi$: $\phi(s)\leq\frac st\phi(t)+(1-\frac st)\phi(0)$, which rearranges to $\frac{\phi(s)-\phi(0)}{s}\leq\frac{\phi(t)-\phi(0)}{t}$ — the secant slope from $0$ is non-decreasing. So $\phi'(0)=\lim_{t\to0^+}\frac{\phi(t)-\phi(0)}{t}=\inf_{t\in(0,1]}\frac{\phi(t)-\phi(0)}{t}\leq\phi(1)-\phi(0)$ (taking $t=1$). By the chain rule (<a href="../calculus/multivariable-calculus.html">multivariable calculus note</a>, Section 3), $\phi'(0)=\nabla f(x)\cdot(y-x)$, and $\phi(1)-\phi(0)=f(y)-f(x)$, giving $\nabla f(x)\cdot(y-x)\leq f(y)-f(x)$. ($\Leftarrow$) Let $z=tx+(1-t)y$. The hypothesis at $z$ gives $f(x)\geq f(z)+\nabla f(z)\cdot(x-z)$ and $f(y)\geq f(z)+\nabla f(z)\cdot(y-z)$. Multiply by $t$ and $1-t$ respectively and add: $tf(x)+(1-t)f(y)\geq f(z)+\nabla f(z)\cdot\big(tx+(1-t)y-z\big)=f(z)$, since $tx+(1-t)y-z=0$ by definition of $z$. This is exactly $f(tx+(1-t)y)\leq tf(x)+(1-t)f(y)$. <span class="qed">∎</span>
             </div>
-            <p><strong>Pros:</strong> Fast updates, can escape local minima due to noise.</p>
-            <p><strong>Cons:</strong> Noisy convergence, may not converge to exact minimum.</p>
+            <p>An immediate corollary: if $\nabla f(\theta^*)=0$ for convex $f$, the first-order inequality at $x=\theta^*$ reads $f(y)\geq f(\theta^*)$ for every $y$ — a critical point of a convex function is automatically a <em>global</em> minimizer. This is the entire reason convexity matters: Fermat's necessary condition (Section 1) becomes sufficient.</p>
 
-            <h3>2.3 Mini-batch Gradient Descent</h3>
-            <p>Uses small batches of samples:</p>
-            <div class="math-block">
-                $$\nabla L(\theta) = \frac{1}{|B|}\sum_{i \in B} \nabla \ell(f(x_i; \theta), y_i)$$
+            <h2 id="descent-lemma">3. $L$-smoothness and the descent lemma</h2>
+            <div class="note-box">
+                <span class="note-box-label">Definition</span>
+                <p>$f$ is <strong>$L$-smooth</strong> if $\nabla f$ is $L$-Lipschitz: $\|\nabla f(x)-\nabla f(y)\|\leq L\|x-y\|$ for all $x,y$.</p>
             </div>
-            <p>where $B$ is a mini-batch. Balances efficiency and stability.</p>
-
-            <h2>3. Momentum Methods</h2>
-            <h3>3.1 Classical Momentum</h3>
-            <p>Accelerates SGD by accumulating velocity:</p>
-            <div class="math-block">
-                $$v_{t+1} = \beta v_t + \alpha \nabla L(\theta_t)$$
-                $$\theta_{t+1} = \theta_t - v_{t+1}$$
+            <div class="note-box">
+                <span class="note-box-label">Lemma (Descent lemma)</span>
+                <p>If $f$ is $L$-smooth, then $f(y)\leq f(x)+\nabla f(x)\cdot(y-x)+\dfrac L2\|y-x\|^2$ for all $x,y$ — a quantitative converse to Section 2's inequality, with a matching quadratic <em>upper</em> bound.</p>
             </div>
-            <p>where $\beta \in [0, 1)$ is the momentum coefficient (typically 0.9).</p>
-
-            <h3>3.2 Nesterov Accelerated Gradient (NAG)</h3>
-            <p>Looks ahead before computing gradient:</p>
-            <div class="math-block">
-                $$v_{t+1} = \beta v_t + \alpha \nabla L(\theta_t - \beta v_t)$$
-                $$\theta_{t+1} = \theta_t - v_{t+1}$$
+            <div class="proof">
+                <span class="proof-label">Proof.</span> Let $\phi(t)=f(x+t(y-x))$, $t\in[0,1]$. By the chain rule, $\phi'(t)=\nabla f(x+t(y-x))\cdot(y-x)$, continuous since $\nabla f$ is Lipschitz (hence continuous). By the Fundamental Theorem of Calculus (<a href="../calculus/integration.html">integration note</a>, Section 5): $f(y)-f(x)=\phi(1)-\phi(0)=\int_0^1\phi'(t)\,dt=\int_0^1\nabla f(x+t(y-x))\cdot(y-x)\,dt$. Subtracting and adding $\nabla f(x)\cdot(y-x)$: $f(y)-f(x)-\nabla f(x)\cdot(y-x)=\int_0^1\big[\nabla f(x+t(y-x))-\nabla f(x)\big]\cdot(y-x)\,dt$. By Cauchy–Schwarz and $L$-Lipschitz continuity of $\nabla f$: $\big|[\cdots]\cdot(y-x)\big|\leq\|\nabla f(x+t(y-x))-\nabla f(x)\|\,\|y-x\|\leq L\,t\|y-x\|\cdot\|y-x\|=Lt\|y-x\|^2$. So the integral is bounded by $\int_0^1Lt\|y-x\|^2\,dt=\frac L2\|y-x\|^2$. <span class="qed">∎</span>
             </div>
+            <p>This lemma is the single most-used tool in first-order optimization theory: it turns "the gradient doesn't change too fast" into an explicit, quantitative bound on how much a gradient step can overshoot — exactly what the convergence proofs in Sections 4 and 5 need.</p>
 
-            <h2>4. Adaptive Learning Rate Methods</h2>
-            <h3>4.1 AdaGrad</h3>
-            <p>Adapts learning rate based on historical gradients:</p>
-            <div class="math-block">
-                $$G_t = G_{t-1} + \nabla L(\theta_t) \odot \nabla L(\theta_t)$$
-                $$\theta_{t+1} = \theta_t - \frac{\alpha}{\sqrt{G_t + \epsilon}} \odot \nabla L(\theta_t)$$
+            <h2 id="gd-convergence">4. Gradient descent: $O(1/T)$ convergence</h2>
+            <div class="note-box">
+                <span class="note-box-label">Lemma (Sufficient decrease)</span>
+                <p>If $f$ is $L$-smooth and $x_{t+1}=x_t-\frac1L\nabla f(x_t)$, then $f(x_{t+1})\leq f(x_t)-\dfrac1{2L}\|\nabla f(x_t)\|^2$.</p>
             </div>
-            <p>where $\odot$ denotes element-wise multiplication and $\epsilon$ prevents division by zero.</p>
-
-            <h3>4.2 RMSprop</h3>
-            <p>Uses exponential moving average to prevent aggressive decrease of learning rates:</p>
-            <div class="math-block">
-                $$v_t = \beta v_{t-1} + (1-\beta) \nabla L(\theta_t) \odot \nabla L(\theta_t)$$
-                $$\theta_{t+1} = \theta_t - \frac{\alpha}{\sqrt{v_t + \epsilon}} \odot \nabla L(\theta_t)$$
+            <div class="proof">
+                <span class="proof-label">Proof.</span> Apply the descent lemma with $y=x_{t+1}$: $f(x_{t+1})\leq f(x_t)+\nabla f(x_t)\cdot(x_{t+1}-x_t)+\frac L2\|x_{t+1}-x_t\|^2=f(x_t)-\frac1L\|\nabla f(x_t)\|^2+\frac L2\cdot\frac1{L^2}\|\nabla f(x_t)\|^2=f(x_t)-\frac1{2L}\|\nabla f(x_t)\|^2$. <span class="qed">∎</span>
             </div>
-
-            <h3>4.3 Adam (Adaptive Moment Estimation)</h3>
-            <p>Combines momentum and adaptive learning rates:</p>
-            <div class="math-block">
-                $$m_t = \beta_1 m_{t-1} + (1-\beta_1) \nabla L(\theta_t)$$
-                $$v_t = \beta_2 v_{t-1} + (1-\beta_2) \nabla L(\theta_t) \odot \nabla L(\theta_t)$$
-                $$\hat{m}_t = \frac{m_t}{1-\beta_1^t}, \quad \hat{v}_t = \frac{v_t}{1-\beta_2^t}$$
-                $$\theta_{t+1} = \theta_t - \frac{\alpha}{\sqrt{\hat{v}_t} + \epsilon} \hat{m}_t$$
+            <div class="note-box">
+                <span class="note-box-label">Theorem</span>
+                <p>If $f$ is convex, $L$-smooth, and has a minimizer $x^*$ with $f^*=f(x^*)$, gradient descent $x_{t+1}=x_t-\frac1L\nabla f(x_t)$ satisfies $f(x_T)-f^*\leq\dfrac{L\|x_0-x^*\|^2}{2T}$.</p>
             </div>
-            <p>where $\beta_1 = 0.9$, $\beta_2 = 0.999$, and $\epsilon = 10^{-8}$ are typical values.</p>
-
-            <h2>5. Second-Order Methods</h2>
-            <h3>5.1 Newton's Method</h3>
-            <p>Uses second-order information (Hessian matrix):</p>
-            <div class="math-block">
-                $$\theta_{t+1} = \theta_t - H^{-1}(\theta_t) \nabla L(\theta_t)$$
+            <div class="proof">
+                <span class="proof-label">Proof.</span> By Section 2's inequality at $x_t$ targeting $x^*$: $f(x_t)-f^*\leq\nabla f(x_t)\cdot(x_t-x^*)$. Expand the distance recursion: $\|x_{t+1}-x^*\|^2=\|x_t-x^*\|^2-\frac2L\nabla f(x_t)\cdot(x_t-x^*)+\frac1{L^2}\|\nabla f(x_t)\|^2\leq\|x_t-x^*\|^2-\frac2L\big(f(x_t)-f^*\big)+\frac1{L^2}\|\nabla f(x_t)\|^2$. By the sufficient-decrease lemma rearranged, $\|\nabla f(x_t)\|^2\leq2L\big(f(x_t)-f(x_{t+1})\big)$, so $\frac1{L^2}\|\nabla f(x_t)\|^2\leq\frac2L\big(f(x_t)-f(x_{t+1})\big)$. Substituting and simplifying (the $f(x_t)$ terms cancel): $\|x_{t+1}-x^*\|^2\leq\|x_t-x^*\|^2-\frac2L\big(f(x_{t+1})-f^*\big)$, i.e. $\frac2L\big(f(x_{t+1})-f^*\big)\leq\|x_t-x^*\|^2-\|x_{t+1}-x^*\|^2$. Summing over $t=0,\ldots,T-1$ telescopes the right side: $\frac2L\sum_{t=0}^{T-1}\big(f(x_{t+1})-f^*\big)\leq\|x_0-x^*\|^2-\|x_T-x^*\|^2\leq\|x_0-x^*\|^2$. Since the sufficient-decrease lemma makes $f(x_t)$ non-increasing, $f(x_T)-f^*\leq\frac1T\sum_{t=0}^{T-1}\big(f(x_{t+1})-f^*\big)\leq\dfrac{L\|x_0-x^*\|^2}{2T}$. <span class="qed">∎</span>
             </div>
-            <p>where $H(\theta) = \nabla^2 L(\theta)$ is the Hessian matrix.</p>
+            <p>The rate is $O(1/T)$: to halve the optimality gap, roughly double the number of iterations — sublinear, but a genuine, quantitative, non-asymptotic guarantee, and it holds for <em>every</em> convex $L$-smooth function with no further assumptions. Section 5 shows a stronger hypothesis buys a qualitatively faster rate.</p>
 
-            <h3>5.2 Quasi-Newton Methods</h3>
-            <p><strong>BFGS:</strong> Approximates the Hessian using gradient information.</p>
-            <p><strong>L-BFGS:</strong> Limited-memory version of BFGS, more practical for large problems.</p>
-
-            <h2>6. Learning Rate Scheduling</h2>
-            <h3>6.1 Step Decay</h3>
-            <div class="math-block">
-                $$\alpha_t = \alpha_0 \cdot \gamma^{\lfloor t/s \rfloor}$$
+            <h2 id="strong-convexity">5. Strong convexity and linear convergence</h2>
+            <div class="note-box">
+                <span class="note-box-label">Definition</span>
+                <p>$f$ is <strong>$\mu$-strongly convex</strong> if $f(y)\geq f(x)+\nabla f(x)\cdot(y-x)+\dfrac\mu2\|y-x\|^2$ for all $x,y$ — Section 2's inequality strengthened with a quadratic lower bound, the mirror image of the descent lemma's quadratic upper bound.</p>
             </div>
-            <p>where $\gamma < 1$ and $s$ is the step size.</p>
-
-            <h3>6.2 Exponential Decay</h3>
-            <div class="math-block">
-                $$\alpha_t = \alpha_0 e^{-\lambda t}$$
+            <div class="note-box">
+                <span class="note-box-label">Lemma (Polyak–Łojasiewicz inequality)</span>
+                <p>If $f$ is $\mu$-strongly convex with minimizer $x^*$, then $\|\nabla f(x)\|^2\geq2\mu\big(f(x)-f^*\big)$ for every $x$.</p>
             </div>
-
-            <h3>6.3 Cosine Annealing</h3>
-            <div class="math-block">
-                $$\alpha_t = \alpha_{min} + \frac{1}{2}(\alpha_{max} - \alpha_{min})\left(1 + \cos\left(\frac{t}{T}\pi\right)\right)$$
+            <div class="proof">
+                <span class="proof-label">Proof.</span> Fix $x$; strong convexity gives $f(y)\geq f(x)+\nabla f(x)\cdot(y-x)+\frac\mu2\|y-x\|^2$ for every $y$. The right side, as a function of $y$, is a quadratic minimized at $y=x-\nabla f(x)/\mu$ (its own critical point, Fermat, Section 1), with minimum value $f(x)-\frac1{2\mu}\|\nabla f(x)\|^2$. Taking $y=x^*$ on the left: $f^*\geq f(x)-\frac1{2\mu}\|\nabla f(x)\|^2$, which rearranges to the claim. <span class="qed">∎</span>
             </div>
-
-            <h2>7. Regularization in Optimization</h2>
-            <h3>7.1 L1 Regularization (Lasso)</h3>
-            <div class="math-block">
-                $$L_{reg}(\theta) = L(\theta) + \lambda \|\theta\|_1$$
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Linear convergence)</span>
+                <p>If $f$ is $\mu$-strongly convex and $L$-smooth, gradient descent with $x_{t+1}=x_t-\frac1L\nabla f(x_t)$ satisfies $f(x_T)-f^*\leq\left(1-\dfrac\mu L\right)^T\big(f(x_0)-f^*\big)$.</p>
             </div>
-            <p>Promotes sparsity in parameters.</p>
-
-            <h3>7.2 L2 Regularization (Ridge)</h3>
-            <div class="math-block">
-                $$L_{reg}(\theta) = L(\theta) + \lambda \|\theta\|_2^2$$
+            <div class="proof">
+                <span class="proof-label">Proof.</span> Combine the sufficient-decrease lemma (Section 4) with the PL inequality: $f(x_{t+1})\leq f(x_t)-\frac1{2L}\|\nabla f(x_t)\|^2\leq f(x_t)-\frac1{2L}\cdot2\mu\big(f(x_t)-f^*\big)=f(x_t)-\frac\mu L\big(f(x_t)-f^*\big)$. Subtracting $f^*$ from both sides: $f(x_{t+1})-f^*\leq\left(1-\frac\mu L\right)\big(f(x_t)-f^*\big)$. Iterating from $t=0$ to $T-1$ gives the claim. <span class="qed">∎</span>
             </div>
-            <p>Penalizes large weights, equivalent to weight decay in SGD.</p>
+            <p>The ratio $\kappa=L/\mu\geq1$ is the <strong>condition number</strong>: the rate $1-\mu/L=1-1/\kappa$ is close to $1$ (slow) when $\kappa$ is large (an elongated, ill-conditioned bowl) and close to $0$ (fast) when $\kappa\approx1$ (a well-conditioned, near-spherical bowl) — exactly the behavior Figure 1 verifies. Going from $O(1/T)$ (Section 4) to geometric decay is the single biggest lever available to first-order methods, and it costs nothing beyond assuming the extra quadratic lower bound.</p>
 
-            <h3>7.3 Elastic Net</h3>
-            <div class="math-block">
-                $$L_{reg}(\theta) = L(\theta) + \lambda_1 \|\theta\|_1 + \lambda_2 \|\theta\|_2^2$$
+            <figure class="note-figure">
+                <img src="optimization/figures/linear_convergence.png" alt="Left panel: semilog plot of optimality gap versus iteration for gradient descent on strongly convex quadratics with condition numbers 2, 10, and 50, each a straight line with slope depending on the condition number. Right panel: for condition number 10, the actual optimality gap plotted against the proved geometric bound, staying under it at every iteration.">
+                <figcaption><strong>Figure — Strongly convex GD converges geometrically, at the rate the theorem predicts.</strong> Left: $f(x_t)-f^\star$ on a log scale is a straight line for every condition number $\kappa=L/\mu$ tested, confirming geometric decay; larger $\kappa$ gives a shallower line (slower convergence), exactly as $1-1/\kappa$ predicts. Right: for $\kappa=10$, the actual trajectory (dots) stays strictly under the proved bound $(1-\mu/L)^t(f(x_0)-f^\star)$ (dashed) at every iteration — a valid upper bound can be loose (here the specific axis-aligned quadratic converges somewhat faster, Section 12 has the numbers), but it may never be violated, and it never is.</figcaption>
+            </figure>
+
+            <h2 id="newton">6. Newton's method and local quadratic convergence</h2>
+            <div class="note-box">
+                <span class="note-box-label">Update rule</span>
+                <p>$\theta_{t+1}=\theta_t-H(\theta_t)^{-1}\nabla L(\theta_t)$, where $H=\nabla^2L$ is the Hessian — the second-order Taylor approximation (<a href="../calculus/multivariable-calculus.html">multivariable calculus note</a>, Section 6) minimized exactly at each step, rather than descended along its gradient alone.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Local quadratic convergence)</span>
+                <p>If $f\in C^2$ near $x^*$ with $\nabla f(x^*)=0$, $H(x^*)$ positive definite, and $H$ is $M$-Lipschitz near $x^*$, then for $x_t$ close enough to $x^*$, $\|x_{t+1}-x^*\|\leq C\|x_t-x^*\|^2$ for a constant $C$ depending on $M$ and $H(x^*)^{-1}$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof (sketch).</span> $x_{t+1}-x^*=x_t-x^*-H(x_t)^{-1}\nabla f(x_t)=H(x_t)^{-1}\big[H(x_t)(x_t-x^*)-\nabla f(x_t)\big]$. Applying the same integral argument as the descent lemma (Section 3), one order higher — using Lipschitz $H$ in place of Lipschitz $\nabla f$ — bounds $\big\|\nabla f(x_t)-\nabla f(x^*)-H(x_t)(x_t-x^*)\big\|\leq\frac M2\|x_t-x^*\|^2$; since $\nabla f(x^*)=0$, this is exactly $\big\|H(x_t)(x_t-x^*)-\nabla f(x_t)\big\|\leq\frac M2\|x_t-x^*\|^2$. As $x_t\to x^*$, $H(x_t)^{-1}\to H(x^*)^{-1}$ (continuity of matrix inversion at a nonsingular matrix), so $\|H(x_t)^{-1}\|$ is bounded by some constant near $x^*$, giving $\|x_{t+1}-x^*\|\leq C\|x_t-x^*\|^2$. <span class="qed">∎</span>
+            </div>
+            <p>Quadratic convergence roughly doubles the number of correct digits every iteration, dramatically faster than gradient descent's linear rate (Figure 2) — but the theorem is <em>local</em>: it says nothing about $x_0$ far from $x^*$, where Newton steps can badly overshoot (Section 12 has a concrete divergence example) and $H(\theta_t)$ may not even be positive definite. Forming and inverting $H\in\mathbb R^{n\times n}$ costs $O(n^3)$, prohibitive for the $n$ in the millions or billions typical of deep networks — the practical reason first-order methods, not Newton's method, dominate deep learning despite the worse asymptotic rate.</p>
+
+            <figure class="note-figure">
+                <img src="optimization/figures/newton_vs_gd.png" alt="Left panel: log-scale error versus iteration for Newton's method and gradient descent minimizing e^x - x, Newton reaching machine precision in about 6 steps while gradient descent needs about 90. Right panel: log-log plot of consecutive Newton errors following a slope-2 line, confirming quadratic convergence.">
+                <figcaption><strong>Figure — Newton's method (local quadratic) vs. gradient descent (linear), on $f(x)=e^x-x$.</strong> Left: starting from the same point, Newton reaches machine precision ($\sim10^{-16}$) in about $6$ iterations; gradient descent needs roughly $90$ to reach comparable accuracy — the qualitative gap between quadratic and linear convergence, not just a constant-factor speedup. Right: plotting $e_{t+1}=|x_{t+1}-x^\star|$ against $e_t=|x_t-x^\star|$ for Newton's iterates lies almost exactly on the slope-$2$ reference line $0.5\,e_t^2$ — a direct empirical confirmation of the quadratic convergence rate proved above, over roughly $12$ orders of magnitude in $e_t$.</figcaption>
+            </figure>
+
+            <h2 id="sgd">7. Stochastic gradient descent</h2>
+            <p>When $L(\theta)=\frac1m\sum_i\ell_i(\theta)$ and $m$ is large, computing $\nabla L$ exactly at every step is expensive; SGD instead uses a cheap unbiased estimate $g_t$ (e.g. the gradient of a single random $\ell_i$, or a mini-batch average).</p>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (SGD convergence in expectation)</span>
+                <p>Let $f$ be convex, and suppose $\mathbb E[g_t\mid x_t]=\nabla f(x_t)$ (unbiased) and $\mathbb E[\|g_t\|^2\mid x_t]\leq G^2$ (bounded second moment). With constant step size $\alpha$ and $\bar x_T=\frac1T\sum_{t=0}^{T-1}x_t$: $\mathbb E[f(\bar x_T)]-f^*\leq\dfrac{\|x_0-x^*\|^2}{2\alpha T}+\dfrac{\alpha G^2}2$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> As in Section 4: $\|x_{t+1}-x^*\|^2=\|x_t-x^*\|^2-2\alpha g_t\cdot(x_t-x^*)+\alpha^2\|g_t\|^2$. Taking $\mathbb E[\cdot\mid x_t]$: unbiasedness turns the middle term's expectation into $-2\alpha\nabla f(x_t)\cdot(x_t-x^*)\leq-2\alpha(f(x_t)-f^*)$ (Section 2's inequality), and the bounded-variance assumption bounds the last term by $\alpha^2G^2$. So $\mathbb E\big[\|x_{t+1}-x^*\|^2\mid x_t\big]\leq\|x_t-x^*\|^2-2\alpha\big(f(x_t)-f^*\big)+\alpha^2G^2$. Taking total expectation, rearranging, and summing over $t=0,\ldots,T-1$ (telescoping): $2\alpha\sum_{t=0}^{T-1}\mathbb E\big[f(x_t)-f^*\big]\leq\|x_0-x^*\|^2-\mathbb E\|x_T-x^*\|^2+T\alpha^2G^2\leq\|x_0-x^*\|^2+T\alpha^2G^2$. By Jensen's inequality (the immediate multi-point generalization, by induction, of the two-point convexity definition in Section 2), $f(\bar x_T)\leq\frac1T\sum_{t=0}^{T-1}f(x_t)$, so $\mathbb E[f(\bar x_T)]-f^*\leq\frac1T\sum_{t=0}^{T-1}\mathbb E[f(x_t)-f^*]\leq\dfrac{\|x_0-x^*\|^2}{2\alpha T}+\dfrac{\alpha G^2}2$. <span class="qed">∎</span>
+            </div>
+            <p>Optimizing $\alpha\propto1/\sqrt T$ balances the two terms and gives rate $O(1/\sqrt T)$ — slower than full-batch GD's $O(1/T)$ (Section 4), the price paid for using a noisy gradient estimate instead of the exact one. The bound does not require the objective to be smooth (only convex), unlike every result in Sections 4–6; this is one reason SGD-family methods remain the default even where full gradients would be affordable.</p>
+
+            <h2 id="momentum">8. Momentum and adaptive methods, more briefly</h2>
+            <p>The methods below are standard and heavily used in practice, but their sharpest convergence results (Nesterov's $O(1/T^2)$ acceleration, adaptive-method regret bounds) require substantially more technical machinery than this note's scope; formulas and the qualitative mechanism are recorded here, without full proof.</p>
+            <div class="note-box">
+                <span class="note-box-label">Momentum</span>
+                <p>Classical: $v_{t+1}=\beta v_t+\alpha\nabla L(\theta_t)$, $\theta_{t+1}=\theta_t-v_{t+1}$ ($\beta\approx0.9$), accumulating a velocity that damps oscillation across narrow (high-curvature) directions while still accelerating along flat ones. <strong>Nesterov's accelerated gradient</strong> evaluates the gradient at the extrapolated point $\theta_t-\beta v_t$ instead, and provably achieves the optimal $O(1/T^2)$ rate for convex $L$-smooth objectives (Nesterov, 1983) — quadratically faster than Section 4's $O(1/T)$, and provably the best possible for any method using only gradient evaluations at points determined by past gradients.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Adaptive methods</span>
+                <p><strong>AdaGrad:</strong> $G_t=G_{t-1}+\nabla L(\theta_t)^{\odot2}$, $\theta_{t+1}=\theta_t-\frac\alpha{\sqrt{G_t+\epsilon}}\odot\nabla L(\theta_t)$ — a per-coordinate learning rate that shrinks for frequently-updated coordinates. <strong>RMSprop</strong> replaces the ever-growing sum $G_t$ with an exponential moving average, preventing the learning rate from decaying to $0$. <strong>Adam</strong> combines an exponential moving average of the gradient itself (momentum) with one of its squared magnitude (RMSprop-style scaling), plus a bias correction for the first few steps: $m_t=\beta_1m_{t-1}+(1-\beta_1)\nabla L(\theta_t)$, $v_t=\beta_2v_{t-1}+(1-\beta_2)\nabla L(\theta_t)^{\odot2}$, $\theta_{t+1}=\theta_t-\alpha\,\hat m_t/(\sqrt{\hat v_t}+\epsilon)$ with $\hat m_t,\hat v_t$ the bias-corrected moments.</p>
             </div>
 
-            <h2>8. Constrained Optimization</h2>
-            <h3>8.1 Lagrange Multipliers</h3>
-            <p>For equality constraints $g(x) = 0$:</p>
-            <div class="math-block">
-                $$\mathcal{L}(x, \lambda) = f(x) + \lambda g(x)$$
+            <h2 id="kkt">9. Constrained optimization: Lagrangian duality and KKT</h2>
+            <p>The <a href="../calculus/multivariable-calculus.html">multivariable calculus note</a> (Section 9) proves, for a single equality constraint in two variables, that $\nabla f(a,b)=\lambda\nabla g(a,b)$ at a constrained extremum. The identical proof — reduce to the constraint set via the Implicit Function Theorem, apply Fermat's theorem along it, and match gradients via the chain rule — generalizes verbatim to $n$ variables and multiple constraints, giving the general <strong>Lagrangian</strong> $\mathcal L(x,\lambda,\mu)=f(x)+\sum_i\lambda_ig_i(x)+\sum_j\mu_jh_j(x)$ for inequality constraints $g_i(x)\leq0$ and equality constraints $h_j(x)=0$.</p>
+            <div class="note-box">
+                <span class="note-box-label">Karush–Kuhn–Tucker (KKT) conditions, stated without proof</span>
+                <p>Under a regularity condition on the constraints (e.g. Slater's condition), $x^*$ is optimal iff there exist $\lambda^*\geq0,\mu^*$ with: <strong>stationarity</strong> $\nabla f(x^*)+\sum_i\lambda_i^*\nabla g_i(x^*)+\sum_j\mu_j^*\nabla h_j(x^*)=0$; <strong>primal feasibility</strong> $g_i(x^*)\leq0$, $h_j(x^*)=0$; <strong>dual feasibility</strong> $\lambda_i^*\geq0$; <strong>complementary slackness</strong> $\lambda_i^*g_i(x^*)=0$.</p>
             </div>
+            <p>Complementary slackness is the qualitatively new ingredient beyond the equality-constraint case: it says each inequality constraint is either exactly active ($g_i(x^*)=0$, "binding") with a nonnegative multiplier, or strictly inactive ($g_i(x^*)&lt;0$) with multiplier exactly $0$ — a constraint that isn't currently limiting the solution exerts no force on it, the same intuition as a physical constraint (e.g. a wall) only pushing back when actually touched. (See Boyd &amp; Vandenberghe, 2004, Ch. 5, for the full derivation via Lagrangian duality.)</p>
 
-            <h3>8.2 KKT Conditions</h3>
-            <p>For inequality constraints $g(x) \leq 0$:</p>
-            <ul>
-                <li>Stationarity: $\nabla f(x^*) + \sum_i \lambda_i \nabla g_i(x^*) = 0$</li>
-                <li>Primal feasibility: $g_i(x^*) \leq 0$</li>
-                <li>Dual feasibility: $\lambda_i \geq 0$</li>
-                <li>Complementary slackness: $\lambda_i g_i(x^*) = 0$</li>
-            </ul>
+            <h2 id="nonconvex">10. Non-convex optimization and saddle points</h2>
+            <p>Deep learning loss landscapes are not convex, so nothing in Sections 2–7 applies rigorously; $\nabla L(\theta)=0$ only guarantees a critical point (Section 1), and the <a href="../calculus/multivariable-calculus.html">multivariable calculus note</a>'s second-derivative test (Section 7.1) is exactly the tool for telling minima, maxima, and saddles apart once such a point is found — $D&lt;0$ there is precisely a saddle, a direction of decrease sitting right next to a direction of increase. High-dimensional loss landscapes are dominated by saddle points rather than poor local minima (empirically and under random-matrix-theoretic models of the Hessian's eigenvalue spectrum — a positive-definite Hessian at a random critical point becomes exponentially rare as dimension grows), which reframes the practical difficulty of deep learning optimization: escaping saddles efficiently, more than avoiding bad local minima. Plain gradient descent provably converges to a strict saddle only for a measure-zero set of initializations (Lee et al., 2016) but can slow to a crawl <em>near</em> one, since $\|\nabla L\|\to0$ there too — the practical motivation behind the momentum and noise-injection techniques of Section 8.</p>
 
-            <h2>9. Optimization for Deep Learning</h2>
-            <h3>9.1 Gradient Clipping</h3>
-            <p>Prevents exploding gradients:</p>
-            <div class="math-block">
-                $$\hat{g} = \begin{cases}
-                g & \text{if } \|g\| \leq \tau \\
-                \frac{\tau}{\|g\|} g & \text{if } \|g\| > \tau
-                \end{cases}$$
-            </div>
+            <h2 id="computation">11. Computation</h2>
+            <p>The figures above are generated by <code>optimization/generate_figures.py</code>. The snippet below reproduces the strongly-convex linear-convergence check (actual value against the proved geometric bound) and the Newton iterates on $f(x)=e^x-x$.</p>
+            <pre><code>import numpy as np
 
-            <h3>9.2 Batch Normalization Impact</h3>
-            <p>Smooths the loss landscape, allowing higher learning rates.</p>
+def gd_on_quadratic(mu, L, x0, n_iters):
+    A = np.diag([mu, L])
+    alpha = 1.0 / L
+    x = np.array(x0, dtype=float)
+    vals = []
+    for _ in range(n_iters):
+        vals.append(0.5 * x @ A @ x)
+        x = x - alpha * (A @ x)
+    return np.array(vals)
 
-            <h3>9.3 Learning Rate Warmup</h3>
-            <p>Gradually increase learning rate at the beginning of training.</p>
+mu, L = 1.0, 10.0
+vals = gd_on_quadratic(mu, L, [1.0, 1.0], 6)
+bound = (1 - mu / L) ** np.arange(6) * vals[0]
+for t in range(6):
+    print(f"t={t}  f(x_t)-f*={vals[t]:.6e}  bound={bound[t]:.6e}  holds={vals[t] &lt;= bound[t]}")
 
-            <h2>10. Non-convex Optimization</h2>
-            <p>Most deep learning problems are non-convex. Key challenges:</p>
-            <ul>
-                <li><strong>Local minima:</strong> May not be global optima</li>
-                <li><strong>Saddle points:</strong> Points where gradient is zero but not optimal</li>
-                <li><strong>Plateau regions:</strong> Flat areas with small gradients</li>
-            </ul>
-
-            <h2>11. Hyperparameter Optimization</h2>
-            <h3>11.1 Grid Search</h3>
-            <p>Exhaustive search over parameter grid.</p>
-
-            <h3>11.2 Random Search</h3>
-            <p>Random sampling from parameter distributions.</p>
-
-            <h3>11.3 Bayesian Optimization</h3>
-            <p>Uses probabilistic model to guide search.</p>
-
-            <h2>12. Code Example</h2>
-            <pre><code># Python implementation of optimization algorithms
-import numpy as np
-import matplotlib.pyplot as plt
-
-class Optimizer:
-    def __init__(self, learning_rate=0.01):
-        self.learning_rate = learning_rate
-    
-    def update(self, params, gradients):
-        raise NotImplementedError
-
-class SGD(Optimizer):
-    def __init__(self, learning_rate=0.01, momentum=0.0):
-        super().__init__(learning_rate)
-        self.momentum = momentum
-        self.velocity = None
-    
-    def update(self, params, gradients):
-        if self.velocity is None:
-            self.velocity = np.zeros_like(params)
-        
-        self.velocity = self.momentum * self.velocity - self.learning_rate * gradients
-        params += self.velocity
-        return params
-
-class Adam(Optimizer):
-    def __init__(self, learning_rate=0.001, beta1=0.9, beta2=0.999, epsilon=1e-8):
-        super().__init__(learning_rate)
-        self.beta1 = beta1
-        self.beta2 = beta2
-        self.epsilon = epsilon
-        self.m = None
-        self.v = None
-        self.t = 0
-    
-    def update(self, params, gradients):
-        if self.m is None:
-            self.m = np.zeros_like(params)
-            self.v = np.zeros_like(params)
-        
-        self.t += 1
-        
-        # Update biased first and second moment estimates
-        self.m = self.beta1 * self.m + (1 - self.beta1) * gradients
-        self.v = self.beta2 * self.v + (1 - self.beta2) * (gradients ** 2)
-        
-        # Bias correction
-        m_hat = self.m / (1 - self.beta1 ** self.t)
-        v_hat = self.v / (1 - self.beta2 ** self.t)
-        
-        # Update parameters
-        params -= self.learning_rate * m_hat / (np.sqrt(v_hat) + self.epsilon)
-        return params
-
-class RMSprop(Optimizer):
-    def __init__(self, learning_rate=0.001, decay_rate=0.9, epsilon=1e-8):
-        super().__init__(learning_rate)
-        self.decay_rate = decay_rate
-        self.epsilon = epsilon
-        self.cache = None
-    
-    def update(self, params, gradients):
-        if self.cache is None:
-            self.cache = np.zeros_like(params)
-        
-        self.cache = self.decay_rate * self.cache + (1 - self.decay_rate) * (gradients ** 2)
-        params -= self.learning_rate * gradients / (np.sqrt(self.cache) + self.epsilon)
-        return params
-
-def rosenbrock(x, y):
-    """Rosenbrock function - classic optimization test function"""
-    return (1 - x)**2 + 100 * (y - x**2)**2
-
-def rosenbrock_gradient(x, y):
-    """Gradient of Rosenbrock function"""
-    dx = -2 * (1 - x) - 400 * x * (y - x**2)
-    dy = 200 * (y - x**2)
-    return np.array([dx, dy])
-
-def optimize_function(optimizer, start_point, num_iterations=1000):
-    """Optimize Rosenbrock function using given optimizer"""
-    point = np.array(start_point, dtype=float)
-    history = [point.copy()]
-    
-    for i in range(num_iterations):
-        grad = rosenbrock_gradient(point[0], point[1])
-        point = optimizer.update(point, grad)
-        history.append(point.copy())
-    
-    return np.array(history)
-
-# Example usage
-if __name__ == "__main__":
-    start_point = [-1.5, 2.0]
-    num_iterations = 1000
-    
-    # Test different optimizers
-    optimizers = {
-        'SGD': SGD(learning_rate=0.001),
-        'SGD with Momentum': SGD(learning_rate=0.001, momentum=0.9),
-        'Adam': Adam(learning_rate=0.01),
-        'RMSprop': RMSprop(learning_rate=0.01)
-    }
-    
-    results = {}
-    for name, optimizer in optimizers.items():
-        # Reset optimizer state
-        optimizer.__init__(**optimizer.__dict__)
-        history = optimize_function(optimizer, start_point, num_iterations)
-        results[name] = history
-        
-        final_point = history[-1]
-        final_value = rosenbrock(final_point[0], final_point[1])
-        print(f"{name}: Final point = ({final_point[0]:.4f}, {final_point[1]:.4f}), "
-              f"Final value = {final_value:.6f}")
-    
-    # Plot optimization paths
-    plt.figure(figsize=(12, 8))
-    
-    # Create contour plot
-    x = np.linspace(-2, 2, 100)
-    y = np.linspace(-1, 3, 100)
-    X, Y = np.meshgrid(x, y)
-    Z = rosenbrock(X, Y)
-    
-    plt.contour(X, Y, Z, levels=np.logspace(-1, 3, 20), cmap='viridis', alpha=0.6)
-    plt.colorbar(label='Function value')
-    
-    # Plot optimization paths
-    colors = ['red', 'blue', 'green', 'orange']
-    for i, (name, history) in enumerate(results.items()):
-        plt.plot(history[:, 0], history[:, 1], colors[i], 
-                label=name, linewidth=2, alpha=0.7)
-        plt.plot(history[0, 0], history[0, 1], 'ko', markersize=8)  # Start
-        plt.plot(history[-1, 0], history[-1, 1], colors[i]+'o', markersize=8)  # End
-    
-    plt.plot(1, 1, 'r*', markersize=15, label='Global minimum')
-    plt.xlabel('x')
-    plt.ylabel('y')
-    plt.title('Optimization Paths on Rosenbrock Function')
-    plt.legend()
-    plt.grid(True, alpha=0.3)
-    plt.show()
+f = lambda x: np.exp(x) - x
+fp = lambda x: np.exp(x) - 1
+fpp = lambda x: np.exp(x)
+x = 1.2
+print()
+for t in range(6):
+    print(f"Newton t={t}  x_t={x:.10f}")
+    x = x - fp(x) / fpp(x)
 </code></pre>
+            <p>Actual output:</p>
+            <pre><code>t=0  f(x_t)-f*=5.500000e+00  bound=5.500000e+00  holds=True
+t=1  f(x_t)-f*=4.050000e-01  bound=4.950000e+00  holds=True
+t=2  f(x_t)-f*=3.280500e-01  bound=4.455000e+00  holds=True
+t=3  f(x_t)-f*=2.657205e-01  bound=4.009500e+00  holds=True
+t=4  f(x_t)-f*=2.152336e-01  bound=3.608550e+00  holds=True
+t=5  f(x_t)-f*=1.743392e-01  bound=3.247695e+00  holds=True
 
-            <h2>13. References</h2>
+Newton t=0  x_t=1.2000000000
+Newton t=1  x_t=0.5011942119
+Newton t=2  x_t=0.1070009778
+Newton t=3  x_t=0.0055257722
+Newton t=4  x_t=0.0000152390
+Newton t=5  x_t=0.0000000001</code></pre>
+            <p>The proved geometric bound holds at every single iteration (as it must), while the actual value drops noticeably faster after the first step — this particular quadratic has $x_0$ aligned so that gradient descent with $\alpha=1/L$ exactly zeros out the steepest ($L$-curvature) eigendirection in one step, leaving only the slower $\mu$-direction to govern the remaining, still-geometric decay. Newton's iterate count matches Section 6's figure: from $x_0=1.2$ it reaches $x_5\approx1.5\times10^{-10}$, doubling correct decimal digits almost exactly every step.</p>
+
+            <h2 id="pitfalls">12. Common pitfalls</h2>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — Newton's method has no global convergence guarantee</span>
+                <p>On the same $f(x)=x-\ln x$ used elsewhere, starting from $x_0=4$ (rather than closer to the minimizer $x^*=1$): the update simplifies exactly to $x_{t+1}=x_t(2-x_t)$, giving $x_1=4(2-4)=-8$ — outside the domain $x&gt;0$ where $\ln x$ is even defined, and the method breaks down immediately. Section 6's quadratic-convergence guarantee is explicitly <em>local</em>; nothing in the theorem bounds behavior far from $x^*$, and in practice Newton's method is often run with a line search or trust region specifically to control this failure mode.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — a valid convergence bound can be loose, and that is not a contradiction</span>
+                <p>Section 11's numbers show the actual optimality gap dropping faster than the proved $(1-\mu/L)^t$ bound at every step. A theorem of the form "$X\leq Y$" is not falsified by observing $X\ll Y$ in a particular instance — it is falsified only by finding $X&gt;Y$. Treating a worst-case bound as a prediction of the typical case is a common misreading of this kind of result.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — $\nabla L(\theta)=0$ does not mean $\theta$ is a good solution</span>
+                <p>Sections 1 and 10: without convexity, a critical point can be a saddle or a poor local minimum. Monitoring $\|\nabla L\|\to0$ during training confirms convergence to <em>a</em> critical point, not to a good one — exactly why validation loss, not training gradient norm, is the metric that actually matters for model quality.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — SGD's unbiasedness assumption can silently fail</span>
+                <p>Section 7's guarantee needs $\mathbb E[g_t\mid x_t]=\nabla f(x_t)$ exactly. Mini-batches drawn without replacement from a shuffled dataset are unbiased only if every example is equally likely to appear in a given batch <em>and</em> batch composition doesn't correlate with $\theta_t$; a subtly non-uniform sampler (e.g. one that oversamples recently-misclassified examples without correcting for it) breaks the hypothesis the proof relies on, and the $O(1/\sqrt T)$ guarantee no longer applies, even though the algorithm still runs and produces numbers.</p>
+            </div>
+
+            <h2 id="connections">13. Connections</h2>
             <ul>
-                <li>Nocedal, J., & Wright, S. J. (2006). <em>Numerical Optimization</em>.</li>
-                <li>Boyd, S., & Vandenberghe, L. (2004). <em>Convex Optimization</em>.</li>
-                <li>Ruder, S. (2016). <em>An overview of gradient descent optimization algorithms</em>. arXiv preprint arXiv:1609.04747.</li>
+                <li><strong><a href="../calculus/differentiation.html">Differentiation</a>.</strong> Fermat's theorem (Section 6 there) is the necessary condition every method in this note searches for; the Fundamental-Theorem-of-Calculus-based proof technique of the descent lemma (Section 3) echoes that note's own reliance on the FTC and Taylor's theorem for quantitative error control.</li>
+                <li><strong><a href="../calculus/multivariable-calculus.html">Multivariable calculus</a>.</strong> The chain rule and the "restrict to a line segment" proof technique (that note's Section 6) are used repeatedly here (Sections 2, 3, 6); Section 9's Lagrange multiplier theorem generalizes directly to this note's KKT conditions (Section 9), and the second-derivative test (that note's Section 7.1) is exactly the tool for classifying the critical points Section 10 discusses.</li>
+                <li><strong><a href="../calculus/integration.html">Integration</a>.</strong> The descent lemma's proof (Section 3) is a direct application of the Fundamental Theorem of Calculus to the one-variable restriction of $f$ along a segment — the same FTC-as-inverse-of-differentiation idea from that note's Section 5, here doing the work of turning a Lipschitz gradient bound into a quantitative quadratic bound on $f$ itself.</li>
+                <li><strong>Neural networks.</strong> The methods proved convergent here (GD, SGD) are exactly the update rules used to train the networks in the <a href="neural-networks.html">neural networks note</a>; that note's backpropagation algorithm is precisely the efficient computation of the gradient $\nabla L(\theta)$ this note assumes is available.</li>
+            </ul>
+
+            <h2 id="references">14. References</h2>
+            <ul>
+                <li>Nocedal, J., &amp; Wright, S. J. (2006). <em>Numerical Optimization</em> (2nd ed.). Springer.</li>
+                <li>Boyd, S., &amp; Vandenberghe, L. (2004). <em>Convex Optimization</em>. Cambridge University Press.</li>
+                <li>Bubeck, S. (2015). <em>Convex Optimization: Algorithms and Complexity</em>. Foundations and Trends in Machine Learning.</li>
+                <li>Nesterov, Y. (1983). A method for solving the convex programming problem with convergence rate $O(1/k^2)$. <em>Doklady AN USSR</em>, 269, 543–547.</li>
+                <li>Lee, J. D., Simchowitz, M., Jordan, M. I., &amp; Recht, B. (2016). Gradient descent converges to minimizers. <em>COLT 2016</em>.</li>
             </ul>
         </section>
     </main>
@@ -370,4 +269,4 @@ if __name__ == "__main__":
         <p>&copy; Diogo Franquinho | Technical Notes</p>
     </footer>
 </body>
-</html> 
+</html>
