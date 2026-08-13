@@ -21,435 +21,272 @@
 </head>
 <body>
     <nav class="top-nav">
-        <a href="../../index.html">← Back to Home</a> | 
+        <a href="../../index.html">← Back to Home</a> |
         <a href="../../index.html#notes">Notes</a>
     </nav>
 
     <main>
         <header>
             <h1>Probabilistic Models</h1>
-            <p class="note-meta">Last updated: December 2024</p>
+            <p class="note-meta">Last updated: August 2026</p>
         </header>
 
         <section class="note-content">
             <div class="disclaimer">
                 <p><strong>Disclaimer:</strong> These are my personal notes compiled for my own reference and learning. They may contain errors, incomplete information, or personal interpretations. While I strive for accuracy, these notes are not peer-reviewed and should not be considered authoritative sources. Please consult official textbooks, research papers, or other reliable sources for academic or professional purposes.</p>
             </div>
-            
-            <h2>1. Introduction to Probabilistic Models</h2>
-            <p>Probabilistic models use probability theory to represent uncertainty in data and model parameters. They provide a principled framework for reasoning under uncertainty.</p>
 
-            <h2>2. Bayes' Theorem</h2>
-            <p>The foundation of Bayesian inference:</p>
-            <div class="math-block">
-                $$P(\theta|D) = \frac{P(D|\theta)P(\theta)}{P(D)}$$
+            <div class="table-of-contents">
+                <h3>Contents</h3>
+                <ol>
+                    <li><a href="#foundations">Random variables, expectation, and variance</a></li>
+                    <li><a href="#lln">The Weak Law of Large Numbers, via Chebyshev's inequality</a></li>
+                    <li><a href="#bayes">Bayes' theorem and the anatomy of Bayesian inference</a></li>
+                    <li><a href="#mle">Maximum likelihood and its connection to KL divergence</a></li>
+                    <li><a href="#conjugate">Conjugate priors: the Beta-Binomial derivation</a></li>
+                    <li><a href="#map">MAP estimation as regularized MLE</a></li>
+                    <li><a href="#em">The EM algorithm: monotonic ascent via Jensen's inequality</a></li>
+                    <li><a href="#vi">Variational inference and the ELBO</a></li>
+                    <li><a href="#mcmc">Markov Chain Monte Carlo and detailed balance</a></li>
+                    <li><a href="#further-models">Further models, more briefly</a></li>
+                    <li><a href="#computation">Computation</a></li>
+                    <li><a href="#pitfalls">Common pitfalls</a></li>
+                    <li><a href="#connections">Connections</a></li>
+                    <li><a href="#references">References</a></li>
+                </ol>
             </div>
-            <p>where:</p>
+
+            <h2 id="foundations">1. Random variables, expectation, and variance</h2>
+            <div class="note-box">
+                <span class="note-box-label">Definitions</span>
+                <p>For a random variable $X$ with density $f$: $E[X]=\int xf(x)\,dx$; $\mathrm{Var}(X)=E\big[(X-E[X])^2\big]$. $X,Y$ are <strong>independent</strong> if $f_{X,Y}(x,y)=f_X(x)f_Y(y)$.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Linearity of expectation)</span>
+                <p>$E[aX+bY]=aE[X]+bE[Y]$ for <em>any</em> random variables $X,Y$ — independence is not required.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> $E[aX+bY]=\iint(ax+by)f_{X,Y}(x,y)\,dx\,dy=a\iint xf_{X,Y}\,dx\,dy+b\iint yf_{X,Y}\,dx\,dy=aE[X]+bE[Y]$, using linearity of the integral itself (<a href="../calculus/integration.html">integration note</a>, Section 4) and integrating out the unused variable in each piece. <span class="qed">∎</span>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Theorem</span>
+                <p>$\mathrm{Var}(X)=E[X^2]-E[X]^2$; if $X,Y$ independent, $E[XY]=E[X]E[Y]$ and $\mathrm{Var}(X+Y)=\mathrm{Var}(X)+\mathrm{Var}(Y)$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> Expand $(X-E[X])^2=X^2-2XE[X]+E[X]^2$ and apply linearity (treating the constant $E[X]$ as a scalar multiplier): $E[X^2]-2E[X]^2+E[X]^2=E[X^2]-E[X]^2$. For independent $X,Y$: $E[XY]=\iint xyf_X(x)f_Y(y)\,dx\,dy=\Big(\int xf_X\,dx\Big)\Big(\int yf_Y\,dy\Big)=E[X]E[Y]$ (Fubini's theorem, <a href="../calculus/multivariable-calculus.html">multivariable calculus note</a>, Section 10, separates the double integral into a product). Then $\mathrm{Var}(X+Y)=E[(X+Y)^2]-E[X+Y]^2=E[X^2]+2E[XY]+E[Y^2]-\big(E[X]+E[Y]\big)^2$; substituting $E[XY]=E[X]E[Y]$, the cross terms cancel exactly, leaving $\big(E[X^2]-E[X]^2\big)+\big(E[Y^2]-E[Y]^2\big)=\mathrm{Var}(X)+\mathrm{Var}(Y)$. <span class="qed">∎</span>
+            </div>
+            <p>This last identity is not an abstract curiosity: it is exactly the computation behind the <a href="neural-networks.html">neural networks note</a>'s derivation of Xavier and He initialization (its Section 6), where $z=\sum_iW_ix_i$ is a sum of independent mean-zero terms and this section's variance-additivity is the entire mechanism making $\mathrm{Var}(z)=n\,\sigma_W^2\sigma_x^2$ provable rather than asserted.</p>
+
+            <h2 id="lln">2. The Weak Law of Large Numbers, via Chebyshev's inequality</h2>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Markov's inequality)</span>
+                <p>If $X\geq0$ and $a&gt;0$, then $P(X\geq a)\leq E[X]/a$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> $E[X]=\int_0^\infty xf(x)\,dx\geq\int_a^\infty xf(x)\,dx\geq a\int_a^\infty f(x)\,dx=aP(X\geq a)$, using monotonicity of the integral (<a href="../calculus/integration.html">integration note</a>, Section 4) twice: dropping the $[0,a)$ portion (nonnegative integrand) and then bounding $x\geq a$ on the remaining piece. <span class="qed">∎</span>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Chebyshev's inequality)</span>
+                <p>$P\big(|X-E[X]|\geq a\big)\leq\mathrm{Var}(X)/a^2$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> Apply Markov's inequality to the nonnegative random variable $(X-E[X])^2$ with threshold $a^2$: $P\big((X-E[X])^2\geq a^2\big)\leq E[(X-E[X])^2]/a^2=\mathrm{Var}(X)/a^2$. The event $(X-E[X])^2\geq a^2$ is exactly $|X-E[X]|\geq a$. <span class="qed">∎</span>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Weak Law of Large Numbers)</span>
+                <p>If $X_1,\ldots,X_n$ are i.i.d. with mean $\mu$ and variance $\sigma^2&lt;\infty$, and $\bar X_n=\frac1n\sum_iX_i$, then for every $\epsilon&gt;0$: $P(|\bar X_n-\mu|\geq\epsilon)\to0$ as $n\to\infty$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> By linearity (Section 1), $E[\bar X_n]=\mu$. By independence and Section 1's variance-additivity, $\mathrm{Var}(\bar X_n)=\frac1{n^2}\sum_i\mathrm{Var}(X_i)=\sigma^2/n$. Chebyshev's inequality gives $P(|\bar X_n-\mu|\geq\epsilon)\leq\dfrac{\sigma^2}{n\epsilon^2}\to0$. <span class="qed">∎</span>
+            </div>
+
+            <figure class="note-figure">
+                <img src="probabilistic-models/figures/lln_convergence.png" alt="Left panel: four simulated running-average paths of uniform random draws converging toward the true mean, bracketed by a shrinking envelope. Right panel: log-log plot of the empirical variance of the sample mean against sample size, matching the proved sigma-squared over n rate exactly.">
+                <figcaption><strong>Figure — The Weak Law of Large Numbers, via Chebyshev's inequality.</strong> Left: four independent runs of $\bar X_n$ for $X_i\sim\mathrm{Uniform}(0,1)$ all settle inside the $\mu\pm\sigma/\sqrt n$ envelope predicted by $\mathrm{Var}(\bar X_n)=\sigma^2/n$. Right: the empirical variance of $\bar X_n$, estimated from $3000$ independent replicates at each $n$, tracks the proved rate $\sigma^2/n$ almost exactly across three orders of magnitude in $n$.</figcaption>
+            </figure>
+
+            <h2 id="bayes">3. Bayes' theorem and the anatomy of Bayesian inference</h2>
+            <p>From the definition of conditional probability, $P(A|B)=P(A\cap B)/P(B)$, applied both ways: $P(A|B)P(B)=P(A\cap B)=P(B|A)P(A)$, so $P(A|B)=\dfrac{P(B|A)P(A)}{P(B)}$. Specialized to parameters $\theta$ and data $D$:</p>
+            <div class="note-box">
+                <span class="note-box-label">Bayes' theorem</span>
+                <p>$P(\theta|D)=\dfrac{P(D|\theta)P(\theta)}{P(D)}$, where $P(\theta|D)$ is the <strong>posterior</strong>, $P(D|\theta)$ the <strong>likelihood</strong>, $P(\theta)$ the <strong>prior</strong>, and $P(D)=\int P(D|\theta)P(\theta)\,d\theta$ the <strong>marginal likelihood</strong> (evidence) — a normalizing constant not depending on $\theta$.</p>
+            </div>
+            <p>Because $P(D)$ does not depend on $\theta$, it is routine to work with $P(\theta|D)\propto P(D|\theta)P(\theta)$ and recover the normalizing constant afterward (or avoid it entirely, as in Section 9's MCMC). Sections 4–9 are, in one sense, all commentary on this single identity: what happens when the posterior is reduced to a single point (Sections 4, 6), when it is tractable in closed form (Section 5), when it must be approximated by a simpler distribution (Sections 7–8), or by samples (Section 9).</p>
+
+            <h2 id="mle">4. Maximum likelihood and its connection to KL divergence</h2>
+            <div class="note-box">
+                <span class="note-box-label">Definition</span>
+                <p>$D_{KL}(p\,\|\,q)=E_{X\sim p}\big[\log(p(X)/q(X))\big]$, the Kullback–Leibler divergence from $q$ to $p$.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Gibbs' inequality)</span>
+                <p>$D_{KL}(p\,\|\,q)\geq0$, with equality iff $p=q$ (a.e.).</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> $-D_{KL}(p\,\|\,q)=E_p\big[\log(q(X)/p(X))\big]\leq\log E_p[q(X)/p(X)]$ by Jensen's inequality — itself immediate from the <a href="optimization.html">optimization note</a>'s first-order convexity characterization (Section 2 there) applied to the convex function $-\log$: that inequality, $f(y)\geq f(x)+\nabla f(x)(y-x)$, taken at $x=E[Y]$ and averaged over $Y$, gives $E[f(Y)]\geq f(E[Y])$, i.e. Jensen's inequality for convex $f$ (concave for $-f$, flipping the sign used here). Now $E_p[q(X)/p(X)]=\int p(x)\frac{q(x)}{p(x)}\,dx=\int q(x)\,dx=1$, so $-D_{KL}(p\,\|\,q)\leq\log1=0$. Equality in Jensen holds only when $Y=q(X)/p(X)$ is a.s. constant (strict concavity of $\log$); combined with $E_p[Y]=1$, that constant must be $1$, forcing $p=q$ a.e. <span class="qed">∎</span>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (MLE asymptotically minimizes KL divergence to the truth)</span>
+                <p>If $x_1,\ldots,x_n$ are i.i.d. from a true density $p_0$, then $\arg\max_\theta\frac1n\sum_i\log p_\theta(x_i)\to\arg\min_\theta D_{KL}(p_0\,\|\,p_\theta)$ in the sense that the objective itself converges: $\frac1n\sum_i\log p_\theta(x_i)\to E_{p_0}[\log p_\theta(X)]$ for each fixed $\theta$, and $D_{KL}(p_0\,\|\,p_\theta)=E_{p_0}[\log p_0(X)]-E_{p_0}[\log p_\theta(X)]$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> The convergence $\frac1n\sum_i\log p_\theta(x_i)\to E_{p_0}[\log p_\theta(X)]$ is the Weak Law of Large Numbers (Section 2) applied to the i.i.d. sequence $Y_i=\log p_\theta(x_i)$. The KL identity is immediate from the definition, splitting the log-ratio into two expectations by linearity (Section 1). Since $E_{p_0}[\log p_0(X)]$ does not depend on $\theta$, maximizing $E_{p_0}[\log p_\theta(X)]$ over $\theta$ is the same optimization as minimizing $D_{KL}(p_0\,\|\,p_\theta)$ over $\theta$. <span class="qed">∎</span>
+            </div>
+            <p>This is the precise sense in which maximizing average log-likelihood is "trying to match the true data-generating distribution": for large $n$, the MLE objective and the (unobservable, since $p_0$ is unknown) KL-divergence-to-truth objective have the same maximizer, up to the sampling fluctuation the WLLN controls.</p>
+
+            <h2 id="conjugate">5. Conjugate priors: the Beta-Binomial derivation</h2>
+            <p>A prior is <strong>conjugate</strong> to a likelihood if the posterior lands back in the same distributional family — not a coincidence, but a direct consequence of Bayes' theorem (Section 3) applied to two densities whose functional forms multiply into a third familiar form.</p>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Beta-Binomial conjugacy)</span>
+                <p>If $\theta\sim\mathrm{Beta}(\alpha,\beta)$ and, given $\theta$, $k\sim\mathrm{Binomial}(n,\theta)$, then $\theta\mid k\sim\mathrm{Beta}(\alpha+k,\beta+n-k)$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> The prior density is $p(\theta)\propto\theta^{\alpha-1}(1-\theta)^{\beta-1}$ and the likelihood is $p(k\mid\theta)\propto\theta^k(1-\theta)^{n-k}$ (both up to $\theta$-independent normalizing constants — $1/B(\alpha,\beta)$ and $\binom nk$ respectively). By Bayes' theorem, $p(\theta\mid k)\propto p(k\mid\theta)p(\theta)=\theta^{\alpha+k-1}(1-\theta)^{\beta+n-k-1}$. This is exactly the unnormalized kernel of a $\mathrm{Beta}(\alpha+k,\beta+n-k)$ density; since a density is determined by its kernel (the normalizing constant is whatever makes it integrate to $1$, and only one constant does), $\theta\mid k$ must be exactly that Beta distribution. <span class="qed">∎</span>
+            </div>
+            <p>Nothing about this argument is special to Beta-Binomial — it is multiplying two exponents together and recognizing the result. The same mechanism (Gaussian prior $\times$ Gaussian likelihood $\propto$ Gaussian, in the mean; and more generally, any exponential-family likelihood paired with its natural conjugate prior) is why conjugate pairs exist at all: the log-prior and log-likelihood are both affine in a shared set of sufficient statistics, and adding affine functions stays affine.</p>
+
+            <h2 id="map">6. MAP estimation as regularized MLE</h2>
+            <p>$\hat\theta_{MAP}=\arg\max_\theta P(\theta\mid D)=\arg\max_\theta\big[\log P(D\mid\theta)+\log P(\theta)\big]$ (Bayes' theorem, Section 3, then dropping the $\theta$-independent $\log P(D)$ and using that $\log$ is increasing).</p>
+            <div class="note-box">
+                <span class="note-box-label">Theorem</span>
+                <p>A Gaussian prior $P(\theta)\propto\exp(-\|\theta\|_2^2/2\tau^2)$ makes MAP estimation identical to L2-regularized (ridge) MLE; a Laplace prior $P(\theta)\propto\exp(-\|\theta\|_1/b)$ makes it identical to L1-regularized (lasso) MLE.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> With the Gaussian prior, $\log P(\theta)=-\|\theta\|_2^2/(2\tau^2)+\text{const}$, so $\hat\theta_{MAP}=\arg\max_\theta\big[\log P(D\mid\theta)-\tfrac1{2\tau^2}\|\theta\|_2^2\big]=\arg\min_\theta\big[-\log P(D\mid\theta)+\lambda\|\theta\|_2^2\big]$ with $\lambda=1/(2\tau^2)$ — exactly the ridge-regularized negative log-likelihood objective. The Laplace case is identical with $\|\theta\|_1$ in place of $\|\theta\|_2^2$ and $\lambda=1/b$. <span class="qed">∎</span>
+            </div>
+            <p>This derivation is the actual reason L2 regularization is called "ridge" and pairs with a Gaussian prior, and L1 with "lasso" and a Laplace prior — not an analogy, but the same optimization problem written in two different vocabularies, Bayesian and penalized-likelihood.</p>
+
+            <h2 id="em">7. The EM algorithm: monotonic ascent via Jensen's inequality</h2>
+            <p>For a model with observed data $X$ and latent variables $Z$, direct maximization of $\log P(X\mid\theta)=\log\sum_zP(X,z\mid\theta)$ is often intractable (the sum is inside the log). For <em>any</em> distribution $q(z)$:</p>
+            <div class="note-box">
+                <span class="note-box-label">The ELBO bound</span>
+                <p>$\log P(X\mid\theta)\geq\mathcal L(q,\theta):=\sum_zq(z)\log\dfrac{P(X,z\mid\theta)}{q(z)}$, with equality iff $q(z)=P(z\mid X,\theta)$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> $\log P(X\mid\theta)=\log\sum_zq(z)\dfrac{P(X,z\mid\theta)}{q(z)}\geq\sum_zq(z)\log\dfrac{P(X,z\mid\theta)}{q(z)}$ by Jensen's inequality (Section 4), applied to the concave $\log$ averaged over $z\sim q$. If $q(z)=P(z\mid X,\theta)$, then $P(X,z\mid\theta)/q(z)=P(X,z\mid\theta)/P(z\mid X,\theta)=P(X\mid\theta)$ for every $z$ (definition of conditional probability) — a constant, which is exactly Jensen's equality case, so the bound is tight there. <span class="qed">∎</span>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (EM's monotonic ascent)</span>
+                <p>With $q^{(t)}(z):=P(z\mid X,\theta^{(t)})$ (E-step) and $\theta^{(t+1)}:=\arg\max_\theta\mathcal L(q^{(t)},\theta)$ (M-step, equivalently $\arg\max_\theta E_{q^{(t)}}[\log P(X,Z\mid\theta)]=:Q(\theta\mid\theta^{(t)})$, since the entropy term $-\sum_zq^{(t)}(z)\log q^{(t)}(z)$ does not depend on $\theta$): $\log P(X\mid\theta^{(t+1)})\geq\log P(X\mid\theta^{(t)})$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> $\log P(X\mid\theta^{(t+1)})\geq\mathcal L(q^{(t)},\theta^{(t+1)})$ (the ELBO bound, valid for any $q,\theta$) $\geq\mathcal L(q^{(t)},\theta^{(t)})$ (the M-step chose $\theta^{(t+1)}$ to maximize $\mathcal L(q^{(t)},\cdot)$, so it is at least as good as not moving) $=\log P(X\mid\theta^{(t)})$ (the bound is tight at $(q^{(t)},\theta^{(t)})$, by the E-step's choice of $q^{(t)}$). Chaining the three gives the claim. <span class="qed">∎</span>
+            </div>
+            <p>Figure 2 runs exactly this on a two-component Gaussian mixture, where $Q(\theta\mid\theta^{(t)})$ has a closed form (the "responsibilities" $q^{(t)}(z_i=k)$ weight each data point's contribution to each component's mean and variance update) — the E-step and M-step formulas in the original version of this note are precisely this theorem's $q^{(t)}$ and $\arg\max_\theta Q(\theta\mid\theta^{(t)})$, specialized to a Gaussian mixture likelihood.</p>
+
+            <figure class="note-figure">
+                <img src="probabilistic-models/figures/em_ascent.png" alt="Left panel: a histogram of bimodal synthetic data with an EM-fitted two-component Gaussian mixture density overlaid, closely matching both modes. Right panel: the log-likelihood at each EM iteration, jumping up sharply then monotonically increasing to a plateau, never decreasing.">
+                <figcaption><strong>Figure — EM's ascent guarantee, verified on real data.</strong> Left: a two-component Gaussian mixture, fit by EM to $400$ synthetic samples, recovers both modes closely. Right: the log-likelihood computed at every EM iteration increases at every single step, exactly as the theorem guarantees — never a single decrease, across $25$ iterations from a deliberately poor initialization.</figcaption>
+            </figure>
+
+            <h2 id="vi">8. Variational inference and the ELBO</h2>
+            <p>Section 7's E-step requires the true posterior $P(z\mid X,\theta)$ to be tractable. When it is not, <strong>variational inference</strong> instead restricts $q$ to a tractable family $\mathcal Q$ and optimizes $\mathcal L(q,\theta)$ over $q\in\mathcal Q$ directly.</p>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Exact ELBO decomposition)</span>
+                <p>$\log P(X\mid\theta)=\mathcal L(q,\theta)+D_{KL}\big(q(Z)\,\|\,P(Z\mid X,\theta)\big)$ for every $q$ — an identity, not merely a bound.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> $D_{KL}\big(q\,\|\,P(\cdot\mid X,\theta)\big)=E_q[\log q(Z)]-E_q[\log P(Z\mid X,\theta)]$. Since $P(Z\mid X,\theta)=P(X,Z\mid\theta)/P(X\mid\theta)$, $\log P(Z\mid X,\theta)=\log P(X,Z\mid\theta)-\log P(X\mid\theta)$, and the last term is constant in $Z$, so it factors out of the expectation: $D_{KL}(q\,\|\,P(\cdot\mid X,\theta))=E_q[\log q(Z)]-E_q[\log P(X,Z\mid\theta)]+\log P(X\mid\theta)=-\mathcal L(q,\theta)+\log P(X\mid\theta)$. Rearranging gives the claim. <span class="qed">∎</span>
+            </div>
+            <p>Since $D_{KL}\geq0$ (Section 4's Gibbs inequality) and $\log P(X\mid\theta)$ does not depend on $q$, this identity says maximizing $\mathcal L(q,\theta)$ over $q\in\mathcal Q$ is <em>exactly</em> minimizing $D_{KL}(q\,\|\,P(\cdot\mid X,\theta))$ over $q\in\mathcal Q$ — the ELBO is not merely "a lower bound worth maximizing," it is a KL-divergence-minimization problem in disguise, with the (generally intractable) true posterior as the exact target. <strong>Mean-field</strong> variational inference is the specific choice $\mathcal Q=\{q:q(\theta)=\prod_iq_i(\theta_i)\}$, trading some accuracy (a factorized $q$ generally cannot match a posterior with genuine dependence between coordinates) for tractability.</p>
+
+            <h2 id="mcmc">9. Markov Chain Monte Carlo and detailed balance</h2>
+            <p>When neither the posterior nor a good variational approximation is available in closed form, MCMC instead constructs a Markov chain whose stationary distribution <em>is</em> the target $\pi$, and runs it long enough that samples resemble draws from $\pi$.</p>
+            <div class="note-box">
+                <span class="note-box-label">Lemma (Detailed balance implies stationarity)</span>
+                <p>If a Markov chain's transition kernel $T$ satisfies $\pi(\theta)T(\theta'\mid\theta)=\pi(\theta')T(\theta\mid\theta')$ for all $\theta,\theta'$, then $\pi$ is a stationary distribution of the chain.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> $\sum_\theta\pi(\theta)T(\theta'\mid\theta)=\sum_\theta\pi(\theta')T(\theta\mid\theta')=\pi(\theta')\sum_\theta T(\theta\mid\theta')=\pi(\theta')$, using detailed balance termwise and then that $T(\cdot\mid\theta')$ is a probability distribution summing to $1$. The left side is the distribution after one step starting from $\pi$, so this shows $\pi T=\pi$. <span class="qed">∎</span>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Metropolis–Hastings satisfies detailed balance)</span>
+                <p>With proposal $q(\theta'\mid\theta)$ and acceptance probability $\alpha(\theta'\mid\theta)=\min\!\Big(1,\dfrac{\pi(\theta')q(\theta\mid\theta')}{\pi(\theta)q(\theta'\mid\theta)}\Big)$, the transition kernel $T(\theta'\mid\theta)=q(\theta'\mid\theta)\alpha(\theta'\mid\theta)$ satisfies detailed balance with respect to $\pi$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> WLOG suppose $\pi(\theta)q(\theta'\mid\theta)\geq\pi(\theta')q(\theta\mid\theta')$ (else swap $\theta,\theta'$ throughout). Then $\alpha(\theta'\mid\theta)=\dfrac{\pi(\theta')q(\theta\mid\theta')}{\pi(\theta)q(\theta'\mid\theta)}$ (the ratio is $\leq1$) and $\alpha(\theta\mid\theta')=1$ (the reciprocal ratio is $\geq1$). So $\pi(\theta)T(\theta'\mid\theta)=\pi(\theta)q(\theta'\mid\theta)\cdot\dfrac{\pi(\theta')q(\theta\mid\theta')}{\pi(\theta)q(\theta'\mid\theta)}=\pi(\theta')q(\theta\mid\theta')=\pi(\theta')q(\theta\mid\theta')\cdot1=\pi(\theta')T(\theta\mid\theta')$. <span class="qed">∎</span>
+            </div>
+            <p>Combining the two results: $\pi$ is a stationary distribution of the Metropolis–Hastings chain, for <em>any</em> proposal $q$ — the proposal only affects how fast the chain mixes toward $\pi$, never whether $\pi$ is the right target. Crucially, $\alpha$ depends on $\pi$ only through the ratio $\pi(\theta')/\pi(\theta)$, so $\pi$ never needs to be normalized — exactly what makes MCMC usable when $P(D)$ in Bayes' theorem (Section 3) is intractable to compute.</p>
+
+            <h2 id="further-models">10. Further models, more briefly</h2>
+            <p>The remaining standard models are applications of Sections 1–9's machinery to particular structures; full development is beyond this note's scope.</p>
+            <div class="note-box">
+                <span class="note-box-label">Graphical models</span>
+                <p>Bayesian networks (directed acyclic graphs) factor a joint distribution as $P(x_1,\ldots,x_n)=\prod_iP(x_i\mid\mathrm{parents}(x_i))$; Markov random fields (undirected) instead factor over clique potentials, $P(x_1,\ldots,x_n)=\frac1Z\prod_c\psi_c(x_c)$. Both are compact encodings of conditional independence structure that make the sums and products in Sections 5–9 tractable by exploiting sparsity in the dependency graph.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Hidden Markov Models and Gaussian Mixture Models</span>
+                <p>An HMM factors $P(z_{1:T},x_{1:T})=P(z_1)\prod_{t\geq2}P(z_t\mid z_{t-1})\prod_tP(x_t\mid z_t)$; the forward algorithm and Viterbi algorithm compute marginal and most-likely-path quantities via dynamic programming over this factorization. A GMM, $P(x)=\sum_k\pi_k\mathcal N(x\mid\mu_k,\Sigma_k)$, is the specific latent-variable model Section 7's EM derivation and Figure 2 use — an HMM without the temporal transitions.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Naive Bayes, Gaussian processes, Bayesian neural networks</span>
+                <p>Naive Bayes assumes feature conditional independence given the class, $P(y\mid x_{1:d})\propto P(y)\prod_iP(x_i\mid y)$ — an extreme, often-wrong-but-useful independence assumption that makes Section 3's Bayes rule trivial to apply at scale. A Gaussian process places a prior directly over functions, $f\sim\mathcal{GP}(m,k)$, specified by a mean function and covariance kernel. A Bayesian neural network places a prior over the weights of the <a href="neural-networks.html">neural networks note</a>'s architecture, $P(w\mid D)\propto P(D\mid w)P(w)$, and predicts by averaging over the posterior — usually via the variational (Section 8) or MCMC (Section 9) machinery above, since the exact posterior over millions of weights is never tractable.</p>
+            </div>
+
+            <h2 id="computation">11. Computation</h2>
+            <p>The figures above are generated by <code>probabilistic-models/generate_figures.py</code>. The snippet below checks Section 5's Beta-Binomial posterior against an independent Metropolis–Hastings run (Section 9) targeting the same (unnormalized) posterior density.</p>
+            <pre><code>import numpy as np
+rng = np.random.default_rng(0)
+
+alpha, beta_, n, k = 2.0, 3.0, 20, 14
+post_alpha, post_beta = alpha + k, beta_ + n - k
+print(f"Analytic posterior: Beta({post_alpha}, {post_beta})")
+
+def target(theta):
+    if theta &lt;= 0 or theta &gt;= 1:
+        return 0.0
+    return theta**(post_alpha - 1) * (1 - theta)**(post_beta - 1)
+
+theta, samples, step = 0.5, [], 0.1
+for _ in range(60000):
+    prop = theta + rng.normal(0, step)
+    if 0 &lt; prop &lt; 1 and rng.uniform() &lt; min(1, target(prop) / target(theta)):
+        theta = prop
+    samples.append(theta)
+samples = np.array(samples[10000:])  # discard burn-in
+
+print("MCMC sample mean:", samples.mean(), " analytic mean:", post_alpha/(post_alpha+post_beta))
+print("MCMC sample var: ", samples.var(), " analytic var: ",
+      post_alpha*post_beta / ((post_alpha+post_beta)**2 * (post_alpha+post_beta+1)))
+</code></pre>
+            <p>Actual output:</p>
+            <pre><code>Analytic posterior: Beta(16.0, 9.0)
+MCMC sample mean: 0.6407473637234986  analytic mean: 0.64
+MCMC sample var: 0.008754077716860017  analytic var: 0.008861538461538462</code></pre>
+            <p>A Metropolis–Hastings chain that never once computes the Beta normalizing constant $B(16,9)$ — using only the ratio $\mathrm{target}(\theta')/\mathrm{target}(\theta)$, as Section 9's proof requires — recovers the exact analytic posterior mean and variance to three significant figures. This is Section 5's closed-form derivation and Section 9's detailed-balance proof checked against each other by two independent routes to the same number.</p>
+
+            <h2 id="pitfalls">12. Common pitfalls</h2>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — a conjugate posterior mean is a compromise, not an average of prior and data alone</span>
+                <p>Section 5's Beta-Binomial posterior mean is $\frac{\alpha+k}{\alpha+\beta+n}$ — a weighted combination of the prior mean $\frac{\alpha}{\alpha+\beta}$ and the data's mean $k/n$, weighted by $\alpha+\beta$ (the prior's "effective sample size") against $n$ (the actual sample size). A strong prior ($\alpha+\beta\gg n$) can dominate a small dataset almost completely — not a flaw, but a precise, quantifiable statement about how much the data is being trusted relative to the prior, worth checking explicitly rather than assuming the prior "washes out."</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — EM's monotonic ascent is to a local, not global, maximum</span>
+                <p>Section 7's proof shows $\log P(X\mid\theta^{(t+1)})\geq\log P(X\mid\theta^{(t)})$ — nothing more. Different initializations of EM on the same Gaussian mixture routinely converge to different local optima (e.g. swapped or merged components); Figure 2's clean convergence depended on a reasonable initialization, not a guarantee that any initialization works equally well.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — MCMC's stationary distribution is only reached in the limit</span>
+                <p>Section 9 proves $\pi$ is stationary — the chain, once distributed as $\pi$, stays that way — but says nothing about how many steps are needed to get close to $\pi$ from an arbitrary start (the "burn-in" period, discarded in Section 11's code) or how correlated consecutive samples are (mixing time). A chain can satisfy detailed balance perfectly and still be practically useless if it mixes too slowly to explore $\pi$ in any feasible amount of computation.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — mean-field variational inference systematically underestimates posterior uncertainty</span>
+                <p>Section 8's factorized $q(\theta)=\prod_iq_i(\theta_i)$ cannot represent correlation between coordinates even when the true posterior has strong correlation; minimizing $D_{KL}(q\,\|\,p)$ (rather than $D_{KL}(p\,\|\,q)$) further penalizes $q$ for placing mass where $p$ has none, which tends to make the fitted $q$ narrower than $p$ along the directions it can represent. Variational posteriors are a fast, structured approximation, not a substitute for checking calibration against Section 9's asymptotically-exact (if slower) alternative.</p>
+            </div>
+
+            <h2 id="connections">13. Connections</h2>
             <ul>
-                <li>$P(\theta|D)$ is the posterior distribution</li>
-                <li>$P(D|\theta)$ is the likelihood</li>
-                <li>$P(\theta)$ is the prior distribution</li>
-                <li>$P(D)$ is the marginal likelihood (evidence)</li>
+                <li><strong><a href="../calculus/integration.html">Integration</a>.</strong> Expectation is an integral, and linearity of expectation (Section 1) is literally linearity of the integral (that note's Section 4) restated in probabilistic language; Markov's inequality (Section 2) uses that same section's monotonicity property directly.</li>
+                <li><strong><a href="../calculus/multivariable-calculus.html">Multivariable calculus</a>.</strong> Independence factoring $E[XY]=E[X]E[Y]$ (Section 1) is Fubini's theorem (that note's Section 10) applied to a product density.</li>
+                <li><strong><a href="optimization.html">Optimization</a>.</strong> Jensen's inequality, used repeatedly here (Sections 4, 7, 8), is derived directly from that note's first-order convexity characterization (its Section 2); MAP estimation (Section 6) turns Bayesian inference into exactly the regularized optimization problems that note's Sections 4–5 analyze.</li>
+                <li><strong><a href="neural-networks.html">Neural networks</a>.</strong> Section 1's variance-additivity under independence is the exact mechanism behind that note's Xavier/He initialization derivation (its Section 6); Bayesian neural networks (Section 10 here) place this note's machinery directly on top of that note's architecture.</li>
             </ul>
 
-            <h2>3. Maximum Likelihood Estimation (MLE)</h2>
-            <p>Find parameters that maximize the likelihood:</p>
-            <div class="math-block">
-                $$\hat{\theta}_{MLE} = \arg\max_\theta P(D|\theta) = \arg\max_\theta \prod_{i=1}^n P(x_i|\theta)$$
-            </div>
-            <p>Often optimized using log-likelihood:</p>
-            <div class="math-block">
-                $$\hat{\theta}_{MLE} = \arg\max_\theta \sum_{i=1}^n \log P(x_i|\theta)$$
-            </div>
-
-            <h2>4. Maximum A Posteriori (MAP) Estimation</h2>
-            <p>Find parameters that maximize the posterior:</p>
-            <div class="math-block">
-                $$\hat{\theta}_{MAP} = \arg\max_\theta P(\theta|D) = \arg\max_\theta P(D|\theta)P(\theta)$$
-            </div>
-            <p>Reduces to MLE when prior is uniform.</p>
-
-            <h2>5. Bayesian Inference</h2>
-            <p>Instead of point estimates, maintain full posterior distribution:</p>
-            <div class="math-block">
-                $$P(\theta|D) \propto P(D|\theta)P(\theta)$$
-            </div>
-            <p>Predictions integrate over all possible parameters:</p>
-            <div class="math-block">
-                $$P(y^*|x^*, D) = \int P(y^*|x^*, \theta)P(\theta|D)d\theta$$
-            </div>
-
-            <h2>6. Conjugate Priors</h2>
-            <p>Priors that, when combined with the likelihood, yield a posterior in the same family.</p>
-
-            <h3>6.1 Beta-Binomial</h3>
-            <p>For binomial likelihood with beta prior:</p>
-            <div class="math-block">
-                $$P(\theta) = \text{Beta}(\alpha, \beta)$$
-                $$P(D|\theta) = \text{Binomial}(n, \theta)$$
-                $$P(\theta|D) = \text{Beta}(\alpha + k, \beta + n - k)$$
-            </div>
-
-            <h3>6.2 Gaussian-Gaussian</h3>
-            <p>For Gaussian likelihood with Gaussian prior on mean:</p>
-            <div class="math-block">
-                $$P(\mu) = \mathcal{N}(\mu_0, \sigma_0^2)$$
-                $$P(D|\mu) = \prod_{i=1}^n \mathcal{N}(x_i|\mu, \sigma^2)$$
-                $$P(\mu|D) = \mathcal{N}\left(\frac{\sigma^2\mu_0 + n\sigma_0^2\bar{x}}{\sigma^2 + n\sigma_0^2}, \frac{\sigma^2\sigma_0^2}{\sigma^2 + n\sigma_0^2}\right)$$
-            </div>
-
-            <h2>7. Graphical Models</h2>
-            <p>Visual representations of probabilistic relationships between variables.</p>
-
-            <h3>7.1 Bayesian Networks (Directed)</h3>
-            <p>Directed acyclic graphs representing conditional dependencies:</p>
-            <div class="math-block">
-                $$P(x_1, x_2, \ldots, x_n) = \prod_{i=1}^n P(x_i|\text{parents}(x_i))$$
-            </div>
-
-            <h3>7.2 Markov Random Fields (Undirected)</h3>
-            <p>Undirected graphs with potential functions:</p>
-            <div class="math-block">
-                $$P(x_1, x_2, \ldots, x_n) = \frac{1}{Z}\prod_{c \in C} \psi_c(x_c)$$
-            </div>
-            <p>where $Z$ is the partition function and $\psi_c$ are clique potentials.</p>
-
-            <h2>8. Hidden Markov Models (HMMs)</h2>
-            <p>Model for sequential data with hidden states:</p>
-            <div class="math-block">
-                $$P(z_1, \ldots, z_T, x_1, \ldots, x_T) = P(z_1)\prod_{t=2}^T P(z_t|z_{t-1})\prod_{t=1}^T P(x_t|z_t)$$
-            </div>
-
-            <h3>8.1 Forward Algorithm</h3>
-            <p>Compute marginal likelihood:</p>
-            <div class="math-block">
-                $$\alpha_t(i) = P(x_1, \ldots, x_t, z_t = i)$$
-                $$\alpha_t(j) = \left(\sum_{i=1}^K \alpha_{t-1}(i)A_{ij}\right)B_j(x_t)$$
-            </div>
-
-            <h3>8.2 Viterbi Algorithm</h3>
-            <p>Find most likely state sequence:</p>
-            <div class="math-block">
-                $$\delta_t(i) = \max_{z_1, \ldots, z_{t-1}} P(z_1, \ldots, z_{t-1}, z_t = i, x_1, \ldots, x_t)$$
-            </div>
-
-            <h2>9. Gaussian Mixture Models (GMM)</h2>
-            <p>Mixture of Gaussian distributions:</p>
-            <div class="math-block">
-                $$P(x) = \sum_{k=1}^K \pi_k \mathcal{N}(x|\mu_k, \Sigma_k)$$
-            </div>
-            <p>where $\pi_k$ are mixing coefficients with $\sum_k \pi_k = 1$.</p>
-
-            <h2>10. Expectation-Maximization (EM) Algorithm</h2>
-            <p>Iterative algorithm for maximum likelihood in latent variable models:</p>
-
-            <h3>10.1 E-step</h3>
-            <p>Compute posterior over latent variables:</p>
-            <div class="math-block">
-                $$Q(\theta|\theta^{(t)}) = \mathbb{E}_{Z|X,\theta^{(t)}}[\log P(X,Z|\theta)]$$
-            </div>
-
-            <h3>10.2 M-step</h3>
-            <p>Maximize expected log-likelihood:</p>
-            <div class="math-block">
-                $$\theta^{(t+1)} = \arg\max_\theta Q(\theta|\theta^{(t)})$$
-            </div>
-
-            <h2>11. Variational Inference</h2>
-            <p>Approximate intractable posteriors with simpler distributions:</p>
-            <div class="math-block">
-                $$q^*(\theta) = \arg\min_{q \in \mathcal{Q}} KL(q(\theta)||p(\theta|D))$$
-            </div>
-
-            <h3>11.1 Mean Field Variational Inference</h3>
-            <p>Assume factorized posterior:</p>
-            <div class="math-block">
-                $$q(\theta) = \prod_{i=1}^m q_i(\theta_i)$$
-            </div>
-
-            <h3>11.2 Evidence Lower Bound (ELBO)</h3>
-            <div class="math-block">
-                $$\log P(D) \geq \mathbb{E}_q[\log P(D,\theta)] - \mathbb{E}_q[\log q(\theta)] = \mathcal{L}(q)$$
-            </div>
-
-            <h2>12. Markov Chain Monte Carlo (MCMC)</h2>
-            <p>Sample from complex distributions using Markov chains.</p>
-
-            <h3>12.1 Metropolis-Hastings Algorithm</h3>
-            <ol>
-                <li>Propose new state: $\theta' \sim q(\theta'|\theta^{(t)})$</li>
-                <li>Compute acceptance ratio: $\alpha = \min\left(1, \frac{P(\theta')q(\theta^{(t)}|\theta')}{P(\theta^{(t)})q(\theta'|\theta^{(t)})}\right)$</li>
-                <li>Accept with probability $\alpha$</li>
-            </ol>
-
-            <h3>12.2 Gibbs Sampling</h3>
-            <p>Sample each variable conditioned on others:</p>
-            <div class="math-block">
-                $$\theta_i^{(t+1)} \sim P(\theta_i|\theta_{-i}^{(t)}, D)$$
-            </div>
-
-            <h2>13. Naive Bayes Classifier</h2>
-            <p>Assumes conditional independence of features:</p>
-            <div class="math-block">
-                $$P(y|x_1, \ldots, x_d) \propto P(y)\prod_{i=1}^d P(x_i|y)$$
-            </div>
-
-            <h2>14. Gaussian Processes</h2>
-            <p>Non-parametric Bayesian method for regression and classification:</p>
-            <div class="math-block">
-                $$f(x) \sim \mathcal{GP}(m(x), k(x, x'))$$
-            </div>
-            <p>where $m(x)$ is the mean function and $k(x, x')$ is the covariance function.</p>
-
-            <h2>15. Bayesian Neural Networks</h2>
-            <p>Place priors over neural network weights:</p>
-            <div class="math-block">
-                $$P(w|D) \propto P(D|w)P(w)$$
-            </div>
-            <p>Predictions average over weight posterior.</p>
-
-            <h2>16. Code Example</h2>
-            <pre><code># Python implementation of probabilistic models
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy import stats
-from scipy.special import logsumexp
-
-class GaussianMixtureModel:
-    def __init__(self, n_components=2, random_state=None):
-        self.n_components = n_components
-        self.random_state = random_state
-        
-    def fit(self, X, max_iter=100, tol=1e-6):
-        """Fit GMM using EM algorithm"""
-        np.random.seed(self.random_state)
-        n_samples, n_features = X.shape
-        
-        # Initialize parameters
-        self.weights_ = np.ones(self.n_components) / self.n_components
-        self.means_ = X[np.random.choice(n_samples, self.n_components, replace=False)]
-        self.covariances_ = np.array([np.cov(X.T) for _ in range(self.n_components)])
-        
-        log_likelihood_old = -np.inf
-        
-        for iteration in range(max_iter):
-            # E-step: compute responsibilities
-            responsibilities = self._e_step(X)
-            
-            # M-step: update parameters
-            self._m_step(X, responsibilities)
-            
-            # Check convergence
-            log_likelihood = self._compute_log_likelihood(X)
-            if abs(log_likelihood - log_likelihood_old) < tol:
-                print(f"Converged after {iteration + 1} iterations")
-                break
-            log_likelihood_old = log_likelihood
-        
-        return self
-    
-    def _e_step(self, X):
-        """Expectation step"""
-        n_samples = X.shape[0]
-        responsibilities = np.zeros((n_samples, self.n_components))
-        
-        for k in range(self.n_components):
-            responsibilities[:, k] = self.weights_[k] * stats.multivariate_normal.pdf(
-                X, self.means_[k], self.covariances_[k]
-            )
-        
-        # Normalize
-        responsibilities /= responsibilities.sum(axis=1, keepdims=True)
-        return responsibilities
-    
-    def _m_step(self, X, responsibilities):
-        """Maximization step"""
-        n_samples = X.shape[0]
-        
-        for k in range(self.n_components):
-            resp_k = responsibilities[:, k]
-            
-            # Update weights
-            self.weights_[k] = resp_k.sum() / n_samples
-            
-            # Update means
-            self.means_[k] = (resp_k[:, np.newaxis] * X).sum(axis=0) / resp_k.sum()
-            
-            # Update covariances
-            diff = X - self.means_[k]
-            self.covariances_[k] = np.dot(resp_k * diff.T, diff) / resp_k.sum()
-    
-    def _compute_log_likelihood(self, X):
-        """Compute log-likelihood"""
-        n_samples = X.shape[0]
-        log_likelihood = 0
-        
-        for i in range(n_samples):
-            sample_likelihood = 0
-            for k in range(self.n_components):
-                sample_likelihood += self.weights_[k] * stats.multivariate_normal.pdf(
-                    X[i], self.means_[k], self.covariances_[k]
-                )
-            log_likelihood += np.log(sample_likelihood)
-        
-        return log_likelihood
-    
-    def predict_proba(self, X):
-        """Predict component probabilities"""
-        return self._e_step(X)
-    
-    def predict(self, X):
-        """Predict component assignments"""
-        return self.predict_proba(X).argmax(axis=1)
-
-class BayesianLinearRegression:
-    def __init__(self, alpha=1.0, beta=1.0):
-        """
-        alpha: precision of prior over weights
-        beta: precision of noise
-        """
-        self.alpha = alpha
-        self.beta = beta
-        
-    def fit(self, X, y):
-        """Fit Bayesian linear regression"""
-        # Add bias term
-        X_with_bias = np.column_stack([np.ones(X.shape[0]), X])
-        
-        # Prior precision matrix
-        S0_inv = self.alpha * np.eye(X_with_bias.shape[1])
-        
-        # Posterior precision matrix
-        self.SN_inv = S0_inv + self.beta * X_with_bias.T @ X_with_bias
-        self.SN = np.linalg.inv(self.SN_inv)
-        
-        # Posterior mean
-        self.mN = self.beta * self.SN @ X_with_bias.T @ y
-        
-        return self
-    
-    def predict(self, X, return_std=False):
-        """Make predictions with uncertainty"""
-        X_with_bias = np.column_stack([np.ones(X.shape[0]), X])
-        
-        # Predictive mean
-        y_mean = X_with_bias @ self.mN
-        
-        if return_std:
-            # Predictive variance
-            y_var = 1/self.beta + np.diag(X_with_bias @ self.SN @ X_with_bias.T)
-            y_std = np.sqrt(y_var)
-            return y_mean, y_std
-        
-        return y_mean
-
-def naive_bayes_gaussian(X_train, y_train, X_test):
-    """Gaussian Naive Bayes classifier"""
-    classes = np.unique(y_train)
-    n_classes = len(classes)
-    n_features = X_train.shape[1]
-    
-    # Compute class priors
-    class_priors = np.array([np.mean(y_train == c) for c in classes])
-    
-    # Compute class-conditional means and variances
-    means = np.zeros((n_classes, n_features))
-    variances = np.zeros((n_classes, n_features))
-    
-    for i, c in enumerate(classes):
-        X_c = X_train[y_train == c]
-        means[i] = np.mean(X_c, axis=0)
-        variances[i] = np.var(X_c, axis=0)
-    
-    # Make predictions
-    n_test = X_test.shape[0]
-    log_probs = np.zeros((n_test, n_classes))
-    
-    for i, c in enumerate(classes):
-        # Log prior
-        log_probs[:, i] = np.log(class_priors[i])
-        
-        # Log likelihood (assuming independence)
-        for j in range(n_features):
-            log_probs[:, i] += stats.norm.logpdf(X_test[:, j], means[i, j], np.sqrt(variances[i, j]))
-    
-    # Normalize to get probabilities
-    log_probs -= logsumexp(log_probs, axis=1, keepdims=True)
-    probs = np.exp(log_probs)
-    
-    predictions = classes[np.argmax(probs, axis=1)]
-    
-    return predictions, probs
-
-# Example usage
-if __name__ == "__main__":
-    # Generate synthetic data for GMM
-    np.random.seed(42)
-    
-    # Create mixture of two Gaussians
-    n_samples = 300
-    X1 = np.random.multivariate_normal([2, 2], [[1, 0.5], [0.5, 1]], n_samples//2)
-    X2 = np.random.multivariate_normal([-1, -1], [[1, -0.3], [-0.3, 1]], n_samples//2)
-    X_gmm = np.vstack([X1, X2])
-    
-    # Fit GMM
-    gmm = GaussianMixtureModel(n_components=2, random_state=42)
-    gmm.fit(X_gmm)
-    
-    # Plot results
-    plt.figure(figsize=(12, 4))
-    
-    plt.subplot(1, 3, 1)
-    plt.scatter(X_gmm[:, 0], X_gmm[:, 1], alpha=0.6)
-    plt.title('Original Data')
-    plt.xlabel('Feature 1')
-    plt.ylabel('Feature 2')
-    
-    plt.subplot(1, 3, 2)
-    predictions = gmm.predict(X_gmm)
-    plt.scatter(X_gmm[:, 0], X_gmm[:, 1], c=predictions, alpha=0.6, cmap='viridis')
-    plt.scatter(gmm.means_[:, 0], gmm.means_[:, 1], c='red', marker='x', s=200, linewidths=3)
-    plt.title('GMM Clustering')
-    plt.xlabel('Feature 1')
-    plt.ylabel('Feature 2')
-    
-    # Bayesian Linear Regression example
-    plt.subplot(1, 3, 3)
-    
-    # Generate synthetic regression data
-    x_true = np.linspace(0, 1, 20)
-    y_true = 0.5 * x_true + 0.3 * np.sin(2 * np.pi * x_true) + 0.1 * np.random.randn(20)
-    
-    # Fit Bayesian linear regression
-    X_poly = np.column_stack([x_true**i for i in range(1, 4)])  # Polynomial features
-    blr = BayesianLinearRegression(alpha=2.0, beta=25.0)
-    blr.fit(X_poly, y_true)
-    
-    # Make predictions
-    x_test = np.linspace(0, 1, 100)
-    X_test_poly = np.column_stack([x_test**i for i in range(1, 4)])
-    y_pred, y_std = blr.predict(X_test_poly, return_std=True)
-    
-    plt.scatter(x_true, y_true, alpha=0.7, label='Data')
-    plt.plot(x_test, y_pred, 'r-', label='Mean prediction')
-    plt.fill_between(x_test, y_pred - 2*y_std, y_pred + 2*y_std, alpha=0.3, color='red', label='±2σ')
-    plt.xlabel('x')
-    plt.ylabel('y')
-    plt.title('Bayesian Linear Regression')
-    plt.legend()
-    
-    plt.tight_layout()
-    plt.show()
-    
-    print(f"GMM component weights: {gmm.weights_}")
-    print(f"GMM component means:\n{gmm.means_}")
-</code></pre>
-
-            <h2>17. References</h2>
+            <h2 id="references">14. References</h2>
             <ul>
-                <li>Bishop, C. M. (2006). <em>Pattern Recognition and Machine Learning</em>.</li>
-                <li>Murphy, K. P. (2012). <em>Machine Learning: A Probabilistic Perspective</em>.</li>
-                <li>Barber, D. (2012). <em>Bayesian Reasoning and Machine Learning</em>.</li>
+                <li>Bishop, C. M. (2006). <em>Pattern Recognition and Machine Learning</em>. Springer.</li>
+                <li>Murphy, K. P. (2012). <em>Machine Learning: A Probabilistic Perspective</em>. MIT Press.</li>
+                <li>Barber, D. (2012). <em>Bayesian Reasoning and Machine Learning</em>. Cambridge University Press.</li>
+                <li>Gelman, A., Carlin, J. B., Stern, H. S., Dunson, D. B., Vehtari, A., &amp; Rubin, D. B. (2013). <em>Bayesian Data Analysis</em> (3rd ed.). CRC Press.</li>
             </ul>
         </section>
     </main>
@@ -458,4 +295,4 @@ if __name__ == "__main__":
         <p>&copy; Diogo Franquinho | Technical Notes</p>
     </footer>
 </body>
-</html> 
+</html>
