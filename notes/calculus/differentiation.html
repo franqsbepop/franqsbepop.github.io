@@ -21,130 +21,260 @@
 </head>
 <body>
     <nav class="top-nav">
-        <a href="../../index.html">← Back to Home</a> | 
+        <a href="../../index.html">← Back to Home</a> |
         <a href="../../index.html#notes">Notes</a>
     </nav>
 
     <main>
         <header>
             <h1>Differentiation</h1>
-            <p class="note-meta">Last updated: December 2024</p>
+            <p class="note-meta">Last updated: August 2026</p>
         </header>
 
         <section class="note-content">
             <div class="disclaimer">
                 <p><strong>Disclaimer:</strong> These are my personal notes compiled for my own reference and learning. They may contain errors, incomplete information, or personal interpretations. While I strive for accuracy, these notes are not peer-reviewed and should not be considered authoritative sources. Please consult official textbooks, research papers, or other reliable sources for academic or professional purposes.</p>
             </div>
-            
-            <h2>1. Definition of Derivative</h2>
-            <p>The derivative of a function $f(x)$ at a point $x = a$ is:</p>
-            <div class="math-block">
-                $$f'(a) = \lim_{h \to 0} \frac{f(a + h) - f(a)}{h}$$
-            </div>
-            <p>This represents the instantaneous rate of change of $f$ at $x = a$.</p>
 
-            <h2>2. Basic Differentiation Rules</h2>
-            <ul>
-                <li><strong>Power Rule:</strong> $\frac{d}{dx}[x^n] = nx^{n-1}$</li>
-                <li><strong>Constant Rule:</strong> $\frac{d}{dx}[c] = 0$</li>
-                <li><strong>Constant Multiple:</strong> $\frac{d}{dx}[cf(x)] = cf'(x)$</li>
-                <li><strong>Sum Rule:</strong> $\frac{d}{dx}[f(x) + g(x)] = f'(x) + g'(x)$</li>
-                <li><strong>Product Rule:</strong> $\frac{d}{dx}[f(x)g(x)] = f'(x)g(x) + f(x)g'(x)$</li>
-                <li><strong>Quotient Rule:</strong> $\frac{d}{dx}\left[\frac{f(x)}{g(x)}\right] = \frac{f'(x)g(x) - f(x)g'(x)}{[g(x)]^2}$</li>
-            </ul>
-
-            <h2>3. Chain Rule</h2>
-            <p>For composite functions $f(g(x))$:</p>
-            <div class="math-block">
-                $$\frac{d}{dx}[f(g(x))] = f'(g(x)) \cdot g'(x)$$
-            </div>
-            <p>This is one of the most important rules in calculus.</p>
-
-            <h2>4. Derivatives of Common Functions</h2>
-            <ul>
-                <li><strong>Exponential:</strong> $\frac{d}{dx}[e^x] = e^x$</li>
-                <li><strong>Natural Log:</strong> $\frac{d}{dx}[\ln(x)] = \frac{1}{x}$</li>
-                <li><strong>Trigonometric:</strong>
-                    <ul>
-                        <li>$\frac{d}{dx}[\sin(x)] = \cos(x)$</li>
-                        <li>$\frac{d}{dx}[\cos(x)] = -\sin(x)$</li>
-                        <li>$\frac{d}{dx}[\tan(x)] = \sec^2(x)$</li>
-                    </ul>
-                </li>
-                <li><strong>Inverse Trig:</strong>
-                    <ul>
-                        <li>$\frac{d}{dx}[\arcsin(x)] = \frac{1}{\sqrt{1-x^2}}$</li>
-                        <li>$\frac{d}{dx}[\arccos(x)] = -\frac{1}{\sqrt{1-x^2}}$</li>
-                        <li>$\frac{d}{dx}[\arctan(x)] = \frac{1}{1+x^2}$</li>
-                    </ul>
-                </li>
-            </ul>
-
-            <h2>5. Implicit Differentiation</h2>
-            <p>When $y$ is defined implicitly by an equation $F(x,y) = 0$:</p>
-            <div class="math-block">
-                $$\frac{dy}{dx} = -\frac{\frac{\partial F}{\partial x}}{\frac{\partial F}{\partial y}}$$
-            </div>
-            <p>Example: For $x^2 + y^2 = 1$, we get $\frac{dy}{dx} = -\frac{x}{y}$.</p>
-
-            <h2>6. Higher Order Derivatives</h2>
-            <p>The $n$-th derivative is denoted $f^{(n)}(x)$ or $\frac{d^n f}{dx^n}$:</p>
-            <div class="math-block">
-                $$f''(x) = \frac{d^2 f}{dx^2}, \quad f'''(x) = \frac{d^3 f}{dx^3}, \quad \ldots$$
+            <div class="table-of-contents">
+                <h3>Contents</h3>
+                <ol>
+                    <li><a href="#definition">Differentiability at a point</a></li>
+                    <li><a href="#diff-continuity">Differentiability implies continuity</a></li>
+                    <li><a href="#rules">Linearity, the product rule, the quotient rule</a></li>
+                    <li><a href="#chain-rule">The chain rule</a></li>
+                    <li><a href="#elementary">Derivatives of the elementary functions</a></li>
+                    <li><a href="#fermat">Local extrema and Fermat's theorem</a></li>
+                    <li><a href="#mvt">Rolle's theorem and the Mean Value Theorem</a></li>
+                    <li><a href="#lhopital">Monotonicity and L'Hôpital's rule</a></li>
+                    <li><a href="#taylor">Taylor's theorem with Lagrange remainder</a></li>
+                    <li><a href="#implicit">Implicit differentiation</a></li>
+                    <li><a href="#computation">Computation</a></li>
+                    <li><a href="#pitfalls">Common pitfalls</a></li>
+                    <li><a href="#connections">Connections</a></li>
+                    <li><a href="#references">References</a></li>
+                </ol>
             </div>
 
-            <h2>7. Applications</h2>
-            <h3>7.1 Optimization</h3>
-            <p>Critical points occur where $f'(x) = 0$ or $f'(x)$ is undefined.</p>
-            <ul>
-                <li><strong>First Derivative Test:</strong> Check sign changes of $f'(x)$</li>
-                <li><strong>Second Derivative Test:</strong> Use $f''(x)$ at critical points</li>
-            </ul>
+            <h2 id="definition">1. Differentiability at a point</h2>
+            <div class="note-box">
+                <span class="note-box-label">Definition</span>
+                <p>$f$ is <strong>differentiable at $a$</strong> if $\displaystyle f'(a)=\lim_{h\to0}\frac{f(a+h)-f(a)}{h}$ exists (as a finite number). Equivalently, writing $x=a+h$: $f'(a)=\lim_{x\to a}\frac{f(x)-f(a)}{x-a}$.</p>
+            </div>
+            <p>Geometrically, $\frac{f(a+h)-f(a)}{h}$ is the slope of the <em>secant line</em> through $(a,f(a))$ and $(a+h,f(a+h))$; the definition says the derivative is whatever these secant slopes converge to as the second point slides into the first. One-sided derivatives $f'_-(a)$, $f'_+(a)$ are defined the same way with $h\to0^-$, $h\to0^+$; $f$ is differentiable at $a$ iff both one-sided derivatives exist and agree. At an endpoint of the domain, only the relevant one-sided limit is required.</p>
 
-            <h3>7.2 Related Rates</h3>
-            <p>When two variables are related, their rates of change are also related:</p>
-            <div class="math-block">
-                $$\frac{dA}{dt} = \frac{dA}{dr} \cdot \frac{dr}{dt}$$
+            <figure class="note-figure">
+                <img src="differentiation/figures/secant_to_tangent.png" alt="Left panel: secant lines to sin(x) at a=1 for decreasing h, pivoting toward the tangent line. Right panel: log-log plot of forward and central finite-difference error against h, showing convergence then a roundoff-dominated increase at very small h.">
+                <figcaption><strong>Figure — The derivative as a limit of difference quotients, in theory and in floating point.</strong> Left: secants to $f(x)=\sin x$ at $a=1$ for $h=1,0.5,0.15$ pivot toward the tangent line of slope $f'(1)=\cos(1)$ as $h\to0$, exactly as the definition asserts. Right: in exact arithmetic the forward difference $\frac{f(a+h)-f(a)}{h}$ and central difference $\frac{f(a+h)-f(a-h)}{2h}$ converge to $f'(a)$ at rates $O(h)$ and $O(h^2)$ respectively — but computed in double-precision floating point, both curves turn upward once $h$ gets small enough that subtracting two nearly-equal numbers ($f(a+h)$ and $f(a)$) loses precision to rounding. The limit in the definition is a mathematical idealization; no floating-point implementation of it can take $h\to0$ for free (Section 11 has the numbers).</figcaption>
+            </figure>
+
+            <h2 id="diff-continuity">2. Differentiability implies continuity</h2>
+            <div class="note-box">
+                <span class="note-box-label">Theorem</span>
+                <p>If $f$ is differentiable at $a$, then $f$ is continuous at $a$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> For $x\neq a$, $f(x)-f(a)=\frac{f(x)-f(a)}{x-a}\cdot(x-a)$. As $x\to a$, the first factor $\to f'(a)$ (a finite number, by hypothesis) and the second factor $\to0$, so by the product rule for limits $f(x)-f(a)\to f'(a)\cdot0=0$, i.e. $f(x)\to f(a)$. <span class="qed">∎</span>
+            </div>
+            <p>The <a href="continuity.html">continuity note</a>'s pitfall section already recorded the converse's failure at the level of a single corner ($f(x)=|x|$, continuous but not differentiable at $0$). The next example is sharper: differentiability at <em>every</em> point does not force the derivative itself to be continuous — differentiability is strictly weaker than being continuously differentiable ($C^1$).</p>
+            <div class="note-box">
+                <span class="note-box-label">Example — differentiable everywhere, $f'$ discontinuous at a point</span>
+                <p>Let $g(x)=x^2\sin(1/x)$ for $x\neq0$, $g(0)=0$. At $0$: $\frac{g(h)-g(0)}{h}=h\sin(1/h)$, and $|h\sin(1/h)|\leq|h|\to0$, so $g'(0)=0$ exists by the squeeze theorem. Away from $0$, the product and chain rules give $g'(x)=2x\sin(1/x)-\cos(1/x)$. But $\lim_{x\to0}g'(x)$ does not exist: the $2x\sin(1/x)$ term $\to0$ (squeeze, as above), while $\cos(1/x)$ oscillates between $-1$ and $1$ without settling as $x\to0$ (take $x_n=1/(2n\pi)\to0$, giving $\cos(1/x_n)=1$, versus $x_n'=1/((2n+1)\pi)\to0$, giving $\cos(1/x_n')=-1$ — the same sequential argument used for essential discontinuities in the <a href="continuity.html">continuity note</a>, Section 4). So $g$ is differentiable everywhere, yet $g'$ is discontinuous at $0$.</p>
             </div>
 
-            <h2>8. L'Hôpital's Rule</h2>
-            <p>For indeterminate forms $\frac{0}{0}$ or $\frac{\infty}{\infty}$:</p>
-            <div class="math-block">
-                $$\lim_{x \to a} \frac{f(x)}{g(x)} = \lim_{x \to a} \frac{f'(x)}{g'(x)}$$
+            <h2 id="rules">3. Linearity, the product rule, the quotient rule</h2>
+            <p>Throughout, $f,g$ are differentiable at $a$.</p>
+            <p><strong>Linearity.</strong> $(f+g)'(a)=f'(a)+g'(a)$ and $(cf)'(a)=cf'(a)$ follow immediately from the corresponding limit laws applied to the difference quotient $\frac{(f+g)(a+h)-(f+g)(a)}{h}=\frac{f(a+h)-f(a)}{h}+\frac{g(a+h)-g(a)}{h}$.</p>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Product rule)</span>
+                <p>$(fg)'(a)=f'(a)g(a)+f(a)g'(a)$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> $\dfrac{f(a+h)g(a+h)-f(a)g(a)}{h}=\dfrac{f(a+h)g(a+h)-f(a)g(a+h)+f(a)g(a+h)-f(a)g(a)}{h}=\dfrac{f(a+h)-f(a)}{h}\,g(a+h)+f(a)\,\dfrac{g(a+h)-g(a)}{h}$ (adding and subtracting $f(a)g(a+h)$). As $h\to0$: the first term's two factors tend to $f'(a)$ and $g(a)$ (the latter because $g$ is continuous at $a$, by Section 2, applied to $g$), and the second term tends to $f(a)g'(a)$. Summing gives $f'(a)g(a)+f(a)g'(a)$. <span class="qed">∎</span>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Reciprocal and quotient rules)</span>
+                <p>If $g(a)\neq0$: $\left(\dfrac1g\right)'(a)=-\dfrac{g'(a)}{g(a)^2}$, and hence $\left(\dfrac{f}{g}\right)'(a)=\dfrac{f'(a)g(a)-f(a)g'(a)}{g(a)^2}$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> $g$ continuous and nonzero at $a$ gives $g(a+h)\neq0$ for $h$ small, so $\frac{1/g(a+h)-1/g(a)}{h}=\frac{g(a)-g(a+h)}{h\,g(a+h)g(a)}=-\frac{g(a+h)-g(a)}{h}\cdot\frac{1}{g(a+h)g(a)}\to-g'(a)\cdot\frac{1}{g(a)^2}$ as $h\to0$, using continuity of $g$ at $a$ again in the denominator. The quotient rule follows by writing $f/g=f\cdot(1/g)$ and applying the product rule together with the reciprocal rule just proved. <span class="qed">∎</span>
             </div>
 
-            <h2>9. Taylor Series</h2>
-            <p>The Taylor series expansion of $f(x)$ around $x = a$ is:</p>
-            <div class="math-block">
-                $$f(x) = f(a) + f'(a)(x-a) + \frac{f''(a)}{2!}(x-a)^2 + \frac{f'''(a)}{3!}(x-a)^3 + \cdots$$
+            <h2 id="chain-rule">4. The chain rule</h2>
+            <div class="note-box">
+                <span class="note-box-label">Theorem</span>
+                <p>If $g$ is differentiable at $a$ and $f$ is differentiable at $g(a)$, then $f\circ g$ is differentiable at $a$ and $(f\circ g)'(a)=f'(g(a))\cdot g'(a)$.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — the naive proof divides by zero</span>
+                <p>The tempting one-line argument writes $\dfrac{f(g(a+h))-f(g(a))}{h}=\dfrac{f(g(a+h))-f(g(a))}{g(a+h)-g(a)}\cdot\dfrac{g(a+h)-g(a)}{h}$ and lets $h\to0$, reading off $f'(g(a))\cdot g'(a)$. This is not a valid proof: the first factor is undefined whenever $g(a+h)=g(a)$, and if $g$ oscillates around the value $g(a)$ infinitely often as $h\to0$ (which a differentiable $g$ can do — e.g. $g(x)=x^2\sin(1/x)$ from Section 2, near many points where it revisits a given value), the factor is undefined for a sequence of $h\to0$, and the "proof" never gets off the ground.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> Define $\varphi(y)=\dfrac{f(y)-f(g(a))}{y-g(a)}$ for $y\neq g(a)$, and $\varphi(g(a))=f'(g(a))$. Since $f$ is differentiable at $g(a)$, $\varphi(y)\to f'(g(a))=\varphi(g(a))$ as $y\to g(a)$ — i.e. $\varphi$ is continuous at $g(a)$. By construction, $f(y)-f(g(a))=\varphi(y)\,(y-g(a))$ holds for <em>every</em> $y$, including $y=g(a)$ (both sides are $0$), sidestepping the division-by-zero problem above entirely. Substituting $y=g(x)$: $f(g(x))-f(g(a))=\varphi(g(x))\,(g(x)-g(a))$, so for $x\neq a$: $\dfrac{f(g(x))-f(g(a))}{x-a}=\varphi(g(x))\cdot\dfrac{g(x)-g(a)}{x-a}$. As $x\to a$: $g(x)\to g(a)$ (Section 2, continuity of $g$ at $a$), so $\varphi(g(x))\to\varphi(g(a))=f'(g(a))$ by continuity of $\varphi$ just established (sequential characterization, <a href="continuity.html">continuity note</a> Section 2, applied to $\varphi\circ g$); and $\frac{g(x)-g(a)}{x-a}\to g'(a)$ by hypothesis. The product tends to $f'(g(a))\cdot g'(a)$. <span class="qed">∎</span>
+            </div>
+            <p>This is the standard Carathéodory device: replacing the difference quotient by a function $\varphi$ that is manifestly defined at the troublesome point, with differentiability of $f$ repackaged as continuity of $\varphi$. It costs one extra definition and buys a proof with no case split on whether $g(x)=g(a)$.</p>
+
+            <h2 id="elementary">5. Derivatives of the elementary functions</h2>
+            <p><strong>Power rule, integer case.</strong> $\frac{d}{dx}[x^n]=nx^{n-1}$ for $n\in\mathbb{N}$: true for $n=1$ ($\lim_{h\to0}\frac{(x+h)-x}{h}=1$), and if it holds for $n$, the product rule gives $\frac{d}{dx}[x^{n+1}]=\frac{d}{dx}[x\cdot x^n]=1\cdot x^n+x\cdot nx^{n-1}=(n+1)x^n$ — induction closes the case. For negative integers, apply the reciprocal rule to $x^{-n}=1/x^n$; for rational and then general real exponents, write $x^r=e^{r\ln x}$ and apply the chain rule together with the exponential and logarithm derivatives below (<em>logarithmic differentiation</em>), giving the same formula $rx^{r-1}$ for all real $r$ on $x&gt;0$.</p>
+            <p><strong>Exponential and logarithm.</strong> Taking $\lim_{h\to0}\frac{e^h-1}{h}=1$ as the defining normalization of $e$ (proved via the power series for $e^x$ or via monotone bounding sequences in a foundational analysis treatment, not re-derived here): $\frac{e^{x+h}-e^x}{h}=e^x\cdot\frac{e^h-1}{h}\to e^x$, so $\frac{d}{dx}[e^x]=e^x$. Since $\ln$ is the inverse of $\exp$, differentiating $e^{\ln x}=x$ with the chain rule gives $e^{\ln x}\cdot\frac{d}{dx}[\ln x]=1$, so $\frac{d}{dx}[\ln x]=1/e^{\ln x}=1/x$.</p>
+            <p><strong>Sine and cosine.</strong> Using the angle-addition formula and the two standard limits $\lim_{h\to0}\frac{\sin h}{h}=1$, $\lim_{h\to0}\frac{\cos h-1}{h}=0$ (proved geometrically via areas of circular sectors and triangles, not re-derived here): $\frac{\sin(x+h)-\sin x}{h}=\sin x\cdot\frac{\cos h-1}{h}+\cos x\cdot\frac{\sin h}{h}\to\cos x$, giving $\frac{d}{dx}[\sin x]=\cos x$; the analogous computation gives $\frac{d}{dx}[\cos x]=-\sin x$. The remaining trigonometric and inverse trigonometric derivatives follow from these two via the quotient rule ($\tan=\sin/\cos$) and implicit differentiation (Section 10).</p>
+
+            <h2 id="fermat">6. Local extrema and Fermat's theorem</h2>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Fermat)</span>
+                <p>If $f$ has a local extremum at an interior point $c$ of its domain and $f$ is differentiable at $c$, then $f'(c)=0$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> Suppose $c$ is a local maximum (minimum is symmetric, applied to $-f$): for $h$ small, $f(c+h)\leq f(c)$. For $h&gt;0$: $\frac{f(c+h)-f(c)}{h}\leq0$, so the right-hand limit gives $f'(c)\leq0$. For $h&lt;0$: $\frac{f(c+h)-f(c)}{h}\geq0$ (dividing an inequality $\leq0$ by a negative number flips it), so the left-hand limit gives $f'(c)\geq0$. Differentiability at $c$ means both one-sided limits equal $f'(c)$, so $f'(c)\leq0$ and $f'(c)\geq0$ simultaneously, forcing $f'(c)=0$. <span class="qed">∎</span>
+            </div>
+            <p>Two hypotheses are load-bearing and routinely dropped by accident. <strong>Interior:</strong> $f(x)=x$ on $[0,1]$ attains its maximum at the endpoint $x=1$, where $f'(1)=1\neq0$ — the one-sided argument above only produces one of the two inequalities at an endpoint, not both. <strong>Differentiable at $c$:</strong> $f(x)=|x|$ has a (global) minimum at $x=0$, where $f$ is not differentiable — a critical point in the sense used for optimization must include points where $f'$ fails to exist, not only zeros of $f'$.</p>
+
+            <h2 id="mvt">7. Rolle's theorem and the Mean Value Theorem</h2>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Rolle)</span>
+                <p>If $f$ is continuous on $[a,b]$, differentiable on $(a,b)$, and $f(a)=f(b)$, then $f'(c)=0$ for some $c\in(a,b)$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> If $f$ is constant on $[a,b]$, $f'\equiv0$ there and any $c$ works. Otherwise, by the Extreme Value Theorem (<a href="continuity.html">continuity note</a>, Section 6), $f$ attains a maximum $M$ and minimum $m$ on $[a,b]$, and $M&gt;m$ since $f$ is nonconstant. Since $f(a)=f(b)$, at least one of $M,m$ is <em>not</em> equal to $f(a)$ (otherwise $M=f(a)=f(b)=m$, forcing $M=m$, a contradiction) — so at least one of the max or min is attained at some $c\in(a,b)$, strictly interior. By Fermat's theorem (Section 6), applicable since $f$ is differentiable at $c\in(a,b)$, $f'(c)=0$. <span class="qed">∎</span>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Mean Value Theorem)</span>
+                <p>If $f$ is continuous on $[a,b]$ and differentiable on $(a,b)$, then $f'(c)=\dfrac{f(b)-f(a)}{b-a}$ for some $c\in(a,b)$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> Let $h(x)=f(x)-f(a)-\dfrac{f(b)-f(a)}{b-a}(x-a)$ — $f$ minus the secant line through $(a,f(a))$ and $(b,f(b))$. Then $h$ is continuous on $[a,b]$, differentiable on $(a,b)$, and $h(a)=0=h(b)$ (direct substitution). Rolle's theorem gives $h'(c)=0$ for some $c\in(a,b)$; since $h'(x)=f'(x)-\dfrac{f(b)-f(a)}{b-a}$, this is exactly $f'(c)=\dfrac{f(b)-f(a)}{b-a}$. <span class="qed">∎</span>
+            </div>
+            <p>Rolle's theorem is the special case $f(a)=f(b)$ of the MVT (the secant line is horizontal), but it is also the engine of the MVT's own proof — tilting the graph by the secant's slope turns the general statement back into the flat one.</p>
+
+            <h2 id="lhopital">8. Monotonicity and L'Hôpital's rule</h2>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Monotonicity from the sign of $f'$)</span>
+                <p>If $f$ is continuous on $[a,b]$, differentiable on $(a,b)$, and $f'(x)&gt;0$ for all $x\in(a,b)$, then $f$ is strictly increasing on $[a,b]$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> For $a\leq x_1&lt;x_2\leq b$, the MVT applied on $[x_1,x_2]$ gives $c\in(x_1,x_2)$ with $f(x_2)-f(x_1)=f'(c)(x_2-x_1)&gt;0$, since $f'(c)&gt;0$ and $x_2-x_1&gt;0$. <span class="qed">∎</span>
+            </div>
+            <p>This is the theorem that licenses the "first derivative test" for optimization: $f'&gt;0$ then $f'&lt;0$ around a critical point identifies a local maximum because the theorem literally says $f$ rises before it and falls after.</p>
+
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Cauchy Mean Value Theorem)</span>
+                <p>If $f,g$ are continuous on $[a,b]$ and differentiable on $(a,b)$ with $g'(x)\neq0$ for all $x\in(a,b)$, then $g(a)\neq g(b)$ and $\dfrac{f(b)-f(a)}{g(b)-g(a)}=\dfrac{f'(c)}{g'(c)}$ for some $c\in(a,b)$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> $g(a)\neq g(b)$: otherwise Rolle's theorem applied to $g$ would give $g'(x)=0$ at some interior point, contradicting the hypothesis. Let $h(x)=f(x)-f(a)-\dfrac{f(b)-f(a)}{g(b)-g(a)}\big(g(x)-g(a)\big)$; then $h(a)=0$ and $h(b)=f(b)-f(a)-\big(f(b)-f(a)\big)=0$. Rolle gives $h'(c)=0$ for some $c\in(a,b)$, i.e. $f'(c)=\dfrac{f(b)-f(a)}{g(b)-g(a)}\,g'(c)$; dividing by $g'(c)\neq0$ gives the claim. <span class="qed">∎</span>
+            </div>
+            <p>Taking $g(x)=x$ recovers the ordinary MVT — the Cauchy version is what is actually needed for L'Hôpital, because it relates $f$ and $g$ at the <em>same</em> intermediate point $c$, which the two separate (ordinary) MVTs applied to $f$ and $g$ individually would not guarantee.</p>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (L'Hôpital's rule, $0/0$ case)</span>
+                <p>Suppose $f(a)=g(a)=0$, $f,g$ are differentiable on an interval around $a$ (except possibly at $a$), $g'(x)\neq0$ near $a$ (except at $a$), and $\lim_{x\to a}\dfrac{f'(x)}{g'(x)}=L$. Then $\lim_{x\to a}\dfrac{f(x)}{g(x)}=L$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> For $x\neq a$ near $a$, apply the Cauchy MVT to $f,g$ on the interval between $a$ and $x$: since $f(a)=g(a)=0$, $\dfrac{f(x)}{g(x)}=\dfrac{f(x)-f(a)}{g(x)-g(a)}=\dfrac{f'(c_x)}{g'(c_x)}$ for some $c_x$ strictly between $a$ and $x$. As $x\to a$, $c_x\to a$ too (squeezed between $a$ and $x$), so $\dfrac{f'(c_x)}{g'(c_x)}\to L$ by hypothesis (composing the assumed limit with $c_x\to a$), hence $\dfrac{f(x)}{g(x)}\to L$. <span class="qed">∎</span>
+            </div>
+            <p>This is exactly the theorem the <a href="continuity.html">continuity note</a> (Section 8) deferred here, having warned there that the rule applies only under a genuine $\frac00$ or $\frac{\infty}{\infty}$ hypothesis — visible in the proof above at the step $\frac{f(x)}{g(x)}=\frac{f(x)-f(a)}{g(x)-g(a)}$, which uses $f(a)=g(a)=0$ essentially. The $\infty/\infty$ case is proved by a different (Stolz–Cesàro-flavored) argument and is not reproduced here.</p>
+
+            <h2 id="taylor">9. Taylor's theorem with Lagrange remainder</h2>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Taylor, with Lagrange remainder)</span>
+                <p>If $f$ has $n+1$ continuous derivatives on an interval containing $a$ and $x$, then $f(x)=\displaystyle\sum_{k=0}^{n}\frac{f^{(k)}(a)}{k!}(x-a)^k+R_n(x)$, where $R_n(x)=\dfrac{f^{(n+1)}(c)}{(n+1)!}(x-a)^{n+1}$ for some $c$ strictly between $a$ and $x$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> Fix $x\neq a$ and define, for $t$ between $a$ and $x$, $\displaystyle\varphi(t)=f(x)-\sum_{k=0}^{n}\frac{f^{(k)}(t)}{k!}(x-t)^k-M(x-t)^{n+1}$, where $M$ is the constant chosen so that $\varphi(a)=0$ (possible since $(x-a)^{n+1}\neq0$). Note $\varphi(x)=0$ automatically (every term with $(x-t)$ vanishes at $t=x$ except $f(x)-f(x)=0$). Differentiating in $t$, the sum telescopes: $\dfrac{d}{dt}\left[\dfrac{f^{(k)}(t)}{k!}(x-t)^k\right]=\dfrac{f^{(k+1)}(t)}{k!}(x-t)^k-\dfrac{f^{(k)}(t)}{(k-1)!}(x-t)^{k-1}$ for $k\geq1$, so summing over $k=0,\dots,n$ cancels every term except the top one, leaving $\varphi'(t)=-\dfrac{f^{(n+1)}(t)}{n!}(x-t)^n+M(n+1)(x-t)^n$. Since $\varphi(a)=\varphi(x)=0$, Rolle's theorem gives $\varphi'(c)=0$ for some $c$ between $a$ and $x$, i.e. $M(n+1)(x-c)^n=\dfrac{f^{(n+1)}(c)}{n!}(x-c)^n$. If $c\neq x$ (guaranteed, since $c$ is strictly between $a$ and $x$), divide by $(n+1)(x-c)^n$ to get $M=\dfrac{f^{(n+1)}(c)}{(n+1)!}$. By construction $\varphi(a)=0$ means $f(x)-\sum_{k=0}^n\frac{f^{(k)}(a)}{k!}(x-a)^k=M(x-a)^{n+1}$, which is exactly the claimed formula with $R_n(x)=M(x-a)^{n+1}$. <span class="qed">∎</span>
+            </div>
+            <p>$n=0$ recovers the MVT exactly ($f(x)=f(a)+f'(c)(x-a)$): Taylor's theorem is the MVT's higher-order generalization, replacing a single linear approximation with a degree-$n$ polynomial and a remainder controlled the same way, via an auxiliary function and Rolle's theorem.</p>
+
+            <figure class="note-figure">
+                <img src="differentiation/figures/taylor_remainder.png" alt="Left panel: cosine and its Maclaurin polynomials of degree 0, 2, 4, 6, agreeing well near 0 and diverging away from it. Right panel: log-scale plot of the actual approximation error at x=2 against the Lagrange remainder bound for increasing polynomial degree, showing the bound holds and both decay factorially.">
+                <figcaption><strong>Figure — Taylor's theorem at $a=0$: polynomial approximation with a proved, checkable error bound.</strong> Left: the Maclaurin polynomials $T_n$ of $\cos x$ hug the function increasingly closely near $0$ and then visibly peel away once $|x|$ exceeds the range where degree $n$ is still a good approximation. Right: at the fixed point $x=2$, the actual error $|\cos(2)-T_n(2)|$ sits below the Lagrange bound $\frac{|2|^{n+1}}{(n+1)!}$ (using $M=1$, since every derivative of $\cos$ is bounded by $1$) at every degree tested, and both decay factorially — the numerator $2^{n+1}$ grows geometrically, but $(n+1)!$ eventually overwhelms any fixed geometric rate. Section 11 has the exact numbers.</figcaption>
+            </figure>
+
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — a convergent Taylor series need not converge to $f$</span>
+                <p>Let $f(x)=e^{-1/x^2}$ for $x\neq0$, $f(0)=0$. One can show (by induction, using that every derivative is $e^{-1/x^2}$ times a rational function of $x$, and that $e^{-1/x^2}$ dominates any power of $1/x$ as $x\to0$) that $f^{(k)}(0)=0$ for every $k\geq0$. The Maclaurin series is therefore identically $0$, which converges everywhere — to the constant $0$, not to $f(x)$, for any $x\neq0$ where $f(x)&gt;0$. Taylor's theorem does not fail here; rather, the remainder $R_n(x)$ simply does not tend to $0$ as $n\to\infty$ for this $f$, so the (convergent) series and the function part ways. This is the reason the <a href="../mathematical-analysis/sequences-series.html">sequences and series note</a>'s treatment of radius of convergence (its Section 8) is a statement about where a power series converges, which is a separate question from whether a given function's Taylor series converges back to that function.</p>
             </div>
 
-            <h2>10. Code Example</h2>
-            <pre><code># Python code for symbolic differentiation
-import sympy as sp
+            <h2 id="implicit">10. Implicit differentiation</h2>
+            <p>When $y$ is defined implicitly near $(a,b)$ by $F(x,y)=0$ (with $F(a,b)=0$), treating $y=y(x)$ and differentiating both sides with the chain rule gives $F_x(x,y)+F_y(x,y)\cdot y'(x)=0$, so $y'(x)=-\dfrac{F_x(x,y)}{F_y(x,y)}$ wherever $F_y\neq0$. Example: for $x^2+y^2=1$, $F_x=2x$, $F_y=2y$, giving $\frac{dy}{dx}=-x/y$ away from $y=0$. This computation is informal as stated — it presupposes that a differentiable function $y(x)$ solving $F(x,y)=0$ exists near $(a,b)$ in the first place, which is exactly the content of the Implicit Function Theorem; the rigorous multivariable statement, including why $F_y(a,b)\neq0$ is the hypothesis that makes it work, belongs to (and is deferred to) the <a href="multivariable-calculus.html">multivariable calculus note</a>.</p>
 
-# Define variable and function
-x = sp.Symbol('x')
-f = x**3 + 2*x**2 - 5*x + 1
+            <h2 id="computation">11. Computation</h2>
+            <p>The figures above are generated by <code>differentiation/generate_figures.py</code>. The snippet below reproduces the finite-difference convergence data (forward $O(h)$, central $O(h^2)$, then roundoff) and the Lagrange remainder check numerically.</p>
+            <pre><code>import numpy as np, math
 
-# First derivative
-f_prime = sp.diff(f, x)
-print(f"f'(x) = {f_prime}")
+f = np.sin
+a = 1.0
+true = math.cos(a)
 
-# Second derivative
-f_double_prime = sp.diff(f, x, 2)
-print(f"f''(x) = {f_double_prime}")
+print("Finite-difference convergence to f'(1) = cos(1):")
+for h in [1e-1, 1e-3, 1e-5, 1e-7, 1e-9, 1e-11, 1e-13]:
+    fwd = (f(a+h) - f(a)) / h
+    ctr = (f(a+h) - f(a-h)) / (2*h)
+    print(f"h={h:8.0e}  forward err={abs(fwd-true):.3e}   central err={abs(ctr-true):.3e}")
 
-# Evaluate at specific point
-f_prime_at_2 = f_prime.subs(x, 2)
-print(f"f'(2) = {f_prime_at_2}")
+def taylor_poly(x, n):
+    total = 0.0
+    for k in range(0, n+1, 2):
+        sign = 1 if (k//2) % 2 == 0 else -1
+        total += sign * x**k / math.factorial(k)
+    return total
+
+x0 = 2.0
+print("\nTaylor remainder check for cos(x) at a=0, x=2:")
+for n in [2, 4, 6, 8, 10, 12]:
+    actual = abs(math.cos(x0) - taylor_poly(x0, n))
+    bound = abs(x0)**(n+1) / math.factorial(n+1)
+    print(f"n={n:2d}  actual={actual:.6e}   Lagrange bound={bound:.6e}   bound holds: {actual &lt;= bound}")
 </code></pre>
+            <p>Actual output:</p>
+            <pre><code>Finite-difference convergence to f'(1) = cos(1):
+h=   1e-01  forward err=4.294e-02   central err=9.001e-04
+h=   1e-03  forward err=4.208e-04   central err=9.005e-08
+h=   1e-05  forward err=4.207e-06   central err=1.114e-11
+h=   1e-07  forward err=4.183e-08   central err=1.943e-10
+h=   1e-09  forward err=5.254e-08   central err=2.970e-09
+h=   1e-11  forward err=1.169e-06   central err=1.169e-06
+h=   1e-13  forward err=7.339e-04   central err=1.788e-04
 
-            <h2>11. References</h2>
+Taylor remainder check for cos(x) at a=0, x=2:
+n= 2  actual=5.838532e-01   Lagrange bound=1.333333e+00   bound holds: True
+n= 4  actual=8.281350e-02   Lagrange bound=2.666667e-01   bound holds: True
+n= 6  actual=6.075386e-03   Lagrange bound=2.539683e-02   bound holds: True
+n= 8  actual=2.738207e-04   Lagrange bound=1.410935e-03   bound holds: True
+n=10  actual=8.366275e-06   Lagrange bound=5.130672e-05   bound holds: True
+n=12  actual=1.848449e-07   Lagrange bound=1.315557e-06   bound holds: True</code></pre>
+            <p>Both finite-difference errors bottom out and then <em>increase</em>: forward difference around $h\sim10^{-8}$ (matching the theoretical optimum $\sqrt{\varepsilon_{\text{machine}}}\approx1.5\times10^{-8}$, balancing $O(h)$ truncation error against $O(\varepsilon/h)$ roundoff error), central difference bottoming out lower and at a slightly larger $h$ — consistent with its better $O(h^2)$ truncation rate trading against the same roundoff mechanism at a more favorable balance point. The Taylor remainder bound holds at every degree tested and both columns shrink by roughly an order of magnitude every two degrees, exactly the factorial-beats-geometric behavior the proof predicts.</p>
+
+            <h2 id="pitfalls">12. Common pitfalls</h2>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — differentiable is not the same as $C^1$</span>
+                <p>Demonstrated in Section 2: $g(x)=x^2\sin(1/x)$ (with $g(0)=0$) is differentiable everywhere, including at $0$, but $g'$ is discontinuous at $0$. "The derivative exists" and "the derivative is a continuous function" are different claims; results that assume $f\in C^1$ (e.g. some forms of Taylor's theorem, or swapping derivatives and limits/integrals) genuinely need the stronger one.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — the "cancel the denominators" proof of the chain rule is not valid</span>
+                <p>Demonstrated in Section 4: the naive proof divides by $g(a+h)-g(a)$, which can be $0$ for a sequence of $h\to0$ even when $g$ is differentiable at $a$. The Carathéodory proof in Section 4 avoids this by never dividing by that quantity.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — Rolle/MVT need continuity on the <em>closed</em> interval, not just differentiability on the open one</span>
+                <p>Let $f(x)=x$ for $x\in[0,1)$ and $f(1)=0$. Then $f'(x)=1$ everywhere on $(0,1)$, but $f$ is not continuous at the endpoint $x=1$. The secant slope is $\frac{f(1)-f(0)}{1-0}=\frac{0-0}{1}=0$, yet no $c\in(0,1)$ has $f'(c)=0$ (it's always $1$) — the conclusion of the MVT genuinely fails, because the closed-interval continuity hypothesis (only satisfied on $(0,1)$ here, not at $x=1$) was violated, not merely because of sloppy bookkeeping.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — a convergent Taylor series need not equal the function</span>
+                <p>Demonstrated in Section 9: $f(x)=e^{-1/x^2}$ (with $f(0)=0$) has every derivative $0$ at $x=0$, so its Maclaurin series is identically $0$ — convergent everywhere, but equal to $f$ only at $x=0$. "The Taylor series converges" and "the Taylor series converges to $f$" are different claims, and the gap between them is exactly whether the Lagrange remainder $R_n(x)\to0$.</p>
+            </div>
+
+            <h2 id="connections">13. Connections</h2>
             <ul>
-                <li>Stewart, J. (2015). <em>Calculus: Early Transcendentals</em>.</li>
-                <li>Apostol, T. M. (1967). <em>Calculus, Volume 1</em>.</li>
-                <li>Spivak, M. (2008). <em>Calculus</em>.</li>
+                <li><strong><a href="continuity.html">Continuity and limits</a>.</strong> Differentiability implies continuity (Section 2) but not conversely; the Extreme Value Theorem from that note is exactly what powers the proof of Rolle's theorem (Section 7) here, and this note in turn supplies the Cauchy-MVT proof of L'Hôpital's rule (Section 8) that the continuity note explicitly deferred.</li>
+                <li><strong><a href="../mathematical-analysis/sequences-series.html">Sequences and series</a>.</strong> The Lagrange remainder formula proved in Section 9 is the tool that note's treatment of radius of convergence relies on when discussing Taylor series specifically (as opposed to power series in general); the $e^{-1/x^2}$ pitfall there is the standard illustration of why "convergent" and "convergent to $f$" must be kept separate.</li>
+                <li><strong><a href="multivariable-calculus.html">Multivariable calculus</a>.</strong> Implicit differentiation (Section 10) is made rigorous by the multivariable chain rule and the Implicit Function Theorem there; the second-derivative test for a critical point of a two-variable function is the direct generalization of Fermat's theorem (Section 6) plus a sign condition on the Hessian, the same Hessian that appears via its eigenvalues in the <a href="../linear-algebra/eigenvalues.html">eigenvalues note</a>'s discussion of that test.</li>
+                <li><strong>Optimization (machine learning).</strong> Fermat's theorem (Section 6) is the reason gradient-based optimization searches for points where the derivative (gradient) vanishes; the monotonicity theorem (Section 8) is the one-dimensional case of why gradient descent moves in the direction that provably decreases the objective.</li>
+            </ul>
+
+            <h2 id="references">14. References</h2>
+            <ul>
+                <li>Rudin, W. (1976). <em>Principles of Mathematical Analysis</em> (3rd ed.). McGraw-Hill.</li>
+                <li>Apostol, T. M. (1967). <em>Calculus, Volume 1</em> (2nd ed.). Wiley.</li>
+                <li>Spivak, M. (2008). <em>Calculus</em> (4th ed.). Publish or Perish.</li>
+                <li>Abbott, S. (2015). <em>Understanding Analysis</em> (2nd ed.). Springer.</li>
             </ul>
         </section>
     </main>
@@ -153,4 +283,4 @@ print(f"f'(2) = {f_prime_at_2}")
         <p>&copy; Diogo Franquinho | Technical Notes</p>
     </footer>
 </body>
-</html> 
+</html>
