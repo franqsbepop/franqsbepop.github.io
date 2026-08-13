@@ -21,306 +21,221 @@
 </head>
 <body>
     <nav class="top-nav">
-        <a href="../../index.html">← Back to Home</a> | 
+        <a href="../../index.html">← Back to Home</a> |
         <a href="../../index.html#notes">Notes</a>
     </nav>
 
     <main>
         <header>
             <h1>Neural Networks</h1>
-            <p class="note-meta">Last updated: December 2024</p>
+            <p class="note-meta">Last updated: August 2026</p>
         </header>
 
         <section class="note-content">
             <div class="disclaimer">
                 <p><strong>Disclaimer:</strong> These are my personal notes compiled for my own reference and learning. They may contain errors, incomplete information, or personal interpretations. While I strive for accuracy, these notes are not peer-reviewed and should not be considered authoritative sources. Please consult official textbooks, research papers, or other reliable sources for academic or professional purposes.</p>
             </div>
-            
-            <h2>1. Introduction to Neural Networks</h2>
-            <p>Neural networks are computational models inspired by biological neural networks. They consist of interconnected nodes (neurons) that process information.</p>
 
-            <h2>2. Perceptron</h2>
-            <p>The simplest neural network with a single neuron:</p>
-            <div class="math-block">
-                $$y = f\left(\sum_{i=1}^n w_i x_i + b\right) = f(\mathbf{w}^T\mathbf{x} + b)$$
-            </div>
-            <p>where $f$ is the activation function, $\mathbf{w}$ are weights, $\mathbf{x}$ are inputs, and $b$ is the bias.</p>
-
-            <h2>3. Activation Functions</h2>
-            <h3>3.1 Sigmoid</h3>
-            <div class="math-block">
-                $$\sigma(z) = \frac{1}{1 + e^{-z}}$$
-            </div>
-            <p>Output range: $(0, 1)$. Smooth but suffers from vanishing gradient problem.</p>
-
-            <h3>3.2 Hyperbolic Tangent (tanh)</h3>
-            <div class="math-block">
-                $$\tanh(z) = \frac{e^z - e^{-z}}{e^z + e^{-z}}$$
-            </div>
-            <p>Output range: $(-1, 1)$. Zero-centered but still has vanishing gradient issues.</p>
-
-            <h3>3.3 ReLU (Rectified Linear Unit)</h3>
-            <div class="math-block">
-                $$\text{ReLU}(z) = \max(0, z)$$
-            </div>
-            <p>Most popular activation. Simple, efficient, but can suffer from "dying ReLU" problem.</p>
-
-            <h3>3.4 Leaky ReLU</h3>
-            <div class="math-block">
-                $$\text{LeakyReLU}(z) = \max(\alpha z, z)$$
-            </div>
-            <p>where $\alpha$ is a small positive constant (e.g., 0.01).</p>
-
-            <h2>4. Multi-Layer Perceptron (MLP)</h2>
-            <p>Neural network with multiple layers:</p>
-            <ul>
-                <li><strong>Input layer:</strong> Receives input data</li>
-                <li><strong>Hidden layers:</strong> Process information</li>
-                <li><strong>Output layer:</strong> Produces final output</li>
-            </ul>
-
-            <h2>5. Forward Propagation</h2>
-            <p>For a network with $L$ layers:</p>
-            <div class="math-block">
-                $$\mathbf{a}^{[0]} = \mathbf{x}$$
-                $$\mathbf{z}^{[l]} = \mathbf{W}^{[l]}\mathbf{a}^{[l-1]} + \mathbf{b}^{[l]}$$
-                $$\mathbf{a}^{[l]} = f^{[l]}(\mathbf{z}^{[l]})$$
-            </div>
-            <p>for $l = 1, 2, \ldots, L$.</p>
-
-            <h2>6. Loss Functions</h2>
-            <h3>6.1 Mean Squared Error (Regression)</h3>
-            <div class="math-block">
-                $$L(\mathbf{y}, \hat{\mathbf{y}}) = \frac{1}{2m}\sum_{i=1}^m (y_i - \hat{y}_i)^2$$
+            <div class="table-of-contents">
+                <h3>Contents</h3>
+                <ol>
+                    <li><a href="#architecture">What a network computes</a></li>
+                    <li><a href="#uat">The Universal Approximation Theorem</a></li>
+                    <li><a href="#backprop">Backpropagation: the chain rule, exactly</a></li>
+                    <li><a href="#vanishing-gradients">Vanishing and exploding gradients: a quantitative bound</a></li>
+                    <li><a href="#relu">Why ReLU helps, and the dying ReLU pitfall</a></li>
+                    <li><a href="#initialization">Weight initialization: preserving variance across layers</a></li>
+                    <li><a href="#batchnorm">Batch normalization</a></li>
+                    <li><a href="#architectures">Other architectures, more briefly</a></li>
+                    <li><a href="#computation">Computation</a></li>
+                    <li><a href="#pitfalls">Common pitfalls</a></li>
+                    <li><a href="#connections">Connections</a></li>
+                    <li><a href="#references">References</a></li>
+                </ol>
             </div>
 
-            <h3>6.2 Cross-Entropy (Classification)</h3>
-            <div class="math-block">
-                $$L(\mathbf{y}, \hat{\mathbf{y}}) = -\frac{1}{m}\sum_{i=1}^m \sum_{j=1}^c y_{ij} \log(\hat{y}_{ij})$$
+            <h2 id="architecture">1. What a network computes</h2>
+            <div class="note-box">
+                <span class="note-box-label">Definition</span>
+                <p>A feedforward network with $L$ layers computes $\mathbf a^{[0]}=\mathbf x$, then for $l=1,\ldots,L$: $\mathbf z^{[l]}=\mathbf W^{[l]}\mathbf a^{[l-1]}+\mathbf b^{[l]}$, $\mathbf a^{[l]}=f^{[l]}(\mathbf z^{[l]})$ (applied entrywise), where $f^{[l]}$ is the layer's <strong>activation function</strong>.</p>
+            </div>
+            <p>Stripped to its essence, a network is nothing more than a composition of affine maps and pointwise nonlinearities. Without the nonlinearity, the whole composition collapses: $\mathbf W^{[2]}(\mathbf W^{[1]}\mathbf x+\mathbf b^{[1]})+\mathbf b^{[2]}=(\mathbf W^{[2]}\mathbf W^{[1]})\mathbf x+(\mathbf W^{[2]}\mathbf b^{[1]}+\mathbf b^{[2]})$ is itself just one affine map — depth without nonlinearity buys nothing. Everything interesting in this note is about what the nonlinearity buys (Section 2), what computing its derivative through many layers costs and risks (Sections 3–5), and how to control that risk (Sections 6–7).</p>
+
+            <h2 id="uat">2. The Universal Approximation Theorem</h2>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Cybenko 1989; Hornik 1991, simplified univariate statement)</span>
+                <p>Let $\sigma:\mathbb R\to\mathbb R$ be bounded and monotonically increasing with $\sigma(z)\to0$ as $z\to-\infty$, $\sigma(z)\to1$ as $z\to\infty$ (e.g. the logistic sigmoid). For any continuous $f:[0,1]\to\mathbb R$ and $\epsilon&gt;0$, there exist $n$ and constants $c_0,c_1,\ldots,c_n,k_1,\ldots,k_n,t_1,\ldots,t_n$ such that $g(x)=c_0+\sum_{i=1}^nc_i\,\sigma\big(k_i(x-t_i)\big)$ — a single-hidden-layer network — satisfies $\sup_{x\in[0,1]}|f(x)-g(x)|&lt;\epsilon$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof (sketch).</span> Since $[0,1]$ is compact, $f$ is uniformly continuous (<a href="../calculus/continuity.html">continuity note</a>, Section 7): there is $\delta&gt;0$ with $|x-y|&lt;\delta\Rightarrow|f(x)-f(y)|&lt;\epsilon/2$. Choose a partition $0=t_0&lt;t_1&lt;\cdots&lt;t_n=1$ with mesh $&lt;\delta$, and let $s(x)=f(t_{i-1})$ for $x\in[t_{i-1},t_i)$ — a step function with $\sup_x|f(x)-s(x)|&lt;\epsilon/2$ by the choice of $\delta$. Writing $s$ in terms of indicator jumps, $s(x)=f(t_0)+\sum_{i=1}^{n-1}\big[f(t_i)-f(t_{i-1})\big]\mathbb 1_{x\geq t_i}$. Since $\sigma(k(x-t_i))\to\mathbb 1_{x&gt;t_i}$ pointwise as $k\to\infty$, and $f$ is bounded (continuous on a compact set), taking $k=k_1=\cdots=k_{n-1}$ large enough makes $g(x)=f(t_0)+\sum_i\big[f(t_i)-f(t_{i-1})\big]\sigma(k(x-t_i))$ differ from $s(x)$ by less than $\epsilon/2$ everywhere except in shrinking neighborhoods of the finitely many points $t_i$, whose combined width can also be forced small enough (relative to how little $f$ itself moves there, again by uniform continuity) to keep the total sup-norm error under $\epsilon/2$ there too. Triangle inequality: $\sup_x|f(x)-g(x)|\leq\sup_x|f(x)-s(x)|+\sup_x|s(x)-g(x)|&lt;\epsilon$. <span class="qed">∎</span>
+            </div>
+            <p>The proof is not merely an existence argument — it is a recipe, and Figure 1 runs it: partition $[0,1]$ into $n$ pieces, place one steep sigmoid ramp at each interior partition point, weight each ramp by the jump in $f$ it needs to reproduce. This is exactly what Section 9's reproducible code builds.</p>
+
+            <figure class="note-figure">
+                <img src="neural-networks/figures/universal_approximation.png" alt="Left panel: a target sine curve approximated by sums of sigmoid ramps with increasing numbers of hidden neurons, converging visually to the target. Right panel: log-log plot of the sup-norm approximation error against the number of hidden neurons, decreasing at rate 1 over n.">
+                <figcaption><strong>Figure — The Universal Approximation Theorem's proof, made concrete.</strong> Left: the network $g(x)=f(t_0)+\sum_i[f(t_i)-f(t_{i-1})]\sigma(k(x-t_i))$ from the proof, built directly from $f(x)=\sin(2\pi x)$'s values at an evenly spaced partition, tracks the target increasingly closely as the partition (and so the neuron count $n$) grows. Right: the sup-norm error decays at the $O(1/n)$ rate one would expect from a Lipschitz function's oscillation over a mesh of width $1/n$ — the same rate, and the same underlying mechanism (controlling oscillation via a shrinking mesh), as the Riemann-sum bracket in the <a href="../calculus/integration.html">integration note</a>'s own $O(1/n)$ figure.</figcaption>
+            </figure>
+
+            <h2 id="backprop">3. Backpropagation: the chain rule, exactly</h2>
+            <div class="note-box">
+                <span class="note-box-label">Definition</span>
+                <p>$\delta^{[l]}:=\dfrac{\partial L}{\partial\mathbf z^{[l]}}$, the vector of partial derivatives of the loss with respect to layer $l$'s pre-activations.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Theorem</span>
+                <p>$\dfrac{\partial L}{\partial\mathbf W^{[l]}}=\delta^{[l]}(\mathbf a^{[l-1]})^T$, $\dfrac{\partial L}{\partial\mathbf b^{[l]}}=\delta^{[l]}$, and $\delta^{[l-1]}=\big((\mathbf W^{[l]})^T\delta^{[l]}\big)\odot f'^{[l-1]}(\mathbf z^{[l-1]})$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> Since $z_i^{[l]}=\sum_jW_{ij}^{[l]}a_j^{[l-1]}+b_i^{[l]}$ depends on $W_{ij}^{[l]}$ only through this one term, $\partial z_i^{[l]}/\partial W_{ij}^{[l]}=a_j^{[l-1]}$; the chain rule gives $\partial L/\partial W_{ij}^{[l]}=\delta_i^{[l]}a_j^{[l-1]}$, i.e. $\partial L/\partial\mathbf W^{[l]}=\delta^{[l]}(\mathbf a^{[l-1]})^T$ in matrix form, and $\partial L/\partial b_i^{[l]}=\delta_i^{[l]}$ directly since $\partial z_i^{[l]}/\partial b_i^{[l]}=1$. For the recursion, apply the multivariable chain rule (<a href="../calculus/multivariable-calculus.html">multivariable calculus note</a>, Section 3) to $L$ as a function of $\mathbf z^{[l-1]}$ through the intermediate variables $\mathbf z^{[l]}$: $\delta_k^{[l-1]}=\dfrac{\partial L}{\partial z_k^{[l-1]}}=\sum_i\dfrac{\partial L}{\partial z_i^{[l]}}\dfrac{\partial z_i^{[l]}}{\partial z_k^{[l-1]}}=\sum_i\delta_i^{[l]}\dfrac{\partial z_i^{[l]}}{\partial z_k^{[l-1]}}$. Since $z_i^{[l]}=\sum_jW_{ij}^{[l]}f^{[l-1]}(z_j^{[l-1]})+b_i^{[l]}$, only the $j=k$ term depends on $z_k^{[l-1]}$: $\partial z_i^{[l]}/\partial z_k^{[l-1]}=W_{ik}^{[l]}f'^{[l-1]}(z_k^{[l-1]})$. Substituting: $\delta_k^{[l-1]}=\Big(\sum_iW_{ik}^{[l]}\delta_i^{[l]}\Big)f'^{[l-1]}(z_k^{[l-1]})=\big((\mathbf W^{[l]})^T\delta^{[l]}\big)_kf'^{[l-1]}(z_k^{[l-1]})$, the claimed formula entrywise. <span class="qed">∎</span>
+            </div>
+            <p>Backpropagation is not a separate algorithmic idea bolted onto calculus — it <em>is</em> the multivariable chain rule, applied once per layer, with $\delta^{[l]}$ simply naming the intermediate partial derivative that would otherwise be recomputed from scratch at every layer. Its efficiency (linear in the number of weights, rather than the naive quadratic-or-worse cost of separately re-deriving each weight's gradient) comes entirely from reusing $\delta^{[l]}$ across all of layer $l$'s incoming weights, exactly as the proof's sum-over-$i$ structure suggests.</p>
+
+            <h2 id="vanishing-gradients">4. Vanishing and exploding gradients: a quantitative bound</h2>
+            <div class="note-box">
+                <span class="note-box-label">Theorem</span>
+                <p>If $|f'^{[l]}(z)|\leq M$ for every layer and every $z$, then $\|\delta^{[1]}\|\leq\Big(M\max_l\|\mathbf W^{[l]}\|_{\mathrm{op}}\Big)^{L-1}\|\delta^{[L]}\|$, where $\|\cdot\|_{\mathrm{op}}$ is the operator (spectral) norm.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> From Section 3's recursion, $\|\delta^{[l-1]}\|=\big\|\big((\mathbf W^{[l]})^T\delta^{[l]}\big)\odot f'^{[l-1]}(\mathbf z^{[l-1]})\big\|$. Since every entry of $f'^{[l-1]}(\mathbf z^{[l-1]})$ has absolute value $\leq M$, entrywise multiplication contracts the Euclidean norm by at most $M$: $\|v\odot u\|^2=\sum_k(v_ku_k)^2\leq M^2\sum_kv_k^2=M^2\|v\|^2$ when $|u_k|\leq M$ for all $k$. And $\|(\mathbf W^{[l]})^T\delta^{[l]}\|\leq\|\mathbf W^{[l]}\|_{\mathrm{op}}\|\delta^{[l]}\|$ by definition of the operator norm (noting $\|\mathbf W^T\|_{\mathrm{op}}=\|\mathbf W\|_{\mathrm{op}}$). Combining: $\|\delta^{[l-1]}\|\leq M\|\mathbf W^{[l]}\|_{\mathrm{op}}\|\delta^{[l]}\|$. Applying this bound repeatedly from $l=L$ down to $l=2$ and bounding every $\|\mathbf W^{[l]}\|_{\mathrm{op}}$ by their maximum gives the claim. <span class="qed">∎</span>
+            </div>
+            <p>This is not qualitative folklore — it is a proved geometric bound. When $M\max_l\|\mathbf W^{[l]}\|_{\mathrm{op}}&lt;1$ consistently across layers, $\|\delta^{[1]}\|$ is forced toward $0$ exponentially in depth $L$: the <strong>vanishing gradient problem</strong>. Sigmoid's derivative is bounded by $M=1/4$ (maximized at $z=0$, where $\sigma(0)(1-\sigma(0))=1/4$), so ordinary-scale weight matrices routinely put the product well below $1$; if instead $M\max_l\|\mathbf W^{[l]}\|_{\mathrm{op}}&gt;1$, the same recursion drives $\|\delta^{[1]}\|$ toward exponential growth instead — <strong>exploding gradients</strong>. Figure 2 and Section 9 make both the qualitative collapse and the quantitative bound itself directly checkable.</p>
+
+            <figure class="note-figure">
+                <img src="neural-networks/figures/vanishing_gradients.png" alt="Semilog plot of the backpropagated error norm across a 30-layer network, showing sigmoid activations with Xavier-scaled weights collapsing across 18 orders of magnitude from the output layer to the input layer, while ReLU activations with He-scaled weights stay roughly stable across all 30 layers.">
+                <figcaption><strong>Figure — Backpropagated error norm across a 30-layer network.</strong> With Xavier-scaled weights and sigmoid activations, $\|\delta^{[l]}\|$ collapses by roughly $18$ orders of magnitude from the output side to the input side — the geometric decay Section 4's theorem predicts, with $M=1/4$ compounding over $29$ layers. With ReLU and He-scaled weights (Sections 5–6), the norm stays within roughly one order of magnitude across the entire depth. Section 9 checks the exact proved bound against these numbers.</figcaption>
+            </figure>
+
+            <h2 id="relu">5. Why ReLU helps, and the dying ReLU pitfall</h2>
+            <p>$\mathrm{ReLU}'(z)\in\{0,1\}$ exactly — wherever a unit is active ($z&gt;0$), it passes the incoming error through with $M=1$, no attenuation at all from the activation itself (Section 4's bound loses its guaranteed sub-unity factor from $M$, leaving only the weight matrices' operator norms to control, which is precisely what He initialization in Section 6 is designed to do). But the same all-or-nothing derivative is a liability: if training drives a unit's pre-activation negative for <em>every</em> training example, $f'(z)=0$ there permanently, and by Section 3's recursive formula, that unit's entire row of $\delta^{[l-1]}$ is multiplied by exactly $0$ — not attenuated, but identically annihilated, regardless of how large the downstream error $\delta^{[l]}$ is. Because the zero is exact (not merely small), no amount of further training can revive the unit through gradient descent alone: its gradient is always zero, so its weights never update. This is the <strong>dying ReLU</strong> problem, and it is the reason Leaky ReLU ($\max(\alpha z,z)$ for small $\alpha&gt;0$) and its relatives exist — replacing the exact zero with a small nonzero slope keeps Section 4's contraction factor away from a hard $0$.</p>
+
+            <h2 id="initialization">6. Weight initialization: preserving variance across layers</h2>
+            <p>Section 4's bound shows depth compounds whatever per-layer factor is in play; the same compounding affects the forward pass's activation <em>magnitudes</em>, not just backward gradients, and initialization is the tool for controlling it before training even starts.</p>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Xavier/LeCun initialization)</span>
+                <p>Let $z_j=\sum_{i=1}^{n_{\text{in}}}W_{ji}x_i$ with $x_i$ i.i.d., mean $0$, variance $\sigma_x^2$, and $W_{ji}$ i.i.d., mean $0$, variance $\sigma_w^2$, independent of $\mathbf x$. Then $\mathrm{Var}(z_j)=n_{\text{in}}\sigma_w^2\sigma_x^2$; choosing $\sigma_w^2=1/n_{\text{in}}$ makes $\mathrm{Var}(z_j)=\sigma_x^2$, preserving variance from input to pre-activation.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> $\mathrm{Var}(z_j)=\mathrm{Var}\big(\sum_iW_{ji}x_i\big)=\sum_i\mathrm{Var}(W_{ji}x_i)$, using independence across $i$ to drop cross-covariance terms. Each term: $\mathrm{Var}(W_{ji}x_i)=E[W_{ji}^2x_i^2]-\big(E[W_{ji}x_i]\big)^2$. Independence of $W_{ji},x_i$ and both having mean $0$ give $E[W_{ji}x_i]=E[W_{ji}]E[x_i]=0$ and $E[W_{ji}^2x_i^2]=E[W_{ji}^2]E[x_i^2]=\sigma_w^2\sigma_x^2$. So each of the $n_{\text{in}}$ terms contributes $\sigma_w^2\sigma_x^2$, giving $\mathrm{Var}(z_j)=n_{\text{in}}\sigma_w^2\sigma_x^2$. Setting this equal to $\sigma_x^2$ forces $\sigma_w^2=1/n_{\text{in}}$. <span class="qed">∎</span>
+            </div>
+            <p>(The original Glorot–Bengio proposal balances this against the same computation run backward through $\delta^{[l]}$, landing on the symmetric compromise $\sigma_w^2=2/(n_{\text{in}}+n_{\text{out}})$; the derivation above isolates the forward-only mechanism.)</p>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (He initialization, for ReLU)</span>
+                <p>If in addition $z_j$'s distribution is symmetric about $0$ and $a_j=\mathrm{ReLU}(z_j)$, then $E[a_j^2]=\frac12\mathrm{Var}(z_j)$; preserving variance through a ReLU layer requires the compensated scale $\sigma_w^2=2/n_{\text{in}}$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> $E[a_j^2]=E\big[z_j^2\mathbb 1_{z_j&gt;0}\big]$. By symmetry of $z_j$'s distribution about $0$, exactly half of $E[z_j^2]$'s mass lies in $\{z_j&gt;0\}$: $E[z_j^2\mathbb 1_{z_j&gt;0}]=\frac12E[z_j^2]=\frac12\mathrm{Var}(z_j)$ (using $E[z_j]=0$). So a ReLU layer halves the propagated second moment for free, purely from zeroing out the negative half; doubling $\sigma_w^2$ (to $2/n_{\text{in}}$, using the Xavier computation above with $\sigma_x^2$ replaced by this layer's variance) exactly cancels that halving in the next layer's $\mathrm{Var}(z)=n_{\text{in}}\sigma_w^2E[a^2]$. <span class="qed">∎</span>
+            </div>
+            <p>Both results are visible directly in Section 9's numbers: correctly-scaled weights hold $\mathrm{Var}(z)$ close to $1$ across ten layers, while a scale off by a constant factor compounds that same constant factor ten times over — exactly Section 4's compounding mechanism, now controlling forward magnitudes rather than backward gradients.</p>
+
+            <h2 id="batchnorm">7. Batch normalization</h2>
+            <div class="note-box">
+                <span class="note-box-label">Definition</span>
+                <p>For a mini-batch with per-feature mean $\mu$ and variance $\sigma^2$: $\hat x_i=\dfrac{x_i-\mu}{\sqrt{\sigma^2+\epsilon}}$, typically followed by a learned affine rescaling $\gamma\hat x_i+\beta$.</p>
+            </div>
+            <p>Where Section 6's initialization only sets $\mathrm{Var}(z)\approx1$ at the start of training, batch normalization enforces it, by explicit construction, at <em>every</em> layer on <em>every</em> forward pass throughout training — directly counteracting the multiplicative variance-compounding mechanism proved in Sections 4 and 6 rather than merely arranging for it to start out canceled. This is also why batch normalization measurably helps even in architectures already using careful initialization: initialization is a one-time bet on the statistics of the first batch, and weights drift away from it as soon as training begins.</p>
+
+            <h2 id="architectures">8. Other architectures, more briefly</h2>
+            <p>The remaining standard architectures are variations on Sections 1–7's machinery applied to structured data, rather than new mathematical content; full treatment is beyond this note's scope.</p>
+            <div class="note-box">
+                <span class="note-box-label">Convolutional networks</span>
+                <p>Replace a dense $\mathbf W^{[l]}$ with a small shared filter convolved across spatial positions, $(f*g)(t)=\sum_mf(m)g(t-m)$ — vastly fewer parameters than a dense layer of the same size, and translation-equivariant by construction. Backpropagation through a convolution is again the chain rule (Section 3), applied with the weight-sharing constraint that every use of a filter weight contributes to the same gradient accumulator.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Recurrent networks</span>
+                <p>$\mathbf h_t=f(\mathbf W_{hh}\mathbf h_{t-1}+\mathbf W_{xh}\mathbf x_t+\mathbf b_h)$, applied across a sequence with the <em>same</em> weights at every time step. "Backpropagation through time" unrolls the recursion into an ordinary (very deep, one layer per time step) feedforward computation and applies Section 3 unchanged — which is exactly why plain RNNs suffer Section 4's vanishing-gradient problem acutely across long sequences, and why LSTM and GRU cells (which introduce an additively-updated memory cell, sidestepping the repeated multiplicative contraction) were designed specifically to fix it.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Further architectures</span>
+                <p>Autoencoders (learn a compressed representation by training a network to reconstruct its own input through a narrow bottleneck layer), generative adversarial networks (two networks, a generator and a discriminator, trained against each other), and Transformers (attention-based sequence models, replacing recurrence with a learned weighted combination of all positions at once) are each substantial topics of their own, not developed further here.</p>
             </div>
 
-            <h2>7. Backpropagation</h2>
-            <p>Algorithm to compute gradients using chain rule:</p>
-            <div class="math-block">
-                $$\frac{\partial L}{\partial \mathbf{W}^{[l]}} = \frac{\partial L}{\partial \mathbf{z}^{[l]}} \cdot \frac{\partial \mathbf{z}^{[l]}}{\partial \mathbf{W}^{[l]}} = \delta^{[l]} (\mathbf{a}^{[l-1]})^T$$
-            </div>
-            <div class="math-block">
-                $$\frac{\partial L}{\partial \mathbf{b}^{[l]}} = \delta^{[l]}$$
-            </div>
-            <p>where $\delta^{[l]} = \frac{\partial L}{\partial \mathbf{z}^{[l]}}$ is the error at layer $l$.</p>
+            <h2 id="computation">9. Computation</h2>
+            <p>The figures above are generated by <code>neural-networks/generate_figures.py</code>. The snippet below checks Section 4's exact proved bound against a real backward pass, and Section 6's variance-preservation claims against three initialization scales.</p>
+            <pre><code>import numpy as np
 
-            <h2>8. Gradient Descent</h2>
-            <h3>8.1 Batch Gradient Descent</h3>
-            <div class="math-block">
-                $$\mathbf{W} := \mathbf{W} - \alpha \frac{\partial L}{\partial \mathbf{W}}$$
-            </div>
+def sigmoid(z): return 1/(1+np.exp(-np.clip(z,-500,500)))
+def sigmoid_deriv(z):
+    s = sigmoid(z); return s*(1-s)
 
-            <h3>8.2 Stochastic Gradient Descent (SGD)</h3>
-            <p>Update parameters using one sample at a time.</p>
+rng = np.random.default_rng(0)
+depth, width = 30, 50
+Ws = [rng.normal(0, 1/np.sqrt(width), size=(width,width)) for _ in range(depth)]
+a = rng.normal(0, 1, size=(width,1))
+zs = []
+for W in Ws:
+    z = W @ a; zs.append(z); a = sigmoid(z)
+delta = np.ones_like(a)
+norms = [float(np.linalg.norm(delta))]
+for l in range(depth-1, 0, -1):
+    delta = (Ws[l].T @ delta) * sigmoid_deriv(zs[l])
+    norms.append(float(np.linalg.norm(delta)))
+norms = norms[::-1]
 
-            <h3>8.3 Mini-batch Gradient Descent</h3>
-            <p>Update parameters using small batches of samples.</p>
+M = 0.25
+max_op_norm = max(np.linalg.norm(W, 2) for W in Ws)
+bound = (M * max_op_norm) ** (depth - 1)
+actual = norms[0] / norms[-1]
+print(f"proved bound on ||delta^1||/||delta^L||: {bound:.3e}")
+print(f"actual ||delta^1||/||delta^L||:           {actual:.3e}")
+print(f"bound holds: {actual &lt;= bound}")
 
-            <h2>9. Regularization Techniques</h2>
-            <h3>9.1 L2 Regularization (Weight Decay)</h3>
-            <div class="math-block">
-                $$L_{\text{reg}} = L + \frac{\lambda}{2}\sum_{l=1}^L \|\mathbf{W}^{[l]}\|_F^2$$
-            </div>
+def variance_per_layer(scale, width=500, depth=10, trials=2000):
+    rng = np.random.default_rng(1)
+    a = rng.normal(0, 1, size=(width, trials))
+    variances = [np.var(a)]
+    for _ in range(depth):
+        W = rng.normal(0, scale/np.sqrt(width), size=(width, width))
+        a = W @ a
+        variances.append(np.var(a))
+    return variances
 
-            <h3>9.2 Dropout</h3>
-            <p>Randomly set some neurons to zero during training with probability $p$.</p>
-
-            <h3>9.3 Batch Normalization</h3>
-            <p>Normalize inputs to each layer:</p>
-            <div class="math-block">
-                $$\hat{x}_i = \frac{x_i - \mu}{\sqrt{\sigma^2 + \epsilon}}$$
-            </div>
-
-            <h2>10. Convolutional Neural Networks (CNNs)</h2>
-            <p>Specialized for processing grid-like data (images).</p>
-            <h3>10.1 Convolution Operation</h3>
-            <div class="math-block">
-                $$(f * g)(t) = \sum_{m=-\infty}^{\infty} f(m)g(t-m)$$
-            </div>
-
-            <h3>10.2 Pooling</h3>
-            <p>Reduce spatial dimensions:</p>
-            <ul>
-                <li><strong>Max pooling:</strong> Take maximum value in region</li>
-                <li><strong>Average pooling:</strong> Take average value in region</li>
-            </ul>
-
-            <h2>11. Recurrent Neural Networks (RNNs)</h2>
-            <p>Networks with memory for sequential data:</p>
-            <div class="math-block">
-                $$\mathbf{h}_t = f(\mathbf{W}_{hh}\mathbf{h}_{t-1} + \mathbf{W}_{xh}\mathbf{x}_t + \mathbf{b}_h)$$
-                $$\mathbf{y}_t = \mathbf{W}_{hy}\mathbf{h}_t + \mathbf{b}_y$$
-            </div>
-
-            <h3>11.1 LSTM (Long Short-Term Memory)</h3>
-            <p>Addresses vanishing gradient problem in RNNs with gating mechanisms.</p>
-
-            <h3>11.2 GRU (Gated Recurrent Unit)</h3>
-            <p>Simplified version of LSTM with fewer parameters.</p>
-
-            <h2>12. Deep Learning Architectures</h2>
-            <h3>12.1 Autoencoders</h3>
-            <p>Learn compressed representations of data.</p>
-
-            <h3>12.2 Generative Adversarial Networks (GANs)</h3>
-            <p>Two networks competing: generator and discriminator.</p>
-
-            <h3>12.3 Transformers</h3>
-            <p>Attention-based models for sequence processing.</p>
-
-            <h2>13. Training Tips</h2>
-            <ul>
-                <li><strong>Weight initialization:</strong> Xavier/He initialization</li>
-                <li><strong>Learning rate scheduling:</strong> Decay over time</li>
-                <li><strong>Early stopping:</strong> Stop when validation loss increases</li>
-                <li><strong>Data augmentation:</strong> Increase training data diversity</li>
-            </ul>
-
-            <h2>14. Code Example</h2>
-            <pre><code># Python implementation of a simple neural network
-import numpy as np
-
-class NeuralNetwork:
-    def __init__(self, layers):
-        """
-        layers: list of layer sizes [input_size, hidden1, hidden2, ..., output_size]
-        """
-        self.layers = layers
-        self.num_layers = len(layers)
-        
-        # Initialize weights and biases
-        self.weights = []
-        self.biases = []
-        
-        for i in range(1, self.num_layers):
-            # Xavier initialization
-            w = np.random.randn(layers[i], layers[i-1]) * np.sqrt(2.0 / layers[i-1])
-            b = np.zeros((layers[i], 1))
-            self.weights.append(w)
-            self.biases.append(b)
-    
-    def sigmoid(self, z):
-        """Sigmoid activation function"""
-        return 1 / (1 + np.exp(-np.clip(z, -500, 500)))
-    
-    def sigmoid_derivative(self, z):
-        """Derivative of sigmoid function"""
-        s = self.sigmoid(z)
-        return s * (1 - s)
-    
-    def relu(self, z):
-        """ReLU activation function"""
-        return np.maximum(0, z)
-    
-    def relu_derivative(self, z):
-        """Derivative of ReLU function"""
-        return (z > 0).astype(float)
-    
-    def forward_propagation(self, X):
-        """Forward pass through the network"""
-        activations = [X]
-        zs = []
-        
-        for i in range(self.num_layers - 1):
-            z = np.dot(self.weights[i], activations[-1]) + self.biases[i]
-            zs.append(z)
-            
-            if i < self.num_layers - 2:  # Hidden layers
-                a = self.relu(z)
-            else:  # Output layer
-                a = self.sigmoid(z)
-            
-            activations.append(a)
-        
-        return activations, zs
-    
-    def backward_propagation(self, X, y, activations, zs):
-        """Backward pass to compute gradients"""
-        m = X.shape[1]  # Number of examples
-        
-        # Initialize gradients
-        dW = [np.zeros(w.shape) for w in self.weights]
-        db = [np.zeros(b.shape) for b in self.biases]
-        
-        # Output layer error
-        delta = activations[-1] - y
-        
-        # Backpropagate the error
-        for i in range(self.num_layers - 2, -1, -1):
-            dW[i] = (1/m) * np.dot(delta, activations[i].T)
-            db[i] = (1/m) * np.sum(delta, axis=1, keepdims=True)
-            
-            if i > 0:  # Not the first layer
-                delta = np.dot(self.weights[i].T, delta) * self.relu_derivative(zs[i-1])
-        
-        return dW, db
-    
-    def update_parameters(self, dW, db, learning_rate):
-        """Update weights and biases"""
-        for i in range(len(self.weights)):
-            self.weights[i] -= learning_rate * dW[i]
-            self.biases[i] -= learning_rate * db[i]
-    
-    def compute_cost(self, y_pred, y_true):
-        """Compute binary cross-entropy cost"""
-        m = y_true.shape[1]
-        cost = -(1/m) * np.sum(y_true * np.log(y_pred) + (1 - y_true) * np.log(1 - y_pred))
-        return cost
-    
-    def train(self, X, y, epochs, learning_rate):
-        """Train the neural network"""
-        costs = []
-        
-        for epoch in range(epochs):
-            # Forward propagation
-            activations, zs = self.forward_propagation(X)
-            
-            # Compute cost
-            cost = self.compute_cost(activations[-1], y)
-            costs.append(cost)
-            
-            # Backward propagation
-            dW, db = self.backward_propagation(X, y, activations, zs)
-            
-            # Update parameters
-            self.update_parameters(dW, db, learning_rate)
-            
-            if epoch % 100 == 0:
-                print(f"Cost after epoch {epoch}: {cost}")
-        
-        return costs
-    
-    def predict(self, X):
-        """Make predictions"""
-        activations, _ = self.forward_propagation(X)
-        return activations[-1] > 0.5
-
-# Example usage
-if __name__ == "__main__":
-    # Generate sample data (XOR problem)
-    X = np.array([[0, 0, 1, 1], [0, 1, 0, 1]])
-    y = np.array([[0, 1, 1, 0]])
-    
-    # Create and train network
-    nn = NeuralNetwork([2, 4, 1])
-    costs = nn.train(X, y, epochs=1000, learning_rate=1.0)
-    
-    # Make predictions
-    predictions = nn.predict(X)
-    print("Predictions:", predictions.astype(int))
-    print("Actual:", y.astype(int))
+print()
+print("Var(z) per layer, scale=1 (Xavier):", [f"{v:.2f}" for v in variance_per_layer(1.0)])
+print("Var(z) per layer, scale=3 (too large):", [f"{v:.2f}" for v in variance_per_layer(3.0)])
 </code></pre>
+            <p>Actual output:</p>
+            <pre><code>proved bound on ||delta^1||/||delta^L||: 9.095e-09
+actual ||delta^1||/||delta^L||:           4.987e-19
+bound holds: True
 
-            <h2>15. References</h2>
+Var(z) per layer, scale=1 (Xavier): ['1.00', '0.99', '0.99', '0.99', '0.99', '0.98', '0.97', '0.98', '0.99', '1.00', '1.00']
+Var(z) per layer, scale=3 (too large): ['1.00', '8.94', '80.48', '723.50', '6504.06', '57922.88', '513499.30', '4694072.61', '42480708.05', '387122869.70', '3471996303.30']</code></pre>
+            <p>The proved bound holds — as it must — with room to spare (the actual ratio is about $10$ orders of magnitude smaller than the worst-case bound, since the bound uses the single largest layer's operator norm for every layer rather than each layer's own, slightly smaller, value). The variance check is stark: Xavier scaling holds $\mathrm{Var}(z)$ within a few percent of $1$ across ten layers, while a weight scale too large by a factor of $3$ compounds that factor's square ($9\times$) at every layer, reaching a factor of $3.5$ billion after ten layers — Section 4 and Section 6's compounding mechanism, forward and backward, made numerically unmistakable.</p>
+
+            <h2 id="pitfalls">10. Common pitfalls</h2>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — the Universal Approximation Theorem guarantees existence, not learnability</span>
+                <p>Section 2 proves suitable weights <em>exist</em>; it says nothing about whether gradient descent (<a href="optimization.html">optimization note</a>) can find them, how many neurons are needed for a given $\epsilon$ in practice, or how the construction behaves outside $[0,1]$ or in more than one input dimension. A network's representational capacity and its trainability are different questions, and this theorem answers only the first.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — a dead ReLU unit is not merely slow, it is permanently gradient-free</span>
+                <p>Demonstrated in Section 5: once every training example drives a unit's pre-activation negative, $\mathrm{ReLU}'=0$ exactly, and Section 3's recursion multiplies that unit's contribution to $\delta^{[l-1]}$ by exactly $0$ — not a small number, zero. No amount of further gradient-based training can revive it; this is a qualitatively different failure than merely slow convergence.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — small gradient norm does not mean training is close to a good solution</span>
+                <p>The <a href="optimization.html">optimization note</a>'s Section 12 makes the same point for general non-convex objectives: $\|\nabla L\|\to0$ only certifies a critical point, which Section 4's vanishing-gradient mechanism can produce for reasons having nothing to do with solution quality — a network deep enough, or scaled badly enough, can have tiny gradients everywhere, including at poor parameter settings.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — Xavier/He initialization is a statement about the <em>start</em> of training only</span>
+                <p>Sections 6's derivation assumes $\mathbf W$ and $\mathbf x$ independent with the stated moments — true by construction at initialization, but not preserved as training updates correlate the weights with the data distribution they're being fit to. This is precisely why batch normalization (Section 7), which re-enforces the variance condition on every forward pass rather than only at $t=0$, remains useful throughout training in a way a one-time initialization choice cannot be.</p>
+            </div>
+
+            <h2 id="connections">11. Connections</h2>
             <ul>
-                <li>Goodfellow, I., Bengio, Y., & Courville, A. (2016). <em>Deep Learning</em>.</li>
-                <li>Nielsen, M. A. (2015). <em>Neural Networks and Deep Learning</em>.</li>
-                <li>Bishop, C. M. (2006). <em>Pattern Recognition and Machine Learning</em>.</li>
+                <li><strong><a href="../calculus/continuity.html">Continuity and limits</a>.</strong> Uniform continuity on a compact interval is the exact mechanism behind Section 2's Universal Approximation construction — the same "pointwise isn't enough, uniform is" pattern used throughout that note to control error across an entire interval at once, not just at each point separately.</li>
+                <li><strong><a href="../calculus/multivariable-calculus.html">Multivariable calculus</a>.</strong> Backpropagation (Section 3) is a direct, layer-by-layer instance of that note's multivariable chain rule; nothing algorithmically new is added beyond bookkeeping the sum over paths through each layer.</li>
+                <li><strong><a href="optimization.html">Optimization</a>.</strong> Gradient descent and SGD, proved convergent there under convexity, are exactly the algorithms used to train the (non-convex) networks in this note; the vanishing-gradient bound here (Section 4) and that note's descent lemma share the same proof pattern — bound a per-step or per-layer contraction factor, then compound it.</li>
+                <li><strong>Probabilistic models.</strong> Section 6's variance computations use only the definitions of mean, variance, and independence; the <a href="probabilistic-models.html">probabilistic models note</a> develops this machinery — expectation, variance, and their algebra under independence — as its own foundational subject.</li>
+            </ul>
+
+            <h2 id="references">12. References</h2>
+            <ul>
+                <li>Goodfellow, I., Bengio, Y., &amp; Courville, A. (2016). <em>Deep Learning</em>. MIT Press.</li>
+                <li>Nielsen, M. A. (2015). <em>Neural Networks and Deep Learning</em>. Determination Press.</li>
+                <li>Bishop, C. M. (2006). <em>Pattern Recognition and Machine Learning</em>. Springer.</li>
+                <li>Cybenko, G. (1989). Approximation by superpositions of a sigmoidal function. <em>Mathematics of Control, Signals and Systems</em>, 2(4), 303–314.</li>
+                <li>Glorot, X., &amp; Bengio, Y. (2010). Understanding the difficulty of training deep feedforward neural networks. <em>AISTATS 2010</em>.</li>
+                <li>He, K., Zhang, X., Ren, S., &amp; Sun, J. (2015). Delving deep into rectifiers: surpassing human-level performance on ImageNet classification. <em>ICCV 2015</em>.</li>
             </ul>
         </section>
     </main>
@@ -329,4 +244,4 @@ if __name__ == "__main__":
         <p>&copy; Diogo Franquinho | Technical Notes</p>
     </footer>
 </body>
-</html> 
+</html>
