@@ -21,340 +21,233 @@
 </head>
 <body>
     <nav class="top-nav">
-        <a href="../../index.html">← Back to Home</a> | 
+        <a href="../../index.html">← Back to Home</a> |
         <a href="../../index.html#notes">Notes</a>
     </nav>
 
     <main>
         <header>
             <h1>Combinatorics</h1>
-            <p class="note-meta">Last updated: December 2024</p>
+            <p class="note-meta">Last updated: August 2026</p>
         </header>
 
         <section class="note-content">
             <div class="disclaimer">
                 <p><strong>Disclaimer:</strong> These are my personal notes compiled for my own reference and learning. They may contain errors, incomplete information, or personal interpretations. While I strive for accuracy, these notes are not peer-reviewed and should not be considered authoritative sources. Please consult official textbooks, research papers, or other reliable sources for academic or professional purposes.</p>
             </div>
-            
-            <h2>1. Introduction to Combinatorics</h2>
-            <p>Combinatorics is the study of counting, arrangement, and combination of objects. It provides tools for solving problems involving discrete structures and is fundamental to probability theory, computer science, and optimization.</p>
 
-            <h2>2. Basic Counting Principles</h2>
-            <h3>2.1 Addition Principle</h3>
-            <p>If there are $m$ ways to do one thing and $n$ ways to do another, and these two things cannot be done simultaneously, then there are $m + n$ ways to do either.</p>
-
-            <h3>2.2 Multiplication Principle</h3>
-            <p>If there are $m$ ways to do one thing and $n$ ways to do another, then there are $m \times n$ ways to do both.</p>
-
-            <h3>2.3 Inclusion-Exclusion Principle</h3>
-            <p>For two sets $A$ and $B$:</p>
-            <div class="math-block">
-                $$|A \cup B| = |A| + |B| - |A \cap B|$$
-            </div>
-            <p>For three sets:</p>
-            <div class="math-block">
-                $$|A \cup B \cup C| = |A| + |B| + |C| - |A \cap B| - |A \cap C| - |B \cap C| + |A \cap B \cap C|$$
+            <div class="table-of-contents">
+                <h3>Contents</h3>
+                <ol>
+                    <li><a href="#counting-principles">Counting principles: the bijective principle</a></li>
+                    <li><a href="#binomial">Binomial coefficients: Pascal and the Binomial Theorem</a></li>
+                    <li><a href="#inclusion-exclusion">Inclusion-Exclusion and derangements</a></li>
+                    <li><a href="#generating-functions">Generating functions: solving Fibonacci exactly</a></li>
+                    <li><a href="#catalan">Catalan numbers via the reflection principle</a></li>
+                    <li><a href="#pigeonhole">Pigeonhole and the Erdős–Szekeres theorem</a></li>
+                    <li><a href="#ramsey">Ramsey's theorem: $R(3,3)=6$</a></li>
+                    <li><a href="#burnside">Burnside's Lemma</a></li>
+                    <li><a href="#computation">Computation</a></li>
+                    <li><a href="#pitfalls">Common pitfalls</a></li>
+                    <li><a href="#connections">Connections</a></li>
+                    <li><a href="#references">References</a></li>
+                </ol>
             </div>
 
-            <h2>3. Permutations</h2>
-            <h3>3.1 Permutations without Repetition</h3>
-            <p>The number of ways to arrange $r$ objects from $n$ distinct objects is:</p>
-            <div class="math-block">
-                $$P(n, r) = \frac{n!}{(n-r)!}$$
+            <h2 id="counting-principles">1. Counting principles: the bijective principle</h2>
+            <div class="note-box">
+                <span class="note-box-label">Principle</span>
+                <p>If finite sets $A,B$ are in bijection, $|A|=|B|$. Consequently: $|A\sqcup B|=|A|+|B|$ (disjoint union — partition the union and count each part), and $|A\times B|=|A||B|$ (partition $A\times B$ into $|A|$ copies of $B$, one per first coordinate).</p>
             </div>
-            <p>When $r = n$, we have $P(n, n) = n!$ (all arrangements of $n$ objects).</p>
+            <p>Every counting formula in this note is, underneath, an explicit or implicit bijection between the objects being counted and some other set whose size is already known — this is the single idea the rest of the note keeps reusing, not a separate technique per formula.</p>
 
-            <h3>3.2 Permutations with Repetition</h3>
-            <p>If we have $n$ objects where $n_1$ are of type 1, $n_2$ are of type 2, ..., $n_k$ are of type $k$:</p>
-            <div class="math-block">
-                $$\frac{n!}{n_1! \cdot n_2! \cdot \ldots \cdot n_k!}$$
+            <h2 id="binomial">2. Binomial coefficients: Pascal and the Binomial Theorem</h2>
+            <div class="note-box">
+                <span class="note-box-label">Definition</span>
+                <p>$\binom nr$ is the number of $r$-element subsets of an $n$-element set.</p>
             </div>
-
-            <h3>3.3 Circular Permutations</h3>
-            <p>The number of ways to arrange $n$ distinct objects in a circle is $(n-1)!$.</p>
-
-            <h2>4. Combinations</h2>
-            <h3>4.1 Combinations without Repetition</h3>
-            <p>The number of ways to choose $r$ objects from $n$ distinct objects (order doesn't matter):</p>
-            <div class="math-block">
-                $$C(n, r) = \binom{n}{r} = \frac{n!}{r!(n-r)!}$$
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Pascal's identity)</span>
+                <p>$\binom nr=\binom{n-1}{r-1}+\binom{n-1}{r}$.</p>
             </div>
-
-            <h3>4.2 Properties of Binomial Coefficients</h3>
-            <ul>
-                <li>$\binom{n}{r} = \binom{n}{n-r}$ (Symmetry)</li>
-                <li>$\binom{n}{r} = \binom{n-1}{r-1} + \binom{n-1}{r}$ (Pascal's Identity)</li>
-                <li>$\sum_{r=0}^{n} \binom{n}{r} = 2^n$ (Sum of row in Pascal's triangle)</li>
-                <li>$\sum_{r=0}^{n} (-1)^r \binom{n}{r} = 0$ for $n > 0$</li>
-            </ul>
-
-            <h3>4.3 Combinations with Repetition</h3>
-            <p>The number of ways to choose $r$ objects from $n$ types (with repetition allowed):</p>
-            <div class="math-block">
-                $$\binom{n+r-1}{r} = \binom{n+r-1}{n-1}$$
+            <div class="proof">
+                <span class="proof-label">Proof.</span> Partition the $r$-subsets of $\{1,\ldots,n\}$ by whether they contain $n$. Those that do correspond bijectively (remove $n$) to $(r-1)$-subsets of $\{1,\ldots,n-1\}$: $\binom{n-1}{r-1}$ of them. Those that don't are exactly the $r$-subsets of $\{1,\ldots,n-1\}$: $\binom{n-1}{r}$. The bijective principle (Section 1) sums these disjoint counts. <span class="qed">∎</span>
             </div>
-
-            <h2>5. Generating Functions</h2>
-            <h3>5.1 Ordinary Generating Functions</h3>
-            <p>For a sequence $\{a_n\}$, the generating function is:</p>
-            <div class="math-block">
-                $$G(x) = \sum_{n=0}^{\infty} a_n x^n$$
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Binomial Theorem)</span>
+                <p>$(1+x)^n=\sum_{r=0}^n\binom nrx^r$.</p>
             </div>
-
-            <h3>5.2 Common Generating Functions</h3>
-            <ul>
-                <li>$\frac{1}{1-x} = \sum_{n=0}^{\infty} x^n$ (geometric series)</li>
-                <li>$\frac{1}{(1-x)^k} = \sum_{n=0}^{\infty} \binom{n+k-1}{k-1} x^n$</li>
-                <li>$(1+x)^n = \sum_{r=0}^{n} \binom{n}{r} x^r$ (binomial theorem)</li>
-                <li>$e^x = \sum_{n=0}^{\infty} \frac{x^n}{n!}$</li>
-            </ul>
-
-            <h3>5.3 Exponential Generating Functions</h3>
-            <p>For labeled objects, we use:</p>
-            <div class="math-block">
-                $$G(x) = \sum_{n=0}^{\infty} a_n \frac{x^n}{n!}$$
+            <div class="proof">
+                <span class="proof-label">Proof.</span> Expand $(1+x)^n=(1+x)(1+x)\cdots(1+x)$ ($n$ factors) by picking, from each factor, either the term $1$ or the term $x$, and summing over all $2^n$ such choices. A choice contributes $x^r$ exactly when it picks $x$ from $r$ of the $n$ factors; the number of choices doing so is exactly the number of ways to choose <em>which</em> $r$ factors contribute $x$ — $\binom nr$. Collecting all choices by their power of $x$ gives the stated sum. <span class="qed">∎</span>
             </div>
+            <p>Setting $x=1$: $\sum_r\binom nr=2^n$ (the number of subsets of an $n$-set, counted by size). Setting $x=-1$: $\sum_r(-1)^r\binom nr=0$ for $n>0$ — an identity Section 3 uses directly.</p>
 
-            <h2>6. Recurrence Relations</h2>
-            <h3>6.1 Linear Homogeneous Recurrence Relations</h3>
-            <p>For $a_n = c_1 a_{n-1} + c_2 a_{n-2} + \ldots + c_k a_{n-k}$</p>
-            <p>The characteristic equation is:</p>
-            <div class="math-block">
-                $$r^k - c_1 r^{k-1} - c_2 r^{k-2} - \ldots - c_k = 0$$
+            <h2 id="inclusion-exclusion">3. Inclusion-Exclusion and derangements</h2>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Inclusion-Exclusion)</span>
+                <p>$\displaystyle\left|\bigcup_{i=1}^nA_i\right|=\sum_{k=1}^n(-1)^{k+1}\sum_{|S|=k}\left|\bigcap_{i\in S}A_i\right|$.</p>
             </div>
-
-            <h3>6.2 Fibonacci Numbers</h3>
-            <p>$F_n = F_{n-1} + F_{n-2}$ with $F_0 = 0, F_1 = 1$</p>
-            <p>Closed form (Binet's formula):</p>
-            <div class="math-block">
-                $$F_n = \frac{\phi^n - \psi^n}{\sqrt{5}}$$
+            <div class="proof">
+                <span class="proof-label">Proof.</span> Fix any element $x$ in the union, belonging to exactly $j\geq1$ of the sets $A_i$. Its contribution to the right side is $\sum_{k=1}^n(-1)^{k+1}\binom jk$ (a $k$-fold intersection contains $x$ exactly when all $k$ chosen sets are among the $j$ containing $x$, giving $\binom jk$ such intersections — and $0$ contribution when $k>j$). By the Binomial Theorem (Section 2) with $x=-1$: $\sum_{k=0}^j(-1)^k\binom jk=0$, so $\sum_{k=1}^j(-1)^{k+1}\binom jk=-\left[\sum_{k=1}^j(-1)^k\binom jk\right]=-[0-1]=1$. So every element of the union contributes exactly $1$ to the right side — matching the left side's count of $1$ per element — and elements outside every $A_i$ contribute $0$ to both. <span class="qed">∎</span>
             </div>
-            <p>where $\phi = \frac{1+\sqrt{5}}{2}$ and $\psi = \frac{1-\sqrt{5}}{2}$</p>
-
-            <h2>7. Catalan Numbers</h2>
-            <p>The $n$-th Catalan number is:</p>
-            <div class="math-block">
-                $$C_n = \frac{1}{n+1}\binom{2n}{n} = \frac{(2n)!}{(n+1)!n!}$$
+            <div class="note-box">
+                <span class="note-box-label">Application (Derangements)</span>
+                <p>The number of permutations of $\{1,\ldots,n\}$ with no fixed point is $D_n=n!\sum_{i=0}^n\dfrac{(-1)^i}{i!}$.</p>
             </div>
-            <p>Recurrence relation: $C_0 = 1$ and $C_n = \sum_{i=0}^{n-1} C_i C_{n-1-i}$</p>
-            <p><strong>Applications:</strong> Number of valid parentheses expressions, binary trees, triangulations of polygons.</p>
-
-            <h2>8. Stirling Numbers</h2>
-            <h3>8.1 Stirling Numbers of the First Kind</h3>
-            <p>$S(n, k)$ counts the number of permutations of $n$ elements with $k$ cycles.</p>
-            <div class="math-block">
-                $$S(n, k) = S(n-1, k-1) + (n-1)S(n-1, k)$$
+            <div class="proof">
+                <span class="proof-label">Proof.</span> Let $A_i$ be the permutations with $\sigma(i)=i$; $D_n=n!-\left|\bigcup A_i\right|$. For any $k$ specific positions, the permutations fixing all $k$ (free on the rest) number $(n-k)!$, and there are $\binom nk$ such position-sets, so the $k$-th inclusion-exclusion term is $\binom nk(n-k)!=\frac{n!}{k!}$. So $\left|\bigcup A_i\right|=\sum_{k=1}^n(-1)^{k+1}\frac{n!}{k!}$, giving $D_n=n!-\sum_{k=1}^n(-1)^{k+1}\frac{n!}{k!}=n!\left[1-\sum_{k=1}^n\frac{(-1)^{k+1}}{k!}\right]=n!\sum_{k=0}^n\frac{(-1)^k}{k!}$. <span class="qed">∎</span>
             </div>
+            <p>Section 9's numbers show $D_n/n!\to1/e\approx0.3679$ rapidly — a permutation chosen uniformly at random is a derangement with probability converging to $1/e$, essentially independent of $n$ once $n$ is even moderately large, since $\sum_{k=0}^n(-1)^k/k!$ is the truncated Taylor series for $e^{-1}$.</p>
 
-            <h3>8.2 Stirling Numbers of the Second Kind</h3>
-            <p>$\{n \atop k\}$ counts the number of ways to partition $n$ objects into $k$ non-empty subsets.</p>
-            <div class="math-block">
-                $$\left\{n \atop k\right\} = \left\{n-1 \atop k-1\right\} + k\left\{n-1 \atop k\right\}$$
+            <h2 id="generating-functions">4. Generating functions: solving Fibonacci exactly</h2>
+            <p>For a sequence $(a_n)$, its (ordinary) <strong>generating function</strong> is the formal power series $G(x)=\sum_{n\geq0}a_nx^n$ — a bookkeeping device that turns recurrences into algebra.</p>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Binet's formula, derived)</span>
+                <p>For $F_0=0,F_1=1,F_n=F_{n-1}+F_{n-2}$: $\displaystyle F_n=\frac{\phi^n-\psi^n}{\sqrt5}$, where $\phi=\frac{1+\sqrt5}2,\psi=\frac{1-\sqrt5}2$.</p>
             </div>
-
-            <h2>9. Derangements</h2>
-            <p>A derangement is a permutation where no element is in its original position.</p>
-            <p>Number of derangements of $n$ objects:</p>
-            <div class="math-block">
-                $$D_n = n! \sum_{i=0}^{n} \frac{(-1)^i}{i!} \approx \frac{n!}{e}$$
+            <div class="proof">
+                <span class="proof-label">Proof.</span> Let $G(x)=\sum_{n\geq0}F_nx^n$. Using the recurrence for $n\geq2$: $G(x)-F_0-F_1x=\sum_{n\geq2}F_nx^n=\sum_{n\geq2}(F_{n-1}+F_{n-2})x^n=x\sum_{n\geq2}F_{n-1}x^{n-1}+x^2\sum_{n\geq2}F_{n-2}x^{n-2}=xG(x)+x^2G(x)$ (using $F_0=0$ so the shifted sums start cleanly at $G(x)$). With $F_0=0,F_1=1$: $G(x)-x=(x+x^2)G(x)$, so $G(x)=\dfrac{x}{1-x-x^2}$. Since $\phi,\psi$ satisfy $t^2-t-1=0$ (so $\phi+\psi=1$, $\phi\psi=-1$), $1-x-x^2=(1-\phi x)(1-\psi x)$ (expand and match coefficients). Partial fractions: $\dfrac{x}{(1-\phi x)(1-\psi x)}=\dfrac1{\phi-\psi}\left[\dfrac1{1-\phi x}-\dfrac1{1-\psi x}\right]$ (solve for the two numerators directly, or verify by clearing denominators). Since $\phi-\psi=\sqrt5$, and $\frac1{1-cx}=\sum_{n\geq0}c^nx^n$ (geometric series) for each factor: $G(x)=\dfrac1{\sqrt5}\sum_{n\geq0}(\phi^n-\psi^n)x^n$. Comparing coefficients of $x^n$ on both sides gives $F_n=\dfrac{\phi^n-\psi^n}{\sqrt5}$. <span class="qed">∎</span>
             </div>
-            <p>Recurrence: $D_n = (n-1)(D_{n-1} + D_{n-2})$ for $n \geq 2$</p>
+            <p>This is generating functions doing genuine work, not merely restating a formula: the recurrence became an algebraic equation for $G(x)$, solving that equation and expanding the (rational) result back into a power series read off the closed form directly, term by term. The same method solves any linear recurrence with constant coefficients, with the recurrence's characteristic-equation roots playing $\phi,\psi$'s role in general.</p>
 
-            <h2>10. Pigeonhole Principle</h2>
-            <h3>10.1 Basic Form</h3>
-            <p>If $n$ objects are placed into $m$ containers with $n > m$, then at least one container contains more than one object.</p>
-
-            <h3>10.2 Generalized Form</h3>
-            <p>If $n$ objects are placed into $m$ containers, then at least one container contains at least $\lceil n/m \rceil$ objects.</p>
-
-            <h2>11. Burnside's Lemma</h2>
-            <p>For counting objects under group actions:</p>
-            <div class="math-block">
-                $$|X/G| = \frac{1}{|G|} \sum_{g \in G} |X^g|$$
+            <h2 id="catalan">5. Catalan numbers via the reflection principle</h2>
+            <div class="note-box">
+                <span class="note-box-label">Definition</span>
+                <p>$C_n$ counts <strong>Dyck paths</strong>: sequences of $n$ up-steps ($+1$) and $n$ down-steps ($-1)$, from height $0$ to height $0$, that never go below $0$.</p>
             </div>
-            <p>where $X^g$ is the set of elements fixed by group element $g$.</p>
+            <div class="note-box">
+                <span class="note-box-label">Theorem</span>
+                <p>$C_n=\dfrac1{n+1}\dbinom{2n}n$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof (reflection principle).</span> There are $\binom{2n}n$ unrestricted paths with $n$ up- and $n$ down-steps from $(0,0)$ to $(2n,0)$ (choose which $n$ of the $2n$ steps are "up"). Call a path <strong>bad</strong> if it touches height $-1$ at some point. Given a bad path, reflect every step <em>after</em> its first touch of $-1$ (flip up$\leftrightarrow$down from that point on); since the path is at height $-1$ at the reflection point and the remaining $2n$ minus (steps so far) steps get flipped, the reflected path ends at height $-1-((-1)-0)=-2$ instead of $0$. This reflection is a bijection between bad paths ending at $(2n,0)$ and <em>all</em> paths ending at $(2n,-2)$ (any such path can be un-reflected the same way, since it must cross height $-1$ to get from $0$ to $-2$). A path to $(2n,-2)$ has $n-1$ up-steps and $n+1$ down-steps, so there are $\binom{2n}{n-1}$ of them — exactly the number of bad paths. So $C_n=\binom{2n}n-\binom{2n}{n-1}$. Since $\binom{2n}{n-1}=\binom{2n}n\cdot\frac n{n+1}$ (direct factorial simplification), $C_n=\binom{2n}n\left(1-\frac n{n+1}\right)=\frac1{n+1}\binom{2n}n$. <span class="qed">∎</span>
+            </div>
+            <p>Figure 1 draws the bijection directly: a path dipping below the axis, and its mirror image past the first touch of $-1$, landing two steps lower — exactly the map the proof constructs, checked against the closed form for $n=1,\ldots,9$.</p>
 
-            <h2>12. Ramsey Theory</h2>
-            <p>Ramsey numbers $R(r, s)$ represent the minimum number of vertices needed so that any 2-coloring of edges contains either a red clique of size $r$ or a blue clique of size $s$.</p>
-            <p>Famous result: $R(3, 3) = 6$</p>
+            <figure class="note-figure">
+                <img src="combinatorics/figures/catalan_reflection.png" alt="Left panel: a lattice path that dips below the x-axis, with the portion after its first touch of y=-1 reflected to show it lands at height -2 at the end. Right panel: the Catalan number formula and the reflection-principle count agreeing exactly for n from 1 to 9 on a log scale.">
+                <figcaption><strong>Figure — The reflection principle, made concrete.</strong> Left: a random "bad" path for $n=5$ (touching $y=-1$) and its reflection past the first touch, landing at $(10,-2)$ instead of $(10,0)$ — the exact bijection Section 5's proof constructs. Right: the closed form $\frac1{n+1}\binom{2n}n$ and the reflection-principle count $\binom{2n}n-\binom{2n}{n-1}$ agree exactly at every $n$ tested, from $C_1=1$ to $C_9=4862$.</figcaption>
+            </figure>
 
-            <h2>13. Code Examples</h2>
-            <pre><code># Python implementations of combinatorial functions
-import math
-from functools import lru_cache
+            <h2 id="pigeonhole">6. Pigeonhole and the Erdős–Szekeres theorem</h2>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Pigeonhole, generalized)</span>
+                <p>If $n$ objects are placed into $m$ containers, some container holds at least $\lceil n/m\rceil$ objects.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> If every container held at most $k-1$ objects, where $k=\lceil n/m\rceil$, the total would be at most $m(k-1)$. Since $k$ is the smallest integer $\geq n/m$, $k-1&lt;n/m$, so $m(k-1)&lt;n$ — but the total is exactly $n$, a contradiction. <span class="qed">∎</span>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Erdős–Szekeres, 1935)</span>
+                <p>Any sequence of $n^2+1$ distinct real numbers contains a monotonically increasing or monotonically decreasing subsequence of length $n+1$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> For each position $i$, let $\mathrm{inc}(i)$ (resp. $\mathrm{dec}(i)$) be the length of the longest increasing (resp. decreasing) subsequence ending at position $i$. For $i&lt;j$: if the value at $i$ is less than at $j$, that increasing subsequence extends to $j$, so $\mathrm{inc}(j)&gt;\mathrm{inc}(i)$; if greater, similarly $\mathrm{dec}(j)&gt;\mathrm{dec}(i)$. Either way, $(\mathrm{inc}(i),\mathrm{dec}(i))\neq(\mathrm{inc}(j),\mathrm{dec}(j))$ — the map $i\mapsto(\mathrm{inc}(i),\mathrm{dec}(i))$ is injective. If no monotone subsequence of length $n+1$ existed, every $\mathrm{inc}(i),\mathrm{dec}(i)\in\{1,\ldots,n\}$, giving only $n^2$ possible pairs for the $n^2+1$ positions — by Pigeonhole, two positions would share a pair, contradicting injectivity. <span class="qed">∎</span>
+            </div>
+            <p>Figure 2 computes $(\mathrm{inc}(i),\mathrm{dec}(i))$ for an actual random sequence and exhibits the guaranteed subsequence directly — the proof is constructive in exactly this sense: it doesn't just assert a long monotone run exists, it hands over the injective-map argument that finds one.</p>
 
-def factorial(n):
-    """Calculate n! efficiently"""
-    if n < 0:
-        raise ValueError("Factorial undefined for negative numbers")
-    return math.factorial(n)
+            <figure class="note-figure">
+                <img src="combinatorics/figures/erdos_szekeres.png" alt="A sequence of 10 distinct numbers plotted against position, with a length-5 increasing subsequence highlighted, exceeding the guaranteed minimum length of 4 for a sequence of this size.">
+                <figcaption><strong>Figure — Erdős–Szekeres, exhibited.</strong> A random arrangement of the $10=3^2+1$ numbers $0,\ldots,9$ is guaranteed (Section 6, $n=3$) a monotone subsequence of length $\geq4$; the actual longest increasing subsequence found by the $(\mathrm{inc},\mathrm{dec})$ construction has length $5$, comfortably meeting the bound.</figcaption>
+            </figure>
 
-def permutations(n, r):
-    """Calculate P(n, r) = n!/(n-r)!"""
-    if r > n or r < 0:
-        return 0
-    return factorial(n) // factorial(n - r)
+            <h2 id="ramsey">7. Ramsey's theorem: $R(3,3)=6$</h2>
+            <div class="note-box">
+                <span class="note-box-label">Definition</span>
+                <p>$R(3,3)$ is the smallest $N$ such that every red/blue coloring of the edges of $K_N$ contains a monochromatic triangle.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof that $R(3,3)\leq6$.</span> Fix any vertex $v$ of $K_6$; it has $5$ colored edges to the other vertices. By Pigeonhole, at least $\lceil5/2\rceil=3$ share a color, say red, to vertices $a,b,c$. If any of $ab,bc,ac$ is red, that edge together with $v$'s two red edges to its endpoints forms a red triangle. Otherwise all three are blue, forming a blue triangle. Either way, a monochromatic triangle exists. <span class="qed">∎</span>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof that $R(3,3)&gt;5$.</span> Color $K_5$'s edges by two disjoint $5$-cycles: red $=1$-$2$-$3$-$4$-$5$-$1$, blue $=1$-$3$-$5$-$2$-$4$-$1$ (every edge of $K_5$ lies in exactly one of these two cycles). Neither $5$-cycle contains a triangle (its shortest cycle has length $5$), so this coloring has no monochromatic triangle. <span class="qed">∎</span>
+            </div>
+            <p>Together: $R(3,3)=6$ exactly, both directions fully proved — existence for $N=6$, and an explicit witness showing $N=5$ is not enough. Ramsey numbers grow explosively past this case: $R(4,4)=18$ is known, but $R(5,5)$ remains unknown to this day, with only the bounds $43\leq R(5,5)\leq48$ established (as of this writing) — Paul Erdős's famous remark was that humanity should commit all its resources to computing $R(5,5)$ before an alien invasion demanding it on pain of destruction, but might reasonably negotiate on $R(6,6)$.</p>
 
-def combinations(n, r):
-    """Calculate C(n, r) = n!/(r!(n-r)!)"""
-    if r > n or r < 0:
-        return 0
-    if r > n - r:  # Take advantage of symmetry
-        r = n - r
-    
-    result = 1
-    for i in range(r):
-        result = result * (n - i) // (i + 1)
-    return result
+            <h2 id="burnside">8. Burnside's Lemma</h2>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Burnside's Lemma)</span>
+                <p>For a finite group $G$ acting on a finite set $X$: the number of orbits $|X/G|=\dfrac1{|G|}\displaystyle\sum_{g\in G}|X^g|$, where $X^g=\{x\in X:gx=x\}$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> Count pairs $(g,x)$ with $gx=x$ two ways. Summing over $g$ first: $\sum_{g\in G}|X^g|=|\{(g,x):gx=x\}|$. Summing over $x$ first: this equals $\sum_{x\in X}|\mathrm{Stab}(x)|$, where $\mathrm{Stab}(x)=\{g:gx=x\}$. By the orbit-stabilizer theorem (a standard group-theory fact, not re-derived here), $|\mathrm{Stab}(x)|=|G|/|\mathrm{Orb}(x)|$. So $\sum_{x\in X}|\mathrm{Stab}(x)|=|G|\sum_{x\in X}\frac1{|\mathrm{Orb}(x)|}$. Group this last sum by orbit: every $x$ in a given orbit $O$ contributes $1/|O|$, and there are $|O|$ such $x$, so each orbit contributes exactly $1$ to the sum — total $=$ number of orbits. Equating the two ways of counting: $\sum_{g\in G}|X^g|=|G|\cdot|X/G|$. <span class="qed">∎</span>
+            </div>
+            <p>Application: counting necklaces of $n$ beads in $k$ colors up to rotation, with $G=\mathbb Z_n$ acting by rotation. A rotation by $d$ positions fixes exactly the colorings constant on each cycle of that rotation; rotation by $d$ has $\gcd(n,d)$ cycles, so it fixes $k^{\gcd(n,d)}$ colorings. Burnside's Lemma gives the number of distinct necklaces as $\frac1n\sum_{d=0}^{n-1}k^{\gcd(n,d)}$ — a formula that, regrouped by the value of $\gcd(n,d)$, is exactly the standard necklace-counting formula $\frac1n\sum_{e\mid n}\varphi(n/e)k^e$ (Euler's totient function counting how many $d$ give each gcd value).</p>
 
-def combinations_with_repetition(n, r):
-    """Calculate combinations with repetition: C(n+r-1, r)"""
-    return combinations(n + r - 1, r)
+            <h2 id="computation">9. Computation</h2>
+            <p>The figures above are generated by <code>combinatorics/generate_figures.py</code>. The snippet below checks Binet's formula and the derangement formula against their defining recurrences.</p>
+            <pre><code>import math
 
-@lru_cache(maxsize=None)
-def fibonacci(n):
-    """Calculate nth Fibonacci number"""
-    if n <= 1:
-        return n
-    return fibonacci(n - 1) + fibonacci(n - 2)
+def fib_recurrence(n):
+    a, b = 0, 1
+    for _ in range(n):
+        a, b = b, a + b
+    return a
 
-def fibonacci_closed_form(n):
-    """Calculate nth Fibonacci number using Binet's formula"""
-    phi = (1 + math.sqrt(5)) / 2
-    psi = (1 - math.sqrt(5)) / 2
+def fib_binet(n):
+    phi, psi = (1 + math.sqrt(5)) / 2, (1 - math.sqrt(5)) / 2
     return round((phi**n - psi**n) / math.sqrt(5))
 
-@lru_cache(maxsize=None)
-def catalan(n):
-    """Calculate nth Catalan number"""
-    if n <= 1:
-        return 1
-    
-    # Using the recurrence relation
-    result = 0
-    for i in range(n):
-        result += catalan(i) * catalan(n - 1 - i)
-    return result
+for n in [10, 20, 30, 40, 50]:
+    print(n, fib_recurrence(n), fib_binet(n), fib_recurrence(n) == fib_binet(n))
 
-def catalan_formula(n):
-    """Calculate nth Catalan number using direct formula"""
-    return combinations(2 * n, n) // (n + 1)
-
-def derangements(n):
-    """Calculate number of derangements of n objects"""
-    if n == 0:
-        return 1
-    if n == 1:
-        return 0
-    
-    # Using the recurrence relation
-    prev_prev = 1  # D(0)
-    prev = 0       # D(1)
-    
+def derangements_recurrence(n):
+    if n == 0: return 1
+    if n == 1: return 0
+    dp = [1, 0]
     for i in range(2, n + 1):
-        current = (i - 1) * (prev + prev_prev)
-        prev_prev, prev = prev, current
-    
-    return prev
+        dp.append((i - 1) * (dp[-1] + dp[-2]))
+    return dp[n]
 
-def stirling_second(n, k):
-    """Calculate Stirling number of the second kind"""
-    if n == 0 and k == 0:
-        return 1
-    if n == 0 or k == 0:
-        return 0
-    if k > n:
-        return 0
-    
-    # Dynamic programming approach
-    dp = [[0] * (k + 1) for _ in range(n + 1)]
-    dp[0][0] = 1
-    
-    for i in range(1, n + 1):
-        for j in range(1, min(i + 1, k + 1)):
-            dp[i][j] = j * dp[i - 1][j] + dp[i - 1][j - 1]
-    
-    return dp[n][k]
+def derangements_formula(n):
+    return round(math.factorial(n) * sum((-1)**i / math.factorial(i) for i in range(n + 1)))
 
-def bell_number(n):
-    """Calculate nth Bell number (sum of Stirling numbers of second kind)"""
-    return sum(stirling_second(n, k) for k in range(n + 1))
-
-def generate_partitions(n):
-    """Generate all integer partitions of n"""
-    def backtrack(remaining, max_value, current_partition):
-        if remaining == 0:
-            partitions.append(current_partition[:])
-            return
-        
-        for i in range(min(remaining, max_value), 0, -1):
-            current_partition.append(i)
-            backtrack(remaining - i, i, current_partition)
-            current_partition.pop()
-    
-    partitions = []
-    backtrack(n, n, [])
-    return partitions
-
-def multinomial_coefficient(*args):
-    """Calculate multinomial coefficient for given frequencies"""
-    n = sum(args)
-    result = factorial(n)
-    for k in args:
-        result //= factorial(k)
-    return result
-
-# Example usage and testing
-if __name__ == "__main__":
-    print("Combinatorial Functions Examples:")
-    print(f"10! = {factorial(10)}")
-    print(f"P(10, 3) = {permutations(10, 3)}")
-    print(f"C(10, 3) = {combinations(10, 3)}")
-    print(f"C(5, 3) with repetition = {combinations_with_repetition(5, 3)}")
-    
-    print(f"\nFibonacci sequence (first 10):")
-    for i in range(10):
-        print(f"F({i}) = {fibonacci(i)}")
-    
-    print(f"\nCatalan numbers (first 6):")
-    for i in range(6):
-        print(f"C({i}) = {catalan(i)}")
-    
-    print(f"\nDerangements:")
-    for i in range(6):
-        print(f"D({i}) = {derangements(i)}")
-    
-    print(f"\nStirling numbers of second kind S(5, k):")
-    for k in range(6):
-        print(f"S(5, {k}) = {stirling_second(5, k)}")
-    
-    print(f"\nBell numbers (first 6):")
-    for i in range(6):
-        print(f"B({i}) = {bell_number(i)}")
-    
-    print(f"\nPartitions of 4: {generate_partitions(4)}")
-    print(f"Multinomial(6; 2,2,2) = {multinomial_coefficient(2, 2, 2)}")
+for n in [5, 8, 10]:
+    print(n, derangements_recurrence(n), derangements_formula(n))
 </code></pre>
+            <p>Actual output:</p>
+            <pre><code>10 55 55 True
+20 6765 6765 True
+30 832040 832040 True
+40 102334155 102334155 True
+50 12586269025 12586269025 True
 
-            <h2>14. Applications</h2>
-            <h3>14.1 Probability Theory</h3>
-            <p>Combinatorics provides the foundation for calculating probabilities in discrete sample spaces.</p>
+5 44 44
+8 14833 14833
+10 1334961 1334961</code></pre>
+            <p>Binet's closed form (Section 4, involving irrational $\phi,\psi$ and division by $\sqrt5$) reproduces the purely integer recurrence exactly, with simple rounding, up to $F_{50}$ — the irrational parts cancel precisely, not approximately. The derangement recurrence and the Inclusion-Exclusion formula (Section 3) agree exactly too, at every $n$ tested.</p>
 
-            <h3>14.2 Computer Science</h3>
+            <h2 id="pitfalls">10. Common pitfalls</h2>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — the addition principle needs disjointness</span>
+                <p>$|A\cup B|=|A|+|B|$ only when $A\cap B=\varnothing$; otherwise Section 3's Inclusion-Exclusion is the correct (and more general) tool — $|A\cup B|=|A|+|B|-|A\cap B|$, with the addition principle as the special case $|A\cap B|=0$. Forgetting the correction term is the single most common combinatorics error.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — a Pigeonhole existence proof does not identify which container is crowded</span>
+                <p>Section 6's proof shows a monotone subsequence of length $\geq n+1$ exists, and the injective-map argument even shows how to find one algorithmically (Figure 2) — but the basic Pigeonhole principle in its bare form (Section 6's first theorem) is a pure counting argument: it certifies existence without saying which container is the crowded one, only that at least one must be.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — Ramsey's theorem guarantees existence, at a specific threshold, not "often" or "usually"</span>
+                <p>$R(3,3)=6$ is exact: every single 2-coloring of $K_6$ has a monochromatic triangle (Section 7), and there is a specific coloring of $K_5$ with none. Ramsey numbers for larger cliques grow so explosively (the best known bounds for $R(5,5)$ still leave a gap of several units) that "the exact value is known" is the exception, not the rule, past the smallest cases.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — Burnside's Lemma counts orbits, not fixed points, and needs a genuine group action</span>
+                <p>$|X^g|$ for a single $g$ (say the identity) is $|X|$ itself, wildly overcounting orbits if used alone — the whole point of Section 8's theorem is the <em>average</em> over all of $G$, not any single group element's fixed-point count. The formula also presupposes $G$ genuinely acts on $X$ (respecting the group operation); applying it to an arbitrary collection of permutations that isn't closed under composition gives a meaningless number.</p>
+            </div>
+
+            <h2 id="connections">11. Connections</h2>
             <ul>
-                <li>Algorithm analysis (counting operations)</li>
-                <li>Data structures (trees, graphs)</li>
-                <li>Cryptography (key generation, permutation ciphers)</li>
+                <li><strong><a href="graph-theory.html">Graph theory</a>.</strong> Ramsey's theorem (Section 7) is a statement about edge-colorings of the complete graph $K_n$; the pigeonhole argument used there is the same counting tool behind that note's edge-bound proofs (its Section 4) that $K_5$ and $K_{3,3}$ are non-planar.</li>
+                <li><strong><a href="logic.html">Mathematical logic</a>.</strong> Cantor's diagonalization (that note's Section 7) and the injective-map trick in the Erdős–Szekeres proof (Section 6 here) are both "construct an object to avoid every element of a finite or countable list" arguments, differing mainly in what "avoid" means in context.</li>
+                <li><strong><a href="../machine-learning/probabilistic-models.html">Probabilistic models</a>.</strong> The Binomial Theorem (Section 2) is the combinatorial fact underneath that note's Beta-Binomial conjugacy derivation (its Section 5), where $\binom nk$ counts exactly the arrangements a binomial likelihood sums over; the derangement probability $D_n/n!\to1/e$ (Section 3) is a discrete-probability computation of the same flavor as that note's Weak Law of Large Numbers (its Section 2), both convergence statements about a specific combinatorial count divided by its total.</li>
             </ul>
 
-            <h3>14.3 Optimization</h3>
-            <p>Many optimization problems involve counting feasible solutions or arrangements.</p>
-
-            <h2>15. References</h2>
+            <h2 id="references">12. References</h2>
             <ul>
-                <li>Stanley, R. P. (2011). <em>Enumerative Combinatorics</em>.</li>
-                <li>van Lint, J. H., & Wilson, R. M. (2001). <em>A Course in Combinatorics</em>.</li>
-                <li>Tucker, A. (2012). <em>Applied Combinatorics</em>.</li>
+                <li>Stanley, R. P. (2011). <em>Enumerative Combinatorics, Volume 1</em> (2nd ed.). Cambridge University Press.</li>
+                <li>van Lint, J. H., &amp; Wilson, R. M. (2001). <em>A Course in Combinatorics</em> (2nd ed.). Cambridge University Press.</li>
+                <li>Graham, R. L., Rothschild, B. L., &amp; Spencer, J. H. (1990). <em>Ramsey Theory</em> (2nd ed.). Wiley.</li>
+                <li>Wilf, H. S. (2005). <em>generatingfunctionology</em> (3rd ed.). A K Peters.</li>
             </ul>
         </section>
     </main>
@@ -363,4 +256,4 @@ if __name__ == "__main__":
         <p>&copy; Diogo Franquinho | Technical Notes</p>
     </footer>
 </body>
-</html> 
+</html>
