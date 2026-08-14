@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Distributed Systems and Concurrency - Technical Notes</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/book-reviews.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script src="../../js/analytics-config.js"></script>
+    <script src="../../js/analytics.js" defer></script>
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="../../index.html">← Back to Home</a> |
+        <a href="../../index.html#notes">Notes</a>
+    </nav>
+
+    <main>
+        <header>
+            <h1>Distributed Systems and Concurrency</h1>
+            <p class="note-meta">Last updated: August 2026</p>
+        </header>
+
+        <section class="note-content">
+            <div class="disclaimer">
+                <p><strong>Disclaimer:</strong> These are my personal notes compiled for my own reference and learning. They may contain errors, incomplete information, or personal interpretations. While I strive for accuracy, these notes are not peer-reviewed and should not be considered authoritative sources. Please consult official textbooks, research papers, or other reliable sources for academic or professional purposes.</p>
+            </div>
+
+            <div class="table-of-contents">
+                <h3>Contents</h3>
+                <ol>
+                    <li><a href="#model">The system model and failure types</a></li>
+                    <li><a href="#lamport">Logical clocks: Lamport timestamps and happens-before</a></li>
+                    <li><a href="#vector-clocks">Vector clocks: capturing causality exactly</a></li>
+                    <li><a href="#flp">The FLP impossibility theorem</a></li>
+                    <li><a href="#cap">The CAP theorem</a></li>
+                    <li><a href="#byzantine">Byzantine fault tolerance: the $3f+1$ lower bound</a></li>
+                    <li><a href="#quorums">Quorums and consensus safety</a></li>
+                    <li><a href="#computation">Computation</a></li>
+                    <li><a href="#pitfalls">Common pitfalls</a></li>
+                    <li><a href="#connections">Connections</a></li>
+                    <li><a href="#references">References</a></li>
+                </ol>
+            </div>
+
+            <h2 id="model">1. The system model and failure types</h2>
+            <div class="note-box">
+                <span class="note-box-label">Definitions</span>
+                <p>A distributed system is a set of processes communicating only by message passing (no shared memory). <strong>Asynchronous</strong>: no bound on message delay or relative process speed. <strong>Crash-stop</strong> failure: a process simply halts and sends nothing further. <strong>Byzantine</strong> failure: a process may behave arbitrarily, including sending contradictory messages to different peers. The <strong>consensus</strong> problem asks every non-faulty process to <strong>decide</strong> on a single value satisfying: <strong>agreement</strong> (no two processes decide differently), <strong>validity</strong> (the decided value was proposed by some process), <strong>termination</strong> (every non-faulty process eventually decides).</p>
+            </div>
+            <p>Almost every result in this note is a statement about which combinations of these assumptions are achievable at all — not an efficiency question, but an existence question, in the same spirit as the <a href="computability.html">computability note</a>'s undecidability results. Sections 4 and 6 are impossibility theorems in exactly that sense: no protocol, however clever, achieves certain combinations, full stop.</p>
+
+            <h2 id="lamport">2. Logical clocks: Lamport timestamps and happens-before</h2>
+            <div class="note-box">
+                <span class="note-box-label">Definition (Lamport clock)</span>
+                <p>Each process keeps a counter $C$. On a local event or a send, increment $C$. On receiving a message timestamped $t$, set $C:=\max(C,t)+1$.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Definition (happens-before, $\to$)</span>
+                <p>$a\to b$ if: $a,b$ occur on the same process with $a$ first; or $a$ is a message send and $b$ its receipt; or (transitively) $a\to c\to b$ for some $c$.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Clock Condition)</span>
+                <p>$a\to b\Rightarrow C(a)&lt;C(b)$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> By induction on the definition of $\to$. Same-process case: consecutive local events strictly increment $C$, so any later event on the same process has a strictly larger value. Send/receive case: the receive rule sets $C(b)=\max(C(b)^{\text{old}},C(a))+1&gt;C(a)$. Transitive case: $a\to c\to b$ gives $C(a)&lt;C(c)$ and $C(c)&lt;C(b)$ by the induction hypothesis, so $C(a)&lt;C(b)$. <span class="qed">∎</span>
+            </div>
+            <p>The converse fails: $C(a)&lt;C(b)$ does not imply $a\to b$. Two events on different processes that never causally influence each other (<strong>concurrent</strong> events, written $a\parallel b$) still get some definite pair of Lamport timestamps, usually unequal, which look exactly like a causal ordering from the numbers alone — Figure 1's highlighted pair is a genuine instance of this, and Section 9's first pitfall makes the consequence explicit. Section 3 fixes this by tracking more than a single number.</p>
+
+            <h2 id="vector-clocks">3. Vector clocks: capturing causality exactly</h2>
+            <div class="note-box">
+                <span class="note-box-label">Definition (Vector clock)</span>
+                <p>Process $p_i$ (of $n$) keeps a vector $V_i[1..n]$, initially zero. On a local event or send, increment $V_i[i]$. On receiving a message carrying vector $V$, set $V_i[k]:=\max(V_i[k],V[k])$ for every $k$, then increment $V_i[i]$. Write $V(a)\leq V(b)$ if $V(a)[k]\leq V(b)[k]$ for every $k$, and $V(a)&lt;V(b)$ if additionally $V(a)\neq V(b)$.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Theorem</span>
+                <p>$a\to b\iff V(a)&lt;V(b)$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> ($\Rightarrow$) The same three-case induction as the Clock Condition shows every step of $\to$ leaves every component of $V$ non-decreasing and strictly increases the acting process's own component, so $V(a)\leq V(b)$ with at least one strict coordinate, i.e. $V(a)&lt;V(b)$. ($\Leftarrow$, the direction Lamport clocks cannot support) Let $p$ be the process where $a$ occurred, so $V(a)[p]$ is the number of $p$'s own events up to and including $a$. One shows, by induction on the construction of vector clocks, that $V(b)[p]\geq V(a)[p]$ can only occur if some causal chain connects the event at $p$ with local index $V(a)[p]$ (i.e. $a$ itself, or a later event at $p$) to $b$ — each step of the vector-clock update only ever copies a component's value forward along an actual message or local-order chain, never invents a larger value from nothing. So $a\not\to b$ forces $V(b)[p]&lt;V(a)[p]$, hence $V(a)\not\leq V(b)$, hence not $V(a)&lt;V(b)$. Contrapositive: $V(a)&lt;V(b)\Rightarrow a\to b$. <span class="qed">∎</span>
+            </div>
+            <p>This is a genuine, not merely cosmetic, improvement: vector clocks recover the entire partial order $\to$ from the numbers alone, including correctly identifying concurrency ($a\parallel b$ iff neither $V(a)\leq V(b)$ nor $V(b)\leq V(a)$) — the exact information Lamport's single counter provably cannot preserve (Section 2). The cost is the size of the timestamp: $O(n)$ integers instead of one, per event.</p>
+
+            <figure class="note-figure">
+                <img src="distributed-systems/figures/vector_clocks.png" alt="A space-time diagram of three processes with two messages exchanged between them, each event labeled with its Lamport timestamp and vector clock, highlighting one pair of events with different Lamport values that are nonetheless concurrent according to their vector clocks.">
+                <figcaption><strong>Figure — Lamport orders everything; vector clocks know what's actually concurrent.</strong> $P_1$'s last local event (Lamport $3$) and $P_3$'s first local event (Lamport $1$) have different Lamport timestamps — suggestively, but wrongly, implying an order. Their vector clocks, $(3,0,0)$ and $(0,0,1)$, are incomparable (neither $\leq$ the other): by Section 3's theorem, they are genuinely concurrent, and no message or chain of messages connects one to the other anywhere in this execution.</figcaption>
+            </figure>
+
+            <h2 id="flp">4. The FLP impossibility theorem</h2>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Fischer, Lynch &amp; Paterson, 1985)</span>
+                <p>In an asynchronous message-passing system with reliable communication, no deterministic protocol solves consensus if even a single process may crash.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof (sketch).</span> Call a reachable system configuration <strong>bivalent</strong> if both decision values $0$ and $1$ remain reachable from it under some future message schedule, and <strong>univalent</strong> otherwise. (i) Some initial configuration is bivalent: configurations with all processes proposing $0$ decide $0$, and all proposing $1$ decide $1$ (by Validity); connecting these by a sequence of initial configurations differing in one process's input at a time, some adjacent pair must have different valences, and a careful argument (the single differing process could itself be the one that crashes, immediately, before revealing its input) shows this forces a bivalent configuration to exist. (ii) From any bivalent configuration, some next message delivery leads to another bivalent configuration: if every possible next delivery led only to univalent configurations, a case analysis on whether two candidate next messages are delivered to the same or different processes (and, if different, that delivering them in either order reaches the same resulting configuration, since the processes involved cannot yet distinguish the order) derives a contradiction, using the freedom to have at most one process crash to keep both decision values alive a little longer. By (i) and (ii), an adversarial scheduler can always choose the next message delivery to remain in a bivalent configuration forever — constructing an infinite execution that never decides, contradicting Termination. <span class="qed">∎</span>
+            </div>
+            <p>FLP does not say consensus is merely hard in an asynchronous system — like the <a href="computability.html">computability note</a>'s Halting Problem, it says no algorithm, however clever, solves the stated problem under the stated assumptions, ever. Real systems escape the theorem's reach by weakening the model it assumes: adding partial synchrony (timeouts that are eventually accurate), randomization (Ben-Or's algorithm decides with probability $1$, sidestepping the deterministic-protocol hypothesis), or failure detectors (an oracle providing just enough timing information). Every practical consensus protocol (Paxos, Raft) is, in this precise sense, a way of buying just enough extra assumption to step outside what Sections 4's theorem forbids.</p>
+
+            <h2 id="cap">5. The CAP theorem</h2>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Gilbert &amp; Lynch, 2002, formalizing Brewer's conjecture)</span>
+                <p>No distributed data store can simultaneously guarantee <strong>Consistency</strong> (every read returns the most recent write, or an error), <strong>Availability</strong> (every request receives a non-error response), and <strong>Partition tolerance</strong> (the system keeps operating despite arbitrary message loss between some processes), whenever a partition actually occurs.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> Suppose a system provides all three. Partition the network into disjoint non-empty groups $G_1,G_2$ carrying no messages between them (Partition tolerance requires the system to keep working regardless). A client writes $v$ to a node in $G_1$; by Availability, this returns success. Another client then reads from a node in $G_2$; by Availability, this too must return a non-error response — some value. Since no message from $G_1$ can reach $G_2$, the responding node in $G_2$ cannot know about the write of $v$, so its response is not (and cannot be certified as) the most recent write — violating Consistency. <span class="qed">∎</span>
+            </div>
+            <p>In practice the theorem is a menu, not a prohibition: since network partitions do happen, real systems choose CP (refuse to answer $G_2$'s read rather than return a stale value — most consensus-backed stores) or AP (answer anyway, accepting temporary inconsistency, reconciled later — many NoSQL stores' "eventual consistency"). The choice is forced exactly at the moment of an actual partition, not before.</p>
+
+            <h2 id="byzantine">6. Byzantine fault tolerance: the $3f+1$ lower bound</h2>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Pease, Shostak &amp; Lamport, 1980)</span>
+                <p>Byzantine consensus among $n$ processes tolerating $f$ Byzantine faults (with no cryptographic signatures) requires $n\geq3f+1$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof (sketch).</span> Suppose $n\leq3f$; partition the processes into three groups $P_1,P_2,P_3$ each of size at most $f$. Consider a scenario where $P_3$ is Byzantine and simulates being an honest process reporting input $0$ to $P_1$ and input $1$ to $P_2$ (a $\leq f$-sized faulty group can do this, by hypothesis), while $P_1$ genuinely has input $0$ and $P_2$ genuinely has input $1$. From $P_1$'s local point of view (the messages it receives), this scenario is indistinguishable from a second scenario in which $P_1,P_3$ are honest (inputs $0$ and whatever $P_3$'s in this version) and $P_2$ is instead the faulty group, feeding $P_1$ the same message pattern while behaving differently toward others — $P_1$ cannot tell which processes are actually faulty from its local view alone, since at most $f$ processes are permitted to misbehave and either single group could be that many. Agreement requires $P_1$ to decide the same value in both indistinguishable scenarios, yet Validity forces different decisions across them (in one, all honest processes' real inputs point toward $0$; in the other, toward $1$) — a contradiction. <span class="qed">∎</span>
+            </div>
+            <p>Compare Section 7's plain majority bound ($n\geq2f+1$ suffices against crash faults): Byzantine faults cost a full extra $f$ processes, because a crashed process simply goes silent, while a Byzantine one can actively lie differently to different peers — exactly the extra degree of freedom the indistinguishability argument above exploits. Modern Byzantine protocols (PBFT and its descendants) achieve the matching $n=3f+1$ upper bound constructively; the theorem says no protocol, however clever, can do better.</p>
+
+            <h2 id="quorums">7. Quorums and consensus safety</h2>
+            <div class="note-box">
+                <span class="note-box-label">Definition</span>
+                <p>A <strong>quorum system</strong> is a collection of subsets of processes ("quorums") such that every two quorums intersect. <strong>Majority quorums</strong> — every subset of size $&gt;n/2$ — are the standard example.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Theorem</span>
+                <p>Any two majority quorums intersect: if $|Q_1|,|Q_2|&gt;n/2$ then $|Q_1\cap Q_2|\geq1$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> $|Q_1\cap Q_2|\geq|Q_1|+|Q_2|-n$ (inclusion-exclusion, since $|Q_1\cup Q_2|\leq n$), and $|Q_1|+|Q_2|-n&gt;n/2+n/2-n=0$. Since the intersection size is an integer $&gt;0$, it is $\geq1$. <span class="qed">∎</span>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Application (consensus safety, Paxos-style)</span>
+                <p>If a value $v$ is <strong>chosen</strong> — accepted by a majority quorum in some round $r$ — then no different value can be chosen in any round $r'&gt;r$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof (sketch).</span> For a value $v'\neq v$ to be chosen in round $r'$, some majority quorum $Q'$ must accept $v'$ there. By the quorum intersection theorem, $Q'$ shares some process $p$ with the round-$r$ quorum $Q$ that accepted $v$. The protocol requires a round-$r'$ proposer to first query a majority (necessarily intersecting $Q$, hence including some process that knows about $v$) and adopt the highest-numbered value already accepted by any quorum member it hears from — since $p\in Q'\cap Q$ already accepted $v$, the round-$r'$ proposal is forced to also be $v$, not $v'$, contradicting the assumption that $v'\neq v$ was chosen. <span class="qed">∎</span>
+            </div>
+            <p>Every step above traces back to one purely combinatorial fact — any two majority subsets of the same set must overlap — which is the entire mathematical content underneath why Paxos, Raft, and every majority-based replication scheme cannot simultaneously commit two different values in two different rounds. Figure 2 is exactly this guarantee, checked against how much two <em>random</em> majority quorums actually tend to overlap (usually far more than the guarantee requires).</p>
+
+            <figure class="note-figure">
+                <img src="distributed-systems/figures/quorum_intersection.png" alt="Plot comparing the average overlap size of two randomly chosen majority quorums, growing roughly linearly with the number of processes, against the proved worst-case minimum overlap, which stays at 1 or 2 regardless of the number of processes.">
+                <figcaption><strong>Figure — The guarantee is a floor, not the typical case.</strong> Two randomly chosen majority quorums typically overlap in a number of processes growing roughly linearly with $n$ — but the <em>proved</em> worst-case minimum stays at $1$ or $2$ regardless of $n$, because Section 7's theorem is a guarantee against an adversarial pair of quorums specifically constructed to overlap as little as possible, not a statement about the typical case. Consensus safety depends only on the guaranteed floor, never on the (usually much larger) typical overlap.</figcaption>
+            </figure>
+
+            <h2 id="computation">8. Computation</h2>
+            <p>The figures above are generated by <code>distributed-systems/generate_figures.py</code>. The snippet below reproduces the vector-clock event trace and the quorum-intersection check.</p>
+            <pre><code>events, messages = simulate()  # 3 processes, 2 messages, 7 events total
+for i, e in enumerate(events):
+    print(i, e['p'], e['kind'], "L=", e['L'], "V=", e['V'])
+
+import random
+rng = random.Random(0)
+n, trials = 20, 4000
+q = n // 2 + 1
+total, mn = 0, None
+for _ in range(trials):
+    Q1 = set(rng.sample(range(n), q))
+    Q2 = set(rng.sample(range(n), q))
+    s = len(Q1 & Q2)
+    total += s
+    mn = s if mn is None else min(mn, s)
+print(f"n={n} q={q} avg_overlap={total/trials:.2f} min_observed={mn} proved_bound={2*q-n}")
+</code></pre>
+            <p>Actual output:</p>
+            <pre><code>0 0 local L= 1 V= (1, 0, 0)
+1 0 send  L= 2 V= (2, 0, 0)
+2 1 recv  L= 3 V= (2, 1, 0)
+3 1 send  L= 4 V= (2, 2, 0)
+4 2 local L= 1 V= (0, 0, 1)
+5 2 recv  L= 5 V= (2, 2, 2)
+6 0 local L= 3 V= (3, 0, 0)
+
+n=20 q=11 avg_overlap=6.04 min_observed=2 proved_bound=2</code></pre>
+            <p>Event $4$ (Lamport $1$) and event $6$ (Lamport $3$) are exactly Figure 1's highlighted pair — different Lamport numbers, incomparable vector clocks, genuinely concurrent. Over $4000$ random trials at $n=20$, the smallest overlap ever observed between two random majority quorums was $2$ — matching the proved bound exactly, never falling below it, while the average overlap ($6.04$) sits three times higher.</p>
+
+            <h2 id="pitfalls">9. Common pitfalls</h2>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — a Lamport timestamp ordering does not mean one event caused the other</span>
+                <p>Demonstrated in Sections 2–3 and Figure 1: $C(a)&lt;C(b)$ is consistent with $a\to b$, but does not imply it — $a,b$ may be entirely concurrent, with the apparent order an artifact of how the two processes' local counters happened to be running. Code that infers causality from Lamport timestamps alone (rather than using them only for the weaker guarantee they actually provide — a total order consistent with, but not identical to, causality) is making an unjustified inference.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — FLP is about worst-case adversarial scheduling, not "distributed consensus never works in practice"</span>
+                <p>Section 4's impossibility is about a deterministic protocol under a fully general asynchronous adversary — it does not say Paxos or Raft are broken (they are not), only that they rely on assumptions (partial synchrony, randomized tie-breaking, or simply favorable real-world timing that makes worst-case executions rare) strictly outside what the theorem's hypotheses grant. "Impossible in the worst case" and "doesn't work" are different claims, exactly as with the <a href="computability.html">computability note</a>'s Section 9 pitfall about undecidable problems having easy typical instances.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — CAP's "C" is linearizability, a strong guarantee, not "the database has some notion of consistency"</span>
+                <p>Section 5's Consistency means every read reflects the latest completed write, globally — not merely that each individual replica is internally coherent. Systems advertising "eventual consistency" are explicitly choosing the AP side of the theorem (a good, deliberate engineering choice for many workloads), not achieving all three properties by some clever exception to the proof; Section 5's proof holds unconditionally once Partition tolerance is assumed.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — the $3f+1$ bound is for the unauthenticated (no signatures) Byzantine model specifically</span>
+                <p>Section 6's proof relies on $P_1$ being unable to distinguish which of two groups is lying — an argument that breaks down if processes can cryptographically sign messages, since a signed message from an honest process cannot be forged by a different faulty group pretending to be it. With signatures, Byzantine agreement is achievable with only $n\geq2f+1$ processes (Dolev &amp; Strong, 1983) — the same bound as the crash-fault case in Section 7 — a genuinely different, stronger model with a genuinely different lower bound, not a refinement of the same number.</p>
+            </div>
+
+            <h2 id="connections">10. Connections</h2>
+            <ul>
+                <li><strong><a href="computability.html">Computability and formal languages</a>.</strong> FLP (Section 4) is proved by the same style of argument as that note's undecidability results — construct an adversary (here, a scheduler; there, a diagonalizing machine) that always has a move preserving ambiguity, forcing an infinite non-resolving execution rather than a direct contradiction from a single step.</li>
+                <li><strong><a href="type-theory.html">Type theory and functional programming</a>.</strong> That note's confluence theorem (its Section 2) and this note's vector-clock happens-before relation (Section 3) are both partial-order-of-events stories with a similar shape — confluence says the final outcome doesn't depend on evaluation order among independent steps, and concurrent (order-independent) events here are exactly the pairs a scheduler is free to interleave without changing the outcome.</li>
+                <li><strong>Discrete mathematics — logic and graph theory.</strong> The happens-before relation (Section 2) is a strict partial order in the standard sense; quorum systems (Section 7) are a purely combinatorial (set-intersection) structure, with the majority case a direct pigeonhole argument.</li>
+            </ul>
+
+            <h2 id="references">11. References</h2>
+            <ul>
+                <li>Lynch, N. A. (1996). <em>Distributed Algorithms</em>. Morgan Kaufmann.</li>
+                <li>Fischer, M. J., Lynch, N. A., &amp; Paterson, M. S. (1985). Impossibility of distributed consensus with one faulty process. <em>Journal of the ACM</em>, 32(2), 374–382.</li>
+                <li>Gilbert, S., &amp; Lynch, N. (2002). Brewer's conjecture and the feasibility of consistent, available, partition-tolerant web services. <em>ACM SIGACT News</em>, 33(2), 51–59.</li>
+                <li>Lamport, L. (1978). Time, clocks, and the ordering of events in a distributed system. <em>Communications of the ACM</em>, 21(7), 558–565.</li>
+                <li>Pease, M., Shostak, R., &amp; Lamport, L. (1980). Reaching agreement in the presence of faults. <em>Journal of the ACM</em>, 27(2), 228–234.</li>
+                <li>Lamport, L. (1998). The part-time parliament. <em>ACM Transactions on Computer Systems</em>, 16(2), 133–169.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; Diogo Franquinho | Technical Notes</p>
+    </footer>
+</body>
+</html>
