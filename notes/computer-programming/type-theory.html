@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Type Theory and Functional Programming - Technical Notes</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/book-reviews.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script src="../../js/analytics-config.js"></script>
+    <script src="../../js/analytics.js" defer></script>
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="../../index.html">← Back to Home</a> |
+        <a href="../../index.html#notes">Notes</a>
+    </nav>
+
+    <main>
+        <header>
+            <h1>Type Theory and Functional Programming</h1>
+            <p class="note-meta">Last updated: August 2026</p>
+        </header>
+
+        <section class="note-content">
+            <div class="disclaimer">
+                <p><strong>Disclaimer:</strong> These are my personal notes compiled for my own reference and learning. They may contain errors, incomplete information, or personal interpretations. While I strive for accuracy, these notes are not peer-reviewed and should not be considered authoritative sources. Please consult official textbooks, research papers, or other reliable sources for academic or professional purposes.</p>
+            </div>
+
+            <div class="table-of-contents">
+                <h3>Contents</h3>
+                <ol>
+                    <li><a href="#lambda-calculus">The lambda calculus: syntax and reduction</a></li>
+                    <li><a href="#confluence">Confluence: the Church-Rosser theorem</a></li>
+                    <li><a href="#fixed-points">Fixed points and the Y combinator</a></li>
+                    <li><a href="#stlc">The simply-typed lambda calculus</a></li>
+                    <li><a href="#safety">Type safety: progress and preservation</a></li>
+                    <li><a href="#normalization">Strong normalization</a></li>
+                    <li><a href="#curry-howard">The Curry-Howard correspondence</a></li>
+                    <li><a href="#computation">Computation</a></li>
+                    <li><a href="#pitfalls">Common pitfalls</a></li>
+                    <li><a href="#connections">Connections</a></li>
+                    <li><a href="#references">References</a></li>
+                </ol>
+            </div>
+
+            <h2 id="lambda-calculus">1. The lambda calculus: syntax and reduction</h2>
+            <div class="note-box">
+                <span class="note-box-label">Definition</span>
+                <p>Terms: $M::=x\mid\lambda x.M\mid MM$ (a variable, an abstraction, or an application). $\beta$-<strong>reduction</strong>: $(\lambda x.M)N\to M[x:=N]$ (capture-avoiding substitution of $N$ for free occurrences of $x$ in $M$); a term containing no such <strong>redex</strong> is a <strong>normal form</strong>. Write $\to^*$ for the reflexive-transitive closure of $\to$.</p>
+            </div>
+            <p>This is, deliberately, the entire syntax — no numbers, no booleans, no loops. Functional programming's central claim is that this minimal core, plus the encodings it makes possible (Section 3), is already a complete model of computation; everything else is notation built on top.</p>
+
+            <h2 id="confluence">2. Confluence: the Church-Rosser theorem</h2>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Church-Rosser)</span>
+                <p>If $M\to^*N_1$ and $M\to^*N_2$, there is $P$ with $N_1\to^*P$ and $N_2\to^*P$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof (sketch).</span> Define <strong>parallel reduction</strong> $\Rightarrow$: reflexively, $M\Rightarrow M$; compatibly, $M\Rightarrow M'$ and $N\Rightarrow N'$ give $\lambda x.M\Rightarrow\lambda x.M'$ and $MN\Rightarrow M'N'$; and, contracting a redex while simultaneously reducing inside both parts, $M\Rightarrow M'$ and $N\Rightarrow N'$ give $(\lambda x.M)N\Rightarrow M'[x:=N']$. Since $\to\,\subseteq\,\Rightarrow\,\subseteq\,\to^*$, the transitive closures coincide: $\to^*=\Rightarrow^*$. One shows, by induction on terms and a substitution lemma for $\Rightarrow$ (both standard but not reproduced here — see Barendregt, 1984, §3.2, or Pierce, 2002, Ch. 30), that $\Rightarrow$ has the <strong>diamond property</strong>: $M\Rightarrow N_1$, $M\Rightarrow N_2$ implies some $P$ with $N_1\Rightarrow P$, $N_2\Rightarrow P$. The diamond property for a single step of $\Rightarrow$ extends to the diamond property for $\Rightarrow^*$ by a standard tiling argument: laying the two reduction sequences out as two sides of a grid and filling in each unit square with one instance of the single-step diamond property connects the two far corners to a common point. Since $\Rightarrow^*=\to^*$, this is exactly the claim. <span class="qed">∎</span>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Corollary (Uniqueness of normal forms)</span>
+                <p>If $M$ has a normal form, it is unique.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> If $M\to^*N_1$ and $M\to^*N_2$ with both $N_1,N_2$ normal, confluence gives $P$ with $N_1\to^*P$, $N_2\to^*P$. A normal form admits no reduction steps, so $N_1\to^*P$ forces $P=N_1$, and likewise $P=N_2$; hence $N_1=N_2$. <span class="qed">∎</span>
+            </div>
+            <p>Figure 1 makes this concrete: a term with two redexes reduces to the same normal form whether the outer or the inner one is contracted first, taking a different number of steps either way. Confluence is exactly the guarantee that "the value a program computes" is well-defined independent of which sub-expression an implementation happens to evaluate first — the theorem underneath a compiler being free to choose an evaluation order without changing the answer.</p>
+
+            <figure class="note-figure">
+                <img src="type-theory/figures/confluence.png" alt="A diagram of a lambda term with two possible reduction paths, one taking three steps and one taking two steps, both converging to the same normal form a a, drawn as a diamond-shaped diagram with terms in boxes and arrows for each beta-reduction step.">
+                <figcaption><strong>Figure — Two reduction orders, one term, one normal form.</strong> $(\lambda x.x\,x)((\lambda y.y)\,a)$ has two redexes: the outer application and the inner $(\lambda y.y)\,a$. Contracting the inner one first reaches the normal form $a\,a$ in $2$ steps; contracting the outer one first takes $3$ steps (duplicating the inner redex, then contracting each copy) — different paths, different lengths, the same destination, exactly as Church-Rosser guarantees.</figcaption>
+            </figure>
+
+            <h2 id="fixed-points">3. Fixed points and the Y combinator</h2>
+            <p>The lambda calculus in Section 1 has no built-in recursion — a term cannot refer to itself by name. The <strong>Y combinator</strong>, $Y=\lambda f.(\lambda x.f(xx))(\lambda x.f(xx))$, manufactures self-reference from nothing but application and abstraction.</p>
+            <div class="note-box">
+                <span class="note-box-label">Theorem</span>
+                <p>For every $M$: $YM=_\beta M(YM)$ (beta-convertible — related by the symmetric-transitive closure of $\to$).</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> Let $W=\lambda x.M(xx)$, so $YM=WW$ after one substitution step ($f:=M$), i.e. $YM\to WW$. Then $WW=(\lambda x.M(xx))W\to M(WW)$, another beta step, so $YM\to^*M(WW)$. Separately, $M(YM)\to M(WW)$ by reducing the subterm $YM\to WW$ inside the application (a valid step by the compatibility rule used in Section 2's $\Rightarrow$). So both $YM$ and $M(YM)$ reduce to the common term $M(WW)$; being beta-convertible is exactly having a common reduct (Church-Rosser, Section 2, is precisely what makes this notion of "the same up to computation" an equivalence relation rather than a directional approximation). <span class="qed">∎</span>
+            </div>
+            <p>$YM=_\beta M(YM)$ is a literal unfolding: applying $Y$ to (the lambda-encoding of) a recursive step function reproduces the entire recursive definition one layer deep, on demand — factorial is $Y(\lambda\mathit{fact}.\lambda n.\,\text{if }n=0\text{ then }1\text{ else }n\times\mathit{fact}(n-1))$, with no named self-reference anywhere in sight. The same untyped calculus that gives $Y$ its power also admits terms with no normal form at all: $\Omega=(\lambda x.xx)(\lambda x.xx)$ satisfies $\Omega\to\Omega$ exactly (the single redex reduces to a syntactically identical copy of itself), so it reduces forever without ever terminating. Section 6 shows this is not an accident of one badly-chosen term — it is unavoidable in a calculus expressive enough to define $Y$.</p>
+
+            <h2 id="stlc">4. The simply-typed lambda calculus</h2>
+            <div class="note-box">
+                <span class="note-box-label">Definition</span>
+                <p>Types: $T::=\iota\mid T\to T$. A typing judgment $\Gamma\vdash M:T$ ($\Gamma$ a finite partial map from variables to types) is derived by: <strong>Var</strong> ($x:T\in\Gamma\Rightarrow\Gamma\vdash x:T$), <strong>Abs</strong> ($\Gamma,x:T_1\vdash M:T_2\Rightarrow\Gamma\vdash\lambda x{:}T_1.M:T_1\to T_2$), <strong>App</strong> ($\Gamma\vdash M:T_1\to T_2,\ \Gamma\vdash N:T_1\Rightarrow\Gamma\vdash MN:T_2$).</p>
+            </div>
+            <p>Every abstraction now carries an explicit argument type, and the App rule only fires when the pieces fit — a term like $xx$ can never be typed (giving $x$ both an arrow type and that arrow type's own domain simultaneously is impossible in this system, Section 9's first pitfall makes this precise), which is exactly what rules $\Omega$ and $Y$ out of this typed calculus, and is the reason Sections 5–6 are provable here in a way they are not for Section 1's untyped calculus.</p>
+
+            <h2 id="safety">5. Type safety: progress and preservation</h2>
+            <div class="note-box">
+                <span class="note-box-label">Lemma (Substitution)</span>
+                <p>If $\Gamma,x{:}T_1\vdash M:T_2$ and $\Gamma\vdash N:T_1$, then $\Gamma\vdash M[x:=N]:T_2$.</p>
+            </div>
+            <p>(Proved by induction on the derivation of $\Gamma,x{:}T_1\vdash M:T_2$; routine but notationally heavy, and not reproduced in full — see Pierce, 2002, Lemma 9.3.8.)</p>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Preservation)</span>
+                <p>If $\Gamma\vdash M:T$ and $M\to M'$, then $\Gamma\vdash M':T$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> By induction on the derivation of $\Gamma\vdash M:T$. If the reduction contracts $M=(\lambda x{:}T_1.M_1)N$ itself, inverting the App and Abs rules that must have produced $\Gamma\vdash M:T$ gives $\Gamma,x{:}T_1\vdash M_1:T$ and $\Gamma\vdash N:T_1$; the Substitution Lemma then gives $\Gamma\vdash M_1[x:=N]:T$ directly, and $M_1[x:=N]$ is exactly what $M$ reduces to. If instead the reduction happens inside a subterm (e.g. $M=M_1M_2\to M_1'M_2$ because $M_1\to M_1'$), the induction hypothesis applied to $M_1$ gives $\Gamma\vdash M_1':T_1\to T$, and reapplying the App rule with the unchanged $\Gamma\vdash M_2:T_1$ gives $\Gamma\vdash M_1'M_2:T$. <span class="qed">∎</span>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Progress)</span>
+                <p>If $\vdash M:T$ (empty context), then either $M$ is a value ($M=\lambda x{:}T_1.M_1$) or $M\to M'$ for some $M'$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> By induction on the typing derivation. $M=x$ cannot be typed in the empty context (no rule applies), so this case is vacuous. $M=\lambda x{:}T_1.M_1$ is already a value. If $M=M_1M_2$ with $\vdash M_1:T_1\to T_2$, $\vdash M_2:T_1$: by the induction hypothesis, $M_1$ is a value or steps. If $M_1$ steps, $M\to M_1'M_2$ by the congruence rule. If $M_1$ is a value, being of arrow type it must be an abstraction $\lambda x{:}T_1.M_1'$ — the only typing rule producing a value at an arrow type is Abs — so $M\to M_1'[x:=M_2]$, a beta step. Either way $M$ steps. <span class="qed">∎</span>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Corollary (Type safety)</span>
+                <p>If $\vdash M:T$ and $M\to^*M'$ with $M'$ irreducible, then $M'$ is a value.</p>
+            </div>
+            <p>Preservation, applied repeatedly along $M\to^*M'$, keeps $M'$ well-typed at $T$; Progress applied to $M'$ then forces $M'$ to be a value, since it cannot step. This is Robin Milner's "well-typed programs don't go wrong": an irreducible, ill-formed configuration (applying a non-function, or — in a richer calculus with more base types — adding a number to a boolean) is exactly the situation Progress rules out for any well-typed term, at every point along its entire reduction, not merely at the start.</p>
+
+            <h2 id="normalization">6. Strong normalization</h2>
+            <div class="note-box">
+                <span class="note-box-label">Theorem</span>
+                <p>Every well-typed term (some $\Gamma,T$ with $\Gamma\vdash M:T$) is <strong>strongly normalizing</strong>: every reduction sequence starting from it is finite.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof (sketch, Tait's reducibility method).</span> Define, by induction on types, $\mathrm{RED}_T\subseteq\{\text{terms}\}$: $\mathrm{RED}_\iota=\{M:M\text{ is strongly normalizing}\}$; $\mathrm{RED}_{T_1\to T_2}=\{M:\forall N\in\mathrm{RED}_{T_1},\,MN\in\mathrm{RED}_{T_2}\}$. A technical lemma (not reproduced here — see Girard, Lafont, &amp; Taylor, 1989, Ch. 6) establishes, by simultaneous induction on types: every term in $\mathrm{RED}_T$ is strongly normalizing, and reducibility is preserved by and reflected from one-step reduction in a way that lets an abstraction's reducibility be certified from its body's. Given this lemma, one shows every well-typed term is reducible at its type by induction on the typing derivation (the Abs case uses the reflection property to certify $\lambda x.M$ reducible from $M$'s reducibility under any reducible substitution for $x$). Since reducible implies strongly normalizing, every well-typed term is. <span class="qed">∎</span>
+            </div>
+            <p>This is the precise sense in which the simply-typed calculus is strictly weaker than Section 1's untyped one: $Y$ and $\Omega$ (Section 3) are simply not typable at all (Section 9 makes this explicit for $Y$) — there is no well-typed term with $\Omega$'s or $Y$'s self-application behavior, because Section 6 would then contradict itself. Real typed functional languages restore general recursion not by weakening this theorem but by adding a dedicated recursion primitive (a typed fixed-point operator, or named recursive function definitions) with its own, separate typing rule outside pure STLC — a deliberate, explicit escape hatch rather than something STLC's existing rules quietly permit.</p>
+
+            <figure class="note-figure">
+                <img src="type-theory/figures/normalization.png" alt="Plot of beta-reduction steps to normal form for a family of well-typed terms of increasing size, growing linearly and always finite, contrasted against a horizontal dashed line showing the untyped Omega term is still a redex after over two hundred steps and never terminates.">
+                <figcaption><strong>Figure — Well-typed terms always finish; $\Omega$ never does.</strong> A family of typed terms applying a Church numeral $n$ to a reducible function and an argument takes a real, computed, and finite number of beta-reduction steps to reach normal form — growing with $n$, but always finite, exactly as Section 6 guarantees. $\Omega$, run through the same reducer, is still syntactically identical to itself — still exactly one redex — after more steps than the largest typed example needed, and would remain so after any number of further steps: it never normalizes, because it is not (and cannot be) well-typed.</figcaption>
+            </figure>
+
+            <h2 id="curry-howard">7. The Curry-Howard correspondence</h2>
+            <p>The typing rules in Section 4, read as inference rules without the terms attached, are exactly the natural-deduction rules for implication: <strong>Var</strong> is the assumption rule, <strong>Abs</strong> is implication-introduction (assume $T_1$, derive $T_2$, conclude $T_1\to T_2$), and <strong>App</strong> is implication-elimination — modus ponens (from $T_1\to T_2$ and $T_1$, conclude $T_2$). Under this identification, a well-typed term is not merely <em>analogous</em> to a proof — the type is the proposition, and the term literally <em>is</em> a specific proof of it, with sub-terms as sub-proofs.</p>
+            <div class="note-box">
+                <span class="note-box-label">Correspondence table</span>
+                <p>Types $\leftrightarrow$ propositions; terms $\leftrightarrow$ proofs; $T_1\to T_2\leftrightarrow$ implication; product types $T_1\times T_2\leftrightarrow$ conjunction; sum types $T_1+T_2\leftrightarrow$ disjunction; an inhabited type $\leftrightarrow$ a provable proposition; $\beta$-reduction $\leftrightarrow$ proof normalization (removing a detour: introducing a connective immediately followed by eliminating it).</p>
+            </div>
+            <p>Worked example: $\lambda f{:}(\iota\to\iota).\lambda x{:}\iota.f(fx)$ has type $(\iota\to\iota)\to\iota\to\iota$, which under the correspondence reads as the proposition "if $\iota\to\iota$, then $\iota\to\iota$" — trivially true, and the term is a specific, explicit proof of it (assume a function $f:\iota\to\iota$ and $x:\iota$; apply $f$ twice; conclude $\iota$). The correspondence is not merely a naming coincidence: Section 5's Preservation theorem, restated in this vocabulary, says <em>normalizing a proof preserves what it is a proof of</em> — beta-reducing $(\lambda x.M)N$ to $M[x:=N]$ is removing an introduction immediately undone by an elimination, precisely a proof-theoretic cut-elimination step, and Section 6's strong normalization is exactly the statement that every proof in this system can be brought to a cut-free (redex-free) form in finitely many steps — Gentzen's cut-elimination theorem for this fragment of natural deduction, proved by the same reducibility technique either way.</p>
+
+            <h2 id="computation">8. Computation</h2>
+            <p>The figures above are generated by <code>type-theory/generate_figures.py</code>, which implements a small capture-avoiding substitution and a leftmost-outermost reducer. The snippet below reproduces the strong-normalization data.</p>
+            <pre><code>def church(n):
+    body = Var("x")
+    for _ in range(n):
+        body = App(Var("f"), body)
+    return Abs("f", Abs("x", body))
+
+g = Abs("z", App(Abs("w", Var("w")), Var("z")))  # a reducible function
+y = Var("y")
+for n in [1, 2, 4, 8, 16, 32]:
+    term = App(App(church(n), g), y)
+    nf, steps = normalize(term)
+    print(f"n={n:2d}  steps={steps:4d}  normal_form={nf}")
+
+omega_sub = Abs("x", App(Var("x"), Var("x")))
+Omega = App(omega_sub, omega_sub)
+t = Omega
+for i in range(4):
+    t2, stepped = step_leftmost(t)
+    print(f"Omega step {i}: {t}  ->  {t2}")
+    t = t2
+</code></pre>
+            <p>Actual output:</p>
+            <pre><code>n= 1  steps=   4  normal_form=y
+n= 2  steps=   6  normal_form=y
+n= 4  steps=  10  normal_form=y
+n= 8  steps=  18  normal_form=y
+n=16  steps=  34  normal_form=y
+n=32  steps=  66  normal_form=y
+
+Omega step 0: (λx.x x) (λx.x x)  ->  (λx.x x) (λx.x x)
+Omega step 1: (λx.x x) (λx.x x)  ->  (λx.x x) (λx.x x)
+Omega step 2: (λx.x x) (λx.x x)  ->  (λx.x x) (λx.x x)
+Omega step 3: (λx.x x) (λx.x x)  ->  (λx.x x) (λx.x x)</code></pre>
+            <p>The typed family's step count matches $2n+2$ exactly at every value tested — two steps to unfold the Church numeral (substituting $g$ for $f$, then $y$ for $x$), plus two more for each of the $n$ nested copies of the reducible $g=\lambda z.(\lambda w.w)z$ it exposes — confirming Section 6's guarantee quantitatively rather than just qualitatively. $\Omega$'s trace is not approximately unchanging — it is <em>exactly</em> the same term after every single step, letter for letter, the sharpest possible demonstration of non-termination a finite printout can give.</p>
+
+            <h2 id="pitfalls">9. Common pitfalls</h2>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — self-application is not just unusual in STLC, it is untypable</span>
+                <p>$xx$ (as in $\Omega$ or $Y$'s body) requires $x$ to have some type $T_1\to T_2$ (to be the function in the application) <em>and</em> to have type $T_1$ (to be the argument) simultaneously — but $x$ has only one type in a given context, and $T_1\to T_2=T_1$ is impossible for any finite type built from $\to$ and base types (the arrow type is always strictly "bigger" than either side). This is not a gap the type system happens to miss; it is the precise mechanism Section 6 relies on.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — strong normalization is a property of a term's typability, not of a particular reduction strategy</span>
+                <p>Section 6 guarantees <em>every</em> reduction sequence from a well-typed term terminates — not just the leftmost-outermost one used throughout this note's examples. This is stronger than "weak normalization" (some strategy terminates) and is why STLC evaluation order can be chosen freely (call-by-value, call-by-name, whatever a compiler prefers) without any risk of accidentally picking a non-terminating strategy for a term that has a terminating one.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — Curry-Howard is between constructive proofs and programs, not classical proofs and programs</span>
+                <p>Section 7's correspondence is with <em>intuitionistic</em> natural deduction — proof by contradiction and the law of excluded middle ($A\vee\neg A$) are not, in general, derivable in this system the way they are in classical logic, and correspondingly have no direct computational reading as ordinary terms in the calculus given here. Extending Curry-Howard to classical logic requires extra computational features (control operators corresponding to `call/cc`-style continuations) — a real, but separate, extension not covered by this note's correspondence table.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — Church-Rosser guarantees the answer, not the number of steps to get there</span>
+                <p>Figure 1's two paths reach the same normal form in $2$ and $3$ steps respectively — a small example of a real, general asymmetry: different reduction strategies can differ enormously (in the worst case, exponentially) in how many steps they take, even though confluence guarantees they never differ in the final answer. Leftmost-outermost reduction (used throughout this note) has its own separate theorem in its favor — it is guaranteed to find a normal form whenever one exists, which not every strategy is (an unlucky innermost-first strategy can loop forever reducing an argument that is never actually needed) — but that guarantee is a different, additional fact from confluence itself.</p>
+            </div>
+
+            <h2 id="connections">10. Connections</h2>
+            <ul>
+                <li><strong>Computability and formal languages.</strong> The Church–Turing thesis (that note's Section 4) is exactly the claim that this note's lambda calculus and that note's Turing machines compute the same class of functions; $\Omega$'s non-termination (Section 3 here) is the lambda-calculus counterpart of that note's undecidable Halting Problem — both are proved by essentially the same kind of self-referential construction.</li>
+                <li><strong>Distributed systems and concurrency.</strong> That note's process calculi extend this one's core idea (terms and reduction rules) with explicit concurrency and communication primitives; confluence-like properties (there, often called determinism or the diamond property for concurrent steps) play an analogous role in showing that certain concurrent computations have well-defined outcomes independent of scheduling.</li>
+                <li><strong>Discrete mathematics — logic.</strong> Section 7's Curry-Howard correspondence is, precisely, the identification of that note's proof system (natural deduction) with this note's type system; a propositional tautology's proof and a program of the corresponding type are the same object viewed through two vocabularies.</li>
+            </ul>
+
+            <h2 id="references">11. References</h2>
+            <ul>
+                <li>Barendregt, H. P. (1984). <em>The Lambda Calculus: Its Syntax and Semantics</em> (Revised ed.). North-Holland.</li>
+                <li>Pierce, B. C. (2002). <em>Types and Programming Languages</em>. MIT Press.</li>
+                <li>Girard, J.-Y., Lafont, Y., &amp; Taylor, P. (1989). <em>Proofs and Types</em>. Cambridge University Press.</li>
+                <li>Sørensen, M. H., &amp; Urzyczyn, P. (2006). <em>Lectures on the Curry-Howard Isomorphism</em>. Elsevier.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; Diogo Franquinho | Technical Notes</p>
+    </footer>
+</body>
+</html>
