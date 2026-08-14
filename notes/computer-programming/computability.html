@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Computability and Formal Languages - Technical Notes</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/book-reviews.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script src="../../js/analytics-config.js"></script>
+    <script src="../../js/analytics.js" defer></script>
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="../../index.html">← Back to Home</a> |
+        <a href="../../index.html#notes">Notes</a>
+    </nav>
+
+    <main>
+        <header>
+            <h1>Computability and Formal Languages</h1>
+            <p class="note-meta">Last updated: August 2026</p>
+        </header>
+
+        <section class="note-content">
+            <div class="disclaimer">
+                <p><strong>Disclaimer:</strong> These are my personal notes compiled for my own reference and learning. They may contain errors, incomplete information, or personal interpretations. While I strive for accuracy, these notes are not peer-reviewed and should not be considered authoritative sources. Please consult official textbooks, research papers, or other reliable sources for academic or professional purposes.</p>
+            </div>
+
+            <div class="table-of-contents">
+                <h3>Contents</h3>
+                <ol>
+                    <li><a href="#automata">Finite automata and regular languages</a></li>
+                    <li><a href="#pumping">The Pumping Lemma and Myhill-Nerode</a></li>
+                    <li><a href="#cfl">Context-free languages and the Chomsky hierarchy, briefly</a></li>
+                    <li><a href="#turing">Turing machines and decidability</a></li>
+                    <li><a href="#halting">The Halting Problem is undecidable</a></li>
+                    <li><a href="#reductions">Reductions and Rice's theorem</a></li>
+                    <li><a href="#np">P, NP, and polynomial-time reductions</a></li>
+                    <li><a href="#computation">Computation</a></li>
+                    <li><a href="#pitfalls">Common pitfalls</a></li>
+                    <li><a href="#connections">Connections</a></li>
+                    <li><a href="#references">References</a></li>
+                </ol>
+            </div>
+
+            <h2 id="automata">1. Finite automata and regular languages</h2>
+            <div class="note-box">
+                <span class="note-box-label">Definition</span>
+                <p>A <strong>deterministic finite automaton (DFA)</strong> is $M=(Q,\Sigma,\delta,q_0,F)$: a finite set of states $Q$, alphabet $\Sigma$, transition function $\delta:Q\times\Sigma\to Q$, start state $q_0$, and accepting states $F\subseteq Q$. Extend $\delta$ to strings by $\hat\delta(q,\epsilon)=q$, $\hat\delta(q,wa)=\delta(\hat\delta(q,w),a)$. $M$ <strong>recognizes</strong> $L(M)=\{w\in\Sigma^*:\hat\delta(q_0,w)\in F\}$; $L$ is <strong>regular</strong> if some DFA recognizes it.</p>
+            </div>
+            <p>A DFA is the simplest possible model of computation with a reason to care about it mathematically: it has no memory beyond which of finitely many states it currently occupies. Everything in Section 2 is a consequence of that single restriction, made precise.</p>
+
+            <h2 id="pumping">2. The Pumping Lemma and Myhill-Nerode</h2>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Pumping Lemma)</span>
+                <p>If $L$ is regular, there is $p\geq1$ such that every $s\in L$ with $|s|\geq p$ can be written $s=xyz$ with $|xy|\leq p$, $|y|\geq1$, and $xy^iz\in L$ for every $i\geq0$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> Let $M$ be a DFA for $L$ with $p=|Q|$ states. For $s\in L$ with $|s|\geq p$, let $q_0,q_1,\ldots,q_p$ be the states $M$ visits reading the first $p$ characters of $s$ — that is $p+1$ states drawn from a set of only $p$, so by the pigeonhole principle $q_i=q_j$ for some $0\leq i&lt;j\leq p$. Set $x=$ the length-$i$ prefix, $y=$ the substring from position $i$ to $j$ (so $|y|=j-i\geq1$), $z=$ the rest of $s$. Since reading $y$ takes $M$ from $q_i$ back to $q_i$, it can be read any number of times $i\geq0$ (including zero) without changing whether the rest of the computation accepts — so $xy^iz\in L$ for every $i\geq0$; and $|xy|=j\leq p$. <span class="qed">∎</span>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Application — $\{0^n1^n:n\geq0\}$ is not regular</span>
+                <p>Suppose it were, with pumping length $p$. Take $s=0^p1^p$. Any decomposition $s=xyz$ with $|xy|\leq p$ has $xy$ entirely within the $0$-block, so $y=0^k$, $k\geq1$. Pumping down ($i=0$): $xz=0^{p-k}1^p$ has fewer $0$s than $1$s, so $xz\notin L$ — contradicting the lemma, which requires $xy^0z\in L$ for <em>every</em> valid decomposition. So no such $p$ exists, and $L$ is not regular.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Definition and Theorem (Myhill-Nerode)</span>
+                <p>Say $x\sim_Ly$ if for every $z$: $xz\in L\iff yz\in L$. If $L$ is regular, $\sim_L$ has finitely many equivalence classes (at most $|Q|$ for any recognizing DFA).</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> Given a DFA $M=(Q,\Sigma,\delta,q_0,F)$ for $L$, define $x\sim_My$ iff $\hat\delta(q_0,x)=\hat\delta(q_0,y)$ — at most $|Q|$ classes, trivially. If $x\sim_My$, then for every $z$, $\hat\delta(q_0,xz)=\hat\delta(\hat\delta(q_0,x),z)=\hat\delta(\hat\delta(q_0,y),z)=\hat\delta(q_0,yz)$, so $xz\in L\iff yz\in L$ — i.e. $x\sim_My\Rightarrow x\sim_Ly$. Since $\sim_M$ refines $\sim_L$, $\sim_L$ has at most as many classes as $\sim_M$, hence at most $|Q|$. <span class="qed">∎</span>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Application, again — a second, independent proof</span>
+                <p>For $i\neq j$ (say $i&lt;j$), take $z=1^i$: $0^iz=0^i1^i\in L$ but $0^jz=0^j1^i\notin L$ (unequal exponents). So $0^i\not\sim_L0^j$ for all $i\neq j$ — infinitely many pairwise-distinct equivalence classes, so by the theorem's contrapositive, $\{0^n1^n\}$ is not regular. This reaches the same conclusion as the Pumping Lemma by an entirely different route, and it generalizes further: Myhill-Nerode classes are exactly the minimal DFA's states, giving not just non-regularity but an exact minimum state count for any regular approximation (Figure 1).</p>
+            </div>
+
+            <figure class="note-figure">
+                <img src="computability/figures/myhill_nerode.png" alt="Plot of the minimal number of DFA states needed to exactly recognize the truncated language 0 to the n, 1 to the n for n up to N, growing exactly as 2N+2, computed via Myhill-Nerode residual languages for N from 0 to 20.">
+                <figcaption><strong>Figure — Myhill-Nerode, computed exactly, for $\{0^n1^n:n\leq N\}$.</strong> Truncating the language to strings with $n\leq N$ makes it finite, hence trivially regular — but the minimal DFA needed grows linearly, exactly $2N+2$ states (computed directly from the Myhill-Nerode residual languages of each reachable prefix, not merely asserted). No single finite automaton can serve every truncation simultaneously, which is the concrete content behind the untruncated language failing to be regular at all.</figcaption>
+            </figure>
+
+            <h2 id="cfl">3. Context-free languages and the Chomsky hierarchy, briefly</h2>
+            <p>Regular languages sit at the bottom of a strict containment hierarchy; each level is generated by grammars with progressively fewer restrictions on production rules, and recognized by progressively more powerful machines.</p>
+            <div class="note-box">
+                <span class="note-box-label">The Chomsky hierarchy</span>
+                <p><strong>Regular</strong> (right-linear grammars; DFA/NFA) $\subsetneq$ <strong>context-free</strong> (rules $A\to\gamma$, any $\gamma$; pushdown automata — a DFA plus a stack) $\subsetneq$ <strong>context-sensitive</strong> (rules $\alpha A\beta\to\alpha\gamma\beta$, $|\gamma|\geq1$; linear-bounded automata) $\subsetneq$ <strong>recursively enumerable</strong> (unrestricted grammars; Turing machines, Section 4).</p>
+            </div>
+            <p>$\{0^n1^n:n\geq0\}$, not regular (Section 2), is context-free: the grammar $S\to0S1\mid\epsilon$ generates exactly it, and a pushdown automaton recognizes it by pushing a marker per $0$ and popping one per $1$ — the single unbounded counter a stack provides is exactly the extra power a DFA's fixed state set lacks. Context-free languages have their own pumping lemma (with two pumped pieces instead of one, reflecting the stack's LIFO structure), not reproduced here; $\{a^nb^nc^n:n\geq0\}$ is the standard example of a language that is context-sensitive but not context-free.</p>
+
+            <h2 id="turing">4. Turing machines and decidability</h2>
+            <div class="note-box">
+                <span class="note-box-label">Definition</span>
+                <p>A <strong>Turing machine</strong> is $M=(Q,\Sigma,\Gamma,\delta,q_0,q_{\text{accept}},q_{\text{reject}})$ with an infinite tape, $\delta:Q\times\Gamma\to Q\times\Gamma\times\{L,R\}$ (state and symbol read $\to$ state, symbol to write, head direction). $M$ <strong>decides</strong> a language $L$ if it halts (in $q_{\text{accept}}$ or $q_{\text{reject}}$) on every input, accepting exactly $L$; $L$ is <strong>decidable</strong> if some TM decides it, and <strong>recognizable</strong> if some TM halts-and-accepts on exactly the strings of $L$ (possibly running forever on strings outside $L$).</p>
+            </div>
+            <p>The <strong>Church–Turing thesis</strong> — that Turing machines capture exactly the informal, intuitive notion of "algorithm" — is not a theorem to be proved but a claim about the relationship between an informal concept and a formal one; its evidence is that every alternative formalization proposed (lambda calculus, general recursive functions, register machines, real programming languages) has been proved computationally equivalent to Turing machines. It is universally accepted, but it is a thesis, not a theorem, and Section 5's undecidability result is a statement about Turing machines specifically, understood to be a statement about algorithms generally only via this thesis.</p>
+
+            <h2 id="halting">5. The Halting Problem is undecidable</h2>
+            <div class="note-box">
+                <span class="note-box-label">Theorem</span>
+                <p>$HALT=\{\langle M,w\rangle : M\text{ is a TM that halts on input }w\}$ is undecidable.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> Suppose some TM $H$ decides $HALT$: $H(\langle M,w\rangle)$ halts, outputting "yes" if $M$ halts on $w$ and "no" otherwise. Build a TM $D$ that, on input $\langle M\rangle$: runs $H(\langle M,M\rangle)$; if the answer is "yes" ($M$ halts on $M$), $D$ loops forever; if "no", $D$ halts. Consider running $D$ on its own description, $D(\langle D\rangle)$. If $D$ halts on $\langle D\rangle$: by construction this happens exactly when $H(\langle D,D\rangle)$ said "no", i.e. when $D$ does <em>not</em> halt on $D$ — contradicting that it just halted. If $D$ does not halt on $\langle D\rangle$: this happens exactly when $H(\langle D,D\rangle)$ said "yes", i.e. when $D$ <em>does</em> halt on $D$ — contradicting that it ran forever. Both cases are contradictions, so no TM $H$ deciding $HALT$ can exist. <span class="qed">∎</span>
+            </div>
+            <p>This is Cantor's diagonal argument in algorithmic form: $D$ is built specifically to disagree with what $H$ predicts about $D$ itself, the same self-referential trick that proves the reals are uncountable and that no set surjects onto its own power set. The Halting Problem is not "hard" in the sense $\mathrm{P}$ vs. $\mathrm{NP}$ (Section 7) problems are hard — it is not merely intractable, it is <em>impossible</em> for any algorithm whatsoever, with no amount of computation time ever sufficient.</p>
+
+            <h2 id="reductions">6. Reductions and Rice's theorem</h2>
+            <p>Section 5's proof is not just one undecidability result — it is a template. A <strong>reduction</strong> from problem $A$ to problem $B$ is an algorithm turning instances of $A$ into instances of $B$ with the same yes/no answer; if $A$ is undecidable and such a reduction exists, $B$ must be undecidable too (a decider for $B$ would give a decider for $A$, via the reduction).</p>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Rice's theorem, sketch)</span>
+                <p>Let $P$ be any property of languages that is <strong>non-trivial</strong> (true for some recognizable languages, false for others) and depends only on $L(M)$, not on $M$'s description. Then $\{\langle M\rangle:P(L(M))\text{ holds}\}$ is undecidable.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof (sketch).</span> Assume WLOG $P(\varnothing)$ is false and some $L_0\neq\varnothing$ with $P(L_0)$ true is recognized by machine $M_0$ (the symmetric case is proved the same way, swapping accept/reject roles). Suppose $R$ decides $P$. Build $D$: on input $\langle M,w\rangle$, construct $M'$ that, on input $x$, first simulates $M$ on $w$, and — only if that halts — simulates $M_0$ on $x$ and accepts iff $M_0$ does; then run $R(\langle M'\rangle)$ and output its answer. If $M$ halts on $w$: $L(M')=L(M_0)=L_0$, which has $P$, so $R$ says yes. If $M$ does not halt on $w$: $M'$ never gets past its first step for any $x$, so $L(M')=\varnothing$, which lacks $P$, so $R$ says no. So $D$ decides $HALT$ — contradicting Section 5. <span class="qed">∎</span>
+            </div>
+            <p>Rice's theorem is a sweeping statement: <em>any</em> question about what a program's behavior actually computes (does it accept some string? does it accept every string? is its language finite? does it compute the same function as some other specific program?) is undecidable, the moment the question is non-trivial. The only decidable questions about a Turing machine are questions about its <em>syntax</em> (how many states does it have, does its code contain a certain substring) — anything about its actual runtime behavior, in general, is not decidable.</p>
+
+            <h2 id="np">7. P, NP, and polynomial-time reductions</h2>
+            <div class="note-box">
+                <span class="note-box-label">Definitions</span>
+                <p>$\mathrm P$ = languages decided by some TM in $O(n^k)$ time (some fixed $k$) as a function of input length $n$. $\mathrm{NP}$ = languages with a polynomial-time <strong>verifier</strong>: $L\in\mathrm{NP}$ if there is a poly-time $V$ and polynomial $q$ with $x\in L\iff\exists\,c,\,|c|\leq q(|x|),\,V(x,c)$ accepts (a "certificate" $c$ that can be checked quickly, even if finding one is hard). $A\leq_pB$ ("$A$ reduces to $B$ in polynomial time") if some poly-time computable $f$ satisfies $x\in A\iff f(x)\in B$. $B$ is <strong>NP-hard</strong> if every $A\in\mathrm{NP}$ satisfies $A\leq_pB$; $B$ is <strong>NP-complete</strong> if additionally $B\in\mathrm{NP}$.</p>
+            </div>
+            <p>$\mathrm P\subseteq\mathrm{NP}$ trivially (a poly-time decider is its own poly-time verifier, ignoring the certificate). Whether $\mathrm P=\mathrm{NP}$ is one of the seven Clay Millennium Prize problems and remains open; nothing below resolves it, but the machinery of NP-completeness is exactly what would let a single resolved instance settle the entire class at once (Section 12 makes this precise).</p>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Cook–Levin, cited without proof)</span>
+                <p>$\mathrm{3\text{-}SAT}$ — satisfiability of a Boolean formula in conjunctive normal form with exactly three literals per clause — is NP-complete.</p>
+            </div>
+            <p>(See Sipser, 2013, Thm. 7.37, for the full construction, which simulates an arbitrary poly-time verifier's computation history directly as a Boolean formula.) Given one NP-complete problem, polynomial-time reductions from it certify NP-hardness of anything it reduces to.</p>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (a triangle of equivalent problems)</span>
+                <p>$S\subseteq V$ is an independent set in $G=(V,E)$ iff $V\setminus S$ is a vertex cover of $G$; $S$ is a clique in $G$ iff $S$ is an independent set in the complement graph $\bar G$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> $S$ independent means no edge of $G$ has both endpoints in $S$, i.e. every edge has at least one endpoint in $V\setminus S$ — exactly the definition of $V\setminus S$ being a vertex cover, and the argument reverses identically. $S$ is a clique in $G$ iff every pair of vertices in $S$ is an edge of $G$, iff no pair of vertices in $S$ is an edge of $\bar G$ (complementation flips every edge/non-edge), iff $S$ is independent in $\bar G$. <span class="qed">∎</span>
+            </div>
+            <p>Both equivalences are computable in polynomial time (complementing a graph, or just relabeling $S\mapsto V\setminus S$), giving $\text{Independent Set}\leq_p\text{Vertex Cover}\leq_p\text{Clique}\leq_p\text{Independent Set}$ — once one is known NP-hard, all three are.</p>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (3-SAT $\leq_p$ Independent Set)</span>
+                <p>Given a 3-CNF formula $\phi$ with clauses $C_1,\ldots,C_m$, build $G$: one vertex per literal-occurrence (three per clause), a triangle of edges within each clause's three vertices, and an edge between any two vertices in different clauses representing a variable and its negation. Then $\phi$ is satisfiable iff $G$ has an independent set of size $m$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> ($\Rightarrow$) Given a satisfying assignment, each clause has at least one true literal; pick one such vertex per clause. No two picks are triangle-adjacent (one per triangle). No two picks are contradiction-adjacent either: that would require a literal and its negation both marked true by one assignment, impossible. So the $m$ picks form an independent set of size $m$. ($\Leftarrow$) Since each clause-triangle is a complete graph, an independent set can contain at most one vertex per triangle; achieving size $m$ over $m$ triangles forces exactly one vertex per triangle. Set each corresponding literal true (assign unconstrained variables arbitrarily); this is consistent because a contradiction-edge would have forbidden picking both a literal and its negation. Every clause has its picked literal true, so the assignment satisfies $\phi$. <span class="qed">∎</span>
+            </div>
+            <p>Figure 2 runs exactly this reduction on random 3-SAT instances and searches the resulting graph for an independent set by brute force — the reduction is a few lines of code, but the search space it hands to brute force grows explosively (Section 8).</p>
+
+            <figure class="note-figure">
+                <img src="computability/figures/np_hardness.png" alt="Semilog plot of the wall-clock time to find an independent set of size m by brute force in the graph built from a random 3-SAT instance with m clauses, growing exponentially and closely tracking a 2 to the m reference curve, for m from 4 to 12.">
+                <figcaption><strong>Figure — Verifying a candidate is instant; brute-force search is not.</strong> On the exact graphs Section 7's reduction builds from random 3-SAT instances, exhaustively searching all $\binom{3m}{m}$ candidate subsets for an independent set of size $m$ takes a fraction of a millisecond at $m=4$ and over a minute at $m=12$ — twelve more clauses, forty times longer than plausible patience. Checking whether a single <em>given</em> subset is independent, by contrast, takes microseconds regardless of $m$: exactly the verify-fast/search-slow asymmetry the definition of $\mathrm{NP}$ is built around.</figcaption>
+            </figure>
+
+            <h2 id="computation">8. Computation</h2>
+            <p>The figures above are generated by <code>computability/generate_figures.py</code>. The snippet below computes the exact Myhill-Nerode state count for $\{0^n1^n:n\leq N\}$ by enumerating reachable prefixes and their residual languages directly from the definition in Section 2 — no automaton library, no minimization algorithm, just the theorem applied literally.</p>
+            <pre><code>def L_N(N):
+    return ["0"*k + "1"*k for k in range(N+1)]
+
+def minimal_states(N):
+    lang = L_N(N)
+    prefixes = {"0"*j for j in range(N+1)}
+    prefixes |= {"0"*k + "1"*i for k in range(N+1) for i in range(1, k+1)}
+
+    residuals = set()
+    for w in prefixes:
+        res = frozenset(s[len(w):] for s in lang if s.startswith(w))
+        residuals.add(res)
+
+    return len(residuals) + 1  # +1 for the single dead/reject class
+
+for N in [0, 5, 10, 15, 20]:
+    print(N, minimal_states(N))
+</code></pre>
+            <p>Actual output:</p>
+            <pre><code>0 2
+5 12
+10 22
+15 32
+20 42</code></pre>
+            <p>Exactly $2N+2$ at every tested $N$, matching Figure 1's full curve — a direct, from-definitions computation of a fact that Section 2's abstract proof establishes only qualitatively (unbounded, not a specific formula).</p>
+
+            <h2 id="pitfalls">9. Common pitfalls</h2>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — the Pumping Lemma prover doesn't get to choose the decomposition</span>
+                <p>The lemma says: <em>for every</em> valid decomposition $s=xyz$ (with $|xy|\leq p$, $|y|\geq1$), pumping stays in $L$. A non-regularity proof must derive a contradiction for <em>every</em> such decomposition, not exhibit one convenient decomposition that happens to fail and ignore others. In Section 2's example, the constraint $|xy|\leq p$ was doing real work: it forced $y$ to lie entirely within the $0$-block, eliminating the need to separately rule out decompositions straddling the $01$ boundary.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — the Pumping Lemma is a necessary condition for regularity, not sufficient</span>
+                <p>Satisfying the pumping property for some $p$ does not prove a language regular — some non-regular languages happen to satisfy it anyway (a well-known example: $\{ww:w\in\{0,1\}^*\}\cup\{0,1\}^*0^k1^k$-style constructions, or more simply languages built to defeat this specific lemma while remaining non-regular). The lemma is only ever used in the contrapositive direction, to disprove regularity, exactly as in Section 2 — never to prove it.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — undecidable means no algorithm ever, not "no algorithm known yet"</span>
+                <p>Section 5's proof is a proof, not a report of failed attempts — it shows every possible TM $H$ fails, not that today's best TMs fail. This coexists with the fact that <em>most individual instances</em> of the Halting Problem are easy (a loop with no exit condition obviously never halts); undecidability is a statement about the impossibility of one algorithm handling <em>every</em> instance correctly, not a claim that every instance is individually mysterious.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — NP-hard does not mean "in NP," and NP-complete is the stronger, more specific claim</span>
+                <p>Section 7 defines NP-hardness as "every NP problem reduces to it" without requiring membership in $\mathrm{NP}$ itself. The Halting Problem (Section 5) is a genuine example of the gap: it is NP-hard (3-SAT reduces to it — given a formula $\phi$, build in polynomial time a TM that brute-force-checks every assignment and halts the moment it finds one satisfying $\phi$, looping forever only if none exists, so this TM halts iff $\phi$ is satisfiable), yet it is not in $\mathrm{NP}$ at all, since it is not even decidable, let alone verifiable in polynomial time. "NP-complete" — the conjunction of NP-hard <em>and</em> in $\mathrm{NP}$ — is the strictly more specific and more commonly intended claim for problems like 3-SAT and Independent Set, and it is not automatic from NP-hardness alone.</p>
+            </div>
+
+            <h2 id="connections">10. Connections</h2>
+            <ul>
+                <li><strong>Discrete mathematics — logic.</strong> 3-SAT (Section 7) is a satisfiability question about propositional logic formulas; the Cook–Levin theorem is precisely the statement that propositional satisfiability checking is, in the worst case, as hard as any polynomial-time-verifiable question whatsoever.</li>
+                <li><strong>Discrete mathematics — graph theory.</strong> Independent Set, Vertex Cover, and Clique (Section 7) are graph-theoretic objects; the reduction triangle proved there is a purely graph-theoretic fact (about edges and their complements) doing double duty as a complexity-theoretic one.</li>
+                <li><strong>Type theory and functional programming.</strong> The Church–Turing thesis (Section 4) is the reason lambda calculus — the foundation of that note's subject — and Turing machines are taken to define the same notion of "computable," despite looking nothing alike; a term normalizing in the (untyped) lambda calculus is exactly as undecidable a question as $HALT$ here, via the same diagonalization idea.</li>
+                <li><strong>Distributed systems and concurrency.</strong> Several fundamental impossibility results in that note (e.g. limits on what a distributed protocol can guarantee) are proved by the same reduction-and-contradiction strategy as Rice's theorem here — assume a solution exists, use it to solve something already known impossible, contradiction.</li>
+            </ul>
+
+            <h2 id="references">11. References</h2>
+            <ul>
+                <li>Sipser, M. (2013). <em>Introduction to the Theory of Computation</em> (3rd ed.). Cengage Learning.</li>
+                <li>Hopcroft, J. E., Motwani, R., &amp; Ullman, J. D. (2006). <em>Introduction to Automata Theory, Languages, and Computation</em> (3rd ed.). Pearson.</li>
+                <li>Garey, M. R., &amp; Johnson, D. S. (1979). <em>Computers and Intractability: A Guide to the Theory of NP-Completeness</em>. W. H. Freeman.</li>
+                <li>Kleinberg, J., &amp; Tardos, É. (2005). <em>Algorithm Design</em>. Addison-Wesley.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; Diogo Franquinho | Technical Notes</p>
+    </footer>
+</body>
+</html>
