@@ -21,501 +21,228 @@
 </head>
 <body>
     <nav class="top-nav">
-        <a href="../../index.html">← Back to Home</a> | 
+        <a href="../../index.html">← Back to Home</a> |
         <a href="../../index.html#notes">Notes</a>
     </nav>
 
     <main>
         <header>
             <h1>Graph Theory</h1>
-            <p class="note-meta">Last updated: December 2024</p>
+            <p class="note-meta">Last updated: August 2026</p>
         </header>
 
         <section class="note-content">
             <div class="disclaimer">
                 <p><strong>Disclaimer:</strong> These are my personal notes compiled for my own reference and learning. They may contain errors, incomplete information, or personal interpretations. While I strive for accuracy, these notes are not peer-reviewed and should not be considered authoritative sources. Please consult official textbooks, research papers, or other reliable sources for academic or professional purposes.</p>
             </div>
-            
-            <h2>1. Basic Definitions</h2>
-            <p>A graph $G = (V, E)$ consists of a set of vertices $V$ and a set of edges $E$, where each edge connects two vertices.</p>
 
-            <h3>1.1 Types of Graphs</h3>
-            <ul>
-                <li><strong>Simple Graph:</strong> No self-loops or multiple edges</li>
-                <li><strong>Multigraph:</strong> Multiple edges allowed between vertices</li>
-                <li><strong>Directed Graph (Digraph):</strong> Edges have direction</li>
-                <li><strong>Weighted Graph:</strong> Edges have associated weights</li>
-                <li><strong>Complete Graph:</strong> Every pair of vertices is connected</li>
-                <li><strong>Bipartite Graph:</strong> Vertices can be divided into two disjoint sets</li>
-            </ul>
-
-            <h3>1.2 Basic Parameters</h3>
-            <ul>
-                <li><strong>Order:</strong> Number of vertices $|V| = n$</li>
-                <li><strong>Size:</strong> Number of edges $|E| = m$</li>
-                <li><strong>Degree:</strong> $\deg(v)$ = number of edges incident to vertex $v$</li>
-                <li><strong>Maximum Degree:</strong> $\Delta(G) = \max_{v \in V} \deg(v)$</li>
-                <li><strong>Minimum Degree:</strong> $\delta(G) = \min_{v \in V} \deg(v)$</li>
-            </ul>
-
-            <h2>2. Fundamental Theorems</h2>
-            <h3>2.1 Handshaking Lemma</h3>
-            <div class="math-block">
-                $$\sum_{v \in V} \deg(v) = 2|E|$$
-            </div>
-            <p><strong>Corollary:</strong> The number of vertices with odd degree is even.</p>
-
-            <h3>2.2 Bounds on Edges</h3>
-            <p>For a simple graph with $n$ vertices:</p>
-            <div class="math-block">
-                $$|E| \leq \binom{n}{2} = \frac{n(n-1)}{2}$$
+            <div class="table-of-contents">
+                <h3>Contents</h3>
+                <ol>
+                    <li><a href="#basics">Basic definitions and the Handshake Lemma</a></li>
+                    <li><a href="#trees">Trees: equivalent characterizations</a></li>
+                    <li><a href="#euler-formula">Euler's formula for planar graphs</a></li>
+                    <li><a href="#nonplanar">Edge bounds and non-planarity of $K_5$, $K_{3,3}$</a></li>
+                    <li><a href="#five-color">The Five Color Theorem</a></li>
+                    <li><a href="#konig">Matchings and König's theorem</a></li>
+                    <li><a href="#hall">Hall's Marriage Theorem</a></li>
+                    <li><a href="#eulerian">Eulerian circuits</a></li>
+                    <li><a href="#computation">Computation</a></li>
+                    <li><a href="#pitfalls">Common pitfalls</a></li>
+                    <li><a href="#connections">Connections</a></li>
+                    <li><a href="#references">References</a></li>
+                </ol>
             </div>
 
-            <h2>3. Graph Connectivity</h2>
-            <h3>3.1 Connectivity Definitions</h3>
-            <ul>
-                <li><strong>Connected:</strong> Path exists between every pair of vertices</li>
-                <li><strong>Component:</strong> Maximal connected subgraph</li>
-                <li><strong>Cut Vertex:</strong> Vertex whose removal increases components</li>
-                <li><strong>Bridge:</strong> Edge whose removal increases components</li>
-                <li><strong>$k$-connected:</strong> Remains connected after removing any $k-1$ vertices</li>
-            </ul>
-
-            <h3>3.2 Connectivity Numbers</h3>
-            <ul>
-                <li><strong>Vertex Connectivity:</strong> $\kappa(G)$ = minimum vertices to disconnect</li>
-                <li><strong>Edge Connectivity:</strong> $\lambda(G)$ = minimum edges to disconnect</li>
-                <li><strong>Whitney's Inequality:</strong> $\kappa(G) \leq \lambda(G) \leq \delta(G)$</li>
-            </ul>
-
-            <h2>4. Trees and Forests</h2>
-            <h3>4.1 Tree Properties</h3>
-            <p>A tree is a connected acyclic graph. Equivalent characterizations:</p>
-            <ul>
-                <li>Connected with $n-1$ edges</li>
-                <li>Acyclic with $n-1$ edges</li>
-                <li>Unique path between every pair of vertices</li>
-                <li>Minimal connected graph</li>
-                <li>Maximal acyclic graph</li>
-            </ul>
-
-            <h3>4.2 Spanning Trees</h3>
-            <p>A spanning tree of $G$ is a subgraph that is a tree and includes all vertices.</p>
-            <p><strong>Cayley's Formula:</strong> The number of labeled spanning trees of $K_n$ is $n^{n-2}$.</p>
-
-            <h3>4.3 Minimum Spanning Tree Algorithms</h3>
-            <h4>Kruskal's Algorithm</h4>
-            <ol>
-                <li>Sort edges by weight</li>
-                <li>Add edges if they don't create a cycle</li>
-                <li>Use Union-Find for cycle detection</li>
-            </ol>
-            <p>Time complexity: $O(m \log m)$</p>
-
-            <h4>Prim's Algorithm</h4>
-            <ol>
-                <li>Start with arbitrary vertex</li>
-                <li>Repeatedly add minimum weight edge to tree</li>
-                <li>Use priority queue for efficiency</li>
-            </ol>
-            <p>Time complexity: $O(m \log n)$ with binary heap</p>
-
-            <h2>5. Shortest Path Algorithms</h2>
-            <h3>5.1 Single-Source Shortest Paths</h3>
-            <h4>Dijkstra's Algorithm</h4>
-            <p>For non-negative weights:</p>
-            <div class="math-block">
-                $$d[v] = \min(d[v], d[u] + w(u,v))$$
+            <h2 id="basics">1. Basic definitions and the Handshake Lemma</h2>
+            <div class="note-box">
+                <span class="note-box-label">Definitions</span>
+                <p>A (simple) graph $G=(V,E)$: a vertex set $V$ and a set $E$ of unordered pairs of distinct vertices. $\deg(v)$: the number of edges incident to $v$. $G$ is <strong>bipartite</strong> if $V$ splits into $A\sqcup B$ with every edge crossing between $A$ and $B$. A <strong>path</strong> visits distinct vertices in sequence via edges; a <strong>cycle</strong> is a path returning to its start.</p>
             </div>
-            <p>Time complexity: $O((n + m) \log n)$ with Fibonacci heap</p>
-
-            <h4>Bellman-Ford Algorithm</h4>
-            <p>Handles negative weights, detects negative cycles:</p>
-            <p>Time complexity: $O(nm)$</p>
-
-            <h3>5.2 All-Pairs Shortest Paths</h3>
-            <h4>Floyd-Warshall Algorithm</h4>
-            <div class="math-block">
-                $$d[i][j] = \min(d[i][j], d[i][k] + d[k][j])$$
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Handshake Lemma)</span>
+                <p>$\sum_{v\in V}\deg(v)=2|E|$; consequently the number of odd-degree vertices is even.</p>
             </div>
-            <p>Time complexity: $O(n^3)$</p>
-
-            <h2>6. Graph Coloring</h2>
-            <h3>6.1 Vertex Coloring</h3>
-            <p>A proper coloring assigns colors to vertices such that adjacent vertices have different colors.</p>
-            <ul>
-                <li><strong>Chromatic Number:</strong> $\chi(G)$ = minimum colors needed</li>
-                <li><strong>Clique Number:</strong> $\omega(G)$ = size of largest clique</li>
-                <li><strong>Independence Number:</strong> $\alpha(G)$ = size of largest independent set</li>
-            </ul>
-
-            <h3>6.2 Important Results</h3>
-            <ul>
-                <li>$\chi(G) \geq \omega(G)$</li>
-                <li>$\chi(G) \leq \Delta(G) + 1$ (Greedy bound)</li>
-                <li>$\chi(G) \leq \Delta(G)$ if $G$ is not complete or odd cycle (Brooks' theorem)</li>
-                <li>$\alpha(G) \cdot \chi(G) \geq n$</li>
-            </ul>
-
-            <h3>6.3 Four Color Theorem</h3>
-            <p>Every planar graph is 4-colorable. This was the first major theorem proved using computer assistance.</p>
-
-            <h2>7. Planar Graphs</h2>
-            <h3>7.1 Euler's Formula</h3>
-            <p>For a connected planar graph:</p>
-            <div class="math-block">
-                $$n - m + f = 2$$
-            </div>
-            <p>where $f$ is the number of faces (including the outer face).</p>
-
-            <h3>7.2 Consequences of Euler's Formula</h3>
-            <ul>
-                <li>For $n \geq 3$: $m \leq 3n - 6$</li>
-                <li>For triangle-free graphs with $n \geq 3$: $m \leq 2n - 4$</li>
-                <li>Every planar graph has a vertex of degree $\leq 5$</li>
-            </ul>
-
-            <h3>7.3 Kuratowski's Theorem</h3>
-            <p>A graph is planar if and only if it contains no subdivision of $K_5$ or $K_{3,3}$.</p>
-
-            <h2>8. Matching Theory</h2>
-            <h3>8.1 Basic Definitions</h3>
-            <ul>
-                <li><strong>Matching:</strong> Set of edges with no common vertices</li>
-                <li><strong>Maximum Matching:</strong> Matching with maximum number of edges</li>
-                <li><strong>Perfect Matching:</strong> Matching covering all vertices</li>
-                <li><strong>Vertex Cover:</strong> Set of vertices covering all edges</li>
-            </ul>
-
-            <h3>8.2 König's Theorem</h3>
-            <p>In a bipartite graph:</p>
-            <div class="math-block">
-                $$\text{size of maximum matching} = \text{size of minimum vertex cover}$$
+            <div class="proof">
+                <span class="proof-label">Proof.</span> Each edge $\{u,v\}$ contributes exactly $1$ to $\deg(u)$ and $1$ to $\deg(v)$ — exactly $2$ to the sum, regardless of which edge. Summing over all $|E|$ edges gives $2|E|$. Since $2|E|$ is even, the sum of degrees is even; a sum of integers is even iff the number of odd terms among them is even, so the odd-degree vertices number even. <span class="qed">∎</span>
             </div>
 
-            <h3>8.3 Hall's Marriage Theorem</h3>
-            <p>A bipartite graph $G = (A \cup B, E)$ has a matching saturating $A$ if and only if:</p>
-            <div class="math-block">
-                $$|N(S)| \geq |S| \text{ for all } S \subseteq A$$
+            <h2 id="trees">2. Trees: equivalent characterizations</h2>
+            <div class="note-box">
+                <span class="note-box-label">Definition</span>
+                <p>A <strong>tree</strong> is a connected, acyclic graph.</p>
             </div>
-            <p>where $N(S)$ is the neighborhood of $S$.</p>
+            <div class="note-box">
+                <span class="note-box-label">Lemma (Leaf lemma)</span>
+                <p>Every tree with at least $2$ vertices has a vertex of degree $1$ (a leaf).</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> Take a longest path $v_0,\ldots,v_k$ in the (finite) tree; $k\geq1$ since the tree has $\geq2$ vertices and is connected. If $v_k$ had a neighbor $u\neq v_{k-1}$: $u$ cannot be $v_i$ for any $i&lt;k-1$, since the tree's acyclicity means there is a unique path between any two vertices, and $u=v_i$ would give two distinct paths from $v_i$ to $v_k$ (along the original path, and via the direct edge $v_k u$) — a cycle. So $u$ is not on the path at all, and $v_0,\ldots,v_k,u$ is a longer path, contradicting maximality. So $v_k$'s only neighbor is $v_{k-1}$: degree $1$. <span class="qed">∎</span>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Theorem</span>
+                <p>A graph on $n$ vertices is a tree iff it is connected with exactly $n-1$ edges, iff it is acyclic with exactly $n-1$ edges.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> <em>Tree $\Rightarrow$ $n-1$ edges:</em> induction on $n$. $n=1$: $0$ edges. $n\geq2$: by the Leaf Lemma, some leaf $v$ exists; $G-v$ (remove $v$ and its one edge) is still a tree, now on $n-1$ vertices, with $n-2$ edges by the induction hypothesis; adding $v$'s single edge back gives $n-1$. <em>Acyclic with $n-1$ edges $\Rightarrow$ connected</em> (hence a tree): if it had $k\geq2$ components, each component is itself a tree (connected, acyclic) on its own vertex set, so by the direction just proved, component $i$ (with $n_i$ vertices) has $n_i-1$ edges; summing, total edges $=\sum(n_i-1)=n-k\leq n-2$, contradicting $n-1$ edges. So $k=1$. <em>Connected with $n-1$ edges $\Rightarrow$ acyclic</em> (hence a tree): if a cycle existed, removing one of its edges keeps the graph connected (a cycle edge is never a bridge) with $n-2$ edges and $n$ vertices — but every connected graph needs at least $n-1$ edges (a spanning tree's worth, extractable by repeatedly dropping cycle edges), so $n-2\geq n-1$ is a contradiction. <span class="qed">∎</span>
+            </div>
 
-            <h2>9. Network Flows</h2>
-            <h3>9.1 Maximum Flow Problem</h3>
-            <p>Given a flow network with source $s$ and sink $t$, find maximum flow from $s$ to $t$.</p>
+            <h2 id="euler-formula">3. Euler's formula for planar graphs</h2>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Euler's formula)</span>
+                <p>For a connected planar graph drawn in the plane with $n$ vertices, $m$ edges, and $f$ faces (including the unbounded outer face): $n-m+f=2$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> By induction on $m$. If $G$ is a tree ($m=n-1$, Section 2), it bounds no enclosed region when drawn in the plane, so $f=1$ (just the outer face): $n-(n-1)+1=2$. Otherwise $G$ has a cycle; removing one edge $e$ on that cycle keeps $G-e$ connected (a cycle edge is never a bridge) and merges the two faces $e$ bordered into one, so $f$ decreases by exactly $1$. Applying the induction hypothesis to $G-e$ (with $n$ vertices, $m-1$ edges, $f-1$ faces): $n-(m-1)+(f-1)=2$, i.e. $n-m+f=2$. <span class="qed">∎</span>
+            </div>
+            <p>Figure 1 verifies this directly by construction: repeatedly stacking a new vertex inside a face (connecting it to that face's three boundary vertices) adds exactly $1$ vertex, $3$ edges, and (splitting one face into three) $2$ faces at each step — so $n-m+f$ changes by $1-3+2=0$, staying at $2$ forever, exactly the induction step of the proof above, run forward rather than backward.</p>
 
-            <h3>9.2 Max-Flow Min-Cut Theorem</h3>
-            <p>The maximum flow equals the minimum cut capacity.</p>
+            <figure class="note-figure">
+                <img src="graph-theory/figures/euler_formula.png" alt="Left panel: a triangulated planar graph built by repeatedly subdividing the largest remaining triangular face. Right panel: the vertex count, edge count, and face count all growing linearly with construction step, while their alternating sum n minus m plus f stays flat at exactly 2 throughout.">
+                <figcaption><strong>Figure — Euler's formula, verified through an actual triangulation construction.</strong> Left: a planar triangulation built by repeatedly splitting the current largest face into three with a new central vertex. Right: across $24$ such steps, $n$, $m$, and $f$ all grow, but $n-m+f$ never moves from $2$ — the invariant Section 3 proves is preserved by exactly this construction, checked numerically at every single step.</figcaption>
+            </figure>
 
-            <h3>9.3 Ford-Fulkerson Algorithm</h3>
-            <ol>
-                <li>Find augmenting path from source to sink</li>
-                <li>Augment flow along this path</li>
-                <li>Repeat until no augmenting path exists</li>
-            </ol>
+            <h2 id="nonplanar">4. Edge bounds and non-planarity of $K_5$, $K_{3,3}$</h2>
+            <div class="note-box">
+                <span class="note-box-label">Corollary</span>
+                <p>A simple connected planar graph with $n\geq3$ vertices has $m\leq3n-6$ edges; if additionally triangle-free, $m\leq2n-4$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> Each face is bounded by at least $3$ edges (simple graph: no loops or repeated edges bounding a face with fewer), and each edge borders at most $2$ faces, so $3f\leq2m$. Substituting $f=2-n+m$ (Euler's formula): $3(2-n+m)\leq2m\Rightarrow6-3n+3m\leq2m\Rightarrow m\leq3n-6$. If triangle-free, every face is bounded by $\geq4$ edges instead, giving $4f\leq2m$ and, by the same substitution, $m\leq2n-4$. <span class="qed">∎</span>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Corollary</span>
+                <p>$K_5$ and $K_{3,3}$ are not planar.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> $K_5$: $n=5$, $m=10$; but $3n-6=9&lt;10$. $K_{3,3}$: bipartite, hence triangle-free; $n=6$, $m=9$; but $2n-4=8&lt;9$. Both violate the edge bound above, so neither can be drawn planar. <span class="qed">∎</span>
+            </div>
+            <p>(Kuratowski's theorem — a graph is planar iff it contains no subdivision of $K_5$ or $K_{3,3}$ — is the converse, that these two obstructions are the <em>only</em> ones; it is a substantially harder theorem and not proved here.)</p>
 
-            <h2>10. Eulerian and Hamiltonian Graphs</h2>
-            <h3>10.1 Eulerian Paths and Cycles</h3>
-            <ul>
-                <li><strong>Eulerian Path:</strong> Path using every edge exactly once</li>
-                <li><strong>Eulerian Cycle:</strong> Cycle using every edge exactly once</li>
-            </ul>
-            <p><strong>Theorem:</strong> A connected graph has an Eulerian cycle if and only if every vertex has even degree.</p>
+            <h2 id="five-color">5. The Five Color Theorem</h2>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Five Color Theorem)</span>
+                <p>Every simple planar graph is $5$-colorable.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof (sketch, Kempe chains).</span> Induction on $n$. If $\Delta(G)\leq4$ everywhere the greedy bound $\chi\leq\Delta+1$ finishes immediately; more generally, Section 4's edge bound forces some vertex $v$ with $\deg(v)\leq5$ (else $\sum\deg\geq6n$, i.e. $m\geq3n&gt;3n-6$, contradiction). Remove $v$; by the induction hypothesis $5$-color $G-v$. If $v$'s neighbors use at most $4$ colors, a free color remains for $v$. Otherwise $v$ has exactly $5$ neighbors using all $5$ colors, in some cyclic order around $v$ in the planar embedding; label them $u_1,\ldots,u_5$ with colors $1,\ldots,5$. Consider the subgraph induced by colors $1$ and $3$: if $u_1$ and $u_3$ lie in different connected components of it, swap colors $1\leftrightarrow3$ throughout $u_1$'s component — this does not affect any vertex outside that component (in particular not $u_3$, still colored $3$), and frees color $1$ for $v$. If instead $u_1,u_3$ are connected by an alternating $1$-$3$ path (a "Kempe chain"), that chain together with $v$ encloses a region of the plane containing $u_2$ but not $u_4$ (a planarity fact, from the cyclic order $u_1,u_2,u_3,u_4,u_5$ around $v$), so the $2$-$4$ subgraph cannot connect $u_2$ to $u_4$ — swap colors $2\leftrightarrow4$ in $u_2$'s component instead, freeing color $2$ for $v$. <span class="qed">∎</span>
+            </div>
+            <p>This proof is completely elementary and predates computers by nearly a century (Heawood, 1890, correcting an earlier flawed proof of Kempe's own four-color attempt). The stronger Four Color Theorem (every planar graph is $4$-colorable, without the "or" case escape this proof relies on at color $5$) resisted every hand proof attempt for a century and was finally settled by Appel and Haken (1976) via an exhaustive, computer-verified case analysis of $1{,}936$ unavoidable configurations — the first major theorem in mathematics whose proof no human has ever fully checked by hand, and Section 10's first pitfall returns to why that mattered.</p>
 
-            <h3>10.2 Hamiltonian Paths and Cycles</h3>
-            <ul>
-                <li><strong>Hamiltonian Path:</strong> Path visiting every vertex exactly once</li>
-                <li><strong>Hamiltonian Cycle:</strong> Cycle visiting every vertex exactly once</li>
-            </ul>
-            <p><strong>Dirac's Theorem:</strong> If $\delta(G) \geq n/2$ in a graph with $n \geq 3$, then $G$ is Hamiltonian.</p>
+            <h2 id="konig">6. Matchings and König's theorem</h2>
+            <div class="note-box">
+                <span class="note-box-label">Definitions</span>
+                <p>A <strong>matching</strong> is a set of edges with no shared endpoints. A <strong>vertex cover</strong> is a set of vertices touching every edge. An <strong>augmenting path</strong> for matching $M$ is a path alternating between edges outside and inside $M$, starting and ending at $M$-unmatched vertices.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Lemma (any graph)</span>
+                <p>max matching size $\leq$ min vertex cover size.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> A vertex cover must contain at least one endpoint of every matching edge; since matching edges share no endpoints, these required cover vertices are all distinct — one per matching edge, at minimum. <span class="qed">∎</span>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Lemma (Berge)</span>
+                <p>$M$ is a maximum matching iff no $M$-augmenting path exists.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> If an augmenting path $P$ exists, flipping membership in $M$ along $P$ (edges in $M$ leave, edges not in $M$ join) strictly increases the matching size by $1$, so $M$ was not maximum. Conversely, if $M$ is not maximum, let $M'$ be larger; $M\triangle M'$ (symmetric difference) has maximum degree $2$ (each vertex touches at most one edge from each matching), so it decomposes into disjoint paths and cycles alternating between $M$- and $M'$-edges. Since $|M'|&gt;|M|$, some component has more $M'$-edges than $M$-edges, which (alternation) forces it to be a path beginning and ending with $M'$-edges — exactly an $M$-augmenting path. <span class="qed">∎</span>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (König)</span>
+                <p>In a bipartite graph, max matching size $=$ min vertex cover size.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof (sketch).</span> Let $M$ be a maximum matching in $G=(A\cup B,E)$, $U\subseteq A$ its unmatched vertices in $A$, and $Z$ the set of vertices reachable from $U$ by $M$-alternating paths. Let $C=(A\setminus Z)\cup(B\cap Z)$. $C$ covers every edge: an edge with its $A$-endpoint outside $Z$ is covered there; an edge with its $A$-endpoint in $Z$ either extends an alternating path into its $B$-endpoint (putting that endpoint in $Z\cap B\subseteq C$) or, if it is itself a matching edge, its $B$-endpoint is likewise reachable and in $C$. Every vertex of $C$ is $M$-matched (unmatched $A$-vertices are all in $U\subseteq Z$, so none lie in $A\setminus Z$; an unmatched vertex in $B\cap Z$ would itself complete an augmenting path from $U$, contradicting Berge's Lemma applied to the maximum matching $M$), and each $C$-vertex's match partner lies outside $C$ (a short case check using the alternating-path structure), giving a bijection between $C$ and a subset of $M$, so $|C|\leq|M|$. Combined with the Lemma's $|C|\geq|M|$ for any cover $C$ and matching $M$: $|C|=|M|$, and since $M$ was maximum and $C$ achieves this bound, $C$ is a minimum vertex cover. <span class="qed">∎</span>
+            </div>
+            <p>Figure 2 checks this against an independent, brute-force computation of minimum vertex cover on several random bipartite graphs — a genuinely different algorithm arriving at the same number every time, exactly as the theorem demands. Section 10 records a specific non-bipartite graph where the two quantities genuinely differ, showing bipartiteness is not a technical convenience but a load-bearing hypothesis.</p>
 
-            <h2>11. Graph Algorithms Implementation</h2>
-            <pre><code># Python implementation of key graph algorithms
-from collections import defaultdict, deque
-import heapq
+            <figure class="note-figure">
+                <img src="graph-theory/figures/konig.png" alt="Scatter plot of maximum matching size (circles) and brute-force minimum vertex cover size (crosses) for 18 random bipartite graphs, with every circle and cross exactly overlapping.">
+                <figcaption><strong>Figure — Every trial: matching size exactly equals cover size.</strong> Across $18$ random bipartite graphs of varying size and density, an augmenting-path maximum matching algorithm and an independent brute-force minimum vertex cover search agree exactly, every time — the circles and crosses coincide at every single trial, Section 6's theorem holding with no exceptions across the entire sample.</figcaption>
+            </figure>
 
-class Graph:
-    def __init__(self, directed=False):
-        self.directed = directed
-        self.adj_list = defaultdict(list)
-        self.vertices = set()
-    
-    def add_edge(self, u, v, weight=1):
-        self.adj_list[u].append((v, weight))
-        self.vertices.update([u, v])
-        if not self.directed:
-            self.adj_list[v].append((u, weight))
-    
-    def dfs(self, start, visited=None):
-        if visited is None:
-            visited = set()
-        
-        visited.add(start)
-        result = [start]
-        
-        for neighbor, _ in self.adj_list[start]:
-            if neighbor not in visited:
-                result.extend(self.dfs(neighbor, visited))
-        
-        return result
-    
-    def bfs(self, start):
-        visited = set([start])
-        queue = deque([start])
-        result = []
-        
-        while queue:
-            vertex = queue.popleft()
-            result.append(vertex)
-            
-            for neighbor, _ in self.adj_list[vertex]:
-                if neighbor not in visited:
-                    visited.add(neighbor)
-                    queue.append(neighbor)
-        
-        return result
-    
-    def dijkstra(self, start):
-        distances = {v: float('inf') for v in self.vertices}
-        distances[start] = 0
-        previous = {}
-        pq = [(0, start)]
-        
-        while pq:
-            current_dist, current = heapq.heappop(pq)
-            
-            if current_dist > distances[current]:
-                continue
-            
-            for neighbor, weight in self.adj_list[current]:
-                distance = current_dist + weight
-                
-                if distance < distances[neighbor]:
-                    distances[neighbor] = distance
-                    previous[neighbor] = current
-                    heapq.heappush(pq, (distance, neighbor))
-        
-        return distances, previous
-    
-    def kruskal_mst(self):
-        # Union-Find for cycle detection
-        parent = {}
-        rank = {}
-        
-        def find(x):
-            if parent[x] != x:
-                parent[x] = find(parent[x])
-            return parent[x]
-        
-        def union(x, y):
-            px, py = find(x), find(y)
-            if px == py:
-                return False
-            if rank[px] < rank[py]:
-                px, py = py, px
-            parent[py] = px
-            if rank[px] == rank[py]:
-                rank[px] += 1
-            return True
-        
-        # Initialize Union-Find
-        for v in self.vertices:
-            parent[v] = v
-            rank[v] = 0
-        
-        # Get all edges and sort by weight
-        edges = []
-        for u in self.adj_list:
-            for v, weight in self.adj_list[u]:
-                if not self.directed and u <= v:  # Avoid duplicates
-                    edges.append((weight, u, v))
-                elif self.directed:
-                    edges.append((weight, u, v))
-        
-        edges.sort()
-        mst_edges = []
-        total_weight = 0
-        
-        for weight, u, v in edges:
-            if union(u, v):
-                mst_edges.append((u, v, weight))
-                total_weight += weight
-        
-        return mst_edges, total_weight
-    
-    def is_bipartite(self):
-        color = {}
-        
-        for start in self.vertices:
-            if start in color:
-                continue
-            
-            queue = deque([start])
-            color[start] = 0
-            
-            while queue:
-                u = queue.popleft()
-                for v, _ in self.adj_list[u]:
-                    if v not in color:
-                        color[v] = 1 - color[u]
-                        queue.append(v)
-                    elif color[v] == color[u]:
-                        return False
-        
-        return True
-    
-    def topological_sort(self):
-        if not self.directed:
-            raise ValueError("Topological sort only applies to directed graphs")
-        
-        in_degree = {v: 0 for v in self.vertices}
-        for u in self.adj_list:
-            for v, _ in self.adj_list[u]:
-                in_degree[v] += 1
-        
-        queue = deque([v for v in self.vertices if in_degree[v] == 0])
-        result = []
-        
-        while queue:
-            u = queue.popleft()
-            result.append(u)
-            
-            for v, _ in self.adj_list[u]:
-                in_degree[v] -= 1
-                if in_degree[v] == 0:
-                    queue.append(v)
-        
-        if len(result) != len(self.vertices):
-            raise ValueError("Graph contains a cycle")
-        
-        return result
-    
-    def floyd_warshall(self):
-        vertices = list(self.vertices)
-        n = len(vertices)
-        vertex_to_index = {v: i for i, v in enumerate(vertices)}
-        
-        # Initialize distance matrix
-        dist = [[float('inf')] * n for _ in range(n)]
-        
-        # Distance from vertex to itself is 0
-        for i in range(n):
-            dist[i][i] = 0
-        
-        # Fill in edge weights
-        for u in self.adj_list:
-            for v, weight in self.adj_list[u]:
-                i, j = vertex_to_index[u], vertex_to_index[v]
-                dist[i][j] = weight
-        
-        # Floyd-Warshall algorithm
-        for k in range(n):
-            for i in range(n):
-                for j in range(n):
-                    if dist[i][k] + dist[k][j] < dist[i][j]:
-                        dist[i][j] = dist[i][k] + dist[k][j]
-        
-        return dist, vertices
+            <h2 id="hall">7. Hall's Marriage Theorem</h2>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Hall)</span>
+                <p>A bipartite graph $G=(A\cup B,E)$ has a matching saturating every vertex of $A$ iff $|N(S)|\geq|S|$ for every $S\subseteq A$ (Hall's condition), where $N(S)$ is the set of $B$-vertices adjacent to some vertex of $S$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> ($\Rightarrow$) A saturating matching sends each $S\subseteq A$ to $|S|$ distinct partners, all lying in $N(S)$, so $|N(S)|\geq|S|$. ($\Leftarrow$) Suppose Hall's condition holds but no saturating matching exists. Let $M$ be a maximum matching, so $|M|&lt;|A|$; by König's theorem (Section 6), a minimum vertex cover $C=C_A\cup C_B$ ($C_A\subseteq A$, $C_B\subseteq B$) also has size $|M|&lt;|A|$. Since $C$ covers every edge, no edge runs from $A\setminus C_A$ to $B\setminus C_B$, i.e. $N(A\setminus C_A)\subseteq C_B$, so $|N(A\setminus C_A)|\leq|C_B|$. Hall's condition applied to $S=A\setminus C_A$ gives $|N(A\setminus C_A)|\geq|A\setminus C_A|=|A|-|C_A|$. Chaining: $|A|-|C_A|\leq|C_B|$, i.e. $|A|\leq|C_A|+|C_B|=|C|=|M|&lt;|A|$ — a contradiction. <span class="qed">∎</span>
+            </div>
+            <p>Hall's theorem is König's theorem's most quoted corollary — the "marriage" framing (can every one of $|A|$ people be matched to an acceptable partner in $B$) is the same mathematical statement as the vertex-cover equality one step earlier, made to sound like a scheduling or assignment problem.</p>
 
-def graph_coloring_greedy(graph):
-    """Greedy graph coloring algorithm"""
-    colors = {}
-    vertices = list(graph.vertices)
-    
-    for vertex in vertices:
-        # Find colors used by neighbors
-        used_colors = set()
-        for neighbor, _ in graph.adj_list[vertex]:
-            if neighbor in colors:
-                used_colors.add(colors[neighbor])
-        
-        # Assign smallest available color
-        color = 0
-        while color in used_colors:
-            color += 1
-        colors[vertex] = color
-    
-    return colors
+            <h2 id="eulerian">8. Eulerian circuits</h2>
+            <div class="note-box">
+                <span class="note-box-label">Theorem</span>
+                <p>A connected graph has a closed walk using every edge exactly once (an <strong>Eulerian circuit</strong>) iff every vertex has even degree.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> ($\Rightarrow$) Every time the circuit visits a vertex, it uses one incoming and one outgoing edge — two edges per visit — and every edge is used in exactly one visit somewhere along the circuit, so every vertex's total edge count (its degree) is a sum of $2$'s: even. ($\Leftarrow$) Induction on $|E|$. Since every degree is even and $\geq2$ (connectedness with $\geq1$ edge rules out degree $0$), start at any vertex and walk along unused edges; even degree guarantees that whenever the walk enters a vertex other than the start, an unused edge remains to leave by, so the walk can only get stuck back at the starting vertex — producing some closed circuit $C$. If $C$ already uses every edge, done. Otherwise, since $G$ is connected, some vertex $v$ on $C$ has an edge outside $C$; removing $C$'s edges leaves every remaining degree still even (each vertex on $C$ lost an even number — $0$ or $2$ — of its edges to $C$), so by the induction hypothesis the component of $G-E(C)$ containing $v$ has its own Eulerian circuit $C'$; splicing $C'$ into $C$ at $v$ gives a strictly larger circuit. Repeating (finitely, since $|E|$ is finite) exhausts all edges. <span class="qed">∎</span>
+            </div>
+            <p>This is the theorem behind the original 1736 Königsberg bridges problem (Euler's own): the seven-bridge city graph has vertices of odd degree, so by this theorem — stated by Euler well before "graph theory" existed as a subject — no walk crossing every bridge exactly once and returning to its start can exist, regardless of how cleverly a route is chosen.</p>
 
-def detect_cycle(graph):
-    """Detect cycle in undirected graph using DFS"""
-    visited = set()
-    
-    def dfs(vertex, parent):
-        visited.add(vertex)
-        
-        for neighbor, _ in graph.adj_list[vertex]:
-            if neighbor not in visited:
-                if dfs(neighbor, vertex):
-                    return True
-            elif parent != neighbor:
-                return True
-        
-        return False
-    
-    for vertex in graph.vertices:
-        if vertex not in visited:
-            if dfs(vertex, None):
-                return True
-    
-    return False
+            <h2 id="computation">9. Computation</h2>
+            <p>The figures above are generated by <code>graph-theory/generate_figures.py</code>. The snippet below reproduces the Euler's-formula construction trace and the König's-theorem cross-check.</p>
+            <pre><code>history, coords, edges = build_triangulation(12, seed=1)
+for n, m, f in history[::3]:
+    print(n, m, f, n - m + f)
 
-# Example usage
-if __name__ == "__main__":
-    # Create a sample graph
-    g = Graph()
-    g.add_edge('A', 'B', 4)
-    g.add_edge('A', 'C', 2)
-    g.add_edge('B', 'C', 1)
-    g.add_edge('B', 'D', 5)
-    g.add_edge('C', 'D', 8)
-    g.add_edge('C', 'E', 10)
-    g.add_edge('D', 'E', 2)
-    
-    print("DFS from A:", g.dfs('A'))
-    print("BFS from A:", g.bfs('A'))
-    
-    distances, _ = g.dijkstra('A')
-    print("Shortest distances from A:", distances)
-    
-    mst_edges, total_weight = g.kruskal_mst()
-    print("MST edges:", mst_edges)
-    print("MST total weight:", total_weight)
-    
-    print("Is bipartite:", g.is_bipartite())
-    print("Has cycle:", detect_cycle(g))
-    
-    colors = graph_coloring_greedy(g)
-    print("Graph coloring:", colors)
+rng = random.Random(0)
+for t in range(6):
+    nA, nB = rng.randint(3, 6), rng.randint(3, 6)
+    p = rng.uniform(0.25, 0.6)
+    edges = random_bipartite(nA, nB, p, seed=t)
+    mm = max_matching(nA, edges)
+    vc = brute_force_min_vertex_cover(nA, nB, edges)
+    print(f"trial {t}: nA={nA} nB={nB} |E|={len(edges)}  matching={mm}  vertex_cover={vc}  equal={mm==vc}")
 </code></pre>
+            <p>Actual output:</p>
+            <pre><code>3 3 2 2
+6 12 8 2
+9 21 14 2
+12 30 20 2
+15 39 26 2
 
-            <h2>12. Applications</h2>
-            <h3>12.1 Computer Networks</h3>
+trial 0: nA=6 nB=6 |E|=5   matching=3  vertex_cover=3  equal=True
+trial 1: nA=6 nB=6 |E|=26  matching=6  vertex_cover=6  equal=True
+trial 2: nA=5 nB=6 |E|=10  matching=4  vertex_cover=4  equal=True
+trial 3: nA=4 nB=4 |E|=6   matching=4  vertex_cover=4  equal=True
+trial 4: nA=3 nB=5 |E|=12  matching=3  vertex_cover=3  equal=True
+trial 5: nA=4 nB=5 |E|=6   matching=3  vertex_cover=3  equal=True</code></pre>
+            <p>Every triangulation step preserves $n-m+f=2$ exactly, and every one of the six random bipartite trials confirms matching size $=$ vertex cover size exactly — two independent algorithms (an augmenting-path search and brute-force subset enumeration) landing on the same number every time, precisely what König's theorem promises.</p>
+
+            <h2 id="pitfalls">10. Common pitfalls</h2>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — the Five and Four Color Theorems are proved by genuinely different means</span>
+                <p>Section 5's proof is fully checkable by hand and was, within a few years of Kempe's original (flawed) four-color attempt. The Four Color Theorem's only known proofs rely on a computer-checked case analysis too large for direct human verification — a real and still-debated methodological question about what counts as a mathematical proof, not a gap anyone expects to close by finding a short hand argument (many have tried and failed for over a century).</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — König's theorem genuinely requires bipartiteness</span>
+                <p>The $5$-cycle $C_5$ has maximum matching size $2$ (any two disjoint edges) but minimum vertex cover size $3$ (removing any $2$ vertices from a $5$-cycle always leaves at least one edge uncovered, checkable by exhausting the $\binom52=10$ pairs). Section 6's Lemma ($\leq$) still holds, but equality fails outside bipartite graphs — the harder direction of the proof used the two-sided structure ($A$ vs. $B$) essentially, via the alternating-path argument.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — a graph having $n-1$ edges does not by itself make it a tree</span>
+                <p>Section 2's theorem needs <em>either</em> connectivity <em>or</em> acyclicity as a second hypothesis alongside the edge count — not the count alone. Two disjoint triangles plus an isolated edge (total $8$ vertices, $7$ edges $=n-1$) has the right edge count but is neither connected nor acyclic; it is not a tree, and adding the missing hypothesis is not optional bookkeeping.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — Euler's formula requires a connected planar embedding, both hypotheses</span>
+                <p>A disconnected planar graph with $k$ components satisfies $n-m+f=1+k$, not $2$ (each extra component adds a vertex-and-edge-free contribution to $n$ without splitting a face, until faces are shared across components in the embedding) — Section 3's proof explicitly used connectivity to guarantee a spanning structure to induct on. Non-planar graphs drawn with crossings simply have no well-defined face count consistent with the formula at all; "planar" is doing real work, not just describing a convenient special case.</p>
+            </div>
+
+            <h2 id="connections">11. Connections</h2>
             <ul>
-                <li>Routing algorithms</li>
-                <li>Network reliability</li>
-                <li>Bandwidth optimization</li>
+                <li><strong><a href="../computer-programming/computability.html">Computability and formal languages</a>.</strong> Independent Set, Vertex Cover, and Clique — proved NP-hard there (its Section 7) via a reduction from 3-SAT — are exactly this note's matching and covering objects (Section 6); that reduction's proof leans on the same "cover every edge with as few vertices as possible" combinatorics developed here, at a scale (arbitrary graphs, not just bipartite) where König's clean equality no longer holds — precisely the gap that makes the general problem hard.</li>
+                <li><strong><a href="logic.html">Mathematical logic</a>.</strong> The De Bruijn–Erdős theorem in that note's Section 4 (an infinite graph is $k$-colorable iff every finite subgraph is) is a compactness statement about exactly this note's chromatic number, proved entirely by logical means rather than graph-theoretic ones.</li>
+                <li><strong><a href="../computer-programming/distributed-systems.html">Distributed systems and concurrency</a>.</strong> That note's quorum-intersection argument (its Section 7) is the same "any two large-enough subsets must overlap" pigeonhole idea used implicitly throughout matching theory here — majority quorums are, in effect, vertex covers of the complete graph on processes.</li>
             </ul>
 
-            <h3>12.2 Social Networks</h3>
+            <h2 id="references">12. References</h2>
             <ul>
-                <li>Community detection</li>
-                <li>Influence maximization</li>
-                <li>Recommendation systems</li>
-            </ul>
-
-            <h3>12.3 Transportation</h3>
-            <ul>
-                <li>Route planning</li>
-                <li>Traffic flow optimization</li>
-                <li>Public transit networks</li>
-            </ul>
-
-            <h2>13. References</h2>
-            <ul>
-                <li>West, D. B. (2001). <em>Introduction to Graph Theory</em>.</li>
-                <li>Diestel, R. (2017). <em>Graph Theory</em>.</li>
-                <li>Cormen, T. H., et al. (2009). <em>Introduction to Algorithms</em>.</li>
+                <li>West, D. B. (2001). <em>Introduction to Graph Theory</em> (2nd ed.). Prentice Hall.</li>
+                <li>Diestel, R. (2017). <em>Graph Theory</em> (5th ed.). Springer.</li>
+                <li>Bondy, J. A., &amp; Murty, U. S. R. (2008). <em>Graph Theory</em>. Springer.</li>
+                <li>Appel, K., &amp; Haken, W. (1977). Every planar map is four colorable. <em>Illinois Journal of Mathematics</em>, 21(3), 429–490.</li>
             </ul>
         </section>
     </main>
@@ -524,4 +251,4 @@ if __name__ == "__main__":
         <p>&copy; Diogo Franquinho | Technical Notes</p>
     </footer>
 </body>
-</html> 
+</html>
