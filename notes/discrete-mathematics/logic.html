@@ -21,460 +21,208 @@
 </head>
 <body>
     <nav class="top-nav">
-        <a href="../../index.html">← Back to Home</a> | 
+        <a href="../../index.html">← Back to Home</a> |
         <a href="../../index.html#notes">Notes</a>
     </nav>
 
     <main>
         <header>
             <h1>Mathematical Logic</h1>
-            <p class="note-meta">Last updated: December 2024</p>
+            <p class="note-meta">Last updated: August 2026</p>
         </header>
 
         <section class="note-content">
             <div class="disclaimer">
                 <p><strong>Disclaimer:</strong> These are my personal notes compiled for my own reference and learning. They may contain errors, incomplete information, or personal interpretations. While I strive for accuracy, these notes are not peer-reviewed and should not be considered authoritative sources. Please consult official textbooks, research papers, or other reliable sources for academic or professional purposes.</p>
             </div>
-            
-            <h2>1. Propositional Logic</h2>
-            <h3>1.1 Basic Propositions</h3>
-            <p>A proposition is a declarative statement that is either true or false, but not both.</p>
-            <ul>
-                <li><strong>Atomic propositions:</strong> $p, q, r, \ldots$</li>
-                <li><strong>Truth values:</strong> $T$ (true) or $F$ (false)</li>
-            </ul>
 
-            <h3>1.2 Logical Connectives</h3>
-            <ul>
-                <li><strong>Negation:</strong> $\neg p$ (not $p$)</li>
-                <li><strong>Conjunction:</strong> $p \land q$ ($p$ and $q$)</li>
-                <li><strong>Disjunction:</strong> $p \lor q$ ($p$ or $q$)</li>
-                <li><strong>Implication:</strong> $p \rightarrow q$ (if $p$ then $q$)</li>
-                <li><strong>Biconditional:</strong> $p \leftrightarrow q$ ($p$ if and only if $q$)</li>
-                <li><strong>Exclusive or:</strong> $p \oplus q$ ($p$ xor $q$)</li>
-            </ul>
+            <div class="table-of-contents">
+                <h3>Contents</h3>
+                <ol>
+                    <li><a href="#propositional">Propositional logic: syntax and semantics</a></li>
+                    <li><a href="#natural-deduction">Natural deduction and soundness</a></li>
+                    <li><a href="#completeness">Completeness of propositional logic</a></li>
+                    <li><a href="#compactness">Compactness, and a graph-coloring application</a></li>
+                    <li><a href="#resolution">Resolution: a complete proof system for SAT</a></li>
+                    <li><a href="#predicate-logic">Predicate logic, stated without proof</a></li>
+                    <li><a href="#cantor">Cantor's theorem and uncountability</a></li>
+                    <li><a href="#computation">Computation</a></li>
+                    <li><a href="#pitfalls">Common pitfalls</a></li>
+                    <li><a href="#connections">Connections</a></li>
+                    <li><a href="#references">References</a></li>
+                </ol>
+            </div>
 
-            <h3>1.3 Truth Tables</h3>
-            <table border="1" style="border-collapse: collapse; margin: 20px 0;">
-                <tr>
-                    <th>$p$</th>
-                    <th>$q$</th>
-                    <th>$\neg p$</th>
-                    <th>$p \land q$</th>
-                    <th>$p \lor q$</th>
-                    <th>$p \rightarrow q$</th>
-                    <th>$p \leftrightarrow q$</th>
-                    <th>$p \oplus q$</th>
-                </tr>
-                <tr>
-                    <td>T</td>
-                    <td>T</td>
-                    <td>F</td>
-                    <td>T</td>
-                    <td>T</td>
-                    <td>T</td>
-                    <td>T</td>
-                    <td>F</td>
-                </tr>
-                <tr>
-                    <td>T</td>
-                    <td>F</td>
-                    <td>F</td>
-                    <td>F</td>
-                    <td>T</td>
-                    <td>F</td>
-                    <td>F</td>
-                    <td>T</td>
-                </tr>
-                <tr>
-                    <td>F</td>
-                    <td>T</td>
-                    <td>T</td>
-                    <td>F</td>
-                    <td>T</td>
-                    <td>T</td>
-                    <td>F</td>
-                    <td>T</td>
-                </tr>
-                <tr>
-                    <td>F</td>
-                    <td>F</td>
-                    <td>T</td>
-                    <td>F</td>
-                    <td>F</td>
-                    <td>T</td>
-                    <td>T</td>
-                    <td>F</td>
-                </tr>
-            </table>
+            <h2 id="propositional">1. Propositional logic: syntax and semantics</h2>
+            <div class="note-box">
+                <span class="note-box-label">Definition</span>
+                <p>Formulas: $\varphi::=p\mid\neg\varphi\mid\varphi\land\varphi\mid\varphi\lor\varphi\mid\varphi\to\varphi$, built from atoms $p,q,r,\ldots$. A <strong>truth assignment</strong> $v$ maps atoms to $\{T,F\}$, extended recursively in the usual way. $\Gamma\models\varphi$ ("$\Gamma$ <strong>entails</strong> $\varphi$") if every $v$ satisfying every formula in $\Gamma$ also satisfies $\varphi$; $\varphi$ is a <strong>tautology</strong> ($\models\varphi$) if $\varnothing\models\varphi$.</p>
+            </div>
+            <p>$\models$ is a semantic notion — defined by checking truth values across every possible assignment, in principle a search over $2^n$ cases for $n$ atoms. Section 2 introduces a purely syntactic notion, $\vdash$ (derivability by explicit rules, with no reference to truth values at all), and Sections 2–3 prove the two coincide exactly — a genuinely nontrivial fact, not a matter of definition.</p>
 
-            <h3>1.4 Logical Equivalences</h3>
-            <ul>
-                <li><strong>Identity Laws:</strong> $p \land T \equiv p$, $p \lor F \equiv p$</li>
-                <li><strong>Domination Laws:</strong> $p \lor T \equiv T$, $p \land F \equiv F$</li>
-                <li><strong>Idempotent Laws:</strong> $p \lor p \equiv p$, $p \land p \equiv p$</li>
-                <li><strong>Double Negation:</strong> $\neg(\neg p) \equiv p$</li>
-                <li><strong>Commutative Laws:</strong> $p \lor q \equiv q \lor p$, $p \land q \equiv q \land p$</li>
-                <li><strong>Associative Laws:</strong> $(p \lor q) \lor r \equiv p \lor (q \lor r)$</li>
-                <li><strong>Distributive Laws:</strong> $p \land (q \lor r) \equiv (p \land q) \lor (p \land r)$</li>
-                <li><strong>De Morgan's Laws:</strong> $\neg(p \land q) \equiv \neg p \lor \neg q$, $\neg(p \lor q) \equiv \neg p \land \neg q$</li>
-            </ul>
+            <h2 id="natural-deduction">2. Natural deduction and soundness</h2>
+            <div class="note-box">
+                <span class="note-box-label">Definition (Natural deduction rules)</span>
+                <p>$\land I$: from $\Gamma\vdash\varphi$, $\Gamma\vdash\psi$, infer $\Gamma\vdash\varphi\land\psi$. $\land E$: from $\Gamma\vdash\varphi\land\psi$, infer $\Gamma\vdash\varphi$ (or $\psi$). $\lor I$: from $\Gamma\vdash\varphi$, infer $\Gamma\vdash\varphi\lor\psi$. $\lor E$: from $\Gamma\vdash\varphi\lor\psi$, $\Gamma,\varphi\vdash\chi$, $\Gamma,\psi\vdash\chi$, infer $\Gamma\vdash\chi$. $\to I$: from $\Gamma,\varphi\vdash\psi$, infer $\Gamma\vdash\varphi\to\psi$. $\to E$ (modus ponens): from $\Gamma\vdash\varphi\to\psi$, $\Gamma\vdash\varphi$, infer $\Gamma\vdash\psi$. $\neg I$: from $\Gamma,\varphi\vdash\bot$, infer $\Gamma\vdash\neg\varphi$. $\neg E$: from $\Gamma\vdash\varphi$, $\Gamma\vdash\neg\varphi$, infer $\Gamma\vdash\bot$. $RAA$: from $\Gamma,\neg\varphi\vdash\bot$, infer $\Gamma\vdash\varphi$ (the classical rule — proof by contradiction).</p>
+            </div>
+            <p>$\Gamma\vdash\varphi$ means $\varphi$ is derivable from $\Gamma$ by a finite tree of applications of these rules. This is exactly the type-theoretic system of the <a href="../computer-programming/type-theory.html">type theory note</a>'s Section 4, one connective at a time ($\to I/\to E$ are literally that note's Abs/App rules); the one addition here is $RAA$, whose absence is precisely what makes that note's system intuitionistic rather than classical (Section 9's third pitfall there).</p>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Soundness)</span>
+                <p>$\Gamma\vdash\varphi\Rightarrow\Gamma\models\varphi$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> By induction on the derivation tree, i.e. on which rule was applied last. Two representative cases: for $\to I$, the induction hypothesis is $\Gamma,\varphi\models\psi$; take any $v$ satisfying $\Gamma$ — either $v(\varphi)=F$, making $\varphi\to\psi$ true under $v$ regardless of $\psi$, or $v(\varphi)=T$, in which case $v$ satisfies $\Gamma,\varphi$, so by the induction hypothesis $v(\psi)=T$, again making $\varphi\to\psi$ true. Either way $\Gamma\models\varphi\to\psi$. For $RAA$, the induction hypothesis is $\Gamma,\neg\varphi\models\bot$ — no assignment satisfies $\Gamma\cup\{\neg\varphi\}$; so any $v$ satisfying $\Gamma$ must have $v(\neg\varphi)=F$, i.e. $v(\varphi)=T$, giving $\Gamma\models\varphi$. The remaining rules are similarly direct readings of the semantic definition of each connective. <span class="qed">∎</span>
+            </div>
+            <p>Soundness says derivability never overshoots truth: nothing false-under-some-model is ever provable. Section 3 is the converse, and is the harder half.</p>
 
-            <h3>1.5 Tautologies and Contradictions</h3>
-            <ul>
-                <li><strong>Tautology:</strong> Always true (e.g., $p \lor \neg p$)</li>
-                <li><strong>Contradiction:</strong> Always false (e.g., $p \land \neg p$)</li>
-                <li><strong>Contingency:</strong> Sometimes true, sometimes false</li>
-            </ul>
+            <h2 id="completeness">3. Completeness of propositional logic</h2>
+            <div class="note-box">
+                <span class="note-box-label">Lemma (Kalmár)</span>
+                <p>Let $\varphi$ have atoms $p_1,\ldots,p_n$ and let $v$ be any truth assignment. Write $\psi^v=\psi$ if $v(\psi)=T$, else $\psi^v=\neg\psi$. Then $p_1^v,\ldots,p_n^v\vdash\varphi^v$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> By induction on the structure of $\varphi$. Base case $\varphi=p_i$: trivial, $p_i^v\vdash p_i^v$. Case $\varphi=\psi\land\chi$: the induction hypothesis gives $\vdash\psi^v$ and $\vdash\chi^v$ (from the relevant literals). If $v(\varphi)=T$ then $v(\psi)=v(\chi)=T$, so $\varphi^v=\psi\land\chi$ follows from $\psi^v=\psi,\chi^v=\chi$ by $\land I$. If $v(\varphi)=F$, some conjunct is false under $v$, say $v(\psi)=F$; then $\psi^v=\neg\psi$ is derivable, and assuming $\psi\land\chi$ gives $\psi$ by $\land E$, contradicting $\neg\psi$ by $\neg E$, so $\neg I$ discharges to $\vdash\neg(\psi\land\chi)=\varphi^v$. The $\lor,\to,\neg$ cases are proved the same way, one direct case split on $v$'s value at $\varphi$ followed by the matching introduction or contradiction-then-$\neg I$ argument. <span class="qed">∎</span>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Completeness, tautologies)</span>
+                <p>If $\models\varphi$, then $\vdash\varphi$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof (sketch).</span> By induction on the number of atoms $n$ in $\varphi$, eliminating one hypothesis at a time from Kalmár's Lemma. Since $\models\varphi$, $\varphi^v=\varphi$ regardless of $v$, so the Lemma gives, for the last atom $p_n$: $p_1^v,\ldots,p_{n-1}^v,p_n\vdash\varphi$ (taking $v(p_n)=T$) and $p_1^v,\ldots,p_{n-1}^v,\neg p_n\vdash\varphi$ (taking $v(p_n)=F$) — the same conclusion $\varphi$ either way, for every choice of $v$ on the first $n-1$ atoms. A short derived rule ("proof by cases": from $\Gamma,\chi\vdash\varphi$ and $\Gamma,\neg\chi\vdash\varphi$, derive $\Gamma\vdash\varphi$, itself provable via two applications of $RAA$) then removes $p_n$'s literal entirely: $p_1^v,\ldots,p_{n-1}^v\vdash\varphi$. Repeating for $p_{n-1},\ldots,p_1$ removes every hypothesis, leaving $\vdash\varphi$. <span class="qed">∎</span>
+            </div>
+            <p>For general (finite) $\Gamma$, $\Gamma\models\varphi$ reduces to the tautology case via $\models(\gamma_1\land\cdots\land\gamma_k)\to\varphi$, then $\to E$ and $\land I$ recover $\Gamma\vdash\varphi$ from $\vdash(\gamma_1\land\cdots\land\gamma_k)\to\varphi$. Soundness (Section 2) and Completeness together say $\vdash$ and $\models$ are the <em>same</em> relation — a purely syntactic, mechanically checkable notion of proof exactly tracks a semantic, in-principle-infinite-search notion of truth, for the whole of propositional logic.</p>
 
-            <h2>2. Predicate Logic</h2>
-            <h3>2.1 Predicates and Quantifiers</h3>
-            <ul>
-                <li><strong>Predicate:</strong> $P(x)$ - a statement involving variable $x$</li>
-                <li><strong>Universal Quantifier:</strong> $\forall x P(x)$ (for all $x$, $P(x)$)</li>
-                <li><strong>Existential Quantifier:</strong> $\exists x P(x)$ (there exists $x$ such that $P(x)$)</li>
-                <li><strong>Unique Existence:</strong> $\exists! x P(x)$ (there exists unique $x$ such that $P(x)$)</li>
-            </ul>
+            <h2 id="compactness">4. Compactness, and a graph-coloring application</h2>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Compactness)</span>
+                <p>A (possibly infinite) set of formulas $\Gamma$ is satisfiable iff every finite subset of $\Gamma$ is satisfiable.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> ($\Rightarrow$) Any assignment satisfying $\Gamma$ satisfies every subset of it. ($\Leftarrow$, contrapositive) If $\Gamma$ is unsatisfiable, $\Gamma\models\bot$ vacuously (no assignment satisfies $\Gamma$, so the entailment holds trivially); by Completeness (Section 3, which extends to infinite $\Gamma$ unchanged, since a derivation tree is always finite and so uses only finitely many premises from $\Gamma$), $\Gamma\vdash\bot$ using some finite $\{\gamma_1,\ldots,\gamma_k\}\subseteq\Gamma$. That finite subset derives $\bot$, so by Soundness (Section 2) it is unsatisfiable. <span class="qed">∎</span>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Application (De Bruijn–Erdős theorem)</span>
+                <p>A graph $G$ (possibly with infinitely many vertices) is $k$-colorable iff every finite subgraph of $G$ is $k$-colorable.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> Encode "vertex $v$ gets color $i$" as an atom $p_{v,i}$. Let $\Gamma$ contain: $p_{v,1}\lor\cdots\lor p_{v,k}$ for every vertex $v$ (some color assigned); $\neg(p_{v,i}\land p_{v,j})$ for $i\neq j$ (at most one color); $\neg(p_{u,i}\land p_{v,i})$ for every edge $\{u,v\}$ and color $i$ (properly colored). A satisfying assignment for $\Gamma$ is exactly a proper $k$-coloring of $G$, and (since each formula in $\Gamma$ mentions only finitely many vertices) a satisfying assignment for any finite subset of $\Gamma$ corresponds exactly to a proper $k$-coloring of the finite subgraph on the vertices those formulas mention. So: every finite subgraph $k$-colorable $\iff$ every finite subset of $\Gamma$ satisfiable $\iff$ (Compactness) $\Gamma$ satisfiable $\iff$ $G$ is $k$-colorable. <span class="qed">∎</span>
+            </div>
+            <p>This is a genuinely surprising transfer: a purely local, finite-checkable condition (every finite piece behaves) controls a global, possibly-infinite structure, via nothing but the syntactic finiteness of proofs. Chromatic number and coloring algorithms proper belong to graph theory rather than logic; this application is included here because the mechanism making it work is entirely a logic fact.</p>
 
-            <h3>2.2 Quantifier Rules</h3>
-            <ul>
-                <li><strong>Negation of Quantifiers:</strong>
-                    <ul>
-                        <li>$\neg \forall x P(x) \equiv \exists x \neg P(x)$</li>
-                        <li>$\neg \exists x P(x) \equiv \forall x \neg P(x)$</li>
-                    </ul>
-                </li>
-                <li><strong>Distribution Laws:</strong>
-                    <ul>
-                        <li>$\forall x (P(x) \land Q(x)) \equiv \forall x P(x) \land \forall x Q(x)$</li>
-                        <li>$\exists x (P(x) \lor Q(x)) \equiv \exists x P(x) \lor \exists x Q(x)$</li>
-                    </ul>
-                </li>
-            </ul>
+            <h2 id="resolution">5. Resolution: a complete proof system for SAT</h2>
+            <div class="note-box">
+                <span class="note-box-label">Definition</span>
+                <p>A <strong>clause</strong> is a disjunction of literals (an atom or its negation); a CNF formula is a conjunction of clauses. The <strong>resolution rule</strong>: from clauses $\alpha\lor p$ and $\beta\lor\neg p$, derive the <strong>resolvent</strong> $\alpha\lor\beta$. The empty clause $\square$ (derived when $\alpha,\beta$ are both empty) represents a contradiction.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Soundness of resolution)</span>
+                <p>Any assignment satisfying both $\alpha\lor p$ and $\beta\lor\neg p$ satisfies their resolvent $\alpha\lor\beta$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> If $v(p)=T$: $v(\neg p)=F$, so $\beta\lor\neg p$ true forces $v(\beta)=T$, so $\alpha\lor\beta$ is true. If $v(p)=F$: $\alpha\lor p$ true forces $v(\alpha)=T$, so $\alpha\lor\beta$ is true. <span class="qed">∎</span>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Refutation completeness)</span>
+                <p>A set of clauses is unsatisfiable iff repeated resolution eventually derives $\square$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof (sketch, by induction on the number of variables $n$).</span> $n=0$: an unsatisfiable set with no variables must already contain $\square$ (there is nothing else it could contain to be unsatisfiable). Inductive step: given an unsatisfiable clause set $S$ over $n$ variables including $p$, let $S_0$ (over the remaining $n-1$ variables) consist of every clause in $S$ not mentioning $p$, together with every resolvent, on $p$, of a clause containing $p$ against one containing $\neg p$. One checks directly that $S_0$ is unsatisfiable iff $S$ is (any assignment satisfying $S_0$ extends to satisfy $S$ by choosing $p$'s value to satisfy every $p$-clause not already handled, unless some resolvent in $S_0$ specifically blocks that choice — exactly what the resolution step was constructed to capture). By the induction hypothesis, $S_0$'s resolution closure contains $\square$; every clause used to derive it is either already in $S$ or itself one resolution step away from clauses in $S$, so $S$'s closure contains $\square$ too. <span class="qed">∎</span>
+            </div>
+            <p>This variable-elimination strategy (essentially the Davis–Putnam procedure) is the direct ancestor of every modern SAT solver; Figure 1 runs it in full on a minimal unsatisfiable example, and its "resolve away one variable at a time" structure is the same proof technique as Section 3's Kalmár completeness argument, one level more operational.</p>
 
-            <h3>2.3 Multiple Quantifiers</h3>
-            <p>Order matters: $\forall x \exists y P(x,y)$ is different from $\exists y \forall x P(x,y)$</p>
+            <figure class="note-figure">
+                <img src="logic/figures/resolution.png" alt="A directed graph showing four clauses (p or q), (p or not q), (not p or q), (not p or not q) resolved pairwise down to the single-literal clauses (p) and (not p), which are then resolved together to the empty clause, representing a contradiction.">
+                <figcaption><strong>Figure — Resolving a minimal unsatisfiable formula down to the empty clause.</strong> $(p\lor q),(p\lor\neg q),(\neg p\lor q),(\neg p\lor\neg q)$ has no satisfying assignment (every one of the four truth assignments to $p,q$ falsifies some clause). Resolving on $q$ collapses the four clauses to $(p)$ and $(\neg p)$; resolving those on $p$ derives $\square$ — the empty clause, a direct certificate of unsatisfiability, exactly as Section 5's theorem guarantees.</figcaption>
+            </figure>
 
-            <h2>3. Proof Techniques</h2>
-            <h3>3.1 Direct Proof</h3>
-            <p>To prove $p \rightarrow q$, assume $p$ is true and show that $q$ must be true.</p>
+            <h2 id="predicate-logic">6. Predicate logic, stated without proof</h2>
+            <p>Extending atoms to predicates $P(x_1,\ldots,x_n)$ over a domain, with quantifiers $\forall x,\exists x$, gives first-order (predicate) logic. Its metatheory is a substantially larger undertaking than propositional logic's (the domain can be infinite, and satisfaction is defined relative to a structure rather than a finite truth table); the headline results are recorded here without proof.</p>
+            <div class="note-box">
+                <span class="note-box-label">Gödel's Completeness Theorem (1929)</span>
+                <p>For first-order logic, $\Gamma\models\varphi\iff\Gamma\vdash\varphi$ still holds, for the analogous natural-deduction-style system extended with quantifier rules.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Compactness and the Löwenheim–Skolem theorem</span>
+                <p>First-order compactness holds by the same route as Section 4 (via completeness). Löwenheim–Skolem: if a first-order theory has an infinite model, it has models of every infinite cardinality — in particular, a theory intended to describe an uncountable structure (like $\mathbb R$) always also has a countable model, a genuinely counterintuitive consequence known as Skolem's paradox.</p>
+            </div>
+            <p>(See Enderton, 2001, Ch. 2, or Mendelson, 2015, Ch. 2, for full statements and proofs.) Gödel's <em>incompleteness</em> theorems are a different, later result about a much stronger system (first-order arithmetic capable of encoding its own syntax) and are not a contradiction of completeness above — completeness says provability and truth coincide for a fixed, agreed-upon proof system; incompleteness says no single such system, strong enough to talk about arithmetic, can prove every arithmetic truth, however the rules are chosen.</p>
 
-            <h3>3.2 Proof by Contraposition</h3>
-            <p>To prove $p \rightarrow q$, prove $\neg q \rightarrow \neg p$ (the contrapositive).</p>
+            <h2 id="cantor">7. Cantor's theorem and uncountability</h2>
+            <div class="note-box">
+                <span class="note-box-label">Theorem (Cantor)</span>
+                <p>For any set $A$, there is no surjection $f:A\to\mathcal P(A)$.</p>
+            </div>
+            <div class="proof">
+                <span class="proof-label">Proof.</span> Suppose $f:A\to\mathcal P(A)$ is surjective. Let $D=\{a\in A:a\notin f(a)\}\in\mathcal P(A)$. By surjectivity, $D=f(b)$ for some $b\in A$. Then $b\in D\iff b\notin f(b)=D$ — a direct contradiction, so no surjective $f$ exists. <span class="qed">∎</span>
+            </div>
+            <p>Taking $A=\mathbb N$: $\mathcal P(\mathbb N)$ is strictly larger than $\mathbb N$, so uncountable; since $\mathcal P(\mathbb N)$ is in bijection with binary sequences, and (via binary expansion) with a set essentially equivalent in size to $\mathbb R$, this gives the uncountability of the reals by the same mechanism as the more commonly quoted digit-diagonalization argument. The construction of $D$ — an object built specifically to disagree with $f(a)$ at coordinate $a$, for every $a$ — is the identical idea behind the <a href="../computer-programming/computability.html">computability note</a>'s proof that the Halting Problem is undecidable (its Section 5) and the <a href="../computer-programming/type-theory.html">type theory note</a>'s $\Omega$ term: self-reference constructed precisely to contradict whatever it is being compared against.</p>
 
-            <h3>3.3 Proof by Contradiction</h3>
-            <p>To prove $p$, assume $\neg p$ and derive a contradiction.</p>
+            <figure class="note-figure">
+                <img src="logic/figures/cantor.png" alt="A 6 by 6 grid of binary membership values for a proposed enumeration f(1) through f(6) of subsets of {1,...,6}, with the diagonal cells outlined, and a final row D constructed by flipping each diagonal value, shown to differ from every row above it.">
+                <figcaption><strong>Figure — $D$ disagrees with every $f(i)$ at the diagonal cell $i$, so $D\neq f(i)$ for any $i$.</strong> For a concrete proposed listing $f(1),\ldots,f(6)$ of six subsets of $\{1,\ldots,6\}$, flipping each diagonal entry (outlined) produces $D=\{1,3\}$ — checked directly against all six rows, $D$ differs from every single one, at exactly the coordinate the construction targets. The same mechanism, run over all of $\mathbb N$ instead of $\{1,\ldots,6\}$, is Section 7's full proof.</figcaption>
+            </figure>
 
-            <h3>3.4 Proof by Cases</h3>
-            <p>To prove $p$, consider all possible cases and show $p$ holds in each case.</p>
+            <h2 id="computation">8. Computation</h2>
+            <p>The figures above are generated by <code>logic/generate_figures.py</code>. The snippet below reproduces the diagonal-set check and the resolution derivation.</p>
+            <pre><code>f = {1: {2,4,6}, 2: {1,2,3}, 3: set(), 4: {1,3,4,5,6}, 5: {5}, 6: {1,2,3,4,5,6}}
+n = 6
+D = {i for i in range(1, n+1) if i not in f[i]}
+print("D =", D)
+for i in range(1, n+1):
+    print(f"f({i}) = {f[i]}   D == f({i})? {D == f[i]}")
 
-            <h3>3.5 Mathematical Induction</h3>
-            <p>To prove $\forall n \geq n_0, P(n)$:</p>
-            <ol>
-                <li><strong>Base case:</strong> Prove $P(n_0)$</li>
-                <li><strong>Inductive step:</strong> Prove $P(k) \rightarrow P(k+1)$ for arbitrary $k \geq n_0$</li>
-            </ol>
+def resolve(c1, c2):
+    return [frozenset((c1 - {l}) | (c2 - {-l})) for l in c1 if -l in c2]
 
-            <h3>3.6 Strong Induction</h3>
-            <p>To prove $\forall n \geq n_0, P(n)$:</p>
-            <ol>
-                <li><strong>Base case:</strong> Prove $P(n_0)$</li>
-                <li><strong>Inductive step:</strong> Assume $P(n_0) \land P(n_0+1) \land \ldots \land P(k)$ and prove $P(k+1)$</li>
-            </ol>
-
-            <h2>4. Set Theory</h2>
-            <h3>4.1 Basic Definitions</h3>
-            <ul>
-                <li><strong>Set:</strong> Collection of distinct objects</li>
-                <li><strong>Element:</strong> $x \in A$ means $x$ is in set $A$</li>
-                <li><strong>Empty set:</strong> $\emptyset = \{\}$</li>
-                <li><strong>Subset:</strong> $A \subseteq B$ means every element of $A$ is in $B$</li>
-                <li><strong>Proper subset:</strong> $A \subset B$ means $A \subseteq B$ and $A \neq B$</li>
-            </ul>
-
-            <h3>4.2 Set Operations</h3>
-            <ul>
-                <li><strong>Union:</strong> $A \cup B = \{x : x \in A \lor x \in B\}$</li>
-                <li><strong>Intersection:</strong> $A \cap B = \{x : x \in A \land x \in B\}$</li>
-                <li><strong>Difference:</strong> $A - B = \{x : x \in A \land x \notin B\}$</li>
-                <li><strong>Complement:</strong> $\overline{A} = \{x : x \notin A\}$ (relative to universal set $U$)</li>
-                <li><strong>Symmetric difference:</strong> $A \triangle B = (A - B) \cup (B - A)$</li>
-            </ul>
-
-            <h3>4.3 Set Identities</h3>
-            <ul>
-                <li><strong>Commutative:</strong> $A \cup B = B \cup A$, $A \cap B = B \cap A$</li>
-                <li><strong>Associative:</strong> $(A \cup B) \cup C = A \cup (B \cup C)$</li>
-                <li><strong>Distributive:</strong> $A \cap (B \cup C) = (A \cap B) \cup (A \cap C)$</li>
-                <li><strong>De Morgan's:</strong> $\overline{A \cup B} = \overline{A} \cap \overline{B}$, $\overline{A \cap B} = \overline{A} \cup \overline{B}$</li>
-                <li><strong>Identity:</strong> $A \cup \emptyset = A$, $A \cap U = A$</li>
-                <li><strong>Complement:</strong> $A \cup \overline{A} = U$, $A \cap \overline{A} = \emptyset$</li>
-            </ul>
-
-            <h3>4.4 Cartesian Product</h3>
-            <p>$A \times B = \{(a,b) : a \in A \land b \in B\}$</p>
-            <p>If $|A| = m$ and $|B| = n$, then $|A \times B| = mn$</p>
-
-            <h3>4.5 Power Set</h3>
-            <p>$\mathcal{P}(A) = \{S : S \subseteq A\}$ (set of all subsets of $A$)</p>
-            <p>If $|A| = n$, then $|\mathcal{P}(A)| = 2^n$</p>
-
-            <h2>5. Relations and Functions</h2>
-            <h3>5.1 Relations</h3>
-            <p>A relation $R$ from set $A$ to set $B$ is a subset of $A \times B$.</p>
-            <p>We write $aRb$ or $(a,b) \in R$ to mean $a$ is related to $b$.</p>
-
-            <h3>5.2 Properties of Relations (on set $A$)</h3>
-            <ul>
-                <li><strong>Reflexive:</strong> $\forall a \in A, aRa$</li>
-                <li><strong>Symmetric:</strong> $\forall a,b \in A, aRb \rightarrow bRa$</li>
-                <li><strong>Antisymmetric:</strong> $\forall a,b \in A, aRb \land bRa \rightarrow a = b$</li>
-                <li><strong>Transitive:</strong> $\forall a,b,c \in A, aRb \land bRc \rightarrow aRc$</li>
-            </ul>
-
-            <h3>5.3 Special Types of Relations</h3>
-            <ul>
-                <li><strong>Equivalence relation:</strong> Reflexive, symmetric, and transitive</li>
-                <li><strong>Partial order:</strong> Reflexive, antisymmetric, and transitive</li>
-                <li><strong>Total order:</strong> Partial order where any two elements are comparable</li>
-            </ul>
-
-            <h3>5.4 Functions</h3>
-            <p>A function $f: A \rightarrow B$ is a relation where each element in $A$ is related to exactly one element in $B$.</p>
-            <ul>
-                <li><strong>Domain:</strong> $A$</li>
-                <li><strong>Codomain:</strong> $B$</li>
-                <li><strong>Range:</strong> $\{f(a) : a \in A\} \subseteq B$</li>
-            </ul>
-
-            <h3>5.5 Types of Functions</h3>
-            <ul>
-                <li><strong>Injective (one-to-one):</strong> $f(a_1) = f(a_2) \rightarrow a_1 = a_2$</li>
-                <li><strong>Surjective (onto):</strong> $\forall b \in B, \exists a \in A$ such that $f(a) = b$</li>
-                <li><strong>Bijective:</strong> Both injective and surjective</li>
-            </ul>
-
-            <h2>6. Boolean Algebra</h2>
-            <h3>6.1 Boolean Variables and Operations</h3>
-            <p>Boolean algebra deals with variables that can take values 0 (false) or 1 (true).</p>
-            <ul>
-                <li><strong>AND:</strong> $x \cdot y$ or $xy$</li>
-                <li><strong>OR:</strong> $x + y$</li>
-                <li><strong>NOT:</strong> $\overline{x}$ or $x'$</li>
-            </ul>
-
-            <h3>6.2 Boolean Laws</h3>
-            <ul>
-                <li><strong>Identity:</strong> $x + 0 = x$, $x \cdot 1 = x$</li>
-                <li><strong>Null:</strong> $x + 1 = 1$, $x \cdot 0 = 0$</li>
-                <li><strong>Idempotent:</strong> $x + x = x$, $x \cdot x = x$</li>
-                <li><strong>Involution:</strong> $\overline{\overline{x}} = x$</li>
-                <li><strong>Complement:</strong> $x + \overline{x} = 1$, $x \cdot \overline{x} = 0$</li>
-                <li><strong>De Morgan's:</strong> $\overline{x + y} = \overline{x} \cdot \overline{y}$, $\overline{x \cdot y} = \overline{x} + \overline{y}$</li>
-            </ul>
-
-            <h2>7. Code Examples</h2>
-            <pre><code># Python implementations for logical operations and proofs
-from itertools import product
-
-def truth_table(formula, variables):
-    """Generate truth table for a logical formula"""
-    print(f"Truth table for: {formula.__name__}")
-    
-    # Print header
-    header = list(variables) + [formula.__name__]
-    print(" | ".join(f"{var:^8}" for var in header))
-    print("-" * (len(header) * 11 - 1))
-    
-    # Generate all possible truth value assignments
-    for values in product([True, False], repeat=len(variables)):
-        assignment = dict(zip(variables, values))
-        result = formula(**assignment)
-        
-        row = list(values) + [result]
-        print(" | ".join(f"{str(val):^8}" for val in row))
-
-# Define logical operations
-def NOT(p):
-    return not p
-
-def AND(p, q):
-    return p and q
-
-def OR(p, q):
-    return p or q
-
-def IMPLIES(p, q):
-    return (not p) or q
-
-def BICONDITIONAL(p, q):
-    return p == q
-
-def XOR(p, q):
-    return p != q
-
-# Example formulas
-def de_morgan_1(p, q):
-    """De Morgan's Law: ¬(p ∧ q) ≡ ¬p ∨ ¬q"""
-    left = NOT(AND(p, q))
-    right = OR(NOT(p), NOT(q))
-    return left == right
-
-def de_morgan_2(p, q):
-    """De Morgan's Law: ¬(p ∨ q) ≡ ¬p ∧ ¬q"""
-    left = NOT(OR(p, q))
-    right = AND(NOT(p), NOT(q))
-    return left == right
-
-def modus_ponens(p, q):
-    """Modus Ponens: ((p → q) ∧ p) → q"""
-    premise = AND(IMPLIES(p, q), p)
-    return IMPLIES(premise, q)
-
-def hypothetical_syllogism(p, q, r):
-    """Hypothetical Syllogism: ((p → q) ∧ (q → r)) → (p → r)"""
-    premise = AND(IMPLIES(p, q), IMPLIES(q, r))
-    conclusion = IMPLIES(p, r)
-    return IMPLIES(premise, conclusion)
-
-# Set operations
-class Set:
-    def __init__(self, elements=None):
-        self.elements = set(elements) if elements else set()
-    
-    def __str__(self):
-        return "{" + ", ".join(str(x) for x in sorted(self.elements)) + "}"
-    
-    def __contains__(self, element):
-        return element in self.elements
-    
-    def union(self, other):
-        return Set(self.elements | other.elements)
-    
-    def intersection(self, other):
-        return Set(self.elements & other.elements)
-    
-    def difference(self, other):
-        return Set(self.elements - other.elements)
-    
-    def symmetric_difference(self, other):
-        return Set(self.elements ^ other.elements)
-    
-    def is_subset(self, other):
-        return self.elements <= other.elements
-    
-    def is_proper_subset(self, other):
-        return self.elements < other.elements
-    
-    def complement(self, universal_set):
-        return Set(universal_set.elements - self.elements)
-    
-    def power_set(self):
-        """Return the power set"""
-        from itertools import combinations
-        power_set_elements = []
-        for r in range(len(self.elements) + 1):
-            for combo in combinations(self.elements, r):
-                power_set_elements.append(Set(combo))
-        return power_set_elements
-    
-    def cartesian_product(self, other):
-        """Return Cartesian product with another set"""
-        return Set((a, b) for a in self.elements for b in other.elements)
-
-# Mathematical induction proof checker
-def prove_by_induction(predicate, base_case, inductive_step, n_max=10):
-    """
-    Verify a proof by induction for small values
-    predicate: function that takes n and returns True/False
-    base_case: starting value of n
-    inductive_step: function that proves P(k) -> P(k+1)
-    """
-    print(f"Proving by induction up to n = {n_max}")
-    
-    # Check base case
-    if not predicate(base_case):
-        print(f"Base case fails: P({base_case}) is False")
-        return False
-    print(f"Base case: P({base_case}) is True ✓")
-    
-    # Check inductive step for small values
-    for k in range(base_case, n_max):
-        if predicate(k) and not predicate(k + 1):
-            print(f"Inductive step fails: P({k}) is True but P({k+1}) is False")
-            return False
-        elif predicate(k):
-            print(f"Inductive step: P({k}) → P({k+1}) ✓")
-    
-    print("Induction proof verified for the tested range ✓")
-    return True
-
-# Example: Prove sum of first n positive integers is n(n+1)/2
-def sum_formula(n):
-    """Check if sum of first n positive integers equals n(n+1)/2"""
-    actual_sum = sum(range(1, n + 1))
-    formula_result = n * (n + 1) // 2
-    return actual_sum == formula_result
-
-# Example usage
-if __name__ == "__main__":
-    print("=== Truth Tables ===")
-    truth_table(de_morgan_1, ['p', 'q'])
-    print()
-    
-    truth_table(modus_ponens, ['p', 'q'])
-    print()
-    
-    print("=== Set Operations ===")
-    A = Set([1, 2, 3, 4])
-    B = Set([3, 4, 5, 6])
-    U = Set(range(1, 11))
-    
-    print(f"A = {A}")
-    print(f"B = {B}")
-    print(f"A ∪ B = {A.union(B)}")
-    print(f"A ∩ B = {A.intersection(B)}")
-    print(f"A - B = {A.difference(B)}")
-    print(f"A △ B = {A.symmetric_difference(B)}")
-    print(f"A ⊆ U: {A.is_subset(U)}")
-    
-    print(f"\nPower set of {{1, 2}}:")
-    small_set = Set([1, 2])
-    for subset in small_set.power_set():
-        print(f"  {subset}")
-    
-    print("\n=== Mathematical Induction ===")
-    prove_by_induction(sum_formula, 1, None, 10)
+C1, C2, C3, C4 = frozenset({1,2}), frozenset({1,-2}), frozenset({-1,2}), frozenset({-1,-2})
+C5 = resolve(C1, C2)[0]
+C6 = resolve(C3, C4)[0]
+C7 = resolve(C5, C6)[0]
+print("C5:", set(C5), " C6:", set(C6), " C7:", set(C7), "&lt;- empty clause")
 </code></pre>
+            <p>Actual output:</p>
+            <pre><code>D = {1, 3}
+f(1) = {2, 4, 6}   D == f(1)? False
+f(2) = {1, 2, 3}   D == f(2)? False
+f(3) = set()       D == f(3)? False
+f(4) = {1, 3, 4, 5, 6}   D == f(4)? False
+f(5) = {5}         D == f(5)? False
+f(6) = {1, 2, 3, 4, 5, 6}   D == f(6)? False
 
-            <h2>8. Applications</h2>
-            <h3>8.1 Computer Science</h3>
+C5: {1}   C6: {-1}   C7: set() &lt;- empty clause</code></pre>
+            <p>Every one of the six comparisons fails, exactly as the proof demands ($D$ must differ from <em>every</em> $f(i)$, not most); and the three-step resolution derivation lands on the empty clause exactly, a direct, checkable certificate that the original four clauses have no common satisfying assignment.</p>
+
+            <h2 id="pitfalls">9. Common pitfalls</h2>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — $RAA$ (or excluded middle) is not derivable without being assumed</span>
+                <p>Dropping $RAA$ from Section 2's rule set gives intuitionistic logic — the very system underlying the <a href="../computer-programming/type-theory.html">type theory note</a>'s Curry-Howard correspondence — in which $\varphi\lor\neg\varphi$ is not provable for arbitrary $\varphi$. Section 3's completeness proof genuinely needs $RAA$ (in the "proof by cases" derived rule); completeness for the intuitionistic fragment is a different, separate theorem with a different proof (via Kripke models, not truth tables), not a restriction of this one.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — compactness gives existence of a model, not a description of one</span>
+                <p>Section 4's De Bruijn–Erdős application proves an infinite graph is $k$-colorable whenever every finite piece is — but the proof (via completeness, itself nonconstructive in general, resting on the law of excluded middle) gives no algorithm for actually producing the coloring. "Every finite subgraph is colorable" is a checkable, local condition; "the whole graph is colorable" being equivalent to it is a genuine theorem, not an obvious transfer, and the equivalence itself is where all the content lives.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — completeness and decidability are different claims</span>
+                <p>Section 3 says every tautology <em>has</em> a proof — but propositional satisfiability checking is still NP-complete (<a href="../computer-programming/computability.html">computability note</a>, Section 7's Cook–Levin theorem), and first-order validity (Section 6) is outright undecidable (a consequence of the <a href="../computer-programming/computability.html">computability note</a>'s Section 5, via a reduction from the Halting Problem). Completeness guarantees a proof exists somewhere in principle; it says nothing about how expensive finding one is.</p>
+            </div>
+            <div class="note-box">
+                <span class="note-box-label">Pitfall — Gödel's completeness and incompleteness theorems are not in tension</span>
+                <p>Section 6's completeness theorem is about first-order logic's proof system tracking first-order semantic entailment exactly. Gödel's (unrelated, despite the shared name and author) incompleteness theorems are about a specific, much stronger theory — first-order Peano arithmetic — having true arithmetic statements no proof in that theory can derive. The first says "this proof system is exactly as strong as this semantics"; the second says "this semantics (the true statements about $\mathbb N$) is strictly stronger than any single recursively axiomatized proof system can capture." Different systems, different theorems.</p>
+            </div>
+
+            <h2 id="connections">10. Connections</h2>
             <ul>
-                <li>Digital circuit design</li>
-                <li>Programming language semantics</li>
-                <li>Database query optimization</li>
-                <li>Formal verification</li>
+                <li><strong><a href="../computer-programming/type-theory.html">Type theory and functional programming</a>.</strong> Section 2's natural deduction rules (minus $RAA$) are exactly that note's simply-typed lambda calculus typing rules (its Section 4) under the Curry-Howard correspondence (its Section 7); a propositional proof and a well-typed term are the same object.</li>
+                <li><strong><a href="../computer-programming/computability.html">Computability and formal languages</a>.</strong> Resolution refutation (Section 5) is the theoretical core of every SAT solver, and SAT itself is that note's Cook–Levin-complete problem (its Section 7); Cantor's diagonalization (Section 7 here) is the identical proof technique behind that note's undecidability of the Halting Problem (its Section 5).</li>
+                <li><strong>Graph theory.</strong> The De Bruijn–Erdős application (Section 4) transfers a purely logical compactness fact into a statement about chromatic number; proper graph-coloring theory, and the combinatorial (rather than logical) tools for computing chromatic number on finite graphs, belong to that subject.</li>
             </ul>
 
-            <h3>8.2 Mathematics</h3>
+            <h2 id="references">11. References</h2>
             <ul>
-                <li>Foundation of mathematical reasoning</li>
-                <li>Set theory and topology</li>
-                <li>Abstract algebra</li>
-            </ul>
-
-            <h3>8.3 Philosophy</h3>
-            <ul>
-                <li>Analysis of arguments</li>
-                <li>Logical fallacies</li>
-                <li>Foundations of knowledge</li>
-            </ul>
-
-            <h2>9. References</h2>
-            <ul>
-                <li>Shoenfield, J. R. (2001). <em>Mathematical Logic</em>.</li>
-                <li>Mendelson, E. (2015). <em>Introduction to Mathematical Logic</em>.</li>
-                <li>Rosen, K. H. (2019). <em>Discrete Mathematics and Its Applications</em>.</li>
+                <li>Enderton, H. B. (2001). <em>A Mathematical Introduction to Logic</em> (2nd ed.). Academic Press.</li>
+                <li>Mendelson, E. (2015). <em>Introduction to Mathematical Logic</em> (6th ed.). CRC Press.</li>
+                <li>van Dalen, D. (2013). <em>Logic and Structure</em> (5th ed.). Springer.</li>
+                <li>Rosen, K. H. (2019). <em>Discrete Mathematics and Its Applications</em> (8th ed.). McGraw-Hill.</li>
             </ul>
         </section>
     </main>
@@ -483,4 +231,4 @@ if __name__ == "__main__":
         <p>&copy; Diogo Franquinho | Technical Notes</p>
     </footer>
 </body>
-</html> 
+</html>
