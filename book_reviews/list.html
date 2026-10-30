@@ -6,7 +6,7 @@
     <meta name="description" content="Diogo Franquinho - Book Reviews">
     <title>Book Reviews - Diogo Franquinho</title>
     <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/book-reviews.css">
+    <link rel="stylesheet" href="../css/book-reviews.css?v=3">
     <script src="../js/analytics-config.js"></script>
     <script src="../js/analytics.js" defer></script>
 </head>
@@ -25,7 +25,7 @@
     </header>
 
     <main>
-        <h1>Book Reviews</h1>
+        <h1>Book Reviews (Coming Soon)</h1>
         <section id="book-list" class="book-list">
             <!-- Books will be loaded here -->
         </section>
@@ -45,7 +45,7 @@
                 }
                 const csvText = await response.text();
                 const books = parseCSV(csvText);
-                displayBooks(books);
+                displayBooks(books, await loadCovers());
             } catch (error) {
                 console.error('Error loading books:', error);
                 document.getElementById('book-list').innerHTML = 
@@ -107,31 +107,38 @@
             }
         }
 
-        function cleanISBN(raw) {
-            // Goodreads exports ISBNs as Excel formulas: ="0123456789"
-            return raw.replace(/^="?/, '').replace(/"?$/, '');
+        // Title -> image file, written by fetch_covers.py. Books without a
+        // cover keep the empty placeholder slot.
+        async function loadCovers() {
+            try {
+                const response = await fetch('covers/manifest.json');
+                if (!response.ok) return {};
+                // parseCSV drops double quotes inside titles, so key without them
+                const covers = {};
+                for (const [title, file] of Object.entries(await response.json())) {
+                    covers[title.replace(/"/g, '')] = file;
+                }
+                return covers;
+            } catch (error) {
+                return {};
+            }
         }
 
-        function displayBooks(books) {
+        function displayBooks(books, covers) {
             const container = document.getElementById('book-list');
 
-            container.innerHTML = books.map(book => {
-                const isbn = cleanISBN(book['ISBN'] || '');
-                const additionalAuthors = book['Additional Authors'] || '';
-                const authorLF = book['Author l-f'] || '';
-                return `
+            container.innerHTML = books.map(book => `
                 <article class="book-review">
                     <h2>${book['Title'] || 'Untitled'}</h2>
-                    <p><strong>Author:</strong> ${book['Author'] || 'Unknown'}${authorLF ? ' (' + authorLF + ')' : ''}</p>
-                    ${additionalAuthors ? `<p><strong>Additional Authors:</strong> ${additionalAuthors}</p>` : ''}
-                    ${isbn ? `<p><strong>ISBN:</strong> ${isbn}</p>` : ''}
-                    ${book['Publisher'] ? `<p><strong>Publisher:</strong> ${book['Publisher']}</p>` : ''}
-                </article>`;
-            }).join('');
+                    <div class="book-cover" aria-hidden="true">${covers[book['Title']]
+                        ? `<img src="covers/${encodeURIComponent(covers[book['Title']])}" alt="" loading="lazy">`
+                        : ''}</div>
+                    <p>${book['Author'] || 'Unknown'}</p>
+                </article>`).join('');
         }
 
         // Load books when the page loads
         document.addEventListener('DOMContentLoaded', loadBooks);
     </script>
 </body>
-</html>
+</html>n the 
