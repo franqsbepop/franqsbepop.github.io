@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" width="1000" height="600" role="img">
+<defs><filter id="glow4" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+<rect x="0.00" y="0.00" width="1000.00" height="600.00" rx="0.0" fill="#0D1015" opacity="1.000"/>
+<text x="56.00" y="58.00" font-family="'IBM Plex Mono','SFMono-Regular','Menlo',ui-monospace,monospace" font-size="11.5" fill="#6C7480" text-anchor="start" opacity="1.000" font-weight="500" letter-spacing="2.60">WHERE THE OSCILLATION LIVES</text>
+<line x1="180.00" y1="320.00" x2="792.80" y2="320.00" stroke="#6C7480" stroke-width="1.40" stroke-linecap="round" opacity="0.800"/>
+<path d="M800.00 320.00 L792.70 323.26 L792.70 316.74 Z" fill="#6C7480" opacity="0.800"/>
+<line x1="300.00" y1="556.00" x2="300.00" y2="91.20" stroke="#6C7480" stroke-width="1.40" stroke-linecap="round" opacity="0.800"/>
+<path d="M300.00 84.00 L303.26 91.30 L296.74 91.30 Z" fill="#6C7480" opacity="0.800"/>
+<text x="808.00" y="326.00" font-family="'IBM Plex Mono','SFMono-Regular','Menlo',ui-monospace,monospace" font-size="16.0" fill="#6C7480" text-anchor="start" opacity="1.000" font-weight="400">Re</text>
+<text x="312.00" y="76.00" font-family="'IBM Plex Mono','SFMono-Regular','Menlo',ui-monospace,monospace" font-size="16.0" fill="#6C7480" text-anchor="start" opacity="1.000" font-weight="400">Im</text>
+<line x1="539.75" y1="88.00" x2="539.75" y2="552.00" stroke="#B07FD6" stroke-width="1.30" stroke-linecap="round" opacity="0.500" stroke-dasharray="3 7"/>
+<circle cx="539.75" cy="495.00" r="6.40" fill="#B07FD6" opacity="1.000" filter="url(#glow4)"/>
+<text x="557.75" y="500.00" font-family="'IBM Plex Mono','SFMono-Regular','Menlo',ui-monospace,monospace" font-size="16.0" fill="#B07FD6" text-anchor="start" opacity="0.900" font-weight="400">d − 2 i p</text>
+<circle cx="539.75" cy="407.50" r="6.40" fill="#B07FD6" opacity="1.000" filter="url(#glow4)"/>
+<text x="557.75" y="412.50" font-family="'IBM Plex Mono','SFMono-Regular','Menlo',ui-monospace,monospace" font-size="16.0" fill="#B07FD6" text-anchor="start" opacity="0.900" font-weight="400">d −  i p</text>
+<circle cx="539.75" cy="320.00" r="6.40" fill="#B07FD6" opacity="1.000" filter="url(#glow4)"/>
+<text x="557.75" y="325.00" font-family="'IBM Plex Mono','SFMono-Regular','Menlo',ui-monospace,monospace" font-size="16.0" fill="#B07FD6" text-anchor="start" opacity="0.900" font-weight="400">d</text>
+<circle cx="539.75" cy="232.50" r="6.40" fill="#B07FD6" opacity="1.000" filter="url(#glow4)"/>
+<text x="557.75" y="237.50" font-family="'IBM Plex Mono','SFMono-Regular','Menlo',ui-monospace,monospace" font-size="16.0" fill="#B07FD6" text-anchor="start" opacity="0.900" font-weight="400">d +  i p</text>
+<circle cx="539.75" cy="145.00" r="6.40" fill="#B07FD6" opacity="1.000" filter="url(#glow4)"/>
+<text x="557.75" y="150.00" font-family="'IBM Plex Mono','SFMono-Regular','Menlo',ui-monospace,monospace" font-size="16.0" fill="#B07FD6" text-anchor="start" opacity="0.900" font-weight="400">d + 2 i p</text>
+<line x1="509.75" y1="320.00" x2="509.75" y2="232.50" stroke="#58C4DD" stroke-width="1.50" stroke-linecap="round" opacity="0.900"/>
+<line x1="503.75" y1="320.00" x2="515.75" y2="320.00" stroke="#58C4DD" stroke-width="1.50" stroke-linecap="round" opacity="0.900"/>
+<line x1="503.75" y1="232.50" x2="515.75" y2="232.50" stroke="#58C4DD" stroke-width="1.50" stroke-linecap="round" opacity="0.900"/>
+<text x="495.75" y="281.25" font-family="'Latin Modern Roman','CMU Serif','Charter','Palatino Linotype','Georgia',serif" font-size="15.0" fill="#58C4DD" text-anchor="end" opacity="1.000" font-weight="400">p = 2π / log 3</text>
+<text x="300.00" y="346.00" font-family="'Latin Modern Roman','CMU Serif','Charter','Palatino Linotype','Georgia',serif" font-size="15.0" fill="#6C7480" text-anchor="middle" opacity="1.000" font-weight="400">0</text>
+<text x="56.00" y="140.00" font-family="'Latin Modern Roman','CMU Serif','Charter','Palatino Linotype','Georgia',serif" font-size="20.0" fill="#E8E6E1" text-anchor="start" opacity="1.000" font-weight="400" font-style="italic">ζ</text>
+<text x="70.00" y="146.00" font-family="'Latin Modern Roman','CMU Serif','Charter','Palatino Linotype','Georgia',serif" font-size="13.0" fill="#E8E6E1" text-anchor="start" opacity="1.000" font-weight="400">C</text>
+<text x="80.00" y="140.00" font-family="'Latin Modern Roman','CMU Serif','Charter','Palatino Linotype','Georgia',serif" font-size="20.0" fill="#E8E6E1" text-anchor="start" opacity="1.000" font-weight="400">(s)  =</text>
+<text x="190.00" y="128.68" font-family="'Latin Modern Roman','CMU Serif','Charter','Palatino Linotype','Georgia',serif" font-size="17.5" fill="#E8E6E1" text-anchor="middle" opacity="1.000" font-weight="400">3⁻ˢ</text>
+<line x1="145.54" y1="134.00" x2="234.46" y2="134.00" stroke="#E8E6E1" stroke-width="1.10" stroke-linecap="butt" opacity="1.000"/>
+<text x="190.00" y="152.05" font-family="'Latin Modern Roman','CMU Serif','Charter','Palatino Linotype','Georgia',serif" font-size="17.5" fill="#E8E6E1" text-anchor="middle" opacity="1.000" font-weight="400">1 − 2·3⁻ˢ</text>
+<text x="56.00" y="200.00" font-family="'IBM Plex Mono','SFMono-Regular','Menlo',ui-monospace,monospace" font-size="15.0" fill="#6C7480" text-anchor="start" opacity="1.000" font-weight="400">poles ⇔ complex dimensions</text>
+<text x="500.00" y="566.00" font-family="'Latin Modern Roman','CMU Serif','Charter','Palatino Linotype','Georgia',serif" font-size="16.5" fill="#6C7480" text-anchor="middle" opacity="1.000" font-weight="400">real part = the dimension · imaginary parts = the log-periodic oscillation</text>
+</svg>

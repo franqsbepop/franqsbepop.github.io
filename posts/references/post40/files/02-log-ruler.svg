@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 450" width="1000" height="450" role="img">
+
+<rect x="0.00" y="0.00" width="1000.00" height="450.00" rx="0.0" fill="#0D1015" opacity="1.000"/>
+<text x="56.00" y="58.00" font-family="'IBM Plex Mono','SFMono-Regular','Menlo',ui-monospace,monospace" font-size="11.5" fill="#6C7480" text-anchor="start" opacity="1.000" font-weight="500" letter-spacing="2.60">TWO WAYS TO MEASURE THE DISTANCE BETWEEN 1 AND 16</text>
+<line x1="190.00" y1="132.00" x2="900.00" y2="132.00" stroke="#6C7480" stroke-width="1.40" stroke-linecap="round" opacity="0.700"/>
+<line x1="190.00" y1="123.00" x2="190.00" y2="141.00" stroke="#E8E6E1" stroke-width="1.80" stroke-linecap="round" opacity="0.900"/>
+<text x="190.00" y="112.00" font-family="'Latin Modern Roman','CMU Serif','Charter','Palatino Linotype','Georgia',serif" font-size="17.0" fill="#E8E6E1" text-anchor="middle" opacity="1.000" font-weight="400">1</text>
+<line x1="237.33" y1="123.00" x2="237.33" y2="141.00" stroke="#E8E6E1" stroke-width="1.80" stroke-linecap="round" opacity="0.900"/>
+<text x="237.33" y="112.00" font-family="'Latin Modern Roman','CMU Serif','Charter','Palatino Linotype','Georgia',serif" font-size="17.0" fill="#E8E6E1" text-anchor="middle" opacity="1.000" font-weight="400">2</text>
+<line x1="332.00" y1="123.00" x2="332.00" y2="141.00" stroke="#E8E6E1" stroke-width="1.80" stroke-linecap="round" opacity="0.900"/>
+<text x="332.00" y="112.00" font-family="'Latin Modern Roman','CMU Serif','Charter','Palatino Linotype','Georgia',serif" font-size="17.0" fill="#E8E6E1" text-anchor="middle" opacity="1.000" font-weight="400">4</text>
+<line x1="521.33" y1="123.00" x2="521.33" y2="141.00" stroke="#E8E6E1" stroke-width="1.80" stroke-linecap="round" opacity="0.900"/>
+<text x="521.33" y="112.00" font-family="'Latin Modern Roman','CMU Serif','Charter','Palatino Linotype','Georgia',serif" font-size="17.0" fill="#E8E6E1" text-anchor="middle" opacity="1.000" font-weight="400">8</text>
+<line x1="900.00" y1="123.00" x2="900.00" y2="141.00" stroke="#E8E6E1" stroke-width="1.80" stroke-linecap="round" opacity="0.900"/>
+<text x="900.00" y="112.00" font-family="'Latin Modern Roman','CMU Serif','Charter','Palatino Linotype','Georgia',serif" font-size="17.0" fill="#E8E6E1" text-anchor="middle" opacity="1.000" font-weight="400">16</text>
+<text x="164.00" y="137.00" font-family="'Latin Modern Roman','CMU Serif','Charter','Palatino Linotype','Georgia',serif" font-size="18.0" fill="#E8E6E1" text-anchor="end" opacity="1.000" font-weight="400" font-style="italic">|x − y|</text>
+<text x="164.00" y="160.00" font-family="'IBM Plex Mono','SFMono-Regular','Menlo',ui-monospace,monospace" font-size="13.0" fill="#6C7480" text-anchor="end" opacity="1.000" font-weight="400">euclidean</text>
+<line x1="190.00" y1="320.00" x2="900.00" y2="320.00" stroke="#58C4DD" stroke-width="1.40" stroke-linecap="round" opacity="0.750"/>
+<line x1="190.00" y1="311.00" x2="190.00" y2="329.00" stroke="#58C4DD" stroke-width="1.80" stroke-linecap="round" opacity="1.000"/>
+<text x="190.00" y="354.00" font-family="'Latin Modern Roman','CMU Serif','Charter','Palatino Linotype','Georgia',serif" font-size="17.0" fill="#58C4DD" text-anchor="middle" opacity="1.000" font-weight="400">1</text>
+<line x1="367.50" y1="311.00" x2="367.50" y2="329.00" stroke="#58C4DD" stroke-width="1.80" stroke-linecap="round" opacity="1.000"/>
+<text x="367.50" y="354.00" font-family="'Latin Modern Roman','CMU Serif','Charter','Palatino Linotype','Georgia',serif" font-size="17.0" fill="#58C4DD" text-anchor="middle" opacity="1.000" font-weight="400">2</text>
+<line x1="545.00" y1="311.00" x2="545.00" y2="329.00" stroke="#58C4DD" stroke-width="1.80" stroke-linecap="round" opacity="1.000"/>
+<text x="545.00" y="354.00" font-family="'Latin Modern Roman','CMU Serif','Charter','Palatino Linotype','Georgia',serif" font-size="17.0" fill="#58C4DD" text-anchor="middle" opacity="1.000" font-weight="400">4</text>
+<line x1="722.50" y1="311.00" x2="722.50" y2="329.00" stroke="#58C4DD" stroke-width="1.80" stroke-linecap="round" opacity="1.000"/>
+<text x="722.50" y="354.00" font-family="'Latin Modern Roman','CMU Serif','Charter','Palatino Linotype','Georgia',serif" font-size="17.0" fill="#58C4DD" text-anchor="middle" opacity="1.000" font-weight="400">8</text>
+<line x1="900.00" y1="311.00" x2="900.00" y2="329.00" stroke="#58C4DD" stroke-width="1.80" stroke-linecap="round" opacity="1.000"/>
+<text x="900.00" y="354.00" font-family="'Latin Modern Roman','CMU Serif','Charter','Palatino Linotype','Georgia',serif" font-size="17.0" fill="#58C4DD" text-anchor="middle" opacity="1.000" font-weight="400">16</text>
+<text x="164.00" y="325.00" font-family="'Latin Modern Roman','CMU Serif','Charter','Palatino Linotype','Georgia',serif" font-size="18.0" fill="#58C4DD" text-anchor="end" opacity="1.000" font-weight="400" font-style="italic">|log x − log y|</text>
+<text x="164.00" y="348.00" font-family="'IBM Plex Mono','SFMono-Regular','Menlo',ui-monospace,monospace" font-size="13.0" fill="#6C7480" text-anchor="end" opacity="1.000" font-weight="400">logarithmic</text>
+<path d="M190.00 146.00 C 190.00 210.00, 190.00 242.00, 190.00 306.00" fill="none" stroke="#58C4DD" stroke-width="1.50" stroke-linecap="round" stroke-linejoin="round" opacity="0.420"/>
+<path d="M237.33 146.00 C 237.33 210.00, 367.50 242.00, 367.50 306.00" fill="none" stroke="#58C4DD" stroke-width="1.50" stroke-linecap="round" stroke-linejoin="round" opacity="0.520"/>
+<path d="M332.00 146.00 C 332.00 210.00, 545.00 242.00, 545.00 306.00" fill="none" stroke="#58C4DD" stroke-width="1.50" stroke-linecap="round" stroke-linejoin="round" opacity="0.620"/>
+<path d="M521.33 146.00 C 521.33 210.00, 722.50 242.00, 722.50 306.00" fill="none" stroke="#58C4DD" stroke-width="1.50" stroke-linecap="round" stroke-linejoin="round" opacity="0.720"/>
+<path d="M900.00 146.00 C 900.00 210.00, 900.00 242.00, 900.00 306.00" fill="none" stroke="#58C4DD" stroke-width="1.50" stroke-linecap="round" stroke-linejoin="round" opacity="0.820"/>
+<line x1="195.00" y1="382.00" x2="362.50" y2="382.00" stroke="#F0A050" stroke-width="1.30" stroke-linecap="round" opacity="0.800"/>
+<text x="278.75" y="378.00" font-family="'Latin Modern Roman','CMU Serif','Charter','Palatino Linotype','Georgia',serif" font-size="14.0" fill="#F0A050" text-anchor="middle" opacity="1.000" font-weight="400">× 2</text>
+<line x1="372.50" y1="382.00" x2="540.00" y2="382.00" stroke="#F0A050" stroke-width="1.30" stroke-linecap="round" opacity="0.800"/>
+<text x="456.25" y="378.00" font-family="'Latin Modern Roman','CMU Serif','Charter','Palatino Linotype','Georgia',serif" font-size="14.0" fill="#F0A050" text-anchor="middle" opacity="1.000" font-weight="400">× 2</text>
+<line x1="550.00" y1="382.00" x2="717.50" y2="382.00" stroke="#F0A050" stroke-width="1.30" stroke-linecap="round" opacity="0.800"/>
+<text x="633.75" y="378.00" font-family="'Latin Modern Roman','CMU Serif','Charter','Palatino Linotype','Georgia',serif" font-size="14.0" fill="#F0A050" text-anchor="middle" opacity="1.000" font-weight="400">× 2</text>
+<line x1="727.50" y1="382.00" x2="895.00" y2="382.00" stroke="#F0A050" stroke-width="1.30" stroke-linecap="round" opacity="0.800"/>
+<text x="811.25" y="378.00" font-family="'Latin Modern Roman','CMU Serif','Charter','Palatino Linotype','Georgia',serif" font-size="14.0" fill="#F0A050" text-anchor="middle" opacity="1.000" font-weight="400">× 2</text>
+<text x="500.00" y="416.00" font-family="'Latin Modern Roman','CMU Serif','Charter','Palatino Linotype','Georgia',serif" font-size="16.5" fill="#6C7480" text-anchor="middle" opacity="1.000" font-weight="400">equal ratios become equal distances</text>
+</svg>

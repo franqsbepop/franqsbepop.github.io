@@ -1,0 +1,276 @@
+---
+title: "Scale as a Coordinate"
+subtitle: "What the Cantor set looks like from inside a logarithm"
+date: 2026-08-14
+tags: [fractals, geometry, scale, complex dimensions]
+math: true
+---
+
+![The Cantor set drawn in polar scale coordinates: angle is position, radius is logarithmic scale.](/images/scale/00-cantor-polar.svg)
+
+Everyone learns that the middle-thirds Cantor set has dimension $\log 2/\log 3$, and
+almost everyone moves on. But look at that number for a moment longer than usual. It is
+not a length, or an area, or a count. It is a **ratio of two logarithms** — which is to
+say, a slope. Something has been differentiated and nobody said what with respect to
+what.
+
+This post takes that seriously. The claim is small but, I think, worth making carefully:
+if you stop treating "logarithmic scale" as a plotting convenience and start treating it
+as a *coordinate*, the self-similarity of the Cantor set stops being a verbal description
+and becomes a piece of visible geometry. And then, if you keep pushing, you arrive at the
+place where the mathematics is genuinely deep — which turns out not to be where the
+pretty reframing suggests.
+
+---
+
+## 1. The construction keeps two sets of books
+
+The Cantor set $C$ is the attractor of two contractions,
+
+$$f_0(x) = \tfrac{x}{3}, \qquad f_1(x) = \tfrac{x}{3} + \tfrac{2}{3},$$
+
+and the standard picture of its construction is a stack of thinning bars. What that
+picture hides is that two entirely different quantities are being tracked down the page.
+
+![Eight levels of the middle-thirds construction, with the resolution on the left and the interval count on the right.](/images/scale/01-construction.svg)
+
+On the left, a **scale**: at level $n$ the surviving intervals have length $3^{-n}$. On
+the right, a **count**: there are $2^n$ of them. Both are geometric sequences, with
+different ratios, indexed by the same $n$. Everything interesting about $C$ is the
+relationship between those two columns, and the reason $\log 2/\log 3$ appears at all is
+that a ratio of geometric sequences is the only invariant they have.
+
+Geometric sequences are awkward objects to do geometry with. So change the ruler.
+
+## 2. Change the ruler
+
+For $x, y > 0$, set
+
+$$d_{\log}(x,y) = |\log x - \log y| = \left|\log \tfrac{x}{y}\right|.$$
+
+This is a genuine metric on $(0,\infty)$ — in fact it makes $(0,\infty)$ isometric to
+$\mathbb{R}$ — and under it, **equal ratios are equal distances**. The points
+$1, 2, 4, 8, 16$, which crowd together at the left end of an ordinary ruler, become
+evenly spaced.
+
+![The numbers 1, 2, 4, 8, 16 on a Euclidean ruler above and a logarithmic ruler below, connected by tethers.](/images/scale/02-log-ruler.svg)
+
+One honest caveat before going further, because it is easy to slide past it. We are
+**not** re-metrizing the Cantor set. $d_{\log}$ is not a metric on $C$; it is a metric on
+the space of *resolutions at which we look at $C$*. That is a different space, and the
+whole point of what follows is that it deserves to be treated as one. The move is not
+"replace $|x-y|$"; the move is "add an axis".
+
+## 3. In the new ruler, the hierarchy is a lattice
+
+Write $s = \log(1/r)$ for the logarithmic scale at resolution $r$. The Cantor
+construction's resolutions $r_n = 3^{-n}$ become
+
+$$s_n = n \log 3,$$
+
+an arithmetic progression: an evenly spaced lattice with spacing $\log 3$.
+
+![The geometric sequence of resolutions on the left becoming an evenly spaced lattice on the right.](/images/scale/03-scale-ladder.svg)
+
+An infinite hierarchy that piles up at zero has been unrolled into something you can put
+a ruler against. Meanwhile the counts $N_n = 2^n$ become $\log N_n = n \log 2$, also
+arithmetic, with spacing $\log 2$. Two arithmetic progressions in the same index. Plot
+one against the other and the index disappears.
+
+## 4. The dimension is an angle
+
+$$\big(s_n,\ \Phi_n\big) = \big(n\log 3,\ n \log 2\big), \qquad n = 0, 1, 2, \dots$$
+
+These points lie on a straight line through the origin. Draw the two axes with the *same
+unit* — and this matters, it is the whole trick — and the dimension becomes the tangent
+of an actual angle:
+
+$$\tan\theta = \frac{\log 2}{\log 3} = d \approx 0.6309, \qquad \theta \approx 32.24^\circ.$$
+
+![The lattice points, the line through them, and the angle it makes with the scale axis.](/images/scale/04-dimension-as-angle.svg)
+
+This is, I want to be clear, nothing more than the definition of box-counting dimension
+drawn with care:
+
+$$d = \lim_{r\to 0} \frac{\log N(r)}{\log(1/r)}.$$
+
+No new mathematics has happened. But the *picture* has changed, and it changes what
+questions look natural. A slope invites you to ask about the second derivative. A line
+invites you to ask what happens when the data is not on it. Neither question is invited
+by the sentence "the Cantor set has dimension $\log 2/\log 3$."
+
+<div class="widget">
+  <iframe src="/interactive/box-counting.html" width="100%" height="720"
+          style="border:0" loading="lazy"
+          title="Interactive: box counting on the Cantor set"></iframe>
+</div>
+
+## 5. The count is a staircase, not a line
+
+Here is the first thing the picture makes obvious that the formula does not. $N(r)$ is
+only equal to $2^n$ at the special resolutions $r = 3^{-n}$. In between it is a step
+function, and $\Phi(s) = \log N(e^{-s})$ is a staircase that touches the line at the
+lattice scales and bulges above it everywhere else.
+
+![The measured box count plotted against the pure power law: a staircase that leans on the line.](/images/scale/05-staircase.svg)
+
+Write
+
+$$\Phi(s) = d\,s + f(s).$$
+
+The dimension is the part of $\Phi$ that survives being divided by $s$ as $s \to \infty$.
+Everything else — the entire function $f$ — is what the dimension throws away.
+
+![The residual: bounded, and roughly repeating each time the scale shrinks by a factor of three.](/images/scale/06-box-count-residual.svg)
+
+$f$ is bounded, which is why the limit exists at all, and it roughly repeats with period
+$\log 3$: one full period of $f$ corresponds to shrinking the resolution by one factor of
+$3$. That is discrete scale invariance, visible directly.
+
+I say *roughly* on purpose. The box count on a fixed mesh is a crude instrument: how many
+boxes a level-$n$ interval straddles depends on how the mesh happens to fall, so the
+residual above is contaminated by grid alignment and is not exactly periodic. If you want
+a statement that is a theorem rather than a plot, you need a smoother way to probe the
+set.
+
+## 6. Where the oscillation becomes a theorem
+
+Take the $\varepsilon$-neighbourhood of $C$ instead of a box count. The gaps of the
+Cantor set have length $3^{-n}$ with multiplicity $2^{n-1}$, and an
+$\varepsilon$-neighbourhood fills a gap of length $\ell$ to depth $\min(\ell, 2\varepsilon)$.
+Summing gives an exact elementary formula: with
+$m = \lfloor \log_3 \tfrac{1}{2\varepsilon} \rfloor$,
+
+$$V(\varepsilon) = 2\varepsilon\,(2^m - 1) + \left(\tfrac{2}{3}\right)^{m}.$$
+
+Now normalise by $\varepsilon^{1-d}$, which is what a well-behaved $d$-dimensional object
+would need to make this converge:
+
+![The normalised tube volume, cycling forever with period log 3 instead of settling to a constant.](/images/scale/07-tube-oscillation.svg)
+
+It does not converge. It settles into a waveform of amplitude about $4.6\%$ that repeats
+exactly, with period $\log 3$, forever. The Cantor set therefore has no Minkowski
+content: the limit that would define it simply does not exist.
+
+This is not a numerical artefact and not a plotting choice — it is the substance. For
+self-similar subsets of the line satisfying the open set condition, Minkowski
+measurability is *equivalent* to the contraction ratios being non-lattice, i.e. to their
+logarithms not all being integer multiples of a common number. The middle-thirds set is
+maximally lattice: every ratio is $1/3$. The characterisation is due to Lapidus and
+Pomerance and, independently, to Falconer.[^1]
+
+## 7. Objects with no single dimension
+
+The reframing earns its keep when the data is not on a line. Take a Cantor-like set whose
+contraction ratio is $1/3$ for the first several levels and $1/9$ thereafter. It is a
+perfectly good compact set; it simply has no exponent.
+
+![Top: the count bends between two slopes. Bottom: the local slope migrates from 0.63 to 0.32.](/images/scale/08-drifting-slope.svg)
+
+$\Phi$ has a bend in it, and the local slope
+
+$$d(s) = \Phi'(s)$$
+
+migrates from $\log 2/\log 3 \approx 0.631$ at coarse scales to $\log 2/\log 9 \approx
+0.315$ at fine ones. (In the lower panel I measure the slope with a centred difference
+over exactly one period of the scaling, $s \pm \log 3$, which annihilates the
+log-periodic wobble instead of averaging it down; both scaling regimes here have periods
+commensurate with $\log 3$, which is the only reason that works.)
+
+A single number cannot describe this object, but a *function on the scale axis* can. And
+once $d(s)$ is a function, the rest of the differential-geometric vocabulary shows up
+uninvited: $\Phi''$, the curvature of the scaling law; the amplitude and phase of the
+oscillation in $f$; the possibility that different parts of the set have different local
+$d(s)$, which is multifractality.
+
+## 8. Where the oscillation actually lives
+
+The last step is the one that convinced me the picture is pointing somewhere real. Encode
+the gaps as a Dirichlet series — the *geometric zeta function* of the Cantor string:
+
+$$\zeta_C(s) = \sum_{n \ge 1} 2^{n-1} 3^{-ns} = \frac{3^{-s}}{1 - 2\cdot 3^{-s}}.$$
+
+Its poles are exactly where $3^{s} = 2$, that is at
+
+$$s = \frac{\log 2}{\log 3} + \frac{2\pi i k}{\log 3}, \qquad k \in \mathbb{Z}.$$
+
+![The complex dimensions of the Cantor set: a vertical lattice with real part d and spacing 2 pi over log 3.](/images/scale/09-complex-dimensions.svg)
+
+A vertical arithmetic lattice in the complex plane. The **real part is the dimension**.
+The **imaginary parts are the oscillation** — spacing $p = 2\pi/\log 3 \approx 5.72$,
+which is precisely the frequency conjugate to the period $\log 3$ we saw in the tube
+volume. The oscillation in §6 was not noise decorating the power law; it was the rest of
+the pole structure making itself visible.
+
+Notice what the logarithmic coordinate did here. In the variable $s$, a power law
+$r^{-d}$ is a linear function $ds$, and periodicity in $s$ is *exactly* what a
+complex exponent produces: $r^{-(d+ip)} = e^{ds}e^{ips}$. Real part, slope; imaginary
+part, frequency. That is why the scale coordinate is the right one — not because it makes
+a nicer plot, but because it is the variable in which the dimension spectrum is a Fourier
+transform.
+
+---
+
+## What is actually new here
+
+Nothing in §§1–4. That is the definition of box dimension, drawn carefully. It is a good
+way to *teach* the definition, and I would happily use these pictures in a lecture, but
+it is a reframing, not a result.
+
+Sections 5–8 are also known, and known thoroughly. Discrete scale invariance and
+log-periodic corrections to scaling are a well-developed subject in statistical physics,
+where they show up in rupture, earthquakes, diffusion-limited aggregation and financial
+time series; Sornette's review is the standard entry point.[^2] The mathematics — fractal
+strings, geometric zeta functions, complex dimensions, tube formulas — is the theory of
+complex dimensions developed by Lapidus and van Frankenhuijsen, and it is a mature
+theory with monographs, not a gap in the literature.[^3]
+
+So the honest summary is this: **"geometry of scale" is not an open frontier in one
+dimension — it is largely a name for something that already exists and is called the
+theory of complex dimensions.** Anyone proposing to build a framework here should read
+that literature first and expect to find their idea in it.
+
+What I think remains genuinely open is narrower and less glamorous:
+
+- **Non-self-similar objects.** The theory is at its sharpest for self-similar and
+  self-conformal sets. For an object like §7 — or a measured object with a drifting local
+  slope and no exact symmetry at all — $d(s)$ and $f(s)$ are descriptive statistics rather
+  than the shadow of a pole structure. What is the right invariant?
+- **The scale coordinate as a coordinate.** Everything above treats $s$ as an axis to plot
+  against. Treating it as a coordinate with its own geometry — a connection, a notion of
+  transport between scales, a way to say that two objects are "the same at different
+  scales" other than by comparing slopes — is not something I can point to a theory for.
+  This may be because it is vacuous. I do not know yet.
+- **Analysis, not just counting.** Dimension is the crudest invariant. The real test of
+  any scale-geometric framework is whether it says anything about *analysis* on these
+  spaces — Dirichlet forms, heat kernels, spectral asymptotics — where the objects that
+  matter are due to Kigami, Barlow, Strichartz and others, and where log-periodicity in
+  the heat trace is already a known phenomenon. A reframing that cannot reach the heat
+  kernel is decoration.
+
+The Cantor set is a good teacher precisely because it is small enough to see all the way
+through. Everything in this post about it is finite, computable, and checkable in an
+afternoon — I computed every figure here directly rather than fitting anything, which is
+also how I found a bug in my own box counting.[^4] Whether the viewpoint generalises into
+something with theorems attached is a separate question, and I have tried to be careful
+not to answer it with a nice picture.
+
+---
+
+[^1]: M. L. Lapidus and C. Pomerance, *The Riemann zeta-function and the one-dimensional
+Weyl–Berry conjecture for fractal drums*, Proc. London Math. Soc. (3) **66** (1993),
+41–69; K. J. Falconer, *On the Minkowski measurability of fractals*, Proc. Amer. Math.
+Soc. **123** (1995), 1115–1124.
+
+[^2]: D. Sornette, *Discrete scale invariance and complex dimensions*, Phys. Rep. **297**
+(1998), 239–270.
+
+[^3]: M. L. Lapidus and M. van Frankenhuijsen, *Fractal Geometry, Complex Dimensions and
+Zeta Functions: Geometry and Spectra of Fractal Strings*, Springer Monographs in
+Mathematics (2006; 2nd ed. 2013). The earlier *Fractal Geometry and Number Theory*
+(Birkhäuser, 2000) covers the one-dimensional case.
+
+[^4]: A level-$n$ Cantor interval has length exactly $3^{-n}$ and both endpoints on the
+mesh when $r = 3^{-n}$, so a naive `floor(a/r)`, `floor(b/r)` counts every interval twice
+and inflates $\Phi$ by $\log 2$ — a constant offset that leaves the slope untouched and
+the intercept wrong. The fix is to count boxes whose interior meets the set.

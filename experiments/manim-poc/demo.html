@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manim POC — embed flow demo (not part of the site)</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="../../index.html">← Back to Home</a>
+    </nav>
+
+    <main>
+        <header>
+            <h1>Manim proof of concept</h1>
+            <p class="note-meta">Experimental — not linked from site navigation, not a real note page.</p>
+        </header>
+
+        <section class="note-content">
+            <p>This page demonstrates the exact embed pattern a Manim-rendered figure would use inside
+            an existing notes page such as <code>notes/mathematical-analysis/convergence.html</code>:
+            a <code>&lt;figure class="note-figure"&gt;</code> with a <code>&lt;video&gt;</code> in place of
+            the usual <code>&lt;img&gt;</code>, reusing the site's existing CSS (border, max-width, caption
+            styling) unmodified.</p>
+
+            <figure class="note-figure">
+                <video src="media/IFSAttractor.mp4" poster="media/IFSAttractor_poster.png"
+                       controls muted playsinline loop style="width:100%;">
+                </video>
+                <figcaption><strong>Figure — An iterated function system converging to the Sierpiński gasket.</strong>
+                Three affine contractions $f_i(x) = \tfrac12(x+v_i)$, each toward a corner of the triangle,
+                are applied simultaneously and repeatedly. After $n=5$ iterations there are $3^5=243$
+                shrunken copies of the original triangle, and the union already visibly approximates the
+                attractor of the IFS — the unique compact set $A$ satisfying $A = f_1(A)\cup f_2(A)\cup f_3(A)$.
+                This is the deterministic counterpart of the "chaos game": a Markov chain that jumps toward a
+                uniformly random corner at each step converges in distribution to the same attractor,
+                which is the kind of stochastic-convergence statement a static plot can only show as an
+                end state, not as a process.</figcaption>
+            </figure>
+
+            <p>Rendered from <code>ifs_attractor.py</code> in this directory via
+            <code>manim -qm --format=mp4 ifs_attractor.py IFSAttractor</code> (720p30, ~549&nbsp;KB, ~4s
+            render with LaTeX/Tex caching warm). The poster frame
+            (<code>IFSAttractor_poster.png</code>, 129&nbsp;KB) was produced by the same script with
+            <code>manim -qh -s --format=png</code> and would serve as the static fallback / OpenGraph
+            image and as the non-JS/no-video-support degradation path.</p>
+        </section>
+    </main>
+</body>
+</html>

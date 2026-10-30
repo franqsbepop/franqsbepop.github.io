@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Box counting on the Cantor set</title>
+<style>
+  :root{
+    --bg:#0D1015; --paper:#E8E6E1; --dim:#6C7480; --faint:#242A33;
+    --scale:#58C4DD; --count:#F0A050; --dimen:#FC6255;
+    --serif:'Latin Modern Roman','CMU Serif','Charter','Palatino Linotype',Georgia,serif;
+    --mono:'IBM Plex Mono','SFMono-Regular',Menlo,ui-monospace,monospace;
+  }
+  html[data-theme="light"]{
+    --bg:#FBFAF7; --paper:#1B1F26; --dim:#7A828C; --faint:#E2E0DA;
+    --scale:#1B87A8; --count:#C1741A; --dimen:#CC4433;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--paper);font-family:var(--serif);
+       -webkit-font-smoothing:antialiased}
+  .wrap{max-width:940px;margin:0 auto;padding:22px 20px 26px}
+  .eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.22em;
+           text-transform:uppercase;color:var(--dim);margin:0 0 14px}
+  canvas{display:block;width:100%;height:auto}
+  .readout{display:flex;flex-wrap:wrap;gap:8px 34px;margin:14px 0 6px;
+           font-family:var(--mono);font-size:14px;color:var(--dim)}
+  .readout b{font-family:var(--mono);font-weight:500}
+  .v-scale{color:var(--scale)} .v-count{color:var(--count)} .v-dim{color:var(--dimen)}
+  .controls{display:flex;align-items:center;gap:16px;margin-top:16px}
+  input[type=range]{flex:1;appearance:none;height:2px;background:var(--faint);
+                    border-radius:2px;outline:none}
+  input[type=range]::-webkit-slider-thumb{appearance:none;width:16px;height:16px;
+    border-radius:50%;background:var(--scale);cursor:pointer;border:none}
+  input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;
+    background:var(--scale);cursor:pointer;border:none}
+  input[type=range]:focus-visible{box-shadow:0 0 0 3px color-mix(in srgb,var(--scale) 45%,transparent)}
+  button{font-family:var(--mono);font-size:12.5px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--paper);background:transparent;
+    border:1px solid var(--faint);border-radius:999px;padding:8px 18px;cursor:pointer}
+  button:hover{border-color:var(--scale);color:var(--scale)}
+  button:focus-visible{outline:2px solid var(--scale);outline-offset:2px}
+  .cap{font-size:15px;color:var(--dim);margin:18px 0 0;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="eyebrow">drag the resolution</p>
+
+  <canvas id="strip" width="1800" height="240" aria-label="The Cantor set covered by boxes of the chosen width"></canvas>
+
+  <div class="readout">
+    <span>r = <b class="v-scale" id="r">1</b></span>
+    <span>s = log(1/r) = <b class="v-scale" id="s">0.00</b></span>
+    <span>N(r) = <b class="v-count" id="n">1</b></span>
+    <span>&Phi; = log N = <b class="v-count" id="phi">0.00</b></span>
+    <span>&Phi;/s = <b class="v-dim" id="ratio">&mdash;</b></span>
+  </div>
+
+  <canvas id="plot" width="1800" height="900" aria-label="Log count plotted against logarithmic scale"></canvas>
+
+  <div class="controls">
+    <input id="sl" type="range" min="0" max="1" step="0.0005" value="0.12" aria-label="Resolution">
+    <button id="play">Sweep</button>
+  </div>
+
+  <p class="cap">The boxes above are the ones that meet the set. Each time the width shrinks by a
+  factor of 3, the number of survivors doubles &mdash; and the point below climbs one notch along a
+  line whose slope is log&nbsp;2 / log&nbsp;3.</p>
+</div>
+
+<script>
+(function(){
+  const q = new URLSearchParams(location.search);
+  if (q.get('theme') === 'light') document.documentElement.dataset.theme = 'light';
+  const css = k => getComputedStyle(document.documentElement).getPropertyValue(k).trim();
+
+  const D = Math.log(2)/Math.log(3);
+  const SMAX = 7.7;                       // s = log(1/r) ceiling
+  const DEPTH = 12;
+
+  // level-DEPTH approximation of the middle-thirds set
+  let iv = [[0,1]];
+  for (let k=0;k<DEPTH;k++){
+    const nx = new Array(iv.length*2);
+    for (let i=0;i<iv.length;i++){
+      const a=iv[i][0], b=iv[i][1], L=(b-a)/3;
+      nx[2*i]=[a,a+L]; nx[2*i+1]=[b-L,b];
+    }
+    iv = nx;
+  }
+  const A = Float64Array.from(iv, p=>p[0]);
+  const B = Float64Array.from(iv, p=>p[1]);
+
+  function cells(r){                       // occupied grid indices, sorted
+    const seen = new Set(), tol = 1e-9;
+    for (let i=0;i<A.length;i++){
+      const lo = Math.floor(A[i]/r + tol);
+      seen.add(lo);
+      seen.add(Math.max(Math.ceil(B[i]/r - tol) - 1, lo));
+    }
+    return Array.from(seen).sort((x,y)=>x-y);
+  }
+
+  // precomputed staircase for the backdrop
+  const curve = [];
+  for (let k=0;k<=340;k++){
+    const s = SMAX*k/340, r = Math.exp(-s);
+    curve.push([s, Math.log(cells(r).length)]);
+  }
+
+  const strip = document.getElementById('strip'), sctx = strip.getContext('2d');
+  const plot  = document.getElementById('plot'),  pctx = plot.getContext('2d');
+  const sl = document.getElementById('sl'), playBtn = document.getElementById('play');
+  const out = { r:document.getElementById('r'), s:document.getElementById('s'),
+                n:document.getElementById('n'), phi:document.getElementById('phi'),
+                ratio:document.getElementById('ratio') };
+
+  function fmtR(r){
+    if (r > 0.99) return '1';
+    const n = Math.log(1/r)/Math.log(3);
+    return '3^-' + n.toFixed(2);
+  }
+
+  function drawStrip(r, occ){
+    const W = strip.width, H = strip.height, m = 60;
+    const px = x => m + x*(W-2*m);
+    sctx.clearRect(0,0,W,H);
+    // occupied boxes
+    sctx.fillStyle = css('--count');
+    sctx.globalAlpha = 0.20;
+    const bw = Math.max((W-2*m)*r, 0.6);
+    for (const c of occ){
+      const x = px(c*r);
+      if (x > W) break;
+      sctx.fillRect(x, 46, bw, 150);
+    }
+    sctx.globalAlpha = 1;
+    // box edges, only while they are distinguishable
+    if (bw > 3){
+      sctx.strokeStyle = css('--count'); sctx.lineWidth = 1.4; sctx.globalAlpha = .75;
+      for (const c of occ){ const x = px(c*r); if (x>W) break;
+        sctx.strokeRect(x+.5, 46.5, bw-1, 149); }
+      sctx.globalAlpha = 1;
+    }
+    // the set itself
+    sctx.fillStyle = css('--paper');
+    for (let i=0;i<A.length;i++){
+      sctx.fillRect(px(A[i]), 112, Math.max((B[i]-A[i])*(W-2*m), 1.1), 18);
+    }
+  }
+
+  function drawPlot(s, phi){
+    const W = plot.width, H = plot.height;
+    const ox = 96, oy = H-96, u = (W-ox-150)/SMAX;   // equal units on both axes
+    pctx.clearRect(0,0,W,H);
+    const X = v => ox + v*u, Y = v => oy - v*u;
+
+    pctx.lineCap='round'; pctx.lineJoin='round';
+    // axes
+    pctx.strokeStyle = css('--dim'); pctx.lineWidth = 2; pctx.globalAlpha=.75;
+    pctx.beginPath(); pctx.moveTo(ox,oy); pctx.lineTo(W-40,oy);
+    pctx.moveTo(ox,oy); pctx.lineTo(ox,40); pctx.stroke(); pctx.globalAlpha=1;
+    pctx.font = '30px ' + css('--serif');
+    pctx.fillStyle = css('--scale'); pctx.textAlign='end';
+    pctx.fillText('s = log(1/r)', W-46, oy+52);
+    pctx.fillStyle = css('--count'); pctx.textAlign='start';
+    pctx.fillText('\u03A6 = log N', ox+14, 62);
+
+    // the pure power law
+    pctx.strokeStyle = css('--dimen'); pctx.lineWidth = 3; pctx.globalAlpha=.55;
+    pctx.beginPath(); pctx.moveTo(X(0),Y(0)); pctx.lineTo(X(SMAX),Y(SMAX*D)); pctx.stroke();
+    pctx.globalAlpha=1;
+
+    // the staircase so far
+    pctx.strokeStyle = css('--count'); pctx.lineWidth = 4;
+    pctx.beginPath();
+    let started=false;
+    for (const [cs,cp] of curve){
+      if (cs>s) break;
+      const x=X(cs), y=Y(cp);
+      started ? pctx.lineTo(x,y) : (pctx.moveTo(x,y), started=true);
+    }
+    pctx.stroke();
+
+    // the live point and its dropped guides
+    const x=X(s), y=Y(phi);
+    pctx.strokeStyle = css('--faint'); pctx.lineWidth = 2;
+    pctx.setLineDash([4,10]);
+    pctx.beginPath(); pctx.moveTo(x,oy); pctx.lineTo(x,y); pctx.lineTo(ox,y); pctx.stroke();
+    pctx.setLineDash([]);
+    pctx.fillStyle = css('--count');
+    pctx.beginPath(); pctx.arc(x,y,11,0,6.2832); pctx.fill();
+  }
+
+  let raf=null;
+  function render(){
+    const s = +sl.value * SMAX;
+    const r = Math.exp(-s);
+    const occ = cells(r);
+    const N = occ.length, phi = Math.log(N);
+    drawStrip(r, occ);
+    drawPlot(s, phi);
+    out.r.textContent = fmtR(r);
+    out.s.textContent = s.toFixed(2);
+    out.n.textContent = N;
+    out.phi.textContent = phi.toFixed(2);
+    out.ratio.textContent = s > 0.4 ? (phi/s).toFixed(4) : '\u2014';
+  }
+
+  sl.addEventListener('input', () => { stop(); render(); });
+
+  function stop(){ if(raf){ cancelAnimationFrame(raf); raf=null; playBtn.textContent='Sweep'; } }
+  playBtn.addEventListener('click', () => {
+    if (raf) { stop(); return; }
+    playBtn.textContent = 'Pause';
+    let v = +sl.value >= 0.995 ? 0 : +sl.value;
+    const step = () => {
+      v += 0.0022;
+      if (v >= 1) { sl.value = 1; render(); stop(); return; }
+      sl.value = v; render(); raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

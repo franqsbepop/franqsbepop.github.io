@@ -392,6 +392,8 @@ footer {
     border: 1px solid var(--box-border);
     border-left: 6px solid var(--box-accent);
     border-radius: 0;
+    overflow-x: auto;
+    max-width: 100%;
 }
 
 .note-content pre {
@@ -422,6 +424,8 @@ footer {
     width: 100%;
     margin: 20px 0;
     font-size: 15px;
+    display: block;
+    overflow-x: auto;
 }
 
 .note-content th,
@@ -444,6 +448,26 @@ footer {
     border-radius: 0;
     padding: 20px 24px;
     margin: 25px 0;
+    max-width: 100%;
+}
+
+.note-box mjx-container[display="true"],
+.proof mjx-container[display="true"],
+.note-content p > mjx-container[display="true"] {
+    overflow-x: auto;
+    overflow-y: hidden;
+    max-width: 100%;
+}
+
+/* MathJax's hidden screen-reader layer must never affect visible layout
+   or contribute to horizontal scroll width. */
+mjx-assistive-mml {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    overflow: hidden !important;
+    clip: rect(1px, 1px, 1px, 1px) !important;
+    white-space: nowrap !important;
 }
 
 .note-box > :first-child {
@@ -462,6 +486,7 @@ footer {
 
 .proof {
     margin: 18px 0 26px 0;
+    max-width: 100%;
 }
 
 .proof-label {
