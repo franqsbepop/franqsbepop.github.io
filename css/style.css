@@ -54,11 +54,39 @@ body {
     color: #333;
 }
 
+/* Post pages wrap the links in an h2; keep them the same size as the home page nav */
+.top-nav h2 {
+    font-size: inherit;
+    font-weight: normal;
+    margin: 0;
+    line-height: 1.7;
+}
+
+@media (max-width: 600px) {
+    .top-nav {
+        padding: 14px 10px;
+    }
+
+    .top-nav a {
+        margin: 0 6px;
+    }
+}
+
 /* Header */
 header {
     margin-bottom: 30px;
     border-bottom: 1px solid #e1e1e1;
     padding-bottom: 25px;
+}
+
+/* Pages whose header is only the nav: avoid a second rule and extra gap under it */
+header:not(:has(.header-inner)) {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+header > .container:empty {
+    display: none;
 }
 
 .header-inner {
@@ -252,6 +280,13 @@ footer {
     padding: 20px 0;
     color: #666;
     border-top: 1px solid #e1e1e1;
+}
+
+footer > p {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 0 20px;
+    color: #666;
 }
 
 .footer-content {
@@ -749,6 +784,112 @@ article p {
     margin-bottom: 15px;
 }
 
+/* Individual post pages */
+main > article > h2:first-child {
+    font-size: 32px;
+    font-weight: normal;
+    line-height: 1.25;
+    margin-bottom: 8px;
+    color: #2c2c2c;
+}
+
+.post-deck {
+    font-size: 18px;
+    font-style: italic;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+main > article > .post-tags {
+    margin: 0 0 32px 0;
+}
+
+main > article h3 {
+    font-size: 22px;
+    font-weight: normal;
+    color: #2c2c2c;
+    margin: 36px 0 14px 0;
+    line-height: 1.35;
+}
+
+main > article figure {
+    margin: 30px 0;
+}
+
+main > article figcaption {
+    font-size: 14px;
+    color: #666;
+    font-style: italic;
+    text-align: center;
+}
+
+blockquote {
+    margin: 32px 0;
+    padding: 4px 0 4px 22px;
+    border-left: 3px solid var(--box-accent);
+    font-size: 19px;
+    font-style: italic;
+    color: #3a3a3a;
+}
+
+blockquote p:last-child {
+    margin-bottom: 0;
+}
+
+/* Blog index */
+.blog-header {
+    margin-bottom: 24px;
+}
+
+/* Same heading treatment as the Talks page */
+.blog-header h1 {
+    font-size: 26px;
+    font-weight: normal;
+    color: #2c2c2c;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #d4d4d4;
+    padding-bottom: 10px;
+    font-family: "Georgia", "Times New Roman", serif;
+}
+
+.blog-byline {
+    font-style: italic;
+    color: #666;
+    font-size: 15px;
+}
+
+#blog-posts article {
+    margin-bottom: 20px;
+}
+
+#blog-posts article h2 {
+    font-size: 21px;
+    font-weight: normal;
+    line-height: 1.35;
+    margin-bottom: 6px;
+}
+
+#blog-posts article h2 a {
+    color: #2c2c2c;
+}
+
+#blog-posts article h2 a:hover {
+    color: #0066cc;
+}
+
+#blog-posts article h3 {
+    font-size: 16px;
+    font-style: italic;
+    color: #666;
+    margin: 0 0 6px 0;
+}
+
+#blog-posts .card-date {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 10px;
+}
+
 /* Back to Top Button */
 .back-to-top {
     position: fixed;
@@ -885,7 +1026,7 @@ article p {
 
 .related-posts-list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 15px;
     margin-top: 20px;
 }
@@ -1003,6 +1144,10 @@ article p {
     font-weight: normal;
 }
 
+.article-meta .reading-time {
+    margin-bottom: 0;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .post-navigation {
@@ -1028,7 +1173,8 @@ article p {
 
     .article-meta {
         flex-direction: column;
-        gap: 10px;
+        align-items: flex-start;
+        gap: 4px;
     }
 }
 

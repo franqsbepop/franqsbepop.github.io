@@ -76,7 +76,11 @@ const postOrder = [
     'post27.html',
     'post28.html',
     'post29.html',
-    'post30.html'
+    'post30.html',
+    'post37.html',
+    'post41.html',
+    'post40.html',
+    'post39.html'
 ];
 
 // Function to get current post index and adjacent posts
@@ -144,6 +148,10 @@ const postData = {
     'post28.html': { title: 'Cybernetics: The Science of Systems and Control', tags: ['philosophy', 'systems-theory', 'cybernetics', 'science'], date: 'March 18, 2025' },
     'post29.html': { title: 'Cylindrical Semi-martingale OT, Measure Contiguity, and Large Financial Markets', tags: ['mathematics', 'probability', 'finance', 'stochastic-processes'], date: 'April 26, 2025' },
     'post30.html': { title: 'How to Organize an Unforgettable Hackathon', tags: ['technology', 'community', 'innovation', 'events'], date: 'April 26, 2025' },
+    'post37.html': { title: 'Claudius Economicus', tags: ['ai', 'economics', 'management'], date: 'August 13, 2026' },
+    'post40.html': { title: 'Scale as a Coordinate', tags: ['mathematics', 'fractal-geometry'], date: 'August 14, 2026' },
+    'post41.html': { title: 'God, Church, Christ & the Bishop', tags: ['mathematics', 'philosophy', 'logic'], date: 'August 13, 2026' },
+    'post39.html': { title: 'Cyberlightenment', tags: ['philosophy', 'technology', 'ai', 'science'], date: 'October 31, 2026' },
     'postX.html': { title: 'Mathematical Modelling in Stochastic Analysis and Finance', tags: ['research', 'mathematics', 'finance'], date: 'November 13, 2024' }
 };
 
@@ -195,8 +203,20 @@ function displayRelatedPosts() {
     container.innerHTML = html;
 }
 
+// Drop an opening h3 that only repeats the post title
+function removeDuplicateTitle() {
+    const title = document.querySelector('main article > h2');
+    if (!title) return;
+
+    const firstSubheading = title.parentElement.querySelector('h3');
+    if (firstSubheading && firstSubheading.textContent.trim() === title.textContent.trim()) {
+        firstSubheading.remove();
+    }
+}
+
 // Initialize all utilities
 document.addEventListener('DOMContentLoaded', function() {
+    removeDuplicateTitle();
     calculateReadingTime();
     generateTableOfContents();
     displayRelatedPosts();

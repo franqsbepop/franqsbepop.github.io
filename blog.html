@@ -14,28 +14,19 @@
     <script src="js/analytics.js" defer></script>
 </head>
 <body>
-    <header>
-        <nav class="top-nav sticky-nav">
-            <h2>
-                <a href="index.html#biography">Biography</a> | 
-                <a href="index.html#research">Research</a> | 
-                <a href="index.html#publications">Publications</a> | 
-                <a href="teaching.html">Teaching</a> | 
-                <a href="talks.html">Talks</a> | 
-                <a href="blog.html">Blog</a> | 
-                <a href="index.html#contact">Contact</a>
-            </h2>
-        </nav>
-        <hr>
-    </header>
-    <main>
-        <div>
-            <h1>
-                <span>Beyond Equilibrium</span>
-            </h1>
-            <div style="font-size: 1em; color: #6c6c58; margin-bottom: 0.1em;">
-                by Diogo Franquinho
-            </div>
+    <nav class="top-nav sticky-nav" aria-label="Main navigation">
+        <a href="index.html#biography">Biography</a> |
+        <a href="index.html#research">Research</a> |
+        <a href="index.html#publications">Publications</a> |
+        <a href="teaching.html">Teaching</a> |
+        <a href="talks.html">Talks</a> |
+        <a href="blog.html">Blog</a> |
+        <a href="index.html#contact">Contact</a>
+    </nav>
+    <main id="main-content">
+        <div class="blog-header">
+            <h1>Beyond Equilibrium</h1>
+            <div class="blog-byline">by Diogo Franquinho</div>
         </div>
         <div class="blog-intro">
             <p>
@@ -57,6 +48,7 @@
                     <button class="tag-button" data-tag="education">Education</button>
                     <button class="tag-button" data-tag="philosophy">Philosophy</button>
                     <button class="tag-button" data-tag="machine-learning">Machine Learning</button>
+                    <button class="tag-button" data-tag="ai">AI</button>
                     <button class="tag-button" data-tag="economics">Economics</button>
                     <button class="tag-button" data-tag="history">History</button>
                     <button class="tag-button" data-tag="research">Research</button>
@@ -72,9 +64,58 @@
             <h2>Latest Blog Posts</h2>
             
             <!-- Most posts now link into the posts/ directory -->
+            <article data-tags="philosophy,technology,ai,science">
+                <h2><a href="posts/post39.html">Cyberlightenment</a></h2>
+                <h3>A future of deeper truths</h3>
+                <p class="card-date">Date: October 31, 2026</p>
+                <p>What if technology could do more than make us faster, richer, and more connected? What if it could help us understand reality itself? A vision of technology as an instrument of human enlightenment: amplifying human thought rather than replacing it, and measuring progress not by how much we automate, but by how much more of reality we come to understand.</p>
+                <div class="post-tags">
+                    <span class="post-tag">Philosophy</span>
+                    <span class="post-tag">Technology</span>
+                    <span class="post-tag">AI</span>
+                    <span class="post-tag">Science</span>
+                </div>
+            </article>
+
+            <article data-tags="mathematics,fractal-geometry">
+                <h2><a href="posts/post40.html">Scale as a Coordinate</a></h2>
+                <h3>What the Cantor set looks like from inside a logarithm</h3>
+                <p class="card-date">Date: August 14, 2026</p>
+                <p>Everyone learns that the middle-thirds Cantor set has dimension log 2 / log 3, and almost everyone moves on. This post treats logarithmic scale as a coordinate rather than a plotting convenience, turning self-similarity into visible geometry and following it to where the mathematics becomes genuinely deep: oscillations and complex dimensions.</p>
+                <div class="post-tags">
+                    <span class="post-tag">Mathematics</span>
+                    <span class="post-tag">Fractal Geometry</span>
+                </div>
+            </article>
+
+            <article data-tags="mathematics,philosophy,history,logic">
+                <h2><a href="posts/post41.html">God, Church, Christ &amp; the Bishop</a></h2>
+                <h3>A brief heretical history of the foundations of mathematics</h3>
+                <p class="card-date">Date: August 13, 2026</p>
+                <p>Conway's joke about four Princeton figures maps onto Gödel, Church, Kreisel and Bishop, and onto four ways of asking what mathematics is: truth, computation, proof and construction.</p>
+                <div class="post-tags">
+                    <span class="post-tag">Mathematics</span>
+                    <span class="post-tag">Philosophy</span>
+                    <span class="post-tag">Logic</span>
+                    <span class="post-tag">History</span>
+                </div>
+            </article>
+
+            <article data-tags="ai,economics,technology">
+                <h2><a href="posts/post37.html">Claudius Economicus</a></h2>
+                <h3>From Homo economicus to the artificial economic agent</h3>
+                <p class="card-date">Date: August 13, 2026</p>
+                <p>Anthropic gave Claude a vending machine. What kind of economic actor did it turn out to be? On predictive management, the gap between intelligence and rationality, and who manages the manager when agents act on their own forecasts.</p>
+                <div class="post-tags">
+                    <span class="post-tag">AI</span>
+                    <span class="post-tag">Economics</span>
+                    <span class="post-tag">Management</span>
+                </div>
+            </article>
+
             <article data-tags="research,mathematics,machine-learning">
                 <h2><a href="posts/post1.html">Learning via writing</a></h2>
-                <p>Date: August 13, 2024</p>
+                <p class="card-date">Date: August 13, 2024</p>
                 <p>Recently I had to write this proposal. I find curious the concept of a proposal. I am (theoretically) proposing myself to do something. Carefully simulating planned experiences in my head prior to their (possible) unfloding in reality. Proposal writing seems analagous to goal setting, to define a loss (objective) function. What will be minimized (maximized) during the period of the proposal?</p> 
                 <p>Setting goal is a strenuous task. Firstly, you do not know where to start, so many possible targets, so many possible paths. The idea of a proposal should be to make both clear. Hopefully, by writing one, you will be able to understand (quantify) your goals. Firstly, there is the need to properly define your goals, secondly, there is the need to carefully deliniate a possible path to achieve them. At this moment, it does not need to be the shortest-most-optimal path. Such optimization processes surely will be underwent at some point. Currently, we are drawing a simple map. Once our loss (objetive) function is defined, we can start the optimization task, usually via parameter updating. There is a set goal and a path to get there, how can you reach it in the most efficient manner?</p>
                 <p>At this stage, we start exploring our map in a virtual environment, in this case, our imagination. Concepts such as gradient descent and local minima are certainly useful to have in mind. Additionally, contrafactual thinking is a great tool we have at our disposal. What would happened if I perturbed my current path, i.e. shifted slighly my parameters. One can see the paths of alternative branches of the multiverse unfolding before ones' eyes. Nothing new, old techniques adapted to modern times. This is all I have for now, hope this helps, and hope you enjoy reading my proposal.</p>
@@ -87,7 +128,7 @@
             
             <article data-tags="finance,history,mathematics">
                 <h2><a href="posts/post2.html">The weak law of poorly abbreviated large history</a></h2>
-                <p>Date: August 26, 2024</p>
+                <p class="card-date">Date: August 26, 2024</p>
                 <p>In this post I do my best to synthesize the history of financial mathematics. The title references Stephen Hawking's iconic "A Brief History of Time". The (rather short) history takes us back to the end of the XIX Century and the beginning of the XX century. For attention grabbing purposes, notable names mentioned include Albert Einstein, Henri Poincaré, Louis Bachelier, Norbert Wiener, Vito Volterra, Paul Lévy, Benoit Mandelbrot, Fisher Black, Myron Scholes, Robert Merton, Emmanuel Derman, Paul Wilmott, Edward O. Thorp. I hope you enjoy reading this short account of the history of this field. The field presents itself as the product of the efforts of countless contributors to its development and dissemination.</p>
                 <div class="post-tags">
                     <span class="post-tag">Financial Mathematics</span>
@@ -98,7 +139,7 @@
 
             <article data-tags="education,economics,research">
                 <h2><a href="posts/post3.html">Reducing Bias in Education Evaluation</a></h2>
-                <p>Date: September 3, 2024, 2024</p>
+                <p class="card-date">Date: September 3, 2024</p>
                 <p>In this post, I explore how improved assessment methodologies can help reduce inequality and provide more accurate measures of student performance. The post discusses the merits of continuous assessment versus standardized testing, drawing on research from prominent economists and education researchers. Key topics include formative assessment practices, the challenges of different evaluation methods, and proposals for balanced approaches that combine multiple assessment types. The discussion aims to contribute to developing more equitable and effective evaluation systems in higher education.</p>
                 <div class="post-tags">
                     <span class="post-tag">Education</span>
@@ -109,7 +150,7 @@
             
             <article data-tags="education,technology">
                 <h2><a href="posts/post4.html">Computational Methods in Education</a></h2>
-                <p>Date: December 7, 2024</p>
+                <p class="card-date">Date: December 7, 2024</p>
                 <p>In this post, I explore the integration of computational tools and methods in the classroom.</p>
                 <div class="post-tags">
                     <span class="post-tag">Education</span>
@@ -120,7 +161,7 @@
             <article data-tags="philosophy,mathematics,finance">
                 <h2><a href="posts/post6.html">The Philosophy of Mathematics in Finance</a></h2>
                 <h3>Conceptual and Ethical Considerations</h3>
-                <p>Date: November 20, 2024</p>
+                <p class="card-date">Date: November 20, 2024</p>
                 <p>In recent years, there has been growing interest in the philosophical underpinnings of finance, particularly in how mathematical concepts shape our understanding of financial systems. This post explores how philosophical inquiry into mathematics can shed light on the nature of finance, its conceptual foundations, and its ethical implications.</p>
                 <div class="post-tags">
                     <span class="post-tag">Philosophy</span>
@@ -132,7 +173,7 @@
             <article data-tags="technology,neuroscience,ai">
                 <h2><a href="posts/post7.html">Brain-Computer Interfaces</a></h2>
                 <h3>The Future of Human-Machine Interaction</h3>
-                <p>Date: December 10, 2024</p>
+                <p class="card-date">Date: December 10, 2024</p>
                 <p>Brain-Computer Interface (BCIs) represent a groundbreaking technology that enables direct communication between the human brain and external devices. This emerging field has the potential to revolutionize various aspects of human life, from medical applications to enhancing everyday interactions with technology.</p>
                 <div class="post-tags">
                     <span class="post-tag">Technology</span>
@@ -143,7 +184,7 @@
 
             <article data-tags="philosophy,mathematics,ethics">
                 <h2><a href="posts/post8.html">Ethical Implications of Finance in Von Neumann Universes</a></h2>
-                <p>Date: November 27, 2024</p>
+                <p class="card-date">Date: November 27, 2024</p>
                 <p>Building upon our previous discussion of von Neumann's mathematical frameworks in finance, this post explores the ethical implications of applying these abstract mathematical structures to real-world financial systems. As financial markets become increasingly complex and automated, understanding the ethical dimensions of mathematical finance becomes crucial.</p>
                 <div class="post-tags">
                     <span class="post-tag">Philosophy</span>
@@ -154,7 +195,7 @@
 
             <article data-tags="mathematics,history">
                 <h2><a href="posts/post12.html">Leonard Euler Infinite-Dimensional Influence</a></h2>
-                <p>Date: December 1, 2024</p>
+                <p class="card-date">Date: December 1, 2024</p>
                 <p>Leonhard Euler was one of the most prolific mathematicians in history, whose contributions span virtually every area of mathematics known in his time. This post highlights Euler's groundbreaking work and lasting impact on mathematics, physics, and engineering.</p>
                 <div class="post-tags">
                     <span class="post-tag">Mathematics</span>
@@ -164,7 +205,7 @@
 
             <article data-tags="philosophy,machine-learning,mathematics">
                 <h2><a href="posts/post13.html">Mathematical Philosophy and Large Language Models: New Frontiers in Mathematical Reasoning</a></h2>
-                <p>Date: December 2, 2024</p>
+                <p class="card-date">Date: December 2, 2024</p>
                 <p>The emergence of Large Language Models (LLMs) has opened new avenues for exploring mathematical reasoning and philosophical questions about the nature of mathematical understanding. This post examines the implications of LLMs for mathematical philosophy and the future of mathematical reasoning.</p>
                 <div class="post-tags">
                     <span class="post-tag">Philosophy</span>
@@ -175,7 +216,7 @@
 
             <article data-tags="philosophy,mathematics,machine-learning">
                 <h2><a href="posts/post14.html">The Unreasonable Effectiveness of Mathematics: Karpathy vs Wigner</a></h2>
-                <p>Date: December 4, 2024</p>
+                <p class="card-date">Date: December 4, 2024</p>
                 <p>This post compares the perspectives of Eugene Wigner and Andrej Karpathy on the effectiveness of mathematics. Wigner's philosophical insights on the relationship between mathematics and physical reality are contrasted with Karpathy's observations on the capabilities of neural networks in capturing complex patterns.</p>
                 <div class="post-tags">
                     <span class="post-tag">Philosophy</span>
@@ -187,7 +228,7 @@
                         
             <article data-tags="economics,finance,mathematics">
                 <h2><a href="posts/post15.html">Econophysics: Bridging Economics and Physics</a></h2>
-                <p>Date: December 15, 2024</p>
+                <p class="card-date">Date: December 15, 2024</p>
                 <p>Econophysics is an interdisciplinary research field that applies theories and methods originally developed by physicists to solve problems in economics. This post delves into the history, key concepts, and significant contributions of econophysics, exploring how it bridges the gap between economics and physics.</p>
                 <div class="post-tags">
                     <span class="post-tag">Economics</span>
@@ -199,7 +240,7 @@
             <article data-tags="society,economics,history">
                 <h2><a href="posts/post18.html">Sticky Path Dependency</a></h2>
                 <h3>On progress, stagnation and hope for the future</h3>
-                <p>Date: January 22, 2025</p>
+                <p class="card-date">Date: January 22, 2025</p>
                 <p>Progress is often imagined as a linear ascent—an arrow from ignorance to enlightenment, from poverty to prosperity. Yet, as any careful observer of history or mathematics knows, the true trajectory is far more intricate, shaped by the recursive influence of prior choices. The concept of <strong>path dependence</strong> encapsulates this: past decisions, technologies, and institutions do not merely precede the present—they delimit its possibilities. When these inherited paths become "sticky," they resist even the most rational attempts at reform, and progress stalls.</p>
                 <div class="post-tags">
                     <span class="post-tag">Society</span>
@@ -210,7 +251,7 @@
 
             <article data-tags="society,economics,history">
                 <h2><a href="posts/post21.html">Never vote for a lawyer: An economic argument based on the historical evolution of society</a></h2>
-                <p>Date: November 13, 2024</p>
+                <p class="card-date">Date: November 13, 2024</p>
                 <p>Historical context with an emphasis in Portugal and Spain and their inefficiency caused by the Court System. Innovation as a driver of successful societies. GDP per capita as a measure of success. Darwinism of Institutions.</p>
                 <div class="post-tags">
                     <span class="post-tag">Society</span>
@@ -221,7 +262,7 @@
 
             <article data-tags="philosophy,mathematics,ai,logic">
                 <h2><a href="posts/post20.html">Self-Reference: The Foundation and the Limit of Intelligence</a></h2>
-                <p>Date: January 6, 2026</p>
+                <p class="card-date">Date: January 6, 2026</p>
                 <p>
                     Self-reference lies at the heart of intelligence. It allows systems—biological or artificial—to construct internal models of themselves, predict their own behavior, and learn from self-generated representations. Yet it also defines the ultimate boundary of formal reasoning: the point beyond which a system cannot consistently describe itself without paradox. From Gödel’s incompleteness to Turing’s halting problem and modern self-modeling AI, self-reference has emerged as both the mechanism of understanding and the source of undecidability. This article examines how reflexivity functions as the structural essence of intelligence, and why every attempt at self-understanding—whether logical, computational, or cognitive—confronts the same recursive horizon.
                 </p>
@@ -235,7 +276,7 @@
 
             <article data-tags="mathematics,information-theory,fractal-geometry">
                 <h2><a href="posts/post25.html">Kolmogorov Complexity and Fractal Geometry: Information as Dimension</a></h2>
-                <p>Date: October 26, 2025</p>
+                <p class="card-date">Date: October 26, 2025</p>
                 <p>This post explores the intersection of Kolmogorov complexity and fractal geometry, introducing the concept of algorithmic (effective) dimension. We discuss how the shortest description of an object (from algorithmic information theory) connects with how detail scales with resolution (fractal geometry), and how these perspectives unify in understanding the geometry of information.</p>
                 <div class="post-tags">
                     <span class="post-tag">Mathematics</span>
@@ -245,7 +286,7 @@
             </article>
             <article data-tags="mathematics,information-theory,statistics,machine-learning">
                 <h2><a href="posts/post26.html">On the Information Bottleneck Principle</a></h2>
-                <p>Date: November 15, 2025</p>
+                <p class="card-date">Date: November 15, 2025</p>
                 <p>The information bottleneck principle provides a framework for extracting relevant information from signals by balancing compression with predictive power. This post discusses its foundations in information theory, applications in statistics and deep learning, and how it guides the structure of efficient representations.</p>
                 <div class="post-tags">
                     <span class="post-tag">Mathematics</span>
@@ -256,7 +297,7 @@
             </article>
             <article data-tags="technology,community,innovation,events">
                 <h2><a href="posts/post30.html">How to Organize an Unforgettable Hackathon</a></h2>
-                <p>Date: November 20, 2025</p>
+                <p class="card-date">Date: November 20, 2025</p>
                 <p>A concise guide to planning hackathons: setting goals, themes, team roles, judging, and keeping participants energized while fostering collaboration and community.</p>
                 <div class="post-tags">
                     <span class="post-tag">Hackathon</span>
@@ -267,7 +308,7 @@
             </article>
             <article data-tags="mathematics,stochastic-processes,ot,probability">
                 <h2><a href="posts/post5.html">Optimal Transport Meets Martingales</a></h2>
-                <p>Date: December 5, 2025</p>
+                <p class="card-date">Date: December 5, 2025</p>
                 <p>This post explores the union of optimal transport and martingale theory. We examine how enforcing a martingale constraint in transport problems leads to rich mathematical structures, with significant applications to mathematical finance and model-independent option pricing.</p>
                 <div class="post-tags">
                     <span class="post-tag">Mathematics</span>
@@ -278,7 +319,7 @@
             </article>
             <article data-tags="mathematics,causality,stochastic-processes,random-fields">
                 <h2><a href="posts/post27.html">Ambit Causality: Continuous Markov Blankets in Space–Time</a></h2>
-                <p>Date: October 27, 2025</p>
+                <p class="card-date">Date: October 27, 2025</p>
                 <p>
                     How does causality work when randomness spreads continuously across space and time? This post introduces <strong>ambit causality</strong>: a geometric, field-based perspective on cause and effect. 
                     Instead of causal diagrams with nodes and arrows, we reason in terms of <em>regions</em> (supports) and the flow of influence in stochastic fields.
@@ -293,7 +334,7 @@
             </article>
             <article data-tags="philosophy,systems-theory,cybernetics,science">
                 <h2><a href="posts/post28.html">Cybernetics: The Science of Systems and Control</a></h2>
-                <p>Date: March 18, 2025</p>
+                <p class="card-date">Date: March 18, 2025</p>
                 <p>An introduction to cybernetics, the transdisciplinary study of systems, feedback, and regulation in biology, engineering, and society. This post covers its historical roots, key concepts, and enduring influence across scientific and philosophical thought.</p>
                 <div class="post-tags">
                     <span class="post-tag">Philosophy</span>
@@ -304,7 +345,7 @@
             </article>
             <article data-tags="mathematics,probability,finance,stochastic-processes">
                 <h2><a href="posts/post29.html">Cylindrical Semi-martingale OT, Measure Contiguity, and Large Financial Markets</a></h2>
-                <p>Date: January 14, 2026</p>
+                <p class="card-date">Date: January 14, 2026</p>
                 <p>We delve into optimal transport in infinite-dimensional settings (cylindrical semi-martingale OT) and the probabilistic notion of contiguity, exploring their roles and interactions in the context of large financial markets.</p>
                 <div class="post-tags">
                     <span class="post-tag">Optimal Transport</span>
@@ -316,7 +357,7 @@
             </article>
             <article data-tags="machine-learning,generative-models,deep-learning,ai">
                 <h2><a href="posts/post32.html">Generative Models: Foundations, Types, and Applications</a></h2>
-                <p>Date: November 13, 2024</p>
+                <p class="card-date">Date: November 13, 2024</p>
                 <p>
                     This post explores <strong>generative models</strong>: a rapidly evolving class of machine learning models that learn the structure of data so they can create realistic images, text, music, and more. It covers model families (VAEs, GANs, diffusion models, etc.), their applications (art, science, language, and beyond), and some philosophical and scientific challenges—such as training stability, ethics, and interpreting what these networks have learned.
                 </p>
@@ -329,7 +370,7 @@
             </article>
             <article data-tags="machine-learning,representation-learning,deep-learning,ai">
                 <h2><a href="posts/post33.html">Understanding Representation Learning: Foundations and Frontiers</a></h2>
-                <p>Date: November 13, 2024</p>
+                <p class="card-date">Date: November 13, 2024</p>
                 <p>Representation learning is at the core of modern machine learning. This post introduces its motivation, surveys classic and cutting-edge techniques—including embeddings, neural networks, and self-supervised methods—and discusses its transformative impact across domains from vision to language, as well as the challenges and frontiers for interpretable, fair, and robust representations.</p>
                 <div class="post-tags">
                     <span class="post-tag">Machine Learning</span>
@@ -374,7 +415,14 @@
     </main>
 
     <footer>
-        <p>&copy; Diogo Franquinho | <span style="font-weight:bold;">Beyond Equilibrium</span> Blog</p>
+        <div class="footer-content">
+            <p>&copy; Diogo Franquinho | Instituto Superior T&eacute;cnico | Korteweg-de Vries Institute for Mathematics</p>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="teaching.html">Teaching</a>
+                <a href="talks.html">Talks</a>
+            </div>
+        </div>
     </footer>
 
     <button class="back-to-top" id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</button>
