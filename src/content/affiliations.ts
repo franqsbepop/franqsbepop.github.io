@@ -32,9 +32,8 @@ export const institutions: Record<string, Institution> = {
     id: 'gfm',
     name: 'Grupo de Física Matemática',
     shortName: 'GFM',
-    // The group's site is only served over plain HTTP.
-    url: 'http://gfm.cii.fc.ul.pt/',
-    logo: { src: 'images/logos/gfm.png', width: 315, height: 69, displayHeight: 33 },
+    url: 'https://fisica-matematica.pt/en/',
+    logo: { src: 'images/logos/gfm.png', webp: 'images/logos/gfm.webp', width: 640, height: 126, displayHeight: 30 },
   },
   ulisboa: {
     id: 'ulisboa',
@@ -60,7 +59,7 @@ export const affiliationGroups: AffiliationGroup[] = [
     logos: ['ist', 'gfm', 'ulisboa'],
     units: [
       { name: 'Instituto Superior Técnico', url: 'https://tecnico.ulisboa.pt/en/', parent: 'Universidade de Lisboa' },
-      { name: 'Grupo de Física Matemática (GFM)', url: 'http://gfm.cii.fc.ul.pt/', parent: 'Universidade de Lisboa' },
+      { name: 'Grupo de Física Matemática (GFM)', url: 'https://fisica-matematica.pt/en/', parent: 'Instituto Superior Técnico, Universidade de Lisboa' },
     ],
   },
 ];

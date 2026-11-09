@@ -62,11 +62,11 @@ export const education: EducationEntry[] = [
       { name: 'University of Amsterdam', url: 'https://www.uva.nl/en' },
     ],
     units: [
-      { name: 'Grupo de Física Matemática (GFM)', url: 'http://gfm.cii.fc.ul.pt/' },
+      { name: 'Grupo de Física Matemática (GFM)', url: 'https://fisica-matematica.pt/en/' },
       { name: 'Korteweg-de Vries Institute for Mathematics (KdVI)', url: 'https://kdvi.uva.nl/' },
     ],
     supervisors: [
-      { name: 'Ana Bela Cruzeiro', url: 'http://gfm.cii.fc.ul.pt/people/abcruzeiro/' },
+      { name: 'Ana Bela Cruzeiro', url: 'https://fisica-matematica.pt/people/ana-bela-cruzeiro/' },
       { name: 'Drona Kandhai', url: 'https://www.uva.nl/profiel/k/a/b.d.kandhai/b.d.kandhai.html' },
     ],
     coSupervisors: [

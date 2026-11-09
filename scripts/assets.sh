@@ -91,8 +91,11 @@ PY
   curl -fsSL -A "$ua" "https://www.ulisboa.pt/themes/custom/ulisboa/logo.svg" -o "$tmp/ulisboa.svg"
   sed 's/fill: #fff;/fill: #000;/' "$tmp/ulisboa.svg" > "$out/ulisboa.svg"
 
-  # Grupo de Física Matemática — logo from gfm.cii.fc.ul.pt (only raster available)
-  curl -fsSL -A "$ua" "http://gfm.cii.fc.ul.pt/gfm-logo.png" -o "$out/gfm.png"
+  # Grupo de Física Matemática — header logo of fisica-matematica.pt (only a
+  # transparent PNG is published); trimmed to the mark and downsized.
+  curl -fsSL -A "$ua" "https://fisica-matematica.pt/wp-content/uploads/2023/12/gfm-logo-trans.png" -o "$tmp/gfm.png"
+  magick "$tmp/gfm.png" -strip -trim +repage -filter Lanczos -resize 640x "$out/gfm.png"
+  cwebp -quiet -q 90 -alpha_q 100 -metadata none "$out/gfm.png" -o "$out/gfm.webp"
 
   # Computational Science Lab — logo from uva.computationalscience.nl
   curl -fsSL -A "$ua" "https://uva.computationalscience.nl/main/logo_hu_31a210092e84b95f.png" -o "$tmp/csl.png"
