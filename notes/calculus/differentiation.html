@@ -4,9 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Differentiation - Technical Notes</title>
-    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/style.css?v=9c5fb67e39">
     <link rel="stylesheet" href="../../css/book-reviews.css">
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>
         window.MathJax = {
@@ -18,14 +17,31 @@
     </script>
     <script src="../../js/analytics-config.js"></script>
     <script src="../../js/analytics.js" defer></script>
+  <script src="../../js/math-overflow.js" defer></script>
 </head>
 <body>
-    <nav class="top-nav">
-        <a href="../../index.html">← Back to Home</a> |
-        <a href="../../index.html#notes">Notes</a>
+    <!-- site:header — managed by src/build.ts -->
+<header class="site-header">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="site-header__inner wrap">
+    <a class="brand" href="../../index.html" aria-label="Diogo Sousa Franquinho, home"><span class="brand__given">Diogo</span><span class="brand__initial" aria-hidden="true">D.</span> <span class="brand__middle">Sousa </span><span class="brand__family">Franquinho</span></a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../index.html">Home</a></li><li><a href="../../academic.html" aria-current="true">Academic</a></li><li><a href="../../blog.html">Blog</a></li>
+      </ul>
     </nav>
+  </div>
+  <div class="crumbs">
+    <nav class="wrap" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../../academic.html">Academic</a></li><li><a href="../../academic.html#notes">Notes</a></li><li><a href="../../academic.html#notes-calculus">Calculus</a></li>
+      </ol>
+    </nav>
+  </div>
+</header>
+<!-- /site:header -->
 
-    <main>
+    <main id="main">
         <header>
             <h1>Differentiation</h1>
             <p class="note-meta">Last updated: August 2026</p>
@@ -76,10 +92,10 @@
             <div class="proof">
                 <span class="proof-label">Proof.</span> For $x\neq a$, $f(x)-f(a)=\frac{f(x)-f(a)}{x-a}\cdot(x-a)$. As $x\to a$, the first factor $\to f'(a)$ (a finite number, by hypothesis) and the second factor $\to0$, so by the product rule for limits $f(x)-f(a)\to f'(a)\cdot0=0$, i.e. $f(x)\to f(a)$. <span class="qed">∎</span>
             </div>
-            <p>The <a href="continuity.html">continuity note</a>'s pitfall section already recorded the converse's failure at the level of a single corner ($f(x)=|x|$, continuous but not differentiable at $0$). The next example is sharper: differentiability at <em>every</em> point does not force the derivative itself to be continuous — differentiability is strictly weaker than being continuously differentiable ($C^1$).</p>
+            <p>The <a href="../mathematical-analysis/continuity.html">continuity note</a>'s pitfall section already recorded the converse's failure at the level of a single corner ($f(x)=|x|$, continuous but not differentiable at $0$). The next example is sharper: differentiability at <em>every</em> point does not force the derivative itself to be continuous — differentiability is strictly weaker than being continuously differentiable ($C^1$).</p>
             <div class="note-box">
                 <span class="note-box-label">Example — differentiable everywhere, $f'$ discontinuous at a point</span>
-                <p>Let $g(x)=x^2\sin(1/x)$ for $x\neq0$, $g(0)=0$. At $0$: $\frac{g(h)-g(0)}{h}=h\sin(1/h)$, and $|h\sin(1/h)|\leq|h|\to0$, so $g'(0)=0$ exists by the squeeze theorem. Away from $0$, the product and chain rules give $g'(x)=2x\sin(1/x)-\cos(1/x)$. But $\lim_{x\to0}g'(x)$ does not exist: the $2x\sin(1/x)$ term $\to0$ (squeeze, as above), while $\cos(1/x)$ oscillates between $-1$ and $1$ without settling as $x\to0$ (take $x_n=1/(2n\pi)\to0$, giving $\cos(1/x_n)=1$, versus $x_n'=1/((2n+1)\pi)\to0$, giving $\cos(1/x_n')=-1$ — the same sequential argument used for essential discontinuities in the <a href="continuity.html">continuity note</a>, Section 4). So $g$ is differentiable everywhere, yet $g'$ is discontinuous at $0$.</p>
+                <p>Let $g(x)=x^2\sin(1/x)$ for $x\neq0$, $g(0)=0$. At $0$: $\frac{g(h)-g(0)}{h}=h\sin(1/h)$, and $|h\sin(1/h)|\leq|h|\to0$, so $g'(0)=0$ exists by the squeeze theorem. Away from $0$, the product and chain rules give $g'(x)=2x\sin(1/x)-\cos(1/x)$. But $\lim_{x\to0}g'(x)$ does not exist: the $2x\sin(1/x)$ term $\to0$ (squeeze, as above), while $\cos(1/x)$ oscillates between $-1$ and $1$ without settling as $x\to0$ (take $x_n=1/(2n\pi)\to0$, giving $\cos(1/x_n)=1$, versus $x_n'=1/((2n+1)\pi)\to0$, giving $\cos(1/x_n')=-1$ — the same sequential argument used for essential discontinuities in the <a href="../mathematical-analysis/continuity.html">continuity note</a>, Section 4). So $g$ is differentiable everywhere, yet $g'$ is discontinuous at $0$.</p>
             </div>
 
             <h2 id="rules">3. Linearity, the product rule, the quotient rule</h2>
@@ -110,7 +126,7 @@
                 <p>The tempting one-line argument writes $\dfrac{f(g(a+h))-f(g(a))}{h}=\dfrac{f(g(a+h))-f(g(a))}{g(a+h)-g(a)}\cdot\dfrac{g(a+h)-g(a)}{h}$ and lets $h\to0$, reading off $f'(g(a))\cdot g'(a)$. This is not a valid proof: the first factor is undefined whenever $g(a+h)=g(a)$, and if $g$ oscillates around the value $g(a)$ infinitely often as $h\to0$ (which a differentiable $g$ can do — e.g. $g(x)=x^2\sin(1/x)$ from Section 2, near many points where it revisits a given value), the factor is undefined for a sequence of $h\to0$, and the "proof" never gets off the ground.</p>
             </div>
             <div class="proof">
-                <span class="proof-label">Proof.</span> Define $\varphi(y)=\dfrac{f(y)-f(g(a))}{y-g(a)}$ for $y\neq g(a)$, and $\varphi(g(a))=f'(g(a))$. Since $f$ is differentiable at $g(a)$, $\varphi(y)\to f'(g(a))=\varphi(g(a))$ as $y\to g(a)$ — i.e. $\varphi$ is continuous at $g(a)$. By construction, $f(y)-f(g(a))=\varphi(y)\,(y-g(a))$ holds for <em>every</em> $y$, including $y=g(a)$ (both sides are $0$), sidestepping the division-by-zero problem above entirely. Substituting $y=g(x)$: $f(g(x))-f(g(a))=\varphi(g(x))\,(g(x)-g(a))$, so for $x\neq a$: $\dfrac{f(g(x))-f(g(a))}{x-a}=\varphi(g(x))\cdot\dfrac{g(x)-g(a)}{x-a}$. As $x\to a$: $g(x)\to g(a)$ (Section 2, continuity of $g$ at $a$), so $\varphi(g(x))\to\varphi(g(a))=f'(g(a))$ by continuity of $\varphi$ just established (sequential characterization, <a href="continuity.html">continuity note</a> Section 2, applied to $\varphi\circ g$); and $\frac{g(x)-g(a)}{x-a}\to g'(a)$ by hypothesis. The product tends to $f'(g(a))\cdot g'(a)$. <span class="qed">∎</span>
+                <span class="proof-label">Proof.</span> Define $\varphi(y)=\dfrac{f(y)-f(g(a))}{y-g(a)}$ for $y\neq g(a)$, and $\varphi(g(a))=f'(g(a))$. Since $f$ is differentiable at $g(a)$, $\varphi(y)\to f'(g(a))=\varphi(g(a))$ as $y\to g(a)$ — i.e. $\varphi$ is continuous at $g(a)$. By construction, $f(y)-f(g(a))=\varphi(y)\,(y-g(a))$ holds for <em>every</em> $y$, including $y=g(a)$ (both sides are $0$), sidestepping the division-by-zero problem above entirely. Substituting $y=g(x)$: $f(g(x))-f(g(a))=\varphi(g(x))\,(g(x)-g(a))$, so for $x\neq a$: $\dfrac{f(g(x))-f(g(a))}{x-a}=\varphi(g(x))\cdot\dfrac{g(x)-g(a)}{x-a}$. As $x\to a$: $g(x)\to g(a)$ (Section 2, continuity of $g$ at $a$), so $\varphi(g(x))\to\varphi(g(a))=f'(g(a))$ by continuity of $\varphi$ just established (sequential characterization, <a href="../mathematical-analysis/continuity.html">continuity note</a> Section 2, applied to $\varphi\circ g$); and $\frac{g(x)-g(a)}{x-a}\to g'(a)$ by hypothesis. The product tends to $f'(g(a))\cdot g'(a)$. <span class="qed">∎</span>
             </div>
             <p>This is the standard Carathéodory device: replacing the difference quotient by a function $\varphi$ that is manifestly defined at the troublesome point, with differentiability of $f$ repackaged as continuity of $\varphi$. It costs one extra definition and buys a proof with no case split on whether $g(x)=g(a)$.</p>
 
@@ -135,7 +151,7 @@
                 <p>If $f$ is continuous on $[a,b]$, differentiable on $(a,b)$, and $f(a)=f(b)$, then $f'(c)=0$ for some $c\in(a,b)$.</p>
             </div>
             <div class="proof">
-                <span class="proof-label">Proof.</span> If $f$ is constant on $[a,b]$, $f'\equiv0$ there and any $c$ works. Otherwise, by the Extreme Value Theorem (<a href="continuity.html">continuity note</a>, Section 6), $f$ attains a maximum $M$ and minimum $m$ on $[a,b]$, and $M&gt;m$ since $f$ is nonconstant. Since $f(a)=f(b)$, at least one of $M,m$ is <em>not</em> equal to $f(a)$ (otherwise $M=f(a)=f(b)=m$, forcing $M=m$, a contradiction) — so at least one of the max or min is attained at some $c\in(a,b)$, strictly interior. By Fermat's theorem (Section 6), applicable since $f$ is differentiable at $c\in(a,b)$, $f'(c)=0$. <span class="qed">∎</span>
+                <span class="proof-label">Proof.</span> If $f$ is constant on $[a,b]$, $f'\equiv0$ there and any $c$ works. Otherwise, by the Extreme Value Theorem (<a href="../mathematical-analysis/continuity.html">continuity note</a>, Section 6), $f$ attains a maximum $M$ and minimum $m$ on $[a,b]$, and $M&gt;m$ since $f$ is nonconstant. Since $f(a)=f(b)$, at least one of $M,m$ is <em>not</em> equal to $f(a)$ (otherwise $M=f(a)=f(b)=m$, forcing $M=m$, a contradiction) — so at least one of the max or min is attained at some $c\in(a,b)$, strictly interior. By Fermat's theorem (Section 6), applicable since $f$ is differentiable at $c\in(a,b)$, $f'(c)=0$. <span class="qed">∎</span>
             </div>
             <div class="note-box">
                 <span class="note-box-label">Theorem (Mean Value Theorem)</span>
@@ -171,7 +187,7 @@
             <div class="proof">
                 <span class="proof-label">Proof.</span> For $x\neq a$ near $a$, apply the Cauchy MVT to $f,g$ on the interval between $a$ and $x$: since $f(a)=g(a)=0$, $\dfrac{f(x)}{g(x)}=\dfrac{f(x)-f(a)}{g(x)-g(a)}=\dfrac{f'(c_x)}{g'(c_x)}$ for some $c_x$ strictly between $a$ and $x$. As $x\to a$, $c_x\to a$ too (squeezed between $a$ and $x$), so $\dfrac{f'(c_x)}{g'(c_x)}\to L$ by hypothesis (composing the assumed limit with $c_x\to a$), hence $\dfrac{f(x)}{g(x)}\to L$. <span class="qed">∎</span>
             </div>
-            <p>This is exactly the theorem the <a href="continuity.html">continuity note</a> (Section 8) deferred here, having warned there that the rule applies only under a genuine $\frac00$ or $\frac{\infty}{\infty}$ hypothesis — visible in the proof above at the step $\frac{f(x)}{g(x)}=\frac{f(x)-f(a)}{g(x)-g(a)}$, which uses $f(a)=g(a)=0$ essentially. The $\infty/\infty$ case is proved by a different (Stolz–Cesàro-flavored) argument and is not reproduced here.</p>
+            <p>This is exactly the theorem the <a href="../mathematical-analysis/continuity.html">continuity note</a> (Section 8) deferred here, having warned there that the rule applies only under a genuine $\frac00$ or $\frac{\infty}{\infty}$ hypothesis — visible in the proof above at the step $\frac{f(x)}{g(x)}=\frac{f(x)-f(a)}{g(x)-g(a)}$, which uses $f(a)=g(a)=0$ essentially. The $\infty/\infty$ case is proved by a different (Stolz–Cesàro-flavored) argument and is not reproduced here.</p>
 
             <h2 id="taylor">9. Taylor's theorem with Lagrange remainder</h2>
             <div class="note-box">
@@ -198,7 +214,7 @@
 
             <h2 id="computation">11. Computation</h2>
             <p>The figures above are generated by <code>differentiation/generate_figures.py</code>. The snippet below reproduces the finite-difference convergence data (forward $O(h)$, central $O(h^2)$, then roundoff) and the Lagrange remainder check numerically.</p>
-            <pre><code>import numpy as np, math
+            <pre tabindex="0"><code>import numpy as np, math
 
 f = np.sin
 a = 1.0
@@ -225,7 +241,7 @@ for n in [2, 4, 6, 8, 10, 12]:
     print(f"n={n:2d}  actual={actual:.6e}   Lagrange bound={bound:.6e}   bound holds: {actual &lt;= bound}")
 </code></pre>
             <p>Actual output:</p>
-            <pre><code>Finite-difference convergence to f'(1) = cos(1):
+            <pre tabindex="0"><code>Finite-difference convergence to f'(1) = cos(1):
 h=   1e-01  forward err=4.294e-02   central err=9.001e-04
 h=   1e-03  forward err=4.208e-04   central err=9.005e-08
 h=   1e-05  forward err=4.207e-06   central err=1.114e-11
@@ -263,7 +279,7 @@ n=12  actual=1.848449e-07   Lagrange bound=1.315557e-06   bound holds: True</cod
 
             <h2 id="connections">13. Connections</h2>
             <ul>
-                <li><strong><a href="continuity.html">Continuity and limits</a>.</strong> Differentiability implies continuity (Section 2) but not conversely; the Extreme Value Theorem from that note is exactly what powers the proof of Rolle's theorem (Section 7) here, and this note in turn supplies the Cauchy-MVT proof of L'Hôpital's rule (Section 8) that the continuity note explicitly deferred.</li>
+                <li><strong><a href="../mathematical-analysis/continuity.html">Continuity and limits</a>.</strong> Differentiability implies continuity (Section 2) but not conversely; the Extreme Value Theorem from that note is exactly what powers the proof of Rolle's theorem (Section 7) here, and this note in turn supplies the Cauchy-MVT proof of L'Hôpital's rule (Section 8) that the continuity note explicitly deferred.</li>
                 <li><strong><a href="../mathematical-analysis/sequences-series.html">Sequences and series</a>.</strong> The Lagrange remainder formula proved in Section 9 is the tool that note's treatment of radius of convergence relies on when discussing Taylor series specifically (as opposed to power series in general); the $e^{-1/x^2}$ pitfall there is the standard illustration of why "convergent" and "convergent to $f$" must be kept separate.</li>
                 <li><strong><a href="multivariable-calculus.html">Multivariable calculus</a>.</strong> Implicit differentiation (Section 10) is made rigorous by the multivariable chain rule and the Implicit Function Theorem there; the second-derivative test for a critical point of a two-variable function is the direct generalization of Fermat's theorem (Section 6) plus a sign condition on the Hessian, the same Hessian that appears via its eigenvalues in the <a href="../linear-algebra/eigenvalues.html">eigenvalues note</a>'s discussion of that test.</li>
                 <li><strong><a href="../machine-learning/optimization.html">Optimization</a> (machine learning).</strong> Fermat's theorem (Section 6) is the reason gradient-based optimization searches for points where the derivative (gradient) vanishes; the monotonicity theorem (Section 8) is the one-dimensional case of the descent lemma that note's Section 3 proves in full generality, the engine behind the gradient descent convergence guarantees in its Sections 4–5.</li>
@@ -279,8 +295,32 @@ n=12  actual=1.848449e-07   Lagrange bound=1.315557e-06   bound holds: True</cod
         </section>
     </main>
 
-    <footer>
-        <p>&copy; Diogo Franquinho | Technical Notes</p>
-    </footer>
+    <!-- site:footer — managed by src/build.ts -->
+<footer class="site-footer">
+  <div class="wrap site-footer__grid">
+    <div class="site-footer__id">
+      <p class="site-footer__name">Diogo Sousa Franquinho</p>
+      <p>Joint PhD Candidate in Mathematics<br>Universidade de Lisboa · University of Amsterdam</p>
+    </div>
+    <nav class="site-footer__col" aria-label="Footer">
+      <p class="footer-label">Site</p>
+      <ul>
+        <li><a href="../../index.html">Home</a></li><li><a href="../../academic.html">Academic</a></li><li><a href="../../blog.html">Blog</a></li>
+        <li><a href="../../book_reviews/list.html">Reading list</a></li>
+      </ul>
+    </nav>
+    <div class="site-footer__col">
+      <p class="footer-label">Elsewhere</p>
+      <ul>
+        <li><a href="https://scholar.google.com/citations?user=SZKugA4AAAAJ&amp;hl=en" target="_blank" rel="noopener noreferrer">Google Scholar<span class="visually-hidden"> (opens in a new tab)</span></a></li><li><a href="https://orcid.org/0009-0005-7258-5903" target="_blank" rel="noopener noreferrer">ORCID<span class="visually-hidden"> (opens in a new tab)</span></a></li><li><a href="https://www.linkedin.com/in/diogofranquinho" target="_blank" rel="noopener noreferrer">LinkedIn<span class="visually-hidden"> (opens in a new tab)</span></a></li><li><a href="https://github.com/franqsbepop" target="_blank" rel="noopener noreferrer">GitHub<span class="visually-hidden"> (opens in a new tab)</span></a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap site-footer__base">
+    <p>© Diogo Sousa Franquinho</p>
+    <p><a href="mailto:d.sousafranquinho@uva.nl">d.sousafranquinho@uva.nl</a></p>
+  </div>
+</footer>
+<!-- /site:footer -->
 </body>
 </html>

@@ -4,9 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Time Series Analysis - Technical Notes</title>
-    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/style.css?v=9c5fb67e39">
     <link rel="stylesheet" href="../../css/book-reviews.css">
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>
         window.MathJax = {
@@ -18,14 +17,31 @@
     </script>
     <script src="../../js/analytics-config.js"></script>
     <script src="../../js/analytics.js" defer></script>
+  <script src="../../js/math-overflow.js" defer></script>
 </head>
 <body>
-    <nav class="top-nav">
-        <a href="../../index.html">← Back to Home</a> |
-        <a href="../../index.html#notes">Notes</a>
+    <!-- site:header — managed by src/build.ts -->
+<header class="site-header">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="site-header__inner wrap">
+    <a class="brand" href="../../index.html" aria-label="Diogo Sousa Franquinho, home"><span class="brand__given">Diogo</span><span class="brand__initial" aria-hidden="true">D.</span> <span class="brand__middle">Sousa </span><span class="brand__family">Franquinho</span></a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../index.html">Home</a></li><li><a href="../../academic.html" aria-current="true">Academic</a></li><li><a href="../../blog.html">Blog</a></li>
+      </ul>
     </nav>
+  </div>
+  <div class="crumbs">
+    <nav class="wrap" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../../academic.html">Academic</a></li><li><a href="../../academic.html#notes">Notes</a></li><li><a href="../../academic.html#notes-econometrics">Econometrics</a></li>
+      </ol>
+    </nav>
+  </div>
+</header>
+<!-- /site:header -->
 
-    <main>
+    <main id="main">
         <header>
             <h1>Time Series Analysis</h1>
             <p class="note-meta">Last updated: August 2026</p>
@@ -342,7 +358,7 @@
             <h2 id="computation">13. Computation: simulation and estimation</h2>
             <p>The figures above were produced by a self-contained script, <code>time-series-analysis/generate_figures.py</code>, in the same directory as this note — it can be re-run directly (<code>python3 generate_figures.py</code>, requiring numpy, matplotlib, scipy, and statsmodels) to regenerate every figure from scratch, and is the appropriate place to look for the exact simulation parameters behind each one.</p>
             <p>The snippet below is a smaller, standalone illustration of the estimation step referenced throughout Section 5: simulate an AR(1) with a known $\phi$, then recover $\phi$ two ways — via the Yule–Walker equation $\hat\phi = \hat\rho(1)$ (the $p=1$ case of Section 5's linear system), and via ordinary least squares regression of $X_t$ on $X_{t-1}$, which coincide for AR(1) up to a $T/(T-1)$ finite-sample factor in the denominator sums.</p>
-            <pre><code>import numpy as np
+            <pre tabindex="0"><code>import numpy as np
 from statsmodels.tsa.stattools import acf
 
 rng = np.random.default_rng(7)
@@ -369,7 +385,7 @@ print(f"OLS estimate:         phi_hat = {phi_ols:.4f}")
 print(f"Residual variance estimate: sigma^2_hat = {sigma2_hat:.4f} (true = {sigma2_true})")
 </code></pre>
             <p>Actual output from running this script:</p>
-            <pre><code>True phi = 0.65
+            <pre tabindex="0"><code>True phi = 0.65
 Yule-Walker estimate: phi_hat = 0.6246
 OLS estimate:         phi_hat = 0.6568
 Residual variance estimate: sigma^2_hat = 0.8819 (true = 1.0)</code></pre>
@@ -427,8 +443,32 @@ Residual variance estimate: sigma^2_hat = 0.8819 (true = 1.0)</code></pre>
         </section>
     </main>
 
-    <footer>
-        <p>&copy; Diogo Franquinho | Technical Notes</p>
-    </footer>
+    <!-- site:footer — managed by src/build.ts -->
+<footer class="site-footer">
+  <div class="wrap site-footer__grid">
+    <div class="site-footer__id">
+      <p class="site-footer__name">Diogo Sousa Franquinho</p>
+      <p>Joint PhD Candidate in Mathematics<br>Universidade de Lisboa · University of Amsterdam</p>
+    </div>
+    <nav class="site-footer__col" aria-label="Footer">
+      <p class="footer-label">Site</p>
+      <ul>
+        <li><a href="../../index.html">Home</a></li><li><a href="../../academic.html">Academic</a></li><li><a href="../../blog.html">Blog</a></li>
+        <li><a href="../../book_reviews/list.html">Reading list</a></li>
+      </ul>
+    </nav>
+    <div class="site-footer__col">
+      <p class="footer-label">Elsewhere</p>
+      <ul>
+        <li><a href="https://scholar.google.com/citations?user=SZKugA4AAAAJ&amp;hl=en" target="_blank" rel="noopener noreferrer">Google Scholar<span class="visually-hidden"> (opens in a new tab)</span></a></li><li><a href="https://orcid.org/0009-0005-7258-5903" target="_blank" rel="noopener noreferrer">ORCID<span class="visually-hidden"> (opens in a new tab)</span></a></li><li><a href="https://www.linkedin.com/in/diogofranquinho" target="_blank" rel="noopener noreferrer">LinkedIn<span class="visually-hidden"> (opens in a new tab)</span></a></li><li><a href="https://github.com/franqsbepop" target="_blank" rel="noopener noreferrer">GitHub<span class="visually-hidden"> (opens in a new tab)</span></a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap site-footer__base">
+    <p>© Diogo Sousa Franquinho</p>
+    <p><a href="mailto:d.sousafranquinho@uva.nl">d.sousafranquinho@uva.nl</a></p>
+  </div>
+</footer>
+<!-- /site:footer -->
 </body>
 </html>

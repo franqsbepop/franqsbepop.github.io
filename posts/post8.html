@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Diogo Franquinho - Blog Post 8">
     <title>Ethical Implications of Finance in Von Neumann Universes</title>
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/style.css?v=9c5fb67e39">
     <script src="../js/post-utilities.js" defer></script>
     <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
@@ -15,24 +15,30 @@
     <script src="../js/analytics.js" defer></script>
 </head>
 <body>
-    <header>
-        <nav class="top-nav sticky-nav">
-            <h2>
-                <a href="../index.html#biography">Biography</a> | 
-                <a href="../index.html#research">Research</a> | 
-                <a href="../index.html#publications">Publications</a> | 
-                <a href="../teaching.html">Teaching</a> | 
-                <a href="../talks.html">Talks</a> | 
-                <a href="../blog.html">Blog</a> | 
-                <a href="../index.html#contact">Contact</a>
-            </h2>
-        </nav>
-        <div class="container"></div>
-    </header>
+    <!-- site:header — managed by src/build.ts -->
+<header class="site-header">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="site-header__inner wrap">
+    <a class="brand" href="../index.html" aria-label="Diogo Sousa Franquinho, home"><span class="brand__given">Diogo</span><span class="brand__initial" aria-hidden="true">D.</span> <span class="brand__middle">Sousa </span><span class="brand__family">Franquinho</span></a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../index.html">Home</a></li><li><a href="../academic.html">Academic</a></li><li><a href="../blog.html" aria-current="true">Blog</a></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="crumbs">
+    <nav class="wrap" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../blog.html">Blog</a></li><li><a href="../blog.html#posts">Beyond Equilibrium</a></li>
+      </ol>
+    </nav>
+  </div>
+</header>
+<!-- /site:header -->
 
-    <main>
+    <main id="main">
         <article>
-            <h2>Ethical Implications of Finance in Von Neumann Universes</h2>
+            <h1>Ethical Implications of Finance in Von Neumann Universes</h1>
             <div class="article-meta">
                 <span class="post-date">Date: November 27, 2024</span>
                 <span class="reading-time" id="reading-time">Calculating reading time...</span>
@@ -76,8 +82,32 @@
     </main>
     <button class="back-to-top" id="backToTop">↑</button>
 
-    <footer>
-        <p>&copy; Diogo Franquinho | Blog</p>
-    </footer>
+    <!-- site:footer — managed by src/build.ts -->
+<footer class="site-footer">
+  <div class="wrap site-footer__grid">
+    <div class="site-footer__id">
+      <p class="site-footer__name">Diogo Sousa Franquinho</p>
+      <p>Joint PhD Candidate in Mathematics<br>Universidade de Lisboa · University of Amsterdam</p>
+    </div>
+    <nav class="site-footer__col" aria-label="Footer">
+      <p class="footer-label">Site</p>
+      <ul>
+        <li><a href="../index.html">Home</a></li><li><a href="../academic.html">Academic</a></li><li><a href="../blog.html">Blog</a></li>
+        <li><a href="../book_reviews/list.html">Reading list</a></li>
+      </ul>
+    </nav>
+    <div class="site-footer__col">
+      <p class="footer-label">Elsewhere</p>
+      <ul>
+        <li><a href="https://scholar.google.com/citations?user=SZKugA4AAAAJ&amp;hl=en" target="_blank" rel="noopener noreferrer">Google Scholar<span class="visually-hidden"> (opens in a new tab)</span></a></li><li><a href="https://orcid.org/0009-0005-7258-5903" target="_blank" rel="noopener noreferrer">ORCID<span class="visually-hidden"> (opens in a new tab)</span></a></li><li><a href="https://www.linkedin.com/in/diogofranquinho" target="_blank" rel="noopener noreferrer">LinkedIn<span class="visually-hidden"> (opens in a new tab)</span></a></li><li><a href="https://github.com/franqsbepop" target="_blank" rel="noopener noreferrer">GitHub<span class="visually-hidden"> (opens in a new tab)</span></a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap site-footer__base">
+    <p>© Diogo Sousa Franquinho</p>
+    <p><a href="mailto:d.sousafranquinho@uva.nl">d.sousafranquinho@uva.nl</a></p>
+  </div>
+</footer>
+<!-- /site:footer -->
 </body>
 </html>

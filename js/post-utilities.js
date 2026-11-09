@@ -205,7 +205,7 @@ function displayRelatedPosts() {
 
 // Drop an opening h3 that only repeats the post title
 function removeDuplicateTitle() {
-    const title = document.querySelector('main article > h2');
+    const title = document.querySelector('main article > h1, main article > h2');
     if (!title) return;
 
     const firstSubheading = title.parentElement.querySelector('h3');
@@ -263,7 +263,7 @@ function ensureSocialMetaTags() {
     const title = document.title || '';
     const description = descriptionMeta.content || '';
     const url = window.location.href;
-    const fallbackImage = '/images/icon.png';
+    const fallbackImage = '/images/og/default.jpg';
     const existingImage = document.querySelector('meta[property="og:image"]')?.content || fallbackImage;
 
     function upsertMeta(attrName, attrValue, content) {

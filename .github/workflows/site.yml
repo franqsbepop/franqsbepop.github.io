@@ -1,0 +1,27 @@
+# Verifies the site on every push and pull request. Deployment itself is
+# unchanged: GitHub Pages publishes the `main` branch as before.
+name: Site checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run build
+      - name: Generated files are up to date (run `npm run build` and commit if this fails)
+        run: git diff --exit-code
+      - run: npm run check

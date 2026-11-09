@@ -80,6 +80,8 @@
             page_type = 'books';
         } else if (/\/notes\//.test(path)) {
             page_type = 'notes';
+        } else if (/\/academic\.html$/.test(path)) {
+            page_type = 'academic';
         } else if (/\/teaching\.html$/.test(path)) {
             page_type = 'teaching';
         } else if (/\/talks\.html$/.test(path)) {

@@ -4,9 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cryptography - Technical Notes</title>
-    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/style.css?v=9c5fb67e39">
     <link rel="stylesheet" href="../../css/book-reviews.css">
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>
         window.MathJax = {
@@ -18,14 +17,31 @@
     </script>
     <script src="../../js/analytics-config.js"></script>
     <script src="../../js/analytics.js" defer></script>
+  <script src="../../js/math-overflow.js" defer></script>
 </head>
 <body>
-    <nav class="top-nav">
-        <a href="../../index.html">← Back to Home</a> | 
-        <a href="../../index.html#notes">Notes</a>
+    <!-- site:header — managed by src/build.ts -->
+<header class="site-header">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="site-header__inner wrap">
+    <a class="brand" href="../../index.html" aria-label="Diogo Sousa Franquinho, home"><span class="brand__given">Diogo</span><span class="brand__initial" aria-hidden="true">D.</span> <span class="brand__middle">Sousa </span><span class="brand__family">Franquinho</span></a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../index.html">Home</a></li><li><a href="../../academic.html" aria-current="true">Academic</a></li><li><a href="../../blog.html">Blog</a></li>
+      </ul>
     </nav>
+  </div>
+  <div class="crumbs">
+    <nav class="wrap" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../../academic.html">Academic</a></li><li><a href="../../academic.html#notes">Notes</a></li><li><a href="../../academic.html#notes-number-theory">Number Theory</a></li>
+      </ol>
+    </nav>
+  </div>
+</header>
+<!-- /site:header -->
 
-    <main>
+    <main id="main">
         <header>
             <h1>Cryptography</h1>
             <p class="note-meta">Last updated: December 2024</p>
@@ -172,7 +188,7 @@
             <p>Quantum computers threaten current public key systems. Post-quantum cryptography develops quantum-resistant algorithms.</p>
 
             <h2>13. Code Example</h2>
-            <pre><code># Python code for basic cryptographic operations
+            <pre tabindex="0"><code># Python code for basic cryptographic operations
 import random
 import math
 
@@ -292,8 +308,32 @@ print(f"Decrypted: {decrypted_message}")
         </section>
     </main>
 
-    <footer>
-        <p>&copy; Diogo Franquinho | Technical Notes</p>
-    </footer>
+    <!-- site:footer — managed by src/build.ts -->
+<footer class="site-footer">
+  <div class="wrap site-footer__grid">
+    <div class="site-footer__id">
+      <p class="site-footer__name">Diogo Sousa Franquinho</p>
+      <p>Joint PhD Candidate in Mathematics<br>Universidade de Lisboa · University of Amsterdam</p>
+    </div>
+    <nav class="site-footer__col" aria-label="Footer">
+      <p class="footer-label">Site</p>
+      <ul>
+        <li><a href="../../index.html">Home</a></li><li><a href="../../academic.html">Academic</a></li><li><a href="../../blog.html">Blog</a></li>
+        <li><a href="../../book_reviews/list.html">Reading list</a></li>
+      </ul>
+    </nav>
+    <div class="site-footer__col">
+      <p class="footer-label">Elsewhere</p>
+      <ul>
+        <li><a href="https://scholar.google.com/citations?user=SZKugA4AAAAJ&amp;hl=en" target="_blank" rel="noopener noreferrer">Google Scholar<span class="visually-hidden"> (opens in a new tab)</span></a></li><li><a href="https://orcid.org/0009-0005-7258-5903" target="_blank" rel="noopener noreferrer">ORCID<span class="visually-hidden"> (opens in a new tab)</span></a></li><li><a href="https://www.linkedin.com/in/diogofranquinho" target="_blank" rel="noopener noreferrer">LinkedIn<span class="visually-hidden"> (opens in a new tab)</span></a></li><li><a href="https://github.com/franqsbepop" target="_blank" rel="noopener noreferrer">GitHub<span class="visually-hidden"> (opens in a new tab)</span></a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap site-footer__base">
+    <p>© Diogo Sousa Franquinho</p>
+    <p><a href="mailto:d.sousafranquinho@uva.nl">d.sousafranquinho@uva.nl</a></p>
+  </div>
+</footer>
+<!-- /site:footer -->
 </body>
 </html> 

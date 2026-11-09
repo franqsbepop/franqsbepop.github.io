@@ -1,0 +1,21 @@
+{
+  "name": "diogofranquinho.com",
+  "private": true,
+  "description": "Personal academic website of Diogo Sousa Franquinho — static HTML generated from typed content files.",
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "build": "node src/build.ts",
+    "check": "node src/check.ts",
+    "check:external": "node src/check.ts --external",
+    "typecheck": "tsc --noEmit",
+    "test": "npm run typecheck && npm run build && npm run check",
+    "serve": "python3 -m http.server 8000"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.5",
+    "typescript": "5.9.3"
+  }
+}

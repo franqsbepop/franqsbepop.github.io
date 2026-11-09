@@ -4,9 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Multivariable Calculus - Technical Notes</title>
-    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/style.css?v=9c5fb67e39">
     <link rel="stylesheet" href="../../css/book-reviews.css">
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>
         window.MathJax = {
@@ -18,14 +17,31 @@
     </script>
     <script src="../../js/analytics-config.js"></script>
     <script src="../../js/analytics.js" defer></script>
+  <script src="../../js/math-overflow.js" defer></script>
 </head>
 <body>
-    <nav class="top-nav">
-        <a href="../../index.html">← Back to Home</a> |
-        <a href="../../index.html#notes">Notes</a>
+    <!-- site:header — managed by src/build.ts -->
+<header class="site-header">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="site-header__inner wrap">
+    <a class="brand" href="../../index.html" aria-label="Diogo Sousa Franquinho, home"><span class="brand__given">Diogo</span><span class="brand__initial" aria-hidden="true">D.</span> <span class="brand__middle">Sousa </span><span class="brand__family">Franquinho</span></a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../index.html">Home</a></li><li><a href="../../academic.html" aria-current="true">Academic</a></li><li><a href="../../blog.html">Blog</a></li>
+      </ul>
     </nav>
+  </div>
+  <div class="crumbs">
+    <nav class="wrap" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../../academic.html">Academic</a></li><li><a href="../../academic.html#notes">Notes</a></li><li><a href="../../academic.html#notes-calculus">Calculus</a></li>
+      </ol>
+    </nav>
+  </div>
+</header>
+<!-- /site:header -->
 
-    <main>
+    <main id="main">
         <header>
             <h1>Multivariable Calculus</h1>
             <p class="note-meta">Last updated: August 2026</p>
@@ -142,7 +158,7 @@
                 <p>Let $(a,b)$ be a critical point with $f\in C^2$ near it, and $D=f_{xx}(a,b)f_{yy}(a,b)-f_{xy}(a,b)^2$ (the determinant of the Hessian at $(a,b)$). Then: $D&gt;0,\,f_{xx}(a,b)&gt;0\Rightarrow$ local min; $D&gt;0,\,f_{xx}(a,b)&lt;0\Rightarrow$ local max; $D&lt;0\Rightarrow$ saddle point; $D=0\Rightarrow$ inconclusive.</p>
             </div>
             <div class="proof">
-                <span class="proof-label">Proof (sketch).</span> Since $\nabla f(a,b)=\mathbf0$, Taylor's theorem (Section 6) gives $f(a+h,b+k)-f(a,b)=Q(h,k)+o(h^2+k^2)$ where $Q(h,k)=\frac12(h,k)H(a,b)(h,k)^T=\frac12\big(f_{xx}h^2+2f_{xy}hk+f_{yy}k^2\big)$. Completing the square (assuming $f_{xx}\neq0$): $2f_{xx}Q(h,k)=(f_{xx}h+f_{xy}k)^2+Dk^2$. If $D&gt;0$ and $f_{xx}&gt;0$, the right side is $\geq0$ and $=0$ only at $(h,k)=(0,0)$, so $Q(h,k)&gt;0$ for all $(h,k)\neq\mathbf 0$; by the Extreme Value Theorem (<a href="continuity.html">continuity note</a>, Section 6), $Q$ restricted to the unit circle attains a positive minimum $m$, and homogeneity gives $Q(h,k)\geq m(h^2+k^2)$ everywhere — enough to absorb the $o(h^2+k^2)$ remainder for $(h,k)$ small, giving $f(a+h,b+k)&gt;f(a,b)$ nearby: a local min. $D&gt;0,f_{xx}&lt;0$ is the same argument with signs flipped throughout (local max). If $D&lt;0$: taking $k=0$ gives $2f_{xx}Q=f_{xx}^2h^2$, sign of $f_{xx}$; taking $h=-f_{xy}k/f_{xx}$ gives $2f_{xx}Q=Dk^2$, sign opposite $f_{xx}$ (since $D&lt;0$) — so $Q$ takes both signs arbitrarily close to $(a,b)$, a saddle. <span class="qed">∎</span>
+                <span class="proof-label">Proof (sketch).</span> Since $\nabla f(a,b)=\mathbf0$, Taylor's theorem (Section 6) gives $f(a+h,b+k)-f(a,b)=Q(h,k)+o(h^2+k^2)$ where $Q(h,k)=\frac12(h,k)H(a,b)(h,k)^T=\frac12\big(f_{xx}h^2+2f_{xy}hk+f_{yy}k^2\big)$. Completing the square (assuming $f_{xx}\neq0$): $2f_{xx}Q(h,k)=(f_{xx}h+f_{xy}k)^2+Dk^2$. If $D&gt;0$ and $f_{xx}&gt;0$, the right side is $\geq0$ and $=0$ only at $(h,k)=(0,0)$, so $Q(h,k)&gt;0$ for all $(h,k)\neq\mathbf 0$; by the Extreme Value Theorem (<a href="../mathematical-analysis/continuity.html">continuity note</a>, Section 6), $Q$ restricted to the unit circle attains a positive minimum $m$, and homogeneity gives $Q(h,k)\geq m(h^2+k^2)$ everywhere — enough to absorb the $o(h^2+k^2)$ remainder for $(h,k)$ small, giving $f(a+h,b+k)&gt;f(a,b)$ nearby: a local min. $D&gt;0,f_{xx}&lt;0$ is the same argument with signs flipped throughout (local max). If $D&lt;0$: taking $k=0$ gives $2f_{xx}Q=f_{xx}^2h^2$, sign of $f_{xx}$; taking $h=-f_{xy}k/f_{xx}$ gives $2f_{xx}Q=Dk^2$, sign opposite $f_{xx}$ (since $D&lt;0$) — so $Q$ takes both signs arbitrarily close to $(a,b)$, a saddle. <span class="qed">∎</span>
             </div>
 
             <h3>7.2 Classification via Hessian eigenvalues</h3>
@@ -159,7 +175,7 @@
                 <p>Let $F$ be $C^1$ near $(a,b)$ with $F(a,b)=0$ and $F_y(a,b)\neq0$. Then there is an interval $I$ around $a$ and a unique differentiable $g:I\to\mathbb R$ with $g(a)=b$ and $F(x,g(x))=0$ for all $x\in I$, satisfying $g'(x)=-\dfrac{F_x(x,g(x))}{F_y(x,g(x))}$.</p>
             </div>
             <div class="proof">
-                <span class="proof-label">Proof (sketch).</span> Assume $F_y(a,b)&gt;0$ (else replace $F$ by $-F$). By continuity of $F_y$, there is a rectangle $[a-\delta,a+\delta]\times[b-\eta,b+\eta]$ on which $F_y&gt;0$. For each fixed $x$ in this range, the monotonicity theorem (<a href="differentiation.html">differentiation note</a>, Section 8) applied to $y\mapsto F(x,y)$ (differentiable with positive derivative $F_y(x,\cdot)$ throughout $[b-\eta,b+\eta]$) shows this slice is strictly increasing in $y$. At $x=a$: $F(a,b-\eta)&lt;F(a,b)=0&lt;F(a,b+\eta)$; by continuity of $F$ in $x$, shrinking $\delta$ if necessary keeps $F(x,b-\eta)&lt;0&lt;F(x,b+\eta)$ for every $x\in[a-\delta,a+\delta]$. The Intermediate Value Theorem (<a href="continuity.html">continuity note</a>, Section 5) then gives, for each such $x$, a $y=g(x)\in(b-\eta,b+\eta)$ with $F(x,g(x))=0$ — unique by the strict monotonicity just established. A similar squeeze argument (shrinking $\eta$ as $x$ varies) gives continuity of $g$; once $g$ is known to be continuous, the derivative formula follows from the same computation as the informal implicit differentiation in Section 3, now legitimate because $g$ is known to exist. <span class="qed">∎</span>
+                <span class="proof-label">Proof (sketch).</span> Assume $F_y(a,b)&gt;0$ (else replace $F$ by $-F$). By continuity of $F_y$, there is a rectangle $[a-\delta,a+\delta]\times[b-\eta,b+\eta]$ on which $F_y&gt;0$. For each fixed $x$ in this range, the monotonicity theorem (<a href="differentiation.html">differentiation note</a>, Section 8) applied to $y\mapsto F(x,y)$ (differentiable with positive derivative $F_y(x,\cdot)$ throughout $[b-\eta,b+\eta]$) shows this slice is strictly increasing in $y$. At $x=a$: $F(a,b-\eta)&lt;F(a,b)=0&lt;F(a,b+\eta)$; by continuity of $F$ in $x$, shrinking $\delta$ if necessary keeps $F(x,b-\eta)&lt;0&lt;F(x,b+\eta)$ for every $x\in[a-\delta,a+\delta]$. The Intermediate Value Theorem (<a href="../mathematical-analysis/continuity.html">continuity note</a>, Section 5) then gives, for each such $x$, a $y=g(x)\in(b-\eta,b+\eta)$ with $F(x,g(x))=0$ — unique by the strict monotonicity just established. A similar squeeze argument (shrinking $\eta$ as $x$ varies) gives continuity of $g$; once $g$ is known to be continuous, the derivative formula follows from the same computation as the informal implicit differentiation in Section 3, now legitimate because $g$ is known to exist. <span class="qed">∎</span>
             </div>
             <p>$F_y(a,b)\neq0$ is not a technicality: it is exactly the condition ruling out a <em>vertical</em> tangent to the curve $F=0$ at $(a,b)$ (where no function $y=g(x)$ could locally describe the curve at all, e.g. the circle $x^2+y^2=1$ at $(1,0)$, where $F_y=2y=0$ — precisely where the earlier informal formula $y'=-F_x/F_y$ from Section 3 blows up).</p>
 
@@ -191,7 +207,7 @@
 
             <h2 id="computation">11. Computation</h2>
             <p>The figures above are generated by <code>multivariable-calculus/generate_figures.py</code>. The snippet below verifies Clairaut's theorem numerically (finite-difference mixed partials computed in both orders) and checks the second-derivative test's predictions against a direct perturbation scan around each critical point.</p>
-            <pre><code>import numpy as np
+            <pre tabindex="0"><code>import numpy as np
 
 def f(x, y):
     return np.sin(x) * y**2 + x**2 * np.cos(y)
@@ -218,7 +234,7 @@ for name, (fn, fxx, fyy, fxy_) in cases.items():
     print(f"f={name:16s} D={D:5.1f} f_xx={fxx:3d}  scan-confirmed={actual}")
 </code></pre>
             <p>Actual output:</p>
-            <pre><code>f_xy(0.7,-0.3) = -0.04517702
+            <pre tabindex="0"><code>f_xy(0.7,-0.3) = -0.04517702
 f_yx(0.7,-0.3) = -0.04517702
 
 f=x^2+xy+y^2       D=  3.0 f_xx=  2  scan-confirmed=local min
@@ -241,13 +257,13 @@ f=x^2-y^2          D= -4.0 f_xx=  2  scan-confirmed=saddle</code></pre>
             </div>
             <div class="note-box">
                 <span class="note-box-label">Pitfall — a Lagrange point is a critical point of the constrained problem, not automatically an extremum</span>
-                <p>Solving $\nabla f=\lambda\nabla g$ finds candidates the same way $f'=0$ finds one-variable candidates (<a href="differentiation.html">differentiation note</a>, Section 6) — necessary, not sufficient. Distinguishing an actual constrained max from a min or saddle-along-the-constraint needs a second-order argument or, often more simply in practice, comparing $f$'s values across all the candidate points directly (legitimate when the constraint set is compact, by the Extreme Value Theorem, <a href="continuity.html">continuity note</a> Section 6).</p>
+                <p>Solving $\nabla f=\lambda\nabla g$ finds candidates the same way $f'=0$ finds one-variable candidates (<a href="differentiation.html">differentiation note</a>, Section 6) — necessary, not sufficient. Distinguishing an actual constrained max from a min or saddle-along-the-constraint needs a second-order argument or, often more simply in practice, comparing $f$'s values across all the candidate points directly (legitimate when the constraint set is compact, by the Extreme Value Theorem, <a href="../mathematical-analysis/continuity.html">continuity note</a> Section 6).</p>
             </div>
 
             <h2 id="connections">13. Connections</h2>
             <ul>
                 <li><strong><a href="differentiation.html">Differentiation</a>.</strong> Nearly every proof here reduces to that note's one-variable machinery along a line or a slice: Fermat's theorem and the Mean Value Theorem power Sections 2, 5, 7, and 8; Taylor's theorem with Lagrange remainder is the engine of Section 6's proof; the chain rule (Section 3) is the direct two-variable generalization of that note's Section 4.</li>
-                <li><strong><a href="continuity.html">Continuity and limits</a>.</strong> The Intermediate Value Theorem and Extreme Value Theorem are used, respectively, in the Implicit Function Theorem's existence argument (Section 8) and the second-derivative test's closing compactness step (Section 7.1).</li>
+                <li><strong><a href="../mathematical-analysis/continuity.html">Continuity and limits</a>.</strong> The Intermediate Value Theorem and Extreme Value Theorem are used, respectively, in the Implicit Function Theorem's existence argument (Section 8) and the second-derivative test's closing compactness step (Section 7.1).</li>
                 <li><strong><a href="../linear-algebra/eigenvalues.html">Eigenvalues</a>.</strong> Section 7.2 classifies a critical point by the sign of $D=\det H$, exactly the sign of the product of the Hessian's (necessarily real, by the spectral theorem) eigenvalues — the Rayleigh-quotient machinery of that note's Section 8 is what makes "positive-definite Hessian" a precise, checkable condition rather than a slogan.</li>
                 <li><strong><a href="integration.html">Integration</a>.</strong> Section 10's Fubini and change-of-variables theorems are direct higher-dimensional generalizations of that note's iterated-computation and substitution results; Green's theorem is the planar Fundamental Theorem of Calculus, a boundary integral standing in for evaluating an antiderivative at two endpoints.</li>
                 <li><strong><a href="../machine-learning/optimization.html">Optimization</a> (machine learning).</strong> Section 4's steepest-ascent property of the gradient is the entire justification for gradient descent moving along $-\nabla f$, proved convergent for convex, smooth objectives in that note's Section 4; Section 7's second-derivative test, generalized to $n$ dimensions via the same Hessian-eigenvalue logic, is exactly the tool that note's Section 10 uses to tell a saddle from a genuine minimum.</li>
@@ -263,8 +279,32 @@ f=x^2-y^2          D= -4.0 f_xx=  2  scan-confirmed=saddle</code></pre>
         </section>
     </main>
 
-    <footer>
-        <p>&copy; Diogo Franquinho | Technical Notes</p>
-    </footer>
+    <!-- site:footer — managed by src/build.ts -->
+<footer class="site-footer">
+  <div class="wrap site-footer__grid">
+    <div class="site-footer__id">
+      <p class="site-footer__name">Diogo Sousa Franquinho</p>
+      <p>Joint PhD Candidate in Mathematics<br>Universidade de Lisboa · University of Amsterdam</p>
+    </div>
+    <nav class="site-footer__col" aria-label="Footer">
+      <p class="footer-label">Site</p>
+      <ul>
+        <li><a href="../../index.html">Home</a></li><li><a href="../../academic.html">Academic</a></li><li><a href="../../blog.html">Blog</a></li>
+        <li><a href="../../book_reviews/list.html">Reading list</a></li>
+      </ul>
+    </nav>
+    <div class="site-footer__col">
+      <p class="footer-label">Elsewhere</p>
+      <ul>
+        <li><a href="https://scholar.google.com/citations?user=SZKugA4AAAAJ&amp;hl=en" target="_blank" rel="noopener noreferrer">Google Scholar<span class="visually-hidden"> (opens in a new tab)</span></a></li><li><a href="https://orcid.org/0009-0005-7258-5903" target="_blank" rel="noopener noreferrer">ORCID<span class="visually-hidden"> (opens in a new tab)</span></a></li><li><a href="https://www.linkedin.com/in/diogofranquinho" target="_blank" rel="noopener noreferrer">LinkedIn<span class="visually-hidden"> (opens in a new tab)</span></a></li><li><a href="https://github.com/franqsbepop" target="_blank" rel="noopener noreferrer">GitHub<span class="visually-hidden"> (opens in a new tab)</span></a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap site-footer__base">
+    <p>© Diogo Sousa Franquinho</p>
+    <p><a href="mailto:d.sousafranquinho@uva.nl">d.sousafranquinho@uva.nl</a></p>
+  </div>
+</footer>
+<!-- /site:footer -->
 </body>
 </html>

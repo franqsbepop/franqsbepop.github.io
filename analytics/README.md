@@ -51,7 +51,7 @@ the Worker/Observatory — see `js/analytics.js` directly.
 | `external_link_click` | Any other external link click, not already classified above | `destination_domain`, `page_type` |
 
 `page_type` is one of: `home`, `blog`, `post`, `books`, `book_review`,
-`notes`, `teaching`, `talks`, `other` — inferred from the URL path, never
+`notes`, `academic`, `teaching`, `talks`, `other` — inferred from the URL path, never
 hard-coded per page.
 
 ## Umami configuration

@@ -1,73 +1,64 @@
+/* Reading list (book_reviews/list.html). Covers are rendered by the page's
+   own script from goodreads_library_export.csv and covers/manifest.json.
+   Builds on the tokens defined in style.css. */
+
 .book-list {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 9.5rem), 1fr));
+  gap: 2.25rem 1.5rem;
+  margin-top: 2.5rem;
+  padding: 0;
 }
 
 .book-review {
-    background: var(--box-background);
-    border: 1px solid var(--box-border);
-    border-left: 6px solid var(--box-accent);
-    border-radius: 0;
-    padding: 24px 28px;
-    margin-bottom: 24px;
-    box-shadow: none;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 14px;
-    text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: 0;
+  text-align: left;
 }
 
-/* Cover slot: 2:3 book proportions, empty when no cover was found */
+/* Cover slot: 2:3 book proportions, a quiet placeholder when no cover was found */
 .book-cover {
-    width: 180px;
-    max-width: 100%;
-    aspect-ratio: 2 / 3;
-    background: var(--box-hover-background);
-    border: 1px dashed var(--box-border);
+  order: -1;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  margin-bottom: 0.5rem;
+  overflow: hidden;
+  background: var(--paper-3);
+  border-radius: 2px;
+  box-shadow: 0 1px 1px rgba(15, 28, 46, 0.08), 0 6px 14px -8px rgba(15, 28, 46, 0.35);
 }
 
 .book-cover img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    margin: 0; /* override the global img margin in style.css */
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  margin: 0;
+  border-radius: 0;
 }
 
-.book-cover:has(img) {
-    border: none;
+main:not(.site-main) .book-review h2 {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: 0;
 }
 
-.book-review:hover {
-    background-color: var(--box-hover-background);
-    border-color: var(--box-hover-border);
-    border-left-color: var(--box-accent);
+main:not(.site-main) .book-review p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.8125rem;
+  line-height: 1.4;
 }
 
-.book-review h2 {
-    color: #333;
-    margin: 0;
-}
-
-.book-review p {
-    color: #666;
-    margin: 0;
-}
-
-.book-meta {
-    font-size: 0.9em;
-    color: #888;
-}
-
-.book-rating {
-    color: #f39c12;
-    font-weight: bold;
-}
-
-.book-review-text {
-    margin-top: 15px;
-    font-style: italic;
-} 
+.book-meta { font-size: 0.8125rem; color: var(--muted); }
+.book-rating { color: var(--accent); font-weight: 600; }
+.book-review-text { margin-top: 0.75rem; font-style: italic; }
