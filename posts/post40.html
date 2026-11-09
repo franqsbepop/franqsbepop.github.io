@@ -272,50 +272,65 @@
 
       <hr>
 
-      <h3>What is actually new here</h3>
+      <h3>Arriving somewhere already inhabited</h3>
 
-      <p>Nothing in §§1–4. That is the definition of box dimension, drawn carefully. It is a good
-      way to <em>teach</em> the definition, and I would happily use these pictures in a lecture, but
-      it is a reframing, not a result.</p>
+      <p>I should confess how this post ends, because it is not how I expected it to end.</p>
 
-      <p>Sections 5–8 are also known, and known thoroughly. Discrete scale invariance and
-      log-periodic corrections to scaling are a well-developed subject in statistical physics,
-      where they show up in rupture, earthquakes, diffusion-limited aggregation and financial
-      time series; Sornette's review is the standard entry point.<sup>[2]</sup> The mathematics — fractal
-      strings, geometric zeta functions, complex dimensions, tube formulas — is the theory of
-      complex dimensions developed by Lapidus and van Frankenhuijsen, and it is a mature
-      theory with monographs, not a gap in the literature.<sup>[3]</sup></p>
+      <p>Drawing the Cantor set in scale coordinates feels like a discovery. The hierarchy of
+      intervals settles into a lattice, the dimension turns into an angle, and it is tempting to
+      believe you have stumbled onto a new way of seeing. So I did what one should always do
+      with that feeling: I went looking for who had been here before me.</p>
 
-      <p>So the honest summary is this: <strong>"geometry of scale" is not an open frontier in one
-      dimension — it is largely a name for something that already exists and is called the
-      theory of complex dimensions.</strong> Anyone proposing to build a framework here should read
-      that literature first and expect to find their idea in it.</p>
+      <p>The first four sections, it turns out, are simply the definition of box dimension, drawn
+      with care. That is not nothing. I would happily put these pictures in front of a lecture
+      hall, because they make the definition <em>visible</em>. But a clearer picture of a known idea
+      is a way of teaching, not a result.</p>
 
-      <p>What I think remains genuinely open is narrower and less glamorous:</p>
-      <ul>
-        <li><strong>Non-self-similar objects.</strong> The theory is at its sharpest for self-similar and
-          self-conformal sets. For an object like §7 — or a measured object with a drifting local
-          slope and no exact symmetry at all — $d(s)$ and $f(s)$ are descriptive statistics rather
-          than the shadow of a pole structure. What is the right invariant?</li>
-        <li><strong>The scale coordinate as a coordinate.</strong> Everything above treats $s$ as an axis to plot
-          against. Treating it as a coordinate with its own geometry — a connection, a notion of
-          transport between scales, a way to say that two objects are "the same at different
-          scales" other than by comparing slopes — is not something I can point to a theory for.
-          This may be because it is vacuous. I do not know yet.</li>
-        <li><strong>Analysis, not just counting.</strong> Dimension is the crudest invariant. The real test of
-          any scale-geometric framework is whether it says anything about <em>analysis</em> on these
-          spaces — Dirichlet forms, heat kernels, spectral asymptotics — where the objects that
-          matter are due to Kigami, Barlow, Strichartz and others, and where log-periodicity in
-          the heat trace is already a known phenomenon. A reframing that cannot reach the heat
-          kernel is decoration.</li>
-      </ul>
+      <p>The oscillations of the later sections had been found too, and thoroughly. Physicists
+      know them as discrete scale invariance and log-periodic corrections to scaling, and they
+      have chased them through rupture, earthquakes, diffusion-limited aggregation and financial
+      time series; Sornette's review is where that trail begins.<sup>[2]</sup> On the mathematical side,
+      everything I was groping towards (fractal strings, geometric zeta functions, complex
+      dimensions, tube formulas) already has a name and a home: the theory of complex
+      dimensions built by Lapidus and van Frankenhuijsen. It is a mature theory, with
+      monographs, not a gap waiting to be filled.<sup>[3]</sup></p>
 
-      <p>The Cantor set is a good teacher precisely because it is small enough to see all the way
-      through. Everything in this post about it is finite, computable, and checkable in an
-      afternoon — I computed every figure here directly rather than fitting anything, which is
-      also how I found a bug in my own box counting.<sup>[4]</sup> Whether the viewpoint generalises into
-      something with theorems attached is a separate question, and I have tried to be careful
-      not to answer it with a nice picture.</p>
+      <p>So the road I thought I was cutting through the forest was already paved.
+      <strong>"Geometry of scale", in one dimension, is not an open frontier; it is largely another name
+      for the theory of complex dimensions.</strong> If you ever feel the urge to build a framework
+      here, read that literature first, and expect to meet your idea in it.</p>
+
+      <p>And yet, standing at the edge of the paved road, a few paths still lead off into the
+      trees. They are narrower and less glamorous than the one I set out on, but I think they
+      are genuinely unexplored.</p>
+
+      <p>The first leads away from perfect symmetry. The theory is at its sharpest for
+      self-similar and self-conformal sets, objects that repeat themselves exactly. But most of
+      what we measure in the world does not. Take the object of §7, or any real dataset whose
+      local slope drifts with no exact symmetry behind it: there, $d(s)$ and $f(s)$ are only
+      descriptive statistics, not the shadow of some hidden pole structure. What, then, is the
+      right invariant?</p>
+
+      <p>The second asks whether the scale coordinate deserves to be taken literally. Throughout
+      this post I have treated $s$ as an axis to plot against. But what if it were a coordinate
+      with its own geometry: a connection, a notion of transport from one scale to another, a
+      way of saying that two objects are "the same at different scales" without merely
+      comparing slopes? I cannot point to a theory that does this. Perhaps that is because the
+      idea is empty. I honestly do not know yet.</p>
+
+      <p>The third is the real test. Dimension is the crudest invariant there is, a single number
+      squeezed out of a whole space. Any geometry of scale worth having should say something
+      about <em>analysis</em> on these spaces: Dirichlet forms, heat kernels, spectral asymptotics, the
+      world mapped out by Kigami, Barlow, Strichartz and others, where log-periodicity in the
+      heat trace is already a known phenomenon. A reframing that cannot reach the heat kernel
+      is decoration.</p>
+
+      <p>Which brings me back to where we started. The Cantor set is a wonderful teacher precisely
+      because it is small enough to see all the way through. Everything I said about it here is
+      finite, computable, and checkable in an afternoon. I computed every figure directly
+      rather than fitting anything, and that is how I caught a bug in my own box counting.<sup>[4]</sup>
+      Whether this way of seeing grows into something with theorems attached is a different
+      story, one I have tried hard not to tell with a pretty picture.</p>
 
       <section class="footnotes">
         <ol>
