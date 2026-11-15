@@ -25,7 +25,8 @@ import { blogPage, type ShelfBook } from './templates/blog.ts';
 import { redirectPage, notFoundPage } from './templates/misc.ts';
 import { posts } from './content/posts.ts';
 import { noteShelves } from './content/notes.ts';
-import { parseCsv } from './lib/csv.ts';
+import { loadBooks, byTitle, type Book } from './content/books.ts';
+import { readingListBlock } from './templates/reading-list.ts';
 
 export const ROOT = fileURLToPath(new URL('..', import.meta.url));
 
@@ -58,21 +59,23 @@ function listFiles(dir: string, filter: (f: string) => boolean): string[] {
 // Reading list (for the book shelf on the blog page)
 // ---------------------------------------------------------------------------
 
-function readingList(): { shelf: ShelfBook[]; total: number } {
-  const rows = parseCsv(readFileSync(join(ROOT, 'book_reviews/goodreads_library_export.csv'), 'utf8'));
-  const manifest: Record<string, string> = JSON.parse(readFileSync(join(ROOT, 'book_reviews/covers/manifest.json'), 'utf8'));
-  const shelf: ShelfBook[] = [];
-  for (const row of rows) {
-    const cover = manifest[row.Title];
-    if (cover && existsSync(join(ROOT, 'book_reviews/covers', cover))) {
+function readingList(books: Book[]): ShelfBook[] {
+  // The blog shelf shows what I am reading now, then the most recently added books.
+  const current = (b: Book) => (b.shelf === 'currently-reading' ? 0 : 1);
+  return books
+    .filter((b) => b.cover)
+    .sort((a, b) => current(a) - current(b) || b.dateAdded.localeCompare(a.dateAdded) || byTitle(a, b))
+    .slice(0, 6)
+    .map((b) => ({
       // Drop series/subtitle noise for the compact shelf; the full title stays on the list page.
-      const title = row.Title.replace(/\s*\([^)]*\)\s*$/, '').split(/:\s/)[0];
-      shelf.push({ title, author: row.Author, cover });
-    }
-    if (shelf.length === 6) break;
-  }
-  return { shelf, total: rows.length };
+      title: b.title.replace(/\s*\([^)]*\)\s*$/, '').split(/:\s/)[0],
+      author: b.author,
+      cover: b.cover!,
+    }));
 }
+
+const BOOKS_START = '<!-- site:books — managed by src/build.ts -->';
+const BOOKS_END = '<!-- /site:books -->';
 
 // ---------------------------------------------------------------------------
 // Shared chrome for hand-written pages
@@ -124,9 +127,10 @@ function chromeFor(rel: string): { root: string; section: Section; crumbs: Html 
   return { root, section: 'blog', crumbs: crumbs([{ label: 'Blog', href: `${root}blog.html` }, { label: 'Book reviews', href: `${root}blog.html#book-reviews` }]) };
 }
 
-function syncChrome(rel: string, cssVersion: string): void {
+function syncChrome(rel: string, cssVersion: string, transform: (s: string) => string = (s) => s): void {
   let s = readFileSync(join(ROOT, rel), 'utf8');
   if (!s.trim()) return; // empty placeholder files are left alone
+  s = transform(s);
 
   const { root, section, crumbs: crumbsHtml } = chromeFor(rel);
   const header = `${HEADER_START}\n${siteHeader(root, section, crumbsHtml)}\n${HEADER_END}`;
@@ -213,10 +217,11 @@ export function build(): { changed: string[]; unchanged: string[] } {
   const css = readFileSync(join(ROOT, 'css/style.css'), 'utf8');
   const cssVersion = createHash('sha256').update(css).digest('hex').slice(0, 10);
 
-  const { shelf, total } = readingList();
+  const books = loadBooks(ROOT);
+  const shelf = readingList(books);
   writeIfChanged('index.html', homePage(cssVersion));
   writeIfChanged('academic.html', academicPage(cssVersion));
-  writeIfChanged('blog.html', blogPage(cssVersion, shelf, total));
+  writeIfChanged('blog.html', blogPage(cssVersion, shelf, books.length));
   writeIfChanged('404.html', notFoundPage(cssVersion));
   writeIfChanged('talks.html', redirectPage({ target: 'academic.html#talks', label: 'Academic → Talks & Conferences', title: 'Talks & Conferences' }));
   writeIfChanged('teaching.html', redirectPage({ target: 'academic.html#teaching', label: 'Academic → Teaching', title: 'Teaching' }));
@@ -225,7 +230,12 @@ export function build(): { changed: string[]; unchanged: string[] } {
   // files (figures, interactive demos) that must stay untouched.
   const postFiles = listFiles('posts', (f) => /^posts\/[^/]+\.html$/.test(f));
   const noteFiles = listFiles('notes', (f) => /^notes\/[^/]+\/[^/]+\.html$/.test(f));
-  for (const rel of [...postFiles, ...noteFiles, 'book_reviews/list.html']) syncChrome(rel, cssVersion);
+  for (const rel of [...postFiles, ...noteFiles]) syncChrome(rel, cssVersion);
+  syncChrome('book_reviews/list.html', cssVersion, (s) => {
+    if (!s.includes(BOOKS_START)) throw new Error(`book_reviews/list.html is missing the ${BOOKS_START} marker`);
+    const block = `${BOOKS_START}${readingListBlock(books)}\n    ${BOOKS_END}`;
+    return s.replace(new RegExp(`${esc(BOOKS_START)}[\\s\\S]*?${esc(BOOKS_END)}`), () => block);
+  });
 
   const notePdfs = listFiles('notes', (f) => f.endsWith('.pdf'));
   writeIfChanged('sitemap.xml', sitemap([...noteFiles, ...notePdfs]));
